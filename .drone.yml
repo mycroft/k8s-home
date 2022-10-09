@@ -1,0 +1,28 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: build
+  image: golang
+  environment:
+
+  commands:
+  - curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+  - apt-get install -y nodejs
+  - npm install -g cdk8s-cli
+  - git checkout generated
+  - cdk8s import
+  - cdk8s synth
+  - git add -f dist/*
+
+- name: git-push
+  image: appleboy/drone-git-push
+  settings:
+    branch: generated
+    remote: git@git.mkz.me:mycroft/k8s-home.git
+    force: false
+    commit: true
+    ssk_key:
+      from_secret: gitea_k8s_home_ssh_private_key
+
