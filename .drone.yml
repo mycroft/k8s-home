@@ -13,15 +13,18 @@ steps:
   - npm install -g cdk8s-cli
   - cdk8s import
   - cdk8s synth
-  - git add -f dist/*
 
 - name: git-push
+  when:
+    branch: main
+    event: push
+
   image: appleboy/drone-git-push
   settings:
     branch: generated
     remote: git@git.mkz.me:mycroft/k8s-home.git
     force: false
     commit: true
-    ssk_key:
+    ssh_key:
       from_secret: gitea_k8s_home_ssh_private_key
 
