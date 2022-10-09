@@ -26,4 +26,4 @@ steps:
     force: false
     commit: true
     ssh_key:
-      from_secret: gitea_k8s_home_ssh_private_key
+      from_secret: ssh_key
