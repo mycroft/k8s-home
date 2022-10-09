@@ -4,21 +4,21 @@ name: default
 
 steps:
 - name: build
+  when:
+    branch: main
+    event: push
   image: golang
-  environment:
-
   commands:
   - curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
   - apt-get install -y nodejs
   - npm install -g cdk8s-cli
   - cdk8s import
   - cdk8s synth
-
+  
 - name: git-push
   when:
     branch: main
     event: push
-
   image: appleboy/drone-git-push
   settings:
     branch: generated
@@ -27,4 +27,3 @@ steps:
     commit: true
     ssh_key:
       from_secret: gitea_k8s_home_ssh_private_key
-
