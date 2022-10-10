@@ -24,6 +24,7 @@ steps:
   - git fetch origin +refs/heads/generated
   - git checkout generated
   - git rm -r generated/
+  - mkdir -p generated
   - touch generated/.gitkeep
   - cp -Rp dist/ generated/
 
