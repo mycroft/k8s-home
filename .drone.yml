@@ -3,7 +3,7 @@ type: docker
 name: default
 
 steps:
-- name: build
+- name: build on main
   when:
     branch: main
     event: push
@@ -14,7 +14,17 @@ steps:
   - npm install -g cdk8s-cli
   - cdk8s import
   - cdk8s synth
-  
+
+- name: prepare generated
+  when:
+    branch: main
+    event: push
+  image: golang
+  commands:
+  - git checkout generated
+  - git pull rebase
+  - cp -Rp dist/ generated/
+
 - name: git-push
   when:
     branch: main
