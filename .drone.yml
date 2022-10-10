@@ -26,7 +26,8 @@ steps:
   - git rm -r generated/
   - mkdir -p generated
   - touch generated/.gitkeep
-  - cp -Rp dist/ generated/
+  - cp -Rp dist/* generated/
+  - find generated
 
 - name: git-push
   when:
