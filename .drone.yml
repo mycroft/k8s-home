@@ -23,7 +23,7 @@ steps:
   commands:
   - git fetch origin +refs/heads/generated
   - git checkout generated
-  - cp -Rp dist/ generated/
+  - cp -Rp dist/* generated/
   - ls -l dist/ generated/
 
 - name: git-push
