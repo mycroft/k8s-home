@@ -21,6 +21,7 @@ steps:
     event: push
   image: golang
   commands:
+  - git fetch origin +refs/heads/generated
   - git checkout generated
   - git pull rebase
   - cp -Rp dist/ generated/
