@@ -32,9 +32,11 @@ steps:
     event: push
   image: appleboy/drone-git-push
   settings:
+    local_branch: generated
     branch: generated
     remote: git@git.mkz.me:mycroft/k8s-home.git
     force: false
     commit: true
+    commit_message: Update generated configuration
     ssh_key:
       from_secret: ssh_key
