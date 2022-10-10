@@ -23,7 +23,7 @@ steps:
   commands:
   - git fetch origin +refs/heads/generated
   - git checkout generated
-  - git rm -r generated/
+  - git rm generated/*.yaml
   - mkdir -p generated
   - touch generated/.gitkeep
   - cp -Rp dist/* generated/
