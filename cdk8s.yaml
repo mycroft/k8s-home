@@ -2,3 +2,5 @@ language: go
 app: go run .
 imports:
   - k8s
+  - https://github.com/fluxcd/source-controller/releases/download/v0.30.0/source-controller.crds.yaml
+  - https://github.com/fluxcd/helm-controller/releases/download/v0.25.0/helm-controller.crds.yaml

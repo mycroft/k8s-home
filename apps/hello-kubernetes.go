@@ -1,4 +1,4 @@
-package hello_kubernetes
+package apps
 
 import (
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
