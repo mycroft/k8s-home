@@ -1,10 +1,12 @@
 package main
 
 import (
-	"example.com/k8s-home/imports/k8s"
+	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
+
+	apps "git.mkz.me/mycroft/k8s-home/apps"
 )
 
 type MyChartProps struct {
@@ -35,6 +37,7 @@ func NewMyChart(scope constructs.Construct, id string, props *MyChartProps) cdk8
 
 func main() {
 	app := cdk8s.NewApp(nil)
+	apps.NewHelloKubernetesChart(app)
 	NewMyChart(app, "k8s-home", nil)
 	app.Synth()
 }

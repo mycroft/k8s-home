@@ -23,8 +23,10 @@ steps:
   commands:
   - git fetch origin +refs/heads/generated
   - git checkout generated
-  - cp -Rp dist/* generated/
-  - ls -l dist/ generated/
+  - git pull rebase
+  - git rm -r generated/
+  - touch generated/.gitkeep
+  - cp -Rp dist/ generated/
 
 - name: git-push
   when:

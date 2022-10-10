@@ -1,4 +1,4 @@
-module example.com/k8s-home
+module git.mkz.me/mycroft/k8s-home
 
 go 1.16
 
