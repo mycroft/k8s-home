@@ -23,7 +23,6 @@ steps:
   commands:
   - git fetch origin +refs/heads/generated
   - git checkout generated
-  - git pull rebase
   - git rm -r generated/
   - touch generated/.gitkeep
   - cp -Rp dist/ generated/
