@@ -29,3 +29,18 @@ spec:
   interval: 1m0s
   values:
     installCRDs: "true"
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    email: pm+letsencrypt@mkz.me
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    solvers:
+      - http01:
+          ingress:
+            class: traefik
