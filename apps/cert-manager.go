@@ -3,6 +3,7 @@ package apps
 import (
 	"fmt"
 
+	"git.mkz.me/mycroft/k8s-home/imports/certmanagerio"
 	"git.mkz.me/mycroft/k8s-home/imports/helmtoolkitfluxcdio"
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/sourcetoolkitfluxcdio"
@@ -11,42 +12,6 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-/*
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
-metadata:
-
-	name: traefik
-	namespace: traefik
-
-spec:
-
-	interval: 1m0s
-	url: https://helm.traefik.io/traefik
-
----
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
-kind: HelmRelease
-metadata:
-
-	name: podinfo
-	namespace: default
-
-spec:
-
-	interval: 5m
-	chart:
-	  spec:
-	    chart: <name|path>
-	    version: '4.0.x'
-	    sourceRef:
-	      kind: <HelmRepository|GitRepository|Bucket>
-	      name: podinfo
-	      namespace: flux-system
-	    interval: 1m
-	values:
-	  replicaCount: 2
-*/
 func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "cert-manager"
 
@@ -113,23 +78,33 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
+	certmanagerio.NewClusterIssuer(
+		chart,
+		jsii.String("cluster-issueur"),
+		&certmanagerio.ClusterIssuerProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name: jsii.String("letsencrypt-staging"),
+			},
+			Spec: &certmanagerio.ClusterIssuerSpec{
+				Acme: &certmanagerio.ClusterIssuerSpecAcme{
+					Email:  jsii.String("pm+letsencrypt@mkz.me"),
+					Server: jsii.String("https://acme-staging-v02.api.letsencrypt.org/directory"),
+					PrivateKeySecretRef: &certmanagerio.ClusterIssuerSpecAcmePrivateKeySecretRef{
+						Name: jsii.String("letsencrypt-staging"),
+					},
+					Solvers: &[]*certmanagerio.ClusterIssuerSpecAcmeSolvers{
+						{
+							Http01: &certmanagerio.ClusterIssuerSpecAcmeSolversHttp01{
+								Ingress: &certmanagerio.ClusterIssuerSpecAcmeSolversHttp01Ingress{
+									Class: jsii.String("traefik"),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	)
+
 	return chart
 }
-
-/*
-  values:
-    installCRDs: true
-
-# /flux/boot/traefik/helmrelease.yaml
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
-kind: HelmRelease
-spec:
-  chart:
-    spec:
-      chart: traefik
-      sourceRef:
-        kind: HelmRepository
-        name: traefik
-      version: 9.18.2
-  interval: 1m0s
-*/
