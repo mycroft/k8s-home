@@ -1,1 +1,1 @@
-{"version":"1.0.0","resources":{"hello-kubernetes":{"path":"hello-kubernetes/ns"},"testaroo":{"path":"k8s-home/ns"}}}
+{"version":"1.0.0","resources":{"hello-kubernetes":{"path":"hello-kubernetes/ns"},"cert-manager":{"path":"cert-manager/helm-rel-cert-manager"},"jetstack":{"path":"cert-manager/helm-repo-cert-manager"},"testaroo":{"path":"k8s-home/ns"}}}
