@@ -25,6 +25,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: hello-kubernetes-svc-c819e9ba
+  namespace: hello-kubernetes
 spec:
   ports:
     - name: http
@@ -41,6 +42,7 @@ metadata:
     traefik.ingress.kubernetes.io/redirect-entry-point: https
     traefik.ingress.kubernetes.io/redirect-permanent: "true"
   name: hello-kubernetes-ingress-c8762254
+  namespace: hello-kubernetes
 spec:
   rules:
     - host: hello-kubernetes.services.mkz.me
