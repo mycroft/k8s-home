@@ -12,6 +12,36 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
+func createClusterIssueur(chart constructs.Construct, name, server string) certmanagerio.ClusterIssuer {
+	return certmanagerio.NewClusterIssuer(
+		chart,
+		jsii.String(fmt.Sprintf("cluster-issueur-%s", name)),
+		&certmanagerio.ClusterIssuerProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name: jsii.String(name),
+			},
+			Spec: &certmanagerio.ClusterIssuerSpec{
+				Acme: &certmanagerio.ClusterIssuerSpecAcme{
+					Email:  jsii.String("pm+letsencrypt@mkz.me"),
+					Server: jsii.String(server),
+					PrivateKeySecretRef: &certmanagerio.ClusterIssuerSpecAcmePrivateKeySecretRef{
+						Name: jsii.String(name),
+					},
+					Solvers: &[]*certmanagerio.ClusterIssuerSpecAcmeSolvers{
+						{
+							Http01: &certmanagerio.ClusterIssuerSpecAcmeSolversHttp01{
+								Ingress: &certmanagerio.ClusterIssuerSpecAcmeSolversHttp01Ingress{
+									Class: jsii.String("traefik"),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	)
+}
+
 func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "cert-manager"
 
@@ -78,33 +108,8 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	certmanagerio.NewClusterIssuer(
-		chart,
-		jsii.String("cluster-issueur"),
-		&certmanagerio.ClusterIssuerProps{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Name: jsii.String("letsencrypt-staging"),
-			},
-			Spec: &certmanagerio.ClusterIssuerSpec{
-				Acme: &certmanagerio.ClusterIssuerSpecAcme{
-					Email:  jsii.String("pm+letsencrypt@mkz.me"),
-					Server: jsii.String("https://acme-staging-v02.api.letsencrypt.org/directory"),
-					PrivateKeySecretRef: &certmanagerio.ClusterIssuerSpecAcmePrivateKeySecretRef{
-						Name: jsii.String("letsencrypt-staging"),
-					},
-					Solvers: &[]*certmanagerio.ClusterIssuerSpecAcmeSolvers{
-						{
-							Http01: &certmanagerio.ClusterIssuerSpecAcmeSolversHttp01{
-								Ingress: &certmanagerio.ClusterIssuerSpecAcmeSolversHttp01Ingress{
-									Class: jsii.String("traefik"),
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	)
+	createClusterIssueur(chart, "letsencrypt-staging", "https://acme-staging-v02.api.letsencrypt.org/directory")
+	createClusterIssueur(chart, "letsencrypt-prod", "https://acme-v02.api.letsencrypt.org/directory")
 
 	return chart
 }
