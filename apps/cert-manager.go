@@ -5,7 +5,6 @@ import (
 
 	"git.mkz.me/mycroft/k8s-home/imports/certmanagerio"
 	"git.mkz.me/mycroft/k8s-home/imports/helmtoolkitfluxcdio"
-	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/sourcetoolkitfluxcdio"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -51,16 +50,6 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s.NewKubeNamespace(
-		chart,
-		jsii.String(appName),
-		&k8s.KubeNamespaceProps{
-			Metadata: &k8s.ObjectMeta{
-				Name: jsii.String(appName),
-			},
-		},
-	)
-
 	// helm repo add jetstack https://charts.jetstack.io
 
 	sourcetoolkitfluxcdio.NewHelmRepository(
@@ -80,6 +69,10 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 
 	// helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.9.1 --set installCRDs=true
 
+	// install:
+	//   createNamespace: true
+	//   installCRDs: true
+
 	helmtoolkitfluxcdio.NewHelmRelease(
 		chart,
 		jsii.String(fmt.Sprintf("helm-rel-%s", appName)),
@@ -89,6 +82,10 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 				Namespace: jsii.String("cert-manager"),
 			},
 			Spec: &helmtoolkitfluxcdio.HelmReleaseSpec{
+				Install: &helmtoolkitfluxcdio.HelmReleaseSpecInstall{
+					CreateNamespace: jsii.Bool(true),
+					SkipCrDs:        jsii.Bool(false),
+				},
 				Chart: &helmtoolkitfluxcdio.HelmReleaseSpecChart{
 					Spec: &helmtoolkitfluxcdio.HelmReleaseSpecChartSpec{
 						Chart: jsii.String("cert-manager"),
