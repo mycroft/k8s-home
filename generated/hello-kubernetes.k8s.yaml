@@ -20,3 +20,40 @@ spec:
       containers:
         - image: paulbouwer/hello-kubernetes:1.10.1
           name: hello-kubernetes
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-kubernetes-svc-c819e9ba
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app.kubernetes.io/name: hello-kubernetes
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+  name: hello-kubernetes-ingress-c8762254
+spec:
+  rules:
+    - host: hello-kubernetes.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: hello-kubernetes-svc-c819e9ba
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - hello-kubernetes.services.mkz.me
+      secretName: secret-tls-www
