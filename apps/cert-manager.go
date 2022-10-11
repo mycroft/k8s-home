@@ -5,6 +5,7 @@ import (
 
 	"git.mkz.me/mycroft/k8s-home/imports/certmanagerio"
 	"git.mkz.me/mycroft/k8s-home/imports/helmtoolkitfluxcdio"
+	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/sourcetoolkitfluxcdio"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -50,6 +51,19 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
+	// create a namespace for cert-manager
+	// reason to create the namespace is that flux will append the release name using the targetNamespace used.
+	// therefore, the HelmRepository will lie in fluxcd, while HelmRelease will live in cert-manager.
+	k8s.NewKubeNamespace(
+		chart,
+		jsii.String(fmt.Sprintf("ns-%s", appName)),
+		&k8s.KubeNamespaceProps{
+			Metadata: &k8s.ObjectMeta{
+				Name: &appName,
+			},
+		},
+	)
+
 	// helm repo add jetstack https://charts.jetstack.io
 
 	sourcetoolkitfluxcdio.NewHelmRepository(
@@ -67,7 +81,7 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	// helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.9.1 --set installCRDs=true
+	// helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.9.1 --set installCRDs=true
 
 	helmtoolkitfluxcdio.NewHelmRelease(
 		chart,
@@ -75,12 +89,11 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		&helmtoolkitfluxcdio.HelmReleaseProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name:      jsii.String(appName),
-				Namespace: jsii.String("flux-system"),
+				Namespace: jsii.String(appName),
 			},
 			Spec: &helmtoolkitfluxcdio.HelmReleaseSpec{
-				TargetNamespace: jsii.String(appName),
 				Install: &helmtoolkitfluxcdio.HelmReleaseSpecInstall{
-					CreateNamespace: jsii.Bool(true),
+					CreateNamespace: jsii.Bool(false),
 					SkipCrDs:        jsii.Bool(false),
 				},
 				Chart: &helmtoolkitfluxcdio.HelmReleaseSpecChart{
@@ -95,15 +108,12 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 					},
 				},
 				Interval: jsii.String("1m0s"),
-				Values: map[string]*string{
-					"installCRDs": jsii.String("true"),
-				},
 			},
 		},
 	)
 
-	createClusterIssueur(chart, "letsencrypt-staging", "https://acme-staging-v02.api.letsencrypt.org/directory")
-	createClusterIssueur(chart, "letsencrypt-prod", "https://acme-v02.api.letsencrypt.org/directory")
+	// createClusterIssueur(chart, "letsencrypt-staging", "https://acme-staging-v02.api.letsencrypt.org/directory")
+	// createClusterIssueur(chart, "letsencrypt-prod", "https://acme-v02.api.letsencrypt.org/directory")
 
 	return chart
 }
