@@ -62,6 +62,9 @@ func NewHelloKubernetesChart(scope constructs.Construct) cdk8s.Chart {
 		chart,
 		jsii.String("svc"),
 		&k8s.KubeServiceProps{
+			Metadata: &k8s.ObjectMeta{
+				Namespace: jsii.String(appName),
+			},
 			Spec: &k8s.ServiceSpec{
 				Ports: &[]*k8s.ServicePort{
 					{
@@ -89,6 +92,7 @@ func NewHelloKubernetesChart(scope constructs.Construct) cdk8s.Chart {
 		&k8s.KubeIngressProps{
 			Metadata: &k8s.ObjectMeta{
 				Annotations: &annotations,
+				Namespace:   jsii.String(appName),
 			},
 			Spec: &k8s.IngressSpec{
 				Rules: &[]*k8s.IngressRule{
