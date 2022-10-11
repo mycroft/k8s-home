@@ -50,6 +50,8 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
+	return chart
+
 	// helm repo add jetstack https://charts.jetstack.io
 
 	sourcetoolkitfluxcdio.NewHelmRepository(
@@ -58,7 +60,7 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		&sourcetoolkitfluxcdio.HelmRepositoryProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name:      jsii.String("jetstack"),
-				Namespace: jsii.String("default"),
+				Namespace: jsii.String("flux-system"),
 			},
 			Spec: &sourcetoolkitfluxcdio.HelmRepositorySpec{
 				Url:      jsii.String("https://charts.jetstack.io"),
@@ -69,19 +71,16 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 
 	// helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.9.1 --set installCRDs=true
 
-	// install:
-	//   createNamespace: true
-	//   installCRDs: true
-
 	helmtoolkitfluxcdio.NewHelmRelease(
 		chart,
 		jsii.String(fmt.Sprintf("helm-rel-%s", appName)),
 		&helmtoolkitfluxcdio.HelmReleaseProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name:      jsii.String(appName),
-				Namespace: jsii.String("cert-manager"),
+				Namespace: jsii.String("flux-system"),
 			},
 			Spec: &helmtoolkitfluxcdio.HelmReleaseSpec{
+				TargetNamespace: jsii.String(appName),
 				Install: &helmtoolkitfluxcdio.HelmReleaseSpecInstall{
 					CreateNamespace: jsii.Bool(true),
 					SkipCrDs:        jsii.Bool(false),
@@ -92,7 +91,7 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 						SourceRef: &helmtoolkitfluxcdio.HelmReleaseSpecChartSpecSourceRef{
 							Kind:      helmtoolkitfluxcdio.HelmReleaseSpecChartSpecSourceRefKind_HELM_REPOSITORY,
 							Name:      jsii.String("jetstack"),
-							Namespace: jsii.String("default"),
+							Namespace: jsii.String("flux-system"),
 						},
 						Version: jsii.String("v1.9.1"),
 					},
