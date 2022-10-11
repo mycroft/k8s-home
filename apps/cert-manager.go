@@ -50,8 +50,6 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	return chart
-
 	// helm repo add jetstack https://charts.jetstack.io
 
 	sourcetoolkitfluxcdio.NewHelmRepository(
