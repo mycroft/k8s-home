@@ -44,6 +44,7 @@ func CreateHelmRelease(
 	namespace, repoName, chartName, releaseName, version string,
 	values map[string]string,
 	configMaps []HelmReleaseConfigMap,
+	annotations map[string]*string,
 ) helmtoolkitfluxcdio.HelmRelease {
 	// Prepare configMaps.
 	valuesFrom := []*helmtoolkitfluxcdio.HelmReleaseSpecValuesFrom{}
@@ -60,8 +61,9 @@ func CreateHelmRelease(
 		jsii.String(fmt.Sprintf("helm-rel-%s", releaseName)),
 		&helmtoolkitfluxcdio.HelmReleaseProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
-				Name:      jsii.String(releaseName),
-				Namespace: jsii.String(namespace),
+				Name:        jsii.String(releaseName),
+				Namespace:   jsii.String(namespace),
+				Annotations: &annotations,
 			},
 			Spec: &helmtoolkitfluxcdio.HelmReleaseSpec{
 				Install: &helmtoolkitfluxcdio.HelmReleaseSpecInstall{

@@ -13,3 +13,11 @@ flux bootstrap git \
   --branch=generated \
   --path=generated/
 ```
+
+## Notes
+
+### Force a HelmRelease reconcile after an undetected change
+
+```sh
+kubectl annotate --overwrite -n monitoring helmrelease/prometheus reconcile.fluxcd.io/requestedAt="$(date +%s)"
+```

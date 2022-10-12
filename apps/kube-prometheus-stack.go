@@ -1,13 +1,14 @@
 package apps
 
 import (
-	"io/ioutil"
+	"os"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
+
+	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 )
 
 func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
@@ -28,7 +29,7 @@ func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
 		"https://prometheus-community.github.io/helm-charts",
 	)
 
-	contents, err := ioutil.ReadFile("configs/kube-prometheus-stack.yaml")
+	contents, err := os.ReadFile("configs/kube-prometheus-stack.yaml")
 	if err != nil {
 		panic(err)
 	}
@@ -59,6 +60,9 @@ func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
 				Name:    *cm.Name(),
 				KeyName: "kube-prometheus-stack.yaml",
 			},
+		},
+		map[string]*string{
+			"configMapHash": jsii.String(k8s_helpers.ComputeConfigMapHash(cm)),
 		},
 	)
 
