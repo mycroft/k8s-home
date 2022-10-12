@@ -82,8 +82,10 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		nil,
 	)
 
-	// createClusterIssueur(chart, "letsencrypt-staging", "https://acme-staging-v02.api.letsencrypt.org/directory")
-	// createClusterIssueur(chart, "letsencrypt-prod", "https://acme-v02.api.letsencrypt.org/directory")
+	// flux does not like having those here with the helm creation just before
+	// This should be moved in their own chart
+	createClusterIssueur(chart, "letsencrypt-staging", "https://acme-staging-v02.api.letsencrypt.org/directory")
+	createClusterIssueur(chart, "letsencrypt-prod", "https://acme-v02.api.letsencrypt.org/directory")
 
 	return chart
 }
