@@ -3,6 +3,7 @@ package k8s_helpers
 import (
 	"fmt"
 
+	"git.mkz.me/mycroft/k8s-home/imports/helmtoolkitfluxcdio"
 	"git.mkz.me/mycroft/k8s-home/imports/sourcetoolkitfluxcdio"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -23,6 +24,41 @@ func CreateHelmRepository(chart constructs.Construct, name, url string) sourceto
 			},
 			Spec: &sourcetoolkitfluxcdio.HelmRepositorySpec{
 				Url:      jsii.String(url),
+				Interval: jsii.String("1m0s"),
+			},
+		},
+	)
+}
+
+// CreateHelmRelease creates a helm release in the given namespace for the given repo/name and version
+// It installs CRDs by default.
+// ex:
+// - helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.9.1 --set installCRDs=true
+func CreateHelmRelease(chart constructs.Construct, namespace, repoName, appName, version string) helmtoolkitfluxcdio.HelmRelease {
+	return helmtoolkitfluxcdio.NewHelmRelease(
+		chart,
+		jsii.String(fmt.Sprintf("helm-rel-%s", appName)),
+		&helmtoolkitfluxcdio.HelmReleaseProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name:      jsii.String(appName),
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &helmtoolkitfluxcdio.HelmReleaseSpec{
+				Install: &helmtoolkitfluxcdio.HelmReleaseSpecInstall{
+					CreateNamespace: jsii.Bool(false),
+					SkipCrDs:        jsii.Bool(false),
+				},
+				Chart: &helmtoolkitfluxcdio.HelmReleaseSpecChart{
+					Spec: &helmtoolkitfluxcdio.HelmReleaseSpecChartSpec{
+						Chart: jsii.String(appName),
+						SourceRef: &helmtoolkitfluxcdio.HelmReleaseSpecChartSpecSourceRef{
+							Kind:      helmtoolkitfluxcdio.HelmReleaseSpecChartSpecSourceRefKind_HELM_REPOSITORY,
+							Name:      jsii.String(repoName),
+							Namespace: jsii.String("flux-system"),
+						},
+						Version: jsii.String(version),
+					},
+				},
 				Interval: jsii.String("1m0s"),
 			},
 		},

@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/certmanagerio"
-	"git.mkz.me/mycroft/k8s-home/imports/helmtoolkitfluxcdio"
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
@@ -64,39 +63,18 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	// helm repo add jetstack https://charts.jetstack.io
-
-	k8s_helpers.CreateHelmRepository(chart, "jetstack", "https://charts.jetstack.io")
-
-	// helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.9.1 --set installCRDs=true
-
-	helmtoolkitfluxcdio.NewHelmRelease(
+	k8s_helpers.CreateHelmRepository(
 		chart,
-		jsii.String(fmt.Sprintf("helm-rel-%s", appName)),
-		&helmtoolkitfluxcdio.HelmReleaseProps{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Name:      jsii.String(appName),
-				Namespace: jsii.String(appName),
-			},
-			Spec: &helmtoolkitfluxcdio.HelmReleaseSpec{
-				Install: &helmtoolkitfluxcdio.HelmReleaseSpecInstall{
-					CreateNamespace: jsii.Bool(false),
-					SkipCrDs:        jsii.Bool(false),
-				},
-				Chart: &helmtoolkitfluxcdio.HelmReleaseSpecChart{
-					Spec: &helmtoolkitfluxcdio.HelmReleaseSpecChartSpec{
-						Chart: jsii.String("cert-manager"),
-						SourceRef: &helmtoolkitfluxcdio.HelmReleaseSpecChartSpecSourceRef{
-							Kind:      helmtoolkitfluxcdio.HelmReleaseSpecChartSpecSourceRefKind_HELM_REPOSITORY,
-							Name:      jsii.String("jetstack"),
-							Namespace: jsii.String("flux-system"),
-						},
-						Version: jsii.String("v1.9.1"),
-					},
-				},
-				Interval: jsii.String("1m0s"),
-			},
-		},
+		"jetstack",
+		"https://charts.jetstack.io",
+	)
+
+	k8s_helpers.CreateHelmRelease(
+		chart,
+		appName,
+		"jetstack",
+		appName,
+		"v1.9.1",
 	)
 
 	createClusterIssueur(chart, "letsencrypt-staging", "https://acme-staging-v02.api.letsencrypt.org/directory")
