@@ -25,6 +25,7 @@ data:
           traefik.ingress.kubernetes.io/redirect-entry-point: https
           traefik.ingress.kubernetes.io/redirect-permanent: true
         hosts: ['grafana.services.mkz.me']
+        path: /
 metadata:
   name: kube-prometheus-stack-cm-c8292180
   namespace: monitoring
