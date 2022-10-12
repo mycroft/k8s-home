@@ -6,7 +6,7 @@ import (
 	"git.mkz.me/mycroft/k8s-home/imports/certmanagerio"
 	"git.mkz.me/mycroft/k8s-home/imports/helmtoolkitfluxcdio"
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	"git.mkz.me/mycroft/k8s-home/imports/sourcetoolkitfluxcdio"
+	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -66,20 +66,7 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 
 	// helm repo add jetstack https://charts.jetstack.io
 
-	sourcetoolkitfluxcdio.NewHelmRepository(
-		chart,
-		jsii.String(fmt.Sprintf("helm-repo-%s", appName)),
-		&sourcetoolkitfluxcdio.HelmRepositoryProps{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Name:      jsii.String("jetstack"),
-				Namespace: jsii.String("flux-system"),
-			},
-			Spec: &sourcetoolkitfluxcdio.HelmRepositorySpec{
-				Url:      jsii.String("https://charts.jetstack.io"),
-				Interval: jsii.String("1m0s"),
-			},
-		},
-	)
+	k8s_helpers.CreateHelmRepository(chart, "jetstack", "https://charts.jetstack.io")
 
 	// helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.9.1 --set installCRDs=true
 
