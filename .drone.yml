@@ -2,11 +2,14 @@ kind: pipeline
 type: docker
 name: default
 
+trigger:
+  branch:
+  - main
+  event:
+  - push
+
 steps:
 - name: build on main
-  when:
-    branch: main
-    event: push
   image: golang
   commands:
   - curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
@@ -16,9 +19,6 @@ steps:
   - cdk8s synth
 
 - name: prepare generated
-  when:
-    branch: main
-    event: push
   image: golang
   commands:
   - git fetch origin +refs/heads/generated
@@ -30,9 +30,6 @@ steps:
   - find generated
 
 - name: git-push
-  when:
-    branch: main
-    event: push
   image: appleboy/drone-git-push
   settings:
     local_branch: generated
