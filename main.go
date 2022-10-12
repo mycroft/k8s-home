@@ -10,5 +10,6 @@ func main() {
 	app := cdk8s.NewApp(nil)
 	apps.NewHelloKubernetesChart(app)
 	apps.NewCertManagerChart(app)
+	apps.NewKubePrometheusStackChart(app)
 	app.Synth()
 }

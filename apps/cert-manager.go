@@ -74,6 +74,7 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		appName,
 		"jetstack",
 		appName,
+		appName,
 		"v1.9.1",
 	)
 

@@ -34,13 +34,13 @@ func CreateHelmRepository(chart constructs.Construct, name, url string) sourceto
 // It installs CRDs by default.
 // ex:
 // - helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.9.1 --set installCRDs=true
-func CreateHelmRelease(chart constructs.Construct, namespace, repoName, appName, version string) helmtoolkitfluxcdio.HelmRelease {
+func CreateHelmRelease(chart constructs.Construct, namespace, repoName, chartName, releaseName, version string) helmtoolkitfluxcdio.HelmRelease {
 	return helmtoolkitfluxcdio.NewHelmRelease(
 		chart,
-		jsii.String(fmt.Sprintf("helm-rel-%s", appName)),
+		jsii.String(fmt.Sprintf("helm-rel-%s", releaseName)),
 		&helmtoolkitfluxcdio.HelmReleaseProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
-				Name:      jsii.String(appName),
+				Name:      jsii.String(releaseName),
 				Namespace: jsii.String(namespace),
 			},
 			Spec: &helmtoolkitfluxcdio.HelmReleaseSpec{
@@ -50,7 +50,7 @@ func CreateHelmRelease(chart constructs.Construct, namespace, repoName, appName,
 				},
 				Chart: &helmtoolkitfluxcdio.HelmReleaseSpecChart{
 					Spec: &helmtoolkitfluxcdio.HelmReleaseSpecChartSpec{
-						Chart: jsii.String(appName),
+						Chart: jsii.String(chartName),
 						SourceRef: &helmtoolkitfluxcdio.HelmReleaseSpecChartSpecSourceRef{
 							Kind:      helmtoolkitfluxcdio.HelmReleaseSpecChartSpecSourceRefKind_HELM_REPOSITORY,
 							Name:      jsii.String(repoName),
@@ -60,6 +60,9 @@ func CreateHelmRelease(chart constructs.Construct, namespace, repoName, appName,
 					},
 				},
 				Interval: jsii.String("1m0s"),
+				Values: map[string]string{
+					"installCRDs": "true",
+				},
 			},
 		},
 	)
