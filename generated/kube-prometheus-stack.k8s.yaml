@@ -36,6 +36,8 @@ metadata:
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
+  annotations:
+    configMapHash: 779c88619023212560a713b580a2e46f45645a32c4086ff13b3bb5db13a83db9
   name: prometheus
   namespace: monitoring
 spec:
