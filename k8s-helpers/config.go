@@ -37,27 +37,7 @@ func ComputeConfigMapHash(configMaps ...k8s.KubeConfigMap) string {
 		for _, k := range keys {
 			h.Write([]byte(dataContent[k].(string)))
 		}
-
 	}
-
-	/*
-		                }
-
-
-
-		                for _, k := range keys {
-		                        h.Write([]byte(*values[k]))
-		                }
-		        }
-
-		        return fmt.Sprintf("%x", h.Sum(nil))
-
-				json := cm.ToJson().(map[string]interface{})
-
-				for k, v := range json["data"].(map[string]interface{}) {
-					fmt.Printf("%v / %v", k, v.(string))
-				}
-	*/
 
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
