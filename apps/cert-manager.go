@@ -76,6 +76,10 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		appName,
 		appName,
 		"v1.9.1",
+		map[string]string{
+			"installCRDs": "true",
+		},
+		nil,
 	)
 
 	createClusterIssueur(chart, "letsencrypt-staging", "https://acme-staging-v02.api.letsencrypt.org/directory")
