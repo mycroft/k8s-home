@@ -30,6 +30,9 @@ spec:
     createNamespace: false
     skipCRDs: false
   interval: 1m0s
+  values:
+    installCRDs: "true"
+  valuesFrom: []
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
