@@ -30,7 +30,7 @@ func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
 		"sealed-secrets", // repo name
 		"sealed-secrets", // chart name
 		appName,          // release name
-		"v0.18.5",
+		"2.6.9",
 		nil,
 		nil,
 		nil,
