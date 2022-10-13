@@ -26,7 +26,7 @@ func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
-		appName,          // namespace
+		"kube-system",    // namespace
 		"sealed-secrets", // repo name
 		"sealed-secrets", // chart name
 		appName,          // release name
