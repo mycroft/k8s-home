@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/certmanagerio"
-	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -53,15 +52,7 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 	// create a namespace for cert-manager
 	// reason to create the namespace is that flux will append the release name using the targetNamespace used.
 	// therefore, the HelmRepository will lie in fluxcd, while HelmRelease will live in cert-manager.
-	k8s.NewKubeNamespace(
-		chart,
-		jsii.String(fmt.Sprintf("ns-%s", appName)),
-		&k8s.KubeNamespaceProps{
-			Metadata: &k8s.ObjectMeta{
-				Name: &appName,
-			},
-		},
-	)
+	k8s_helpers.NewNamespace(chart, appName)
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
