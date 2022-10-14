@@ -8,9 +8,12 @@ import (
 
 func main() {
 	app := cdk8s.NewApp(nil)
-	apps.NewHelloKubernetesChart(app)
 	apps.NewCertManagerChart(app)
 	apps.NewKubePrometheusStackChart(app)
 	apps.NewSealedSecretsChart(app)
+
+	apps.NewHelloKubernetesChart(app)
+	apps.NewWhatIsMyIpChart(app)
+
 	app.Synth()
 }
