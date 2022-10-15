@@ -31,7 +31,9 @@ func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
 		"sealed-secrets", // chart name
 		appName,          // release name
 		"2.6.9",
-		nil,
+		map[string]string{
+			"fullnameOverride": "sealed-secrets-controller",
+		},
 		nil,
 		nil,
 	)

@@ -18,6 +18,8 @@ flux bootstrap git \
 
 ### Force a HelmRelease reconcile after an undetected change
 
+Add/edit the annotation:
+
 ```sh
 kubectl annotate --overwrite -n monitoring helmrelease/prometheus reconcile.fluxcd.io/requestedAt="$(date +%s)"
 ```
@@ -45,4 +47,24 @@ spec:
 # kubectl get svc -o yaml -n kube-system traefik | grep -i policy
   externalTrafficPolicy: Local
   internalTrafficPolicy: Cluster
+```
+
+### Creating a secret using Sealed-Secrets
+
+See https://github.com/bitnami-labs/sealed-secrets:
+
+```sh
+# Create a json/yaml-encoded Secret somehow:
+# (note use of `--dry-run` - this is just a local file!)
+echo -n bar | kubectl create secret generic mysecret --dry-run=client --from-file=foo=/dev/stdin -o json >mysecret.json
+
+# This is the important bit:
+# (note default format is json!)
+kubeseal <mysecret.json >mysealedsecret.json
+
+# At this point mysealedsecret.json is safe to upload to Github,
+# post on Twitter, etc.
+
+# Eventually:
+kubectl create -f mysealedsecret.json
 ```
