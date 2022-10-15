@@ -18,7 +18,7 @@ spec:
         app.kubernetes.io/name: whatismyip
     spec:
       containers:
-        - image: registry.mkz.me/mycroft/whatismyip:4
+        - image: registry.mkz.me/mycroft/whatismyip:5
           name: whatismyip
 ---
 apiVersion: v1
