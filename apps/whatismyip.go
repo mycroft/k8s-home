@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	whatismyipImage = "registry.mkz.me/mycroft/whatismyip:latest"
+	whatismyipImage = "registry.mkz.me/mycroft/whatismyip:4"
 )
 
 func NewWhatIsMyIpChart(scope constructs.Construct) cdk8s.Chart {
