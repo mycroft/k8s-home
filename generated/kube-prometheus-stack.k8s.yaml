@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 data:
-  kube-prometheus-stack.yaml: |+
+  kube-prometheus-stack.yaml: |
     grafana:
       ingress:
         enabled: true
@@ -24,6 +24,7 @@ data:
           cert-manager.io/cluster-issuer: "letsencrypt-prod"
           traefik.ingress.kubernetes.io/redirect-entry-point: "https"
           traefik.ingress.kubernetes.io/redirect-permanent: "true"
+
         hosts: ["grafana.services.mkz.me"]
         tls:
         - secretName: tls-grafana-cert
@@ -31,9 +32,8 @@ data:
           - grafana.services.mkz.me
       admin:
         existingSecret: grafana-secret
-        userKey: admin-user
-        passwordKey: admin-password
-
+        userKey: user
+        passwordKey: password
 metadata:
   name: kube-prometheus-stack-cm-c8292180
   namespace: monitoring
@@ -45,14 +45,14 @@ metadata:
   namespace: monitoring
 spec:
   encryptedData:
-    admin-password: AgCwmVbMGtTjnwKpO52JW7JFhhnyds07aymDrqXb6FZqqzDaRWKHRWH7h2grXhsgOtfcLlA36+4GugxhUUjoJElO/eOI3gM41t6Hk+XjuFBbRpswKvC7dGXpS0ofRZq51bwjZXaCHo9AjOXTovz4Jg7rIKGwg4gY4CV+hcRhlmdGLtKaUglRfguc1K1iRvNAM5yf406fCSFPU3SJm6REBl+3npN+2hBD/CiYx+PYz+Qy297WOtAosXagA7NJi/qtt+lpURuvmNkrCmCg+E/JHysg6lRegbK6wz6rAA+a1z2GE3RcZno1Qx7cfovfVqmEpkRkzyQJrbub+T9iblJaIiqYriEKV98wFq5om+8N5rZBkme5b1U+WaoZyfH9NfNEsas9/tdYlvCE8ESNcuLjSLXwE/fLplUF3DbbLrX+QIe+cyIdcp708VgxUoQAnndvDSCObyWAGyqwaHRhdfuL+UsGQIttT1wyjEmlejoJxE/ttHtQspiAaVB/CTonfuM840jAuQrtnZasDStC5kgfaNwyL8pbV143FWFcQZHTl8K38jSfhOYYC2Z9iLRqieaCZMdNt5hAi7F+BkdYETLnf5FNqRTqdlM5yj63KbDCPH3AuyfO15+lxZ9/sF9z0SQWQZTNMukN0GgF1keJ3mMgZJm1qI6A4FydWKiAIer+1t6zEHYkEFZ/dVpSSMhX6QpCB+LMxULVXbldWcE=
-    admin-user: AgBYdmNCWw4ai42G50Fl1ydHNzKMTWfcpJGKqNvTaNUxe79EWQY0/fvUi5nWWzLNTOJpNHVgISPIdcW+WZT4Cu7ZPvmMzynEcqDMjaFWkOlbXtCrOQTfIOKEX1vAeGB6NWlLflpzqGykgiaUUXZ7xI7qvHv7ooUfLi/e7LTgZxDfqBC6DFrJ3R0YprS+PUoqHZTfkr15I4dnz2foA1A50XpLMweSqrmqcR1eHUSduqubplr5xIfUtdOhnuhCCe3H6PyjEoicCZ8cBPqbhHCAg2TwDifZrn9efJXkqT0WheZn17p2jPuUeCA+RrtOe8NNXAFm0+1zeowzVJCVCCone0b23SJ1Syre1muiTWEitD1Cs78xAn/2iAUWDUqgolrgV6LgeU8zwwt2013tbzd1ykzJv09tEjwzG2l49bv9+3L2lX18IwQgUGZToJhB9MQt/3z9h0sO6D2WelqLNpCA7GEywSCMIZLhszR9pTUIVPUZRxCQzgun51iySeGWiC1XLfF8WSPcG3YrmLWq5SWZI+xA4vRRHLtOyTSOubYAjF6gx2R/Rd4pMgIU4V/YnqrnlWDpnZz6oNQ6dHDM+vsRSRMQdJ7IJ4hdxvKMPzflvy1GptbqCijG1f/3bV13OWGhyWX/biHCIhcH4rxIQLbfuqs+BeFuWFdOUoSvB2d4HRM4wlEPoQNuCMhbtesfKFxN/uDpcGvhZQ==
+    password: AgCwmVbMGtTjnwKpO52JW7JFhhnyds07aymDrqXb6FZqqzDaRWKHRWH7h2grXhsgOtfcLlA36+4GugxhUUjoJElO/eOI3gM41t6Hk+XjuFBbRpswKvC7dGXpS0ofRZq51bwjZXaCHo9AjOXTovz4Jg7rIKGwg4gY4CV+hcRhlmdGLtKaUglRfguc1K1iRvNAM5yf406fCSFPU3SJm6REBl+3npN+2hBD/CiYx+PYz+Qy297WOtAosXagA7NJi/qtt+lpURuvmNkrCmCg+E/JHysg6lRegbK6wz6rAA+a1z2GE3RcZno1Qx7cfovfVqmEpkRkzyQJrbub+T9iblJaIiqYriEKV98wFq5om+8N5rZBkme5b1U+WaoZyfH9NfNEsas9/tdYlvCE8ESNcuLjSLXwE/fLplUF3DbbLrX+QIe+cyIdcp708VgxUoQAnndvDSCObyWAGyqwaHRhdfuL+UsGQIttT1wyjEmlejoJxE/ttHtQspiAaVB/CTonfuM840jAuQrtnZasDStC5kgfaNwyL8pbV143FWFcQZHTl8K38jSfhOYYC2Z9iLRqieaCZMdNt5hAi7F+BkdYETLnf5FNqRTqdlM5yj63KbDCPH3AuyfO15+lxZ9/sF9z0SQWQZTNMukN0GgF1keJ3mMgZJm1qI6A4FydWKiAIer+1t6zEHYkEFZ/dVpSSMhX6QpCB+LMxULVXbldWcE=
+    user: AgBYdmNCWw4ai42G50Fl1ydHNzKMTWfcpJGKqNvTaNUxe79EWQY0/fvUi5nWWzLNTOJpNHVgISPIdcW+WZT4Cu7ZPvmMzynEcqDMjaFWkOlbXtCrOQTfIOKEX1vAeGB6NWlLflpzqGykgiaUUXZ7xI7qvHv7ooUfLi/e7LTgZxDfqBC6DFrJ3R0YprS+PUoqHZTfkr15I4dnz2foA1A50XpLMweSqrmqcR1eHUSduqubplr5xIfUtdOhnuhCCe3H6PyjEoicCZ8cBPqbhHCAg2TwDifZrn9efJXkqT0WheZn17p2jPuUeCA+RrtOe8NNXAFm0+1zeowzVJCVCCone0b23SJ1Syre1muiTWEitD1Cs78xAn/2iAUWDUqgolrgV6LgeU8zwwt2013tbzd1ykzJv09tEjwzG2l49bv9+3L2lX18IwQgUGZToJhB9MQt/3z9h0sO6D2WelqLNpCA7GEywSCMIZLhszR9pTUIVPUZRxCQzgun51iySeGWiC1XLfF8WSPcG3YrmLWq5SWZI+xA4vRRHLtOyTSOubYAjF6gx2R/Rd4pMgIU4V/YnqrnlWDpnZz6oNQ6dHDM+vsRSRMQdJ7IJ4hdxvKMPzflvy1GptbqCijG1f/3bV13OWGhyWX/biHCIhcH4rxIQLbfuqs+BeFuWFdOUoSvB2d4HRM4wlEPoQNuCMhbtesfKFxN/uDpcGvhZQ==
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: ba6ba20b70c5359e9bbc57106364a6e820c8ac76af9082f026928eaa095fadba
+    configMapHash: 0f06e30052673dfa173bc47af736d1be3005399c0753729b3e1c832267706579
   name: prometheus
   namespace: monitoring
 spec:
