@@ -15,3 +15,4 @@ grafana:
     existingSecret: grafana-secret
     userKey: admin-user
     passwordKey: admin-password
+
