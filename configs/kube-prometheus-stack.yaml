@@ -11,3 +11,7 @@ grafana:
     - secretName: tls-grafana-cert
       hosts:
       - grafana.services.mkz.me
+  admin:
+    existingSecret: grafana-secret
+    userKey: admin-user
+    passwordKey: admin-password
