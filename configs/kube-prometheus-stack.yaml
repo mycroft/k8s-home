@@ -6,6 +6,7 @@ grafana:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
       traefik.ingress.kubernetes.io/redirect-entry-point: "https"
       traefik.ingress.kubernetes.io/redirect-permanent: "true"
+
     hosts: ["grafana.services.mkz.me"]
     tls:
     - secretName: tls-grafana-cert
@@ -13,6 +14,5 @@ grafana:
       - grafana.services.mkz.me
   admin:
     existingSecret: grafana-secret
-    userKey: admin-user
-    passwordKey: admin-password
-
+    userKey: user
+    passwordKey: password
