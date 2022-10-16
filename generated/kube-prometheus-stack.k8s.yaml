@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 data:
-  kube-prometheus-stack.yaml: |
+  kube-prometheus-stack.yaml: |+
     grafana:
       ingress:
         enabled: true
@@ -33,6 +33,7 @@ data:
         existingSecret: grafana-secret
         userKey: admin-user
         passwordKey: admin-password
+
 metadata:
   name: kube-prometheus-stack-cm-c8292180
   namespace: monitoring
@@ -51,7 +52,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 1795fb8e4df59f0074bda1842f4ab97b0f61671c9c8c4e37a393c248d6e6ac6e
+    configMapHash: ba6ba20b70c5359e9bbc57106364a6e820c8ac76af9082f026928eaa095fadba
   name: prometheus
   namespace: monitoring
 spec:
