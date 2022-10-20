@@ -58,6 +58,8 @@ See https://github.com/bitnami-labs/sealed-secrets:
 # (note use of `--dry-run` - this is just a local file!)
 echo -n bar | kubectl create secret generic mysecret --dry-run=client --from-file=foo=/dev/stdin -o json >mysecret.json
 
+# Warning! Do not forget the namespace & the secret name. By default SealedSecret is very strict about those.
+
 # This is the important bit:
 # (note default format is json!)
 kubeseal <mysecret.json >mysealedsecret.json
