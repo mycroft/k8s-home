@@ -31,7 +31,7 @@ func NewTrivyChart(scope constructs.Construct) cdk8s.Chart {
 		"aqua",
 		"trivy-operator",
 		"trivy-operator",
-		"v0.32.1",
+		"0.4.0",
 		map[string]string{
 			"trivy.ignoreUnfixed": "true",
 		},
