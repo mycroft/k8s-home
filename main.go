@@ -11,6 +11,7 @@ func main() {
 	apps.NewCertManagerChart(app)
 	apps.NewKubePrometheusStackChart(app)
 	apps.NewSealedSecretsChart(app)
+	apps.NewTrivyChart(app)
 
 	apps.NewHelloKubernetesChart(app)
 	apps.NewWhatIsMyIpChart(app)
