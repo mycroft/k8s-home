@@ -26,6 +26,7 @@ func NewFluxCDChart(scope constructs.Construct) cdk8s.Chart {
 				Labels: &map[string]*string{
 					"app.kubernetes.io/part-of":   jsii.String("flux"),
 					"app.kubernetes.io/component": jsii.String("monitoring"),
+					"release":                     jsii.String("prometheus-community"),
 				},
 			},
 			Spec: &podmonitor.PodMonitorSpec{
