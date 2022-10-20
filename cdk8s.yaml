@@ -6,3 +6,6 @@ imports:
   - https://github.com/fluxcd/helm-controller/releases/download/v0.25.0/helm-controller.crds.yaml
   - https://raw.githubusercontent.com/cert-manager/cert-manager/master/deploy/crds/crd-clusterissuers.yaml
   - https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/main/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
+  # see https://github.com/cdk8s-team/cdk8s/issues/932
+  # - podmonitor:=https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-41.3.1/charts/kube-prometheus-stack/crds/crd-podmonitors.yaml
+  - podmonitor:=crds/crd-podmonitors.yaml
