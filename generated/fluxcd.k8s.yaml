@@ -4,6 +4,7 @@ metadata:
   labels:
     app.kubernetes.io/component: monitoring
     app.kubernetes.io/part-of: flux
+    release: prometheus-community
   name: flux-system
   namespace: flux-system
 spec:
