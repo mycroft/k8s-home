@@ -14,6 +14,7 @@ flux bootstrap git \
   --path=generated/
 ```
 
+
 ## Notes
 
 ### Force a HelmRelease reconcile after an undetected change
@@ -23,6 +24,25 @@ Add/edit the annotation:
 ```sh
 kubectl annotate --overwrite -n monitoring helmrelease/prometheus reconcile.fluxcd.io/requestedAt="$(date +%s)"
 ```
+
+
+### On HelmRelease 'install retries exhausted' 
+
+After fixing the issue, suspend & resume the installation:
+
+```sh
+> flux suspend hr -n kubernetes-dashboard kubernetes-dashboard
+► suspending helmrelease kubernetes-dashboard in kubernetes-dashboard namespace
+✔ helmrelease suspended
+
+> flux resume hr -n kubernetes-dashboard kubernetes-dashboard
+► resuming helmrelease kubernetes-dashboard in kubernetes-dashboard namespace
+✔ helmrelease resumed
+◎ waiting for HelmRelease reconciliation
+✔ HelmRelease reconciliation completed
+✔ applied revision 5.11.0
+```
+
 
 ### Install whatismyip
 
@@ -39,6 +59,8 @@ metadata:
   namespace: kube-system
 spec:
   valuesContent: |-
+    additionalArguments:
+      - "--serverstransport.insecureskipverify=true"
     service:
       spec:
         externalTrafficPolicy: Local
@@ -48,6 +70,9 @@ spec:
   externalTrafficPolicy: Local
   internalTrafficPolicy: Cluster
 ```
+
+See https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml for more values.
+
 
 ### Creating a secret using Sealed-Secrets
 
