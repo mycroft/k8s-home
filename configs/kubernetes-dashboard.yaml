@@ -1,0 +1,20 @@
+extraArgs:
+  - --enable-skip-login
+  - --enable-insecure-login
+  - --system-banner="Welcome to Kubernetes"
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: true
+
+  hosts:
+    - kubernetes-dashboard.services.mkz.me
+
+  tls:
+    - secretName: kubernetes-dashboard-tls
+      hosts:
+        - kubernetes-dashboard.services.mkz.me

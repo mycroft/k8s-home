@@ -13,6 +13,7 @@ func main() {
 	apps.NewSealedSecretsChart(app)
 	apps.NewTrivyChart(app)
 	apps.NewFluxCDChart(app)
+	apps.NewKubernetesDashboardChart(app)
 
 	apps.NewHelloKubernetesChart(app)
 	apps.NewWhatIsMyIpChart(app)
