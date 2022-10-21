@@ -23,6 +23,7 @@ ingress:
     - host: dex.services.mkz.me
       paths:
         - path: /
+          pathType: Prefix
 
   tls:
     - hosts:
