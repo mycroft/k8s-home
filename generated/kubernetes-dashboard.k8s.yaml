@@ -16,6 +16,8 @@ apiVersion: v1
 kind: ConfigMap
 data:
   values.yaml: |
+    # See https://github.com/kubernetes/dashboard/blob/master/charts/helm-chart/kubernetes-dashboard/values.yaml
+
     extraArgs:
       - --enable-skip-login
       - --enable-insecure-login
@@ -27,7 +29,7 @@ data:
         kubernetes.io/ingress.class: traefik
         cert-manager.io/cluster-issuer: letsencrypt-prod
         traefik.ingress.kubernetes.io/redirect-entry-point: https
-        traefik.ingress.kubernetes.io/redirect-permanent: true
+        traefik.ingress.kubernetes.io/redirect-permanent: "true"
 
       hosts:
         - kubernetes-dashboard.services.mkz.me
@@ -44,7 +46,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 2e2409588ba9c83dc4deb5a2f0570b706009a55aa8a36538ca49299e6fffeb5b
+    configMapHash: dbf09072bab6cc5bf1b55f6da63aadb5bba242da6e1a653e1e31b43e5962372d
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 spec:
