@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 data:
-  kubernetes-dashboard.yaml: |
+  values.yaml: |
     extraArgs:
       - --enable-skip-login
       - --enable-insecure-login
@@ -64,4 +64,4 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: kubernetes-dashboard-cm-c8d3c5b1
-      valuesKey: kubernetes_dashboard.yaml
+      valuesKey: values.yaml
