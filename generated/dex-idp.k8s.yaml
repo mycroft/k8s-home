@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dex-idp
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: dex
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://charts.dexidp.io
+---
+apiVersion: v1
+kind: ConfigMap
+data:
+  values.yaml: |
+    config:
+      # Set it to a valid URL
+      issuer: https://dex.services.mkz.me
+
+      # See https://dexidp.io/docs/storage/ for more options
+      storage:
+        type: memory
+
+      # Enable at least one connector
+      # See https://dexidp.io/docs/connectors/ for more options
+      enablePasswordDB: true
+
+    ingress:
+      enabled: true
+
+      annotations:
+        kubernetes.io/ingress.class: "traefik"
+        cert-manager.io/cluster-issuer: "letsencrypt-prod"
+        traefik.ingress.kubernetes.io/redirect-entry-point: "https"
+        traefik.ingress.kubernetes.io/redirect-permanent: "true"
+
+      hosts:
+        - host: dex.services.mkz.me
+          paths:
+            - path: /
+
+      tls:
+        - hosts:
+            - dex.services.mkz.me
+          secretName: dex-cert-tls
+
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: prometheus
+metadata:
+  name: dex-idp-helm-values-c8c7e322
+  namespace: dex-idp
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: 28d79ca20f87b35aeae4f4b3ecd1913fd52f11e1503b868a891a9ee91547bc1d
+  name: dex
+  namespace: dex-idp
+spec:
+  chart:
+    spec:
+      chart: dex
+      sourceRef:
+        kind: HelmRepository
+        name: dex
+        namespace: flux-system
+      version: 0.12.1
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: dex-idp-helm-values-c8c7e322
+      valuesKey: values.yaml
