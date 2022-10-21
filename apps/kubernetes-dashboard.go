@@ -40,7 +40,7 @@ func NewKubernetesDashboardChart(scope constructs.Construct) cdk8s.Chart {
 				Namespace: jsii.String(namespace),
 			},
 			Data: &map[string]*string{
-				"kubernetes-dashboard.yaml": jsii.String(string(contents)),
+				"values.yaml": jsii.String(string(contents)),
 			},
 		},
 	)
@@ -56,7 +56,7 @@ func NewKubernetesDashboardChart(scope constructs.Construct) cdk8s.Chart {
 		[]k8s_helpers.HelmReleaseConfigMap{
 			{
 				Name:    *cm.Name(),
-				KeyName: "kubernetes_dashboard.yaml",
+				KeyName: "values.yaml",
 			},
 		},
 		map[string]*string{
