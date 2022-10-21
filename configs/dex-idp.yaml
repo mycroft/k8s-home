@@ -10,6 +10,11 @@ config:
   # See https://dexidp.io/docs/connectors/ for more options
   enablePasswordDB: true
 
+# The configuration is now in the secret
+configSecret:
+  create: false
+  name: "dex-config"
+
 ingress:
   enabled: true
 
