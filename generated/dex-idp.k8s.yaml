@@ -41,6 +41,7 @@ data:
         - host: dex.services.mkz.me
           paths:
             - path: /
+              pathType: Prefix
 
       tls:
         - hosts:
@@ -59,7 +60,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 28d79ca20f87b35aeae4f4b3ecd1913fd52f11e1503b868a891a9ee91547bc1d
+    configMapHash: 6938086821882996cbf981504870280f461c387d4d17bb2a30fbeadadf564166
   name: dex
   namespace: dex-idp
 spec:
