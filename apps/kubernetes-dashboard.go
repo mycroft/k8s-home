@@ -64,5 +64,39 @@ func NewKubernetesDashboardChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
+	// Create a Service Account & ClusterRoleBinding
+	// https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
+	k8s.NewKubeServiceAccount(
+		chart,
+		jsii.String("sa"),
+		&k8s.KubeServiceAccountProps{
+			Metadata: &k8s.ObjectMeta{
+				Name:      jsii.String("admin"),
+				Namespace: jsii.String(namespace),
+			},
+		},
+	)
+
+	k8s.NewKubeClusterRoleBinding(
+		chart,
+		jsii.String("cluster-role-binding-admin"),
+		&k8s.KubeClusterRoleBindingProps{
+			Metadata: &k8s.ObjectMeta{
+				Name: jsii.String("admin"),
+			},
+			RoleRef: &k8s.RoleRef{
+				ApiGroup: jsii.String("rbac.authorization.k8s.io"),
+				Kind:     jsii.String("ClusterRole"),
+				Name:     jsii.String("cluster-admin"),
+			},
+			Subjects: &[]*k8s.Subject{
+				{
+					Kind:      jsii.String("ServiceAccount"),
+					Name:      jsii.String("admin"),
+					Namespace: jsii.String(namespace),
+				},
+			},
+		},
+	)
 	return chart
 }
