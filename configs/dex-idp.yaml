@@ -1,0 +1,35 @@
+config:
+  # Set it to a valid URL
+  issuer: https://dex.services.mkz.me
+
+  # See https://dexidp.io/docs/storage/ for more options
+  storage:
+    type: memory
+
+  # Enable at least one connector
+  # See https://dexidp.io/docs/connectors/ for more options
+  enablePasswordDB: true
+
+ingress:
+  enabled: true
+
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    traefik.ingress.kubernetes.io/redirect-entry-point: "https"
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+
+  hosts:
+    - host: dex.services.mkz.me
+      paths:
+        - path: /
+
+  tls:
+    - hosts:
+        - dex.services.mkz.me
+      secretName: dex-cert-tls
+
+serviceMonitor:
+  enabled: true
+  labels:
+    release: prometheus
