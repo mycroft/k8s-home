@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubernetes-dashboard
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: kubernetes-dashboard
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://kubernetes.github.io/dashboard/
+---
+apiVersion: v1
+kind: ConfigMap
+data:
+  kubernetes-dashboard.yaml: |
+    extraArgs:
+      - --enable-skip-login
+      - --enable-insecure-login
+      - --system-banner="Welcome to Kubernetes"
+
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: traefik
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        traefik.ingress.kubernetes.io/redirect-entry-point: https
+        traefik.ingress.kubernetes.io/redirect-permanent: true
+
+      hosts:
+        - kubernetes-dashboard.services.mkz.me
+
+      tls:
+        - secretName: kubernetes-dashboard-tls
+          hosts:
+            - kubernetes-dashboard.services.mkz.me
+metadata:
+  name: kubernetes-dashboard-cm-c8d3c5b1
+  namespace: kubernetes-dashboard
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: 2e2409588ba9c83dc4deb5a2f0570b706009a55aa8a36538ca49299e6fffeb5b
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+spec:
+  chart:
+    spec:
+      chart: kubernetes-dashboard
+      sourceRef:
+        kind: HelmRepository
+        name: kubernetes-dashboard
+        namespace: flux-system
+      version: 5.11.0
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: kubernetes-dashboard-cm-c8d3c5b1
+      valuesKey: kubernetes_dashboard.yaml
