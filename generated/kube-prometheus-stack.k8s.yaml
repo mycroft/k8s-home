@@ -12,10 +12,20 @@ spec:
   interval: 1m0s
   url: https://prometheus-community.github.io/helm-charts
 ---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: grafana-secret
+  namespace: monitoring
+spec:
+  encryptedData:
+    password: AgA8Gj167Qfm8VlG1VkeU86rMF2LIotZmXjTHBw+t3bTY3zUjjIDJaJQKqYySTekDpGgA/+vR7erScMbVreyD+5rDYDe5XxOvrpK4Wa3C0QZ1GXhT9jg9T9DopQ7EwJQ7HUwmIOop3PIz7wa7SACabdDUioaxxhpI/gAAYWdA7jl25fXOm7AvdtxjmHaxzxY6AjrZ4VhJqVm8rcsHVF0J3Xw83HqproIM7JBg/oqavRrmLev6nbwUEE15sKXstfGqrXkhOeb/Gw8e8Ic+DzC1OuhfZChgohyLC/FtLx7TAymtb85DpXkxW3MaRU0bvna53dfA1tchTsi4SK/UMP/xQZgZemStTntoycEZ6XvKbLPjMdjuBza6ThZOfCEVSMBjqKKuaWNh3VnjN5s//vJxHw/WG4jeHwfntgo8dp1us69IQ/HV76tgKUABBBPoTGRtaN+jUSE4KTONcvIqtzc/JgM1EAxkYWoWXvLyNg3UOjPD4Jjr6xxxFvc8DC8HK85Xy91s8Yd1umcjYZ08VrkfSY3OVoS54S+dCy365cu5bZ4klAphs24DBj7Kmd16VQduqcIPwUSdRAUjuQg2qyPg+W78lysKZE/Gs8H203C4x1yE0K2tN1zVW4KQeGH276q+y9RWYDVQw9Op7vzZGMNkYjBH947EPt6uD/UHx5hdLsjLDvY5OMZhQaZ35dEyD9RxqM1ymjeUHEloUVp1dHNJ2nU
+    user: AgBYdmNCWw4ai42G50Fl1ydHNzKMTWfcpJGKqNvTaNUxe79EWQY0/fvUi5nWWzLNTOJpNHVgISPIdcW+WZT4Cu7ZPvmMzynEcqDMjaFWkOlbXtCrOQTfIOKEX1vAeGB6NWlLflpzqGykgiaUUXZ7xI7qvHv7ooUfLi/e7LTgZxDfqBC6DFrJ3R0YprS+PUoqHZTfkr15I4dnz2foA1A50XpLMweSqrmqcR1eHUSduqubplr5xIfUtdOhnuhCCe3H6PyjEoicCZ8cBPqbhHCAg2TwDifZrn9efJXkqT0WheZn17p2jPuUeCA+RrtOe8NNXAFm0+1zeowzVJCVCCone0b23SJ1Syre1muiTWEitD1Cs78xAn/2iAUWDUqgolrgV6LgeU8zwwt2013tbzd1ykzJv09tEjwzG2l49bv9+3L2lX18IwQgUGZToJhB9MQt/3z9h0sO6D2WelqLNpCA7GEywSCMIZLhszR9pTUIVPUZRxCQzgun51iySeGWiC1XLfF8WSPcG3YrmLWq5SWZI+xA4vRRHLtOyTSOubYAjF6gx2R/Rd4pMgIU4V/YnqrnlWDpnZz6oNQ6dHDM+vsRSRMQdJ7IJ4hdxvKMPzflvy1GptbqCijG1f/3bV13OWGhyWX/biHCIhcH4rxIQLbfuqs+BeFuWFdOUoSvB2d4HRM4wlEPoQNuCMhbtesfKFxN/uDpcGvhZQ==
+---
 apiVersion: v1
 kind: ConfigMap
 data:
-  kube-prometheus-stack.yaml: |
+  values.yaml: |
     grafana:
       ingress:
         enabled: true
@@ -35,18 +45,8 @@ data:
         userKey: user
         passwordKey: password
 metadata:
-  name: kube-prometheus-stack-cm-c8292180
+  name: kube-prometheus-stack-helm-values-c8217b7d
   namespace: monitoring
----
-apiVersion: bitnami.com/v1alpha1
-kind: SealedSecret
-metadata:
-  name: grafana-secret
-  namespace: monitoring
-spec:
-  encryptedData:
-    password: AgA8Gj167Qfm8VlG1VkeU86rMF2LIotZmXjTHBw+t3bTY3zUjjIDJaJQKqYySTekDpGgA/+vR7erScMbVreyD+5rDYDe5XxOvrpK4Wa3C0QZ1GXhT9jg9T9DopQ7EwJQ7HUwmIOop3PIz7wa7SACabdDUioaxxhpI/gAAYWdA7jl25fXOm7AvdtxjmHaxzxY6AjrZ4VhJqVm8rcsHVF0J3Xw83HqproIM7JBg/oqavRrmLev6nbwUEE15sKXstfGqrXkhOeb/Gw8e8Ic+DzC1OuhfZChgohyLC/FtLx7TAymtb85DpXkxW3MaRU0bvna53dfA1tchTsi4SK/UMP/xQZgZemStTntoycEZ6XvKbLPjMdjuBza6ThZOfCEVSMBjqKKuaWNh3VnjN5s//vJxHw/WG4jeHwfntgo8dp1us69IQ/HV76tgKUABBBPoTGRtaN+jUSE4KTONcvIqtzc/JgM1EAxkYWoWXvLyNg3UOjPD4Jjr6xxxFvc8DC8HK85Xy91s8Yd1umcjYZ08VrkfSY3OVoS54S+dCy365cu5bZ4klAphs24DBj7Kmd16VQduqcIPwUSdRAUjuQg2qyPg+W78lysKZE/Gs8H203C4x1yE0K2tN1zVW4KQeGH276q+y9RWYDVQw9Op7vzZGMNkYjBH947EPt6uD/UHx5hdLsjLDvY5OMZhQaZ35dEyD9RxqM1ymjeUHEloUVp1dHNJ2nU
-    user: AgBYdmNCWw4ai42G50Fl1ydHNzKMTWfcpJGKqNvTaNUxe79EWQY0/fvUi5nWWzLNTOJpNHVgISPIdcW+WZT4Cu7ZPvmMzynEcqDMjaFWkOlbXtCrOQTfIOKEX1vAeGB6NWlLflpzqGykgiaUUXZ7xI7qvHv7ooUfLi/e7LTgZxDfqBC6DFrJ3R0YprS+PUoqHZTfkr15I4dnz2foA1A50XpLMweSqrmqcR1eHUSduqubplr5xIfUtdOhnuhCCe3H6PyjEoicCZ8cBPqbhHCAg2TwDifZrn9efJXkqT0WheZn17p2jPuUeCA+RrtOe8NNXAFm0+1zeowzVJCVCCone0b23SJ1Syre1muiTWEitD1Cs78xAn/2iAUWDUqgolrgV6LgeU8zwwt2013tbzd1ykzJv09tEjwzG2l49bv9+3L2lX18IwQgUGZToJhB9MQt/3z9h0sO6D2WelqLNpCA7GEywSCMIZLhszR9pTUIVPUZRxCQzgun51iySeGWiC1XLfF8WSPcG3YrmLWq5SWZI+xA4vRRHLtOyTSOubYAjF6gx2R/Rd4pMgIU4V/YnqrnlWDpnZz6oNQ6dHDM+vsRSRMQdJ7IJ4hdxvKMPzflvy1GptbqCijG1f/3bV13OWGhyWX/biHCIhcH4rxIQLbfuqs+BeFuWFdOUoSvB2d4HRM4wlEPoQNuCMhbtesfKFxN/uDpcGvhZQ==
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
@@ -71,5 +71,5 @@ spec:
   values: {}
   valuesFrom:
     - kind: ConfigMap
-      name: kube-prometheus-stack-cm-c8292180
-      valuesKey: kube-prometheus-stack.yaml
+      name: kube-prometheus-stack-helm-values-c8217b7d
+      valuesKey: values.yaml
