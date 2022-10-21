@@ -14,6 +14,21 @@ flux bootstrap git \
   --path=generated/
 ```
 
+## Services
+
+### Kubernetes-Dashboard
+
+Generate a login and use it on https://kubernetes-dashboard.services.mkz.me/
+
+```sh
+kubectl -n kubernetes-dashboard create token admin
+```
+
+You need a recent kubectl binary to be able to do this!
+
+This is fully described on https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
+
+See https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/README.md#login-view
 
 ## Notes
 
