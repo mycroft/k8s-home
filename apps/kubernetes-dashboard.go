@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"os"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
@@ -27,24 +25,6 @@ func NewKubernetesDashboardChart(scope constructs.Construct) cdk8s.Chart {
 		"https://kubernetes.github.io/dashboard/",
 	)
 
-	contents, err := os.ReadFile("configs/kubernetes-dashboard.yaml")
-	if err != nil {
-		panic(err)
-	}
-
-	cm := k8s.NewKubeConfigMap(
-		chart,
-		jsii.String("cm"),
-		&k8s.KubeConfigMapProps{
-			Metadata: &k8s.ObjectMeta{
-				Namespace: jsii.String(namespace),
-			},
-			Data: &map[string]*string{
-				"values.yaml": jsii.String(string(contents)),
-			},
-		},
-	)
-
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
@@ -54,14 +34,13 @@ func NewKubernetesDashboardChart(scope constructs.Construct) cdk8s.Chart {
 		"5.11.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
-			{
-				Name:    *cm.Name(),
-				KeyName: "values.yaml",
-			},
+			k8s_helpers.CreateHelmValuesConfig(
+				chart,
+				namespace,
+				"kubernetes-dashboard.yaml",
+			),
 		},
-		map[string]*string{
-			"configMapHash": jsii.String(k8s_helpers.ComputeConfigMapHash(cm)),
-		},
+		nil,
 	)
 
 	// Create a Service Account & ClusterRoleBinding

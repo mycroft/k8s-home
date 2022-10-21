@@ -2,8 +2,11 @@ package k8s_helpers
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"git.mkz.me/mycroft/k8s-home/imports/helmtoolkitfluxcdio"
+	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/sourcetoolkitfluxcdio"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -31,8 +34,9 @@ func CreateHelmRepository(chart constructs.Construct, name, url string) sourceto
 }
 
 type HelmReleaseConfigMap struct {
-	Name    string // ConfigMap name
-	KeyName string // key name
+	Name          string // ConfigMap name
+	KeyName       string // key name
+	ConfigMapHash string // The Hash of the configmap content
 }
 
 // CreateHelmRelease creates a helm release in the given namespace for the given repo/name and version
@@ -54,6 +58,10 @@ func CreateHelmRelease(
 			Name:      jsii.String(configMap.Name),
 			ValuesKey: jsii.String(configMap.KeyName),
 		})
+		if annotations == nil {
+			annotations = map[string]*string{}
+		}
+		annotations["configMapHash"] = jsii.String(configMap.ConfigMapHash)
 	}
 
 	return helmtoolkitfluxcdio.NewHelmRelease(
@@ -87,4 +95,34 @@ func CreateHelmRelease(
 			},
 		},
 	)
+}
+
+func CreateHelmValuesConfig(
+	chart constructs.Construct,
+	namespace, filename string,
+) HelmReleaseConfigMap {
+	filepath := filepath.Join("configs", filename)
+	contents, err := os.ReadFile(filepath)
+	if err != nil {
+		panic(err)
+	}
+
+	cm := k8s.NewKubeConfigMap(
+		chart,
+		jsii.String("helm-values"),
+		&k8s.KubeConfigMapProps{
+			Metadata: &k8s.ObjectMeta{
+				Namespace: jsii.String(namespace),
+			},
+			Data: &map[string]*string{
+				"values.yaml": jsii.String(string(contents)),
+			},
+		},
+	)
+
+	return HelmReleaseConfigMap{
+		Name:          *cm.Name(),
+		KeyName:       "values.yaml",
+		ConfigMapHash: ComputeConfigMapHash(cm),
+	}
 }
