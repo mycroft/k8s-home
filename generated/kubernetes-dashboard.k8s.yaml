@@ -19,8 +19,6 @@ data:
     # See https://github.com/kubernetes/dashboard/blob/master/charts/helm-chart/kubernetes-dashboard/values.yaml
 
     extraArgs:
-      - --enable-skip-login
-      - --enable-insecure-login
       - --system-banner="Welcome to Kubernetes"
 
     ingress:
@@ -46,7 +44,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: dbf09072bab6cc5bf1b55f6da63aadb5bba242da6e1a653e1e31b43e5962372d
+    configMapHash: 1f818863e8acb599f00fdaeec22b6c2bf2aecf929dedc85e86e6a58854a1924b
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 spec:
