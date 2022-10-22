@@ -1,2 +1,7 @@
 server:
   logLevel: "debug"
+  logFormat: "standard"
+
+injector:
+  logLevel: "debug"
+  logFormat: "standard"
