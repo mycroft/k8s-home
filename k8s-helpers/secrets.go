@@ -45,7 +45,6 @@ func CreateExternalSecret(chart constructs.Construct, namespace, name string) {
 		&externalsecrets_externalsecretsio.ExternalSecretV1Beta1Props{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Namespace: jsii.String(namespace),
-				Name:      jsii.String(name),
 			},
 			Spec: &externalsecrets_externalsecretsio.ExternalSecretV1Beta1Spec{
 				DataFrom: &[]*externalsecrets_externalsecretsio.ExternalSecretV1Beta1SpecDataFrom{
