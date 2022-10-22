@@ -32,7 +32,13 @@ func NewVaultChart(scope constructs.Construct) cdk8s.Chart {
 		"vault",     // release name
 		"0.22.0",
 		map[string]string{},
-		[]k8s_helpers.HelmReleaseConfigMap{},
+		[]k8s_helpers.HelmReleaseConfigMap{
+			k8s_helpers.CreateHelmValuesConfig(
+				chart,
+				namespace,
+				"vault.yaml",
+			),
+		},
 		nil,
 	)
 
