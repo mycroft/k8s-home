@@ -15,14 +15,34 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 data:
-  values.yaml: |-
+  values.yaml: |
+    # https://github.com/hashicorp/vault-helm/blob/main/values.yaml
+
     server:
       logLevel: "debug"
       logFormat: "standard"
+      ingress:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: traefik
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          traefik.ingress.kubernetes.io/redirect-entry-point: https
+          traefik.ingress.kubernetes.io/redirect-permanent: "true"
+
+        hosts:
+          - vault.services.mkz.me
+
+        tls:
+          - secretName: vault-tls
+            hosts:
+              - vault.services.mkz.me
 
     injector:
       logLevel: "debug"
       logFormat: "standard"
+
+    ui:
+      enabled: true
 metadata:
   name: vault-helm-values-c8b20a1d
   namespace: vault
@@ -31,7 +51,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 589ff44eb37cfb5cc37deed668d4dc24dc782a17e65ad62a16f4c21f7e6e986c
+    configMapHash: f0cc8ebace327679422e09c788a6e24637323e2433af154b81684b7dc94e47f5
   name: vault
   namespace: vault
 spec:
