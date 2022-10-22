@@ -3,6 +3,6 @@
 # # vault policy write external-secrets ./external-secrets.vault.hcl
 # Success! Uploaded policy: external-secrets
 
-path "secret/namespaces/*" {
+path "secret/data/namespaces/*" {
   capabilities = ["create", "read", "update", "patch", "delete", "list"]
 }

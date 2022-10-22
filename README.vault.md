@@ -59,7 +59,7 @@ Success! Data written to: auth/kubernetes/config
 
 ```sh
 > vault write auth/kubernetes/role/external-secrets \
-    bound_service_account_names=external-secrets-kubernetes-external-secrets \
+    bound_service_account_names=external-secrets \
     bound_service_account_namespaces=external-secrets \
     policies=external-secrets \
     ttl=60m
