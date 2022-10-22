@@ -30,7 +30,8 @@ data:
           traefik.ingress.kubernetes.io/redirect-permanent: "true"
 
         hosts:
-          - vault.services.mkz.me
+          - host: vault.services.mkz.me
+            paths: []
 
         tls:
           - secretName: vault-tls
@@ -51,7 +52,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: f0cc8ebace327679422e09c788a6e24637323e2433af154b81684b7dc94e47f5
+    configMapHash: 4be04a8d0fcac4b876f89f85933c90b229f3eea56ede470fe02d67e26f416275
   name: vault
   namespace: vault
 spec:
