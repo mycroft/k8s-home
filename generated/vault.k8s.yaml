@@ -18,6 +18,11 @@ data:
   values.yaml: |-
     server:
       logLevel: "debug"
+      logFormat: "standard"
+
+    injector:
+      logLevel: "debug"
+      logFormat: "standard"
 metadata:
   name: vault-helm-values-c8b20a1d
   namespace: vault
@@ -26,7 +31,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: fbab266e3da9b1526a5bf020d8015a22466aa4a5161e0b8c0dad9158c5712c2c
+    configMapHash: 589ff44eb37cfb5cc37deed668d4dc24dc782a17e65ad62a16f4c21f7e6e986c
   name: vault
   namespace: vault
 spec:
