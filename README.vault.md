@@ -4,8 +4,13 @@
 
 - https://developer.hashicorp.com/vault/docs/platform/k8s/helm
 - https://developer.hashicorp.com/vault/docs/platform/k8s/helm/run
+- Auth with Kubernetes: https://developer.hashicorp.com/vault/docs/auth/kubernetes
+- kv put: https://developer.hashicorp.com/vault/docs/commands/kv/put
 - Policies: https://developer.hashicorp.com/vault/docs/concepts/policies
 - Policies: https://developer.hashicorp.com/vault/docs/commands/policy
+
+- External-Secrets: https://external-secrets.io/v0.6.0/provider/hashicorp-vault/
+- ES' SecretStore: https://external-secrets.io/v0.6.0/api/secretstore/
 
 ## Setup: Init, unseal
 
@@ -64,5 +69,13 @@ Success! Data written to: auth/kubernetes/config
     policies=external-secrets \
     ttl=60m
 Success! Data written to: auth/kubernetes/role/external-secrets
+
+```
+
+
+## Write secrets
+
+```sh
+> vault kv put secret/namespaces/external-secrets/testaroo username="static-user" password="static-password" field="new-field"
 
 ```
