@@ -12,7 +12,8 @@ server:
       traefik.ingress.kubernetes.io/redirect-permanent: "true"
 
     hosts:
-      - vault.services.mkz.me
+      - host: vault.services.mkz.me
+        paths: []
 
     tls:
       - secretName: vault-tls
