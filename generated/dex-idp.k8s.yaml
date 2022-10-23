@@ -35,7 +35,7 @@ data:
     # https://github.com/dexidp/helm-charts/blob/master/charts/dex/values.yaml
 
     # The secrets to read & to put in dex pods
-    env:
+    envVars:
       - name: "GITEA_CLIENT_ID"
         valueFrom:
           secretKeyRef:
@@ -109,7 +109,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 9f01bec5c947cf283f12c9394e2b795f63ea15db994a3bd73f1ddae6baca02d6
+    configMapHash: d35dbdbd8d937c24c8c5fe5f09a2e211326f06f782517b37d8cb2c5ccd9f944b
   name: dex
   namespace: dex-idp
 spec:
