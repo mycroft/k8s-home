@@ -1,0 +1,29 @@
+enablePasswordDB: true
+
+issuer: https://dex.services.mkz.me
+
+connectors:
+- type: gitea
+  id: gitea
+  name: Gitea
+  config:
+    clientID: $GITEA_CLIENT_ID
+    clientSecret: $GITEA_CLIENT_SECRET
+    redirectURI: https://dex.services.mkz.me/dex/callback
+    baseURL: $GITEA_BASEURL
+
+storage:
+  type: memory
+
+web:
+  http: 0.0.0.0:5556
+
+telemetry:
+  http: 0.0.0.0:5558
+
+staticPasswords:
+- email: "{{ .Env.STATIC_ADMIN_EMAIL }}"
+  # bcrypt hash of the string "password": $(echo password | htpasswd -BinC 10 admin | cut -d: -f2)
+  hash: "{{ .Env.STATIC_ADMIN_HASH }}"
+  username: "{{ .Env.STATIC_ADMIN_USERNAME }}"
+  userID: "{{ .Env.STATIC_ADMIN_UUID }}"

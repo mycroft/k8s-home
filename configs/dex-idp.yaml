@@ -1,14 +1,35 @@
-config:
-  # Set it to a valid URL
-  issuer: https://dex.services.mkz.me
+# https://github.com/dexidp/helm-charts/blob/master/charts/dex/values.yaml
 
-  # See https://dexidp.io/docs/storage/ for more options
-  storage:
-    type: memory
-
-  # Enable at least one connector
-  # See https://dexidp.io/docs/connectors/ for more options
-  enablePasswordDB: true
+# The secrets to read & to put in dex pods
+envFrom:
+  - name: GITEA_CLIENT_ID
+    valueFrom:
+      secretKeyRef: secrets/namespaces/dex-idp/gitea
+      key: client_id
+  - name: GITEA_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef: secrets/namespaces/dex-idp/gitea
+      key: client_secret
+  - name: GITEA_BASEURL
+    valueFrom:
+      secretKeyRef: secrets/namespaces/dex-idp/gitea
+      key: base_url
+  - name: STATIC_ADMIN_EMAIL
+    valueFrom:
+      secretKeyRef: secrets/namespaces/dex-idp/static-admin
+      key: email
+  - name: STATIC_ADMIN_HASH
+    valueFrom:
+      secretKeyRef: secrets/namespaces/dex-idp/static-admin
+      key: hash
+  - name: STATIC_ADMIN_USERNAME
+    valueFrom:
+      secretKeyRef: secrets/namespaces/dex-idp/static-admin
+      key: username
+  - name: STATIC_ADMIN_UUID
+    valueFrom:
+      secretKeyRef: secrets/namespaces/dex-idp/static-admin
+      key: user_id
 
 # The configuration is now in the secret
 configSecret:

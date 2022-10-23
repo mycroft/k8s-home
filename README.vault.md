@@ -42,6 +42,9 @@ Success! Enabled the kv-v2 secrets engine at: secret/
 > vault policy write external-secrets ./external-secrets.vault.hcl
 Success! Uploaded policy: external-secrets
 
+> vault policy write external-secrets-ui ./external-secrets-ui.vault.hcl
+Success! Uploaded policy: external-secrets-ui
+
 ```
 
 ## Enable kubernetes based authentication
@@ -72,6 +75,16 @@ Success! Data written to: auth/kubernetes/role/external-secrets
 
 ```
 
+## Enable userpass
+
+```sh
+> vault auth enable userpass
+Success! Enabled userpass auth method at: userpass/
+
+> vault write auth/userpass/users/mycroft policies=default,external-secrets-ui password=IghoPoh9eech/aca
+Success! Data written to: auth/userpass/users/mycroft
+
+```
 
 ## Write secrets
 
