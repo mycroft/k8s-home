@@ -5,37 +5,37 @@ env:
   - name: GITEA_CLIENT_ID
     valueFrom:
       secretKeyRef:
-        name: secrets/namespaces/dex-idp/gitea
+        name: gitea
         key: client_id
   - name: GITEA_CLIENT_SECRET
     valueFrom:
       secretKeyRef:
-        name: secrets/namespaces/dex-idp/gitea
+        name: gitea
         key: client_secret
   - name: GITEA_BASEURL
     valueFrom:
       secretKeyRef:
-        name: secrets/namespaces/dex-idp/gitea
+        name: gitea
         key: base_url
   - name: STATIC_ADMIN_EMAIL
     valueFrom:
       secretKeyRef:
-        name: secrets/namespaces/dex-idp/static-admin
+        name: static-admin
         key: email
   - name: STATIC_ADMIN_HASH
     valueFrom:
       secretKeyRef:
-        name: secrets/namespaces/dex-idp/static-admin
+        name: static-admin
         key: hash
   - name: STATIC_ADMIN_USERNAME
     valueFrom:
       secretKeyRef:
-        name: secrets/namespaces/dex-idp/static-admin
+        name: static-admin
         key: username
   - name: STATIC_ADMIN_UUID
     valueFrom:
       secretKeyRef:
-        name: secrets/namespaces/dex-idp/static-admin
+        name: static-admin
         key: user_id
 
 # The configuration is now in the secret
