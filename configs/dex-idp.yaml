@@ -4,32 +4,39 @@
 envFrom:
   - name: GITEA_CLIENT_ID
     valueFrom:
-      secretKeyRef: secrets/namespaces/dex-idp/gitea
-      key: client_id
+      secretKeyRef:
+        name: secrets/namespaces/dex-idp/gitea
+        key: client_id
   - name: GITEA_CLIENT_SECRET
     valueFrom:
-      secretKeyRef: secrets/namespaces/dex-idp/gitea
-      key: client_secret
+      secretKeyRef:
+        name: secrets/namespaces/dex-idp/gitea
+        key: client_secret
   - name: GITEA_BASEURL
     valueFrom:
-      secretKeyRef: secrets/namespaces/dex-idp/gitea
-      key: base_url
+      secretKeyRef:
+        name: secrets/namespaces/dex-idp/gitea
+        key: base_url
   - name: STATIC_ADMIN_EMAIL
     valueFrom:
-      secretKeyRef: secrets/namespaces/dex-idp/static-admin
-      key: email
+      secretKeyRef:
+        name: secrets/namespaces/dex-idp/static-admin
+        key: email
   - name: STATIC_ADMIN_HASH
     valueFrom:
-      secretKeyRef: secrets/namespaces/dex-idp/static-admin
-      key: hash
+      secretKeyRef:
+        name: secrets/namespaces/dex-idp/static-admin
+        key: hash
   - name: STATIC_ADMIN_USERNAME
     valueFrom:
-      secretKeyRef: secrets/namespaces/dex-idp/static-admin
-      key: username
+      secretKeyRef:
+        name: secrets/namespaces/dex-idp/static-admin
+        key: username
   - name: STATIC_ADMIN_UUID
     valueFrom:
-      secretKeyRef: secrets/namespaces/dex-idp/static-admin
-      key: user_id
+      secretKeyRef:
+        name: secrets/namespaces/dex-idp/static-admin
+        key: user_id
 
 # The configuration is now in the secret
 configSecret:
