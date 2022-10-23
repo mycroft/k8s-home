@@ -1,7 +1,7 @@
 # https://github.com/dexidp/helm-charts/blob/master/charts/dex/values.yaml
 
 # The secrets to read & to put in dex pods
-envFrom:
+env:
   - name: GITEA_CLIENT_ID
     valueFrom:
       secretKeyRef:
