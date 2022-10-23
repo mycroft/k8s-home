@@ -38,32 +38,39 @@ data:
     envFrom:
       - name: GITEA_CLIENT_ID
         valueFrom:
-          secretKeyRef: secrets/namespaces/dex-idp/gitea
-          key: client_id
+          secretKeyRef:
+            name: secrets/namespaces/dex-idp/gitea
+            key: client_id
       - name: GITEA_CLIENT_SECRET
         valueFrom:
-          secretKeyRef: secrets/namespaces/dex-idp/gitea
-          key: client_secret
+          secretKeyRef:
+            name: secrets/namespaces/dex-idp/gitea
+            key: client_secret
       - name: GITEA_BASEURL
         valueFrom:
-          secretKeyRef: secrets/namespaces/dex-idp/gitea
-          key: base_url
+          secretKeyRef:
+            name: secrets/namespaces/dex-idp/gitea
+            key: base_url
       - name: STATIC_ADMIN_EMAIL
         valueFrom:
-          secretKeyRef: secrets/namespaces/dex-idp/static-admin
-          key: email
+          secretKeyRef:
+            name: secrets/namespaces/dex-idp/static-admin
+            key: email
       - name: STATIC_ADMIN_HASH
         valueFrom:
-          secretKeyRef: secrets/namespaces/dex-idp/static-admin
-          key: hash
+          secretKeyRef:
+            name: secrets/namespaces/dex-idp/static-admin
+            key: hash
       - name: STATIC_ADMIN_USERNAME
         valueFrom:
-          secretKeyRef: secrets/namespaces/dex-idp/static-admin
-          key: username
+          secretKeyRef:
+            name: secrets/namespaces/dex-idp/static-admin
+            key: username
       - name: STATIC_ADMIN_UUID
         valueFrom:
-          secretKeyRef: secrets/namespaces/dex-idp/static-admin
-          key: user_id
+          secretKeyRef:
+            name: secrets/namespaces/dex-idp/static-admin
+            key: user_id
 
     # The configuration is now in the secret
     configSecret:
@@ -102,7 +109,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 7e3543c147164d5f8c04f1429667a5bf88a90d9a4204d32a1235c349eb40e74a
+    configMapHash: daee415dc558368a3334ea69046d9b8287f865289966b3200502ce118d84ee1a
   name: dex
   namespace: dex-idp
 spec:
