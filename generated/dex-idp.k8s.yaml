@@ -135,7 +135,7 @@ apiVersion: v1
 kind: Secret
 immutable: true
 metadata:
-  name: dex-idp-dex-config-c8b11030
+  name: dex-config
   namespace: dex-idp
 stringData:
   config.yaml: |
