@@ -36,7 +36,7 @@ func NewExternalSecretsChart(scope constructs.Construct) cdk8s.Chart {
 		nil,
 	)
 
-	k8s_helpers.CreateServiceMonitor(chart, namespace)
+	k8s_helpers.CreateSecretStore(chart, namespace)
 	k8s_helpers.CreateExternalSecret(chart, namespace, "testaroo")
 
 	return chart

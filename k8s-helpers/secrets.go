@@ -10,7 +10,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func CreateServiceMonitor(chart constructs.Construct, namespace string) {
+func CreateSecretStore(chart constructs.Construct, namespace string) {
 	secretstore_externalsecretsio.NewSecretStoreV1Beta1(
 		chart,
 		jsii.String("secret-store"),
