@@ -59,6 +59,7 @@ func NewDexIdpChart(scope constructs.Construct) cdk8s.Chart {
 		&k8s.KubeSecretProps{
 			Metadata: &k8s.ObjectMeta{
 				Namespace: jsii.String(namespace),
+				Name:      jsii.String("dex-config"), // referenced in helm chart config
 			},
 			Immutable: jsii.Bool(true),
 			StringData: &map[string]*string{
