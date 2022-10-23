@@ -113,6 +113,7 @@ kind: Secret
 immutable: true
 metadata:
   name: dex-idp-dex-config-c8b11030
+  namespace: dex-idp
 stringData:
   config.yaml: |
     enablePasswordDB: true
