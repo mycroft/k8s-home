@@ -16,17 +16,38 @@ apiVersion: v1
 kind: ConfigMap
 data:
   values.yaml: |
-    config:
-      # Set it to a valid URL
-      issuer: https://dex.services.mkz.me
+    # https://github.com/dexidp/helm-charts/blob/master/charts/dex/values.yaml
 
-      # See https://dexidp.io/docs/storage/ for more options
-      storage:
-        type: memory
-
-      # Enable at least one connector
-      # See https://dexidp.io/docs/connectors/ for more options
-      enablePasswordDB: true
+    # The secrets to read & to put in dex pods
+    envFrom:
+      - name: GITEA_CLIENT_ID
+        valueFrom:
+          secretKeyRef: secrets/namespaces/dex-idp/gitea
+          key: client_id
+      - name: GITEA_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef: secrets/namespaces/dex-idp/gitea
+          key: client_secret
+      - name: GITEA_BASEURL
+        valueFrom:
+          secretKeyRef: secrets/namespaces/dex-idp/gitea
+          key: base_url
+      - name: STATIC_ADMIN_EMAIL
+        valueFrom:
+          secretKeyRef: secrets/namespaces/dex-idp/static-admin
+          key: email
+      - name: STATIC_ADMIN_HASH
+        valueFrom:
+          secretKeyRef: secrets/namespaces/dex-idp/static-admin
+          key: hash
+      - name: STATIC_ADMIN_USERNAME
+        valueFrom:
+          secretKeyRef: secrets/namespaces/dex-idp/static-admin
+          key: username
+      - name: STATIC_ADMIN_UUID
+        valueFrom:
+          secretKeyRef: secrets/namespaces/dex-idp/static-admin
+          key: user_id
 
     # The configuration is now in the secret
     configSecret:
@@ -65,7 +86,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: a0e7e0ae250448c531689445841925be290486715233eb2382bc3b9f876cba7d
+    configMapHash: 7e3543c147164d5f8c04f1429667a5bf88a90d9a4204d32a1235c349eb40e74a
   name: dex
   namespace: dex-idp
 spec:
@@ -87,11 +108,85 @@ spec:
       name: dex-idp-helm-values-c8c7e322
       valuesKey: values.yaml
 ---
-apiVersion: bitnami.com/v1alpha1
-kind: SealedSecret
+apiVersion: v1
+kind: Secret
+immutable: true
 metadata:
-  name: dex-config
+  name: dex-idp-dex-config-c8b11030
+stringData:
+  config.yaml: |
+    enablePasswordDB: true
+
+    issuer: https://dex.services.mkz.me
+
+    connectors:
+    - type: gitea
+      id: gitea
+      name: Gitea
+      config:
+        clientID: $GITEA_CLIENT_ID
+        clientSecret: $GITEA_CLIENT_SECRET
+        redirectURI: https://dex.services.mkz.me/dex/callback
+        baseURL: $GITEA_BASEURL
+
+    storage:
+      type: memory
+
+    web:
+      http: 0.0.0.0:5556
+
+    telemetry:
+      http: 0.0.0.0:5558
+
+    staticPasswords:
+    - email: "{{ .Env.STATIC_ADMIN_EMAIL }}"
+      # bcrypt hash of the string "password": $(echo password | htpasswd -BinC 10 admin | cut -d: -f2)
+      hash: "{{ .Env.STATIC_ADMIN_HASH }}"
+      username: "{{ .Env.STATIC_ADMIN_USERNAME }}"
+      userID: "{{ .Env.STATIC_ADMIN_UUID }}"
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: dex-idp-es-static-admin-c88f9c6e
   namespace: dex-idp
 spec:
-  encryptedData:
-    config.yaml: AgDIMrmuMJFfWPxdtE89v7ISUKbb3M11VsfqWgEPjN3HdlTg82QXskAA+EVt1D0uAunlsdImaU+8xF2dvO+Ei4sED34HvIQJe9AD6dcNp8uVrsMM3TUa2K8tS8LVT9XcGjG2J0iKMTz8fQsL/3j9WFWb7KCIwpJZxEJfI4GyhWVVbtLi4/7ImplCwW1OUNxJOn78R6Gfng3e+Q2NSiNcBnwt6kGgclLrsHoJJ5n0wE16TEeWeZBewRep+fwhRD/ijN0MYtsqNZDhue6wVODwWCee63yhpsj+UMv7/+XPqxxMLvHRITaAepqZNBs6gZGl9BWNWaEGAjfkf2EqTNnG6ubH4SZOgS910IV5MjkkLIQx5jZvKWn1eEWCLe8ECNGav7fe9m6eruyLoYoKmRO7eW6B/i0g2nK9o0yVwlMLilEILllLwHXfUEfHyN59/HTmfzVk9K/jXQlSYZnl+i6CIwW+yDyhROuJUpA8BvYATX8vQbQseu1Jw3A11uPkdHQWQvupVUQkLDIzeZzgDkYHSYQ37XepEaI38IHg6hh9i8XJ9tGPoGYhsy9YMNBLBZKfEoogwIZU3hnoKT8YHMB07fNs3ku3SGmmiENJsF3HAsKU9EvoO9EJW9B02A5Iux0qZu8nl2IUSfbXmzdXflQ4qBd1gPhIQ2WNxc5ceLCP1or1KZtmdqmxSJun2n30KYitoZW/s4+vWyuEYpM1QUw4XvlxvGnzSBKpoenkGJx9yOHRPWoZD+xjpaPt2eS9c4EeKJ8QbIsWrPZs3VWFU13Cp+y+kJwUEwQ14TLKUHx+sUIehfJheRXTxW9WEUB2HlsY9ANHay5rPbk=
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/dex-idp/static-admin
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: static-admin
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: dex-idp-es-gitea-c8bff4a6
+  namespace: dex-idp
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/dex-idp/gitea
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: gitea
+    template:
+      engineVersion: v2
+      type: Opaque
