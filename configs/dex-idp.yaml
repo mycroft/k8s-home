@@ -2,41 +2,41 @@
 
 # The secrets to read & to put in dex pods
 env:
-  - name: GITEA_CLIENT_ID
+  - name: "GITEA_CLIENT_ID"
     valueFrom:
       secretKeyRef:
-        name: gitea
-        key: client_id
-  - name: GITEA_CLIENT_SECRET
+        name: "gitea"
+        key: "client_id"
+  - name: "GITEA_CLIENT_SECRET"
     valueFrom:
       secretKeyRef:
-        name: gitea
-        key: client_secret
-  - name: GITEA_BASEURL
+        name: "gitea"
+        key: "client_secret"
+  - name: "GITEA_BASEURL"
     valueFrom:
       secretKeyRef:
-        name: gitea
-        key: base_url
-  - name: STATIC_ADMIN_EMAIL
+        name: "gitea"
+        key: "base_url"
+  - name: "STATIC_ADMIN_EMAIL"
     valueFrom:
       secretKeyRef:
-        name: static-admin
-        key: email
-  - name: STATIC_ADMIN_HASH
+        name: "static-admin"
+        key: "email"
+  - name: "STATIC_ADMIN_HASH"
     valueFrom:
       secretKeyRef:
-        name: static-admin
-        key: hash
-  - name: STATIC_ADMIN_USERNAME
+        name: "static-admin"
+        key: "hash"
+  - name: "STATIC_ADMIN_USERNAME"
     valueFrom:
       secretKeyRef:
-        name: static-admin
-        key: username
-  - name: STATIC_ADMIN_UUID
+        name: "static-admin"
+        key: "username"
+  - name: "STATIC_ADMIN_UUID"
     valueFrom:
       secretKeyRef:
-        name: static-admin
-        key: user_id
+        name: "static-admin"
+        key: "user_id"
 
 # The configuration is now in the secret
 configSecret:
