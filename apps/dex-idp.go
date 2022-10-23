@@ -56,6 +56,9 @@ func NewDexIdpChart(scope constructs.Construct) cdk8s.Chart {
 		chart,
 		jsii.String("dex-config"),
 		&k8s.KubeSecretProps{
+			Metadata: &k8s.ObjectMeta{
+				Namespace: jsii.String(namespace),
+			},
 			Immutable: jsii.Bool(true),
 			StringData: &map[string]*string{
 				"config.yaml": jsii.String(string(contents)),
