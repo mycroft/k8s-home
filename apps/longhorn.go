@@ -47,11 +47,9 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 		&k8s.KubeIngressProps{
 			Metadata: &k8s.ObjectMeta{
 				Annotations: &map[string]*string{
-					"nginx.ingress.kubernetes.io/auth-type":       jsii.String("basic"),
-					"nginx.ingress.kubernetes.io/ssl-redirect":    jsii.String("false"),
-					"nginx.ingress.kubernetes.io/auth-secret":     jsii.String("basic-auth"),
-					"nginx.ingress.kubernetes.io/auth-realm":      jsii.String("Authentication Required "),
-					"nginx.ingress.kubernetes.io/proxy-body-size": jsii.String("10240m"),
+					"ingress.kubernetes.io/auth-type":    jsii.String("basic"),
+					"ingress.kubernetes.io/auth-secret":  jsii.String("basic-auth"),
+					"ingress.kubernetes.io/ssl-redirect": jsii.String("true"),
 				},
 				Namespace: jsii.String(namespace),
 			},
