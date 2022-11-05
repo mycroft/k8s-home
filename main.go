@@ -13,6 +13,7 @@ func main() {
 	apps.NewSealedSecretsChart(app)
 	apps.NewVaultChart(app)
 	apps.NewExternalSecretsChart(app)
+	apps.NewLonghornChart(app)
 	apps.NewTrivyChart(app)
 	apps.NewFluxCDChart(app)
 	apps.NewDexIdpChart(app)
