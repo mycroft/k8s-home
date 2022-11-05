@@ -13,7 +13,8 @@ func main() {
 	apps.NewSealedSecretsChart(app)
 	apps.NewVaultChart(app)
 	apps.NewExternalSecretsChart(app)
-	apps.NewLonghornChart(app)
+	// Disabling longhorn for now, as it is not working yet with k8s 1.25.
+	// apps.NewLonghornChart(app)
 	apps.NewTrivyChart(app)
 	apps.NewFluxCDChart(app)
 	apps.NewDexIdpChart(app)

@@ -35,7 +35,7 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 		"longhorn", // repo name
 		"longhorn", // chart name
 		"longhorn", // release name
-		"1.3.2",
+		"1.4.0",
 		nil,
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
