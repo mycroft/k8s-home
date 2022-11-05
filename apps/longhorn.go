@@ -1,8 +1,11 @@
 package apps
 
 import (
-	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+
+	"git.mkz.me/mycroft/k8s-home/imports/certificates_certmanagerio"
+	"git.mkz.me/mycroft/k8s-home/imports/traefikcontainous"
+
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -34,45 +37,89 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 		"longhorn", // release name
 		"1.3.2",
 		nil,
-		nil,
+		[]k8s_helpers.HelmReleaseConfigMap{
+			k8s_helpers.CreateHelmValuesConfig(
+				chart,
+				namespace,
+				"longhorn.yaml",
+			),
+		},
 		nil,
 	)
 
-	// Ingress requires basic-auth credentials
-	k8s_helpers.CreateExternalSecret(chart, namespace, "basic-auth")
+	k8s_helpers.CreateExternalSecret(chart, namespace, "basic-auth-users")
 
-	k8s.NewKubeIngress(
+	certificates_certmanagerio.NewCertificate(
 		chart,
-		jsii.String("ingress"),
-		&k8s.KubeIngressProps{
-			Metadata: &k8s.ObjectMeta{
-				Annotations: &map[string]*string{
-					"ingress.kubernetes.io/auth-type":    jsii.String("basic"),
-					"ingress.kubernetes.io/auth-secret":  jsii.String("basic-auth"),
-					"ingress.kubernetes.io/ssl-redirect": jsii.String("true"),
+		jsii.String("certificate"),
+		&certificates_certmanagerio.CertificateProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Namespace: jsii.String(namespace),
+				Name:      jsii.String("secret-tls-www"),
+			},
+			Spec: &certificates_certmanagerio.CertificateSpec{
+				DnsNames: &[]*string{
+					jsii.String("longhorn.services.mkz.me"),
 				},
+				IssuerRef: &certificates_certmanagerio.CertificateSpecIssuerRef{
+					Kind: jsii.String("ClusterIssuer"),
+					Name: jsii.String("letsencrypt-prod"),
+				},
+				SecretName: jsii.String("secret-tls-www"),
+			},
+		},
+	)
+
+	traefikcontainous.NewMiddleware(
+		chart,
+		jsii.String("basic-auth"),
+		&traefikcontainous.MiddlewareProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name:      jsii.String("basic-auth"),
 				Namespace: jsii.String(namespace),
 			},
-			Spec: &k8s.IngressSpec{
-				Rules: &[]*k8s.IngressRule{
+			Spec: &traefikcontainous.MiddlewareSpec{
+				BasicAuth: &traefikcontainous.MiddlewareSpecBasicAuth{
+					Realm:  jsii.String("Longhorn Authentication"),
+					Secret: jsii.String("basic-auth-users"),
+				},
+			},
+		},
+	)
+
+	traefikcontainous.NewIngressRoute(
+		chart,
+		jsii.String("ingress-route"),
+		&traefikcontainous.IngressRouteProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &traefikcontainous.IngressRouteSpec{
+				EntryPoints: &[]*string{
+					jsii.String("web"),
+					jsii.String("websecure"),
+				},
+				Routes: &[]*traefikcontainous.IngressRouteSpecRoutes{
 					{
-						Http: &k8s.HttpIngressRuleValue{
-							Paths: &[]*k8s.HttpIngressPath{
-								{
-									PathType: jsii.String("Prefix"),
-									Path:     jsii.String("/"),
-									Backend: &k8s.IngressBackend{
-										Service: &k8s.IngressServiceBackend{
-											Name: jsii.String("longhorn-frontend"),
-											Port: &k8s.ServiceBackendPort{
-												Number: jsii.Number(80),
-											},
-										},
-									},
-								},
+						Kind:  traefikcontainous.IngressRouteSpecRoutesKind_RULE,
+						Match: jsii.String("Host(`longhorn.services.mkz.me`)"),
+						Middlewares: &[]*traefikcontainous.IngressRouteSpecRoutesMiddlewares{
+							{
+								Name:      jsii.String("basic-auth"),
+								Namespace: jsii.String(namespace),
+							},
+						},
+						Services: &[]*traefikcontainous.IngressRouteSpecRoutesServices{
+							{
+								Kind: traefikcontainous.IngressRouteSpecRoutesServicesKind_SERVICE,
+								Name: jsii.String("longhorn-frontend"),
+								Port: traefikcontainous.IngressRouteSpecRoutesServicesPort_FromNumber(jsii.Number(80)),
 							},
 						},
 					},
+				},
+				Tls: &traefikcontainous.IngressRouteSpecTls{
+					SecretName: jsii.String("secret-tls-www"),
 				},
 			},
 		},
