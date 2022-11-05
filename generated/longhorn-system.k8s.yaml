@@ -28,9 +28,21 @@ spec:
   interval: 1m0s
   url: https://charts.longhorn.io
 ---
+apiVersion: v1
+kind: ConfigMap
+data:
+  values.yaml: |
+    defaultSettings:
+        defaultDataPath: /data/k3s-longhorn-storage/
+metadata:
+  name: longhorn-system-helm-values-c84bb4f1
+  namespace: longhorn-system
+---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
+  annotations:
+    configMapHash: 59a51bfb16cc81a5c5ef85670ae4c2dbee3a833db02ae2507a7db6fc5f5d6099
   name: longhorn
   namespace: longhorn-system
 spec:
@@ -47,18 +59,21 @@ spec:
     skipCRDs: false
   interval: 1m0s
   values: {}
-  valuesFrom: []
+  valuesFrom:
+    - kind: ConfigMap
+      name: longhorn-system-helm-values-c84bb4f1
+      valuesKey: values.yaml
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: longhorn-system-es-basic-auth-c8c4f82c
+  name: longhorn-system-es-basic-auth-users-c8e97f64
   namespace: longhorn-system
 spec:
   dataFrom:
     - extract:
         conversionStrategy: Default
-        key: secret/namespaces/longhorn-system/basic-auth
+        key: secret/namespaces/longhorn-system/basic-auth-users
   refreshInterval: 15m
   secretStoreRef:
     kind: SecretStore
@@ -67,28 +82,52 @@ spec:
     creationPolicy: Owner
     deletionPolicy: Delete
     immutable: false
-    name: basic-auth
+    name: basic-auth-users
     template:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: cert-manager.io/v1
+kind: Certificate
 metadata:
-  annotations:
-    ingress.kubernetes.io/auth-secret: basic-auth
-    ingress.kubernetes.io/auth-type: basic
-    ingress.kubernetes.io/ssl-redirect: "true"
-  name: longhorn-system-ingress-c8177d83
+  name: secret-tls-www
   namespace: longhorn-system
 spec:
-  rules:
-    - http:
-        paths:
-          - backend:
-              service:
-                name: longhorn-frontend
-                port:
-                  number: 80
-            path: /
-            pathType: Prefix
+  dnsNames:
+    - longhorn.services.mkz.me
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: secret-tls-www
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: basic-auth
+  namespace: longhorn-system
+spec:
+  basicAuth:
+    realm: Longhorn Authentication
+    secret: basic-auth-users
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: longhorn-system-ingress-route-c8c92fb6
+  namespace: longhorn-system
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`longhorn.services.mkz.me`)
+      middlewares:
+        - name: basic-auth
+          namespace: longhorn-system
+      services:
+        - kind: Service
+          name: longhorn-frontend
+          port: 80
+  tls:
+    secretName: secret-tls-www
