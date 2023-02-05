@@ -67,6 +67,19 @@ data:
                 requests:
                   storage: 32Gi
 
+    alertmanager:
+      alertmanagerSpec:
+        replicas: 2
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 512Mi
+
     grafana:
       ingress:
         enabled: true
@@ -93,7 +106,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 75af297bfa265faa6d6a637702c1dcee3b00d1c0cd9dc5bc5db066be4d893ae8
+    configMapHash: 9fa748a675bb06adc18bfb56f7c150c62792e1827ffd79946530e578a95b4735
   name: prometheus
   namespace: monitoring
 spec:
