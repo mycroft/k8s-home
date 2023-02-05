@@ -146,4 +146,5 @@ spec:
     size: 512Mi
     storageClass: longhorn
 metadata:
-  name: aaa
+  name: postgres-monitoring
+  namespace: monitoring
