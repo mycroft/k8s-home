@@ -30,6 +30,12 @@ This is fully described on https://github.com/kubernetes/dashboard/blob/master/d
 
 See https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/README.md#login-view
 
+### Other services
+
+- Grafana
+- Vault
+
+
 ## Notes
 
 ### Force a HelmRelease reconcile after an undetected change
