@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: postgres-operator
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: postgres-operator
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: postgres-operator
+  namespace: postgres-operator
+spec:
+  chart:
+    spec:
+      chart: postgres-operator
+      sourceRef:
+        kind: HelmRepository
+        name: postgres-operator
+        namespace: flux-system
+      version: 1.9.0
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom: []
