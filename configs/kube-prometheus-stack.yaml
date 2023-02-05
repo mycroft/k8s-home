@@ -37,7 +37,23 @@ grafana:
     - secretName: tls-grafana-cert
       hosts:
       - grafana.services.mkz.me
+
   admin:
     existingSecret: grafana-secret
     userKey: user
     passwordKey: password
+
+  env:
+    GF_DATABASE_TYPE: postgres
+    GF_DATABASE_NAME: grafana
+    GF_DATABASE_HOST: postgres-monitoring
+
+  envValueFrom:
+    GF_DATABASE_USER:
+      secretKeyRef:
+        name: grafana.postgres-monitoring.credentials.postgresql.acid.zalan.do
+        key: username
+    GF_DATABASE_PASSWORD:
+      secretKeyRef:
+        name: grafana.postgres-monitoring.credentials.postgresql.acid.zalan.do
+        key: password
