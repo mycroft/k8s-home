@@ -104,6 +104,7 @@ data:
         GF_DATABASE_TYPE: postgres
         GF_DATABASE_NAME: grafana
         GF_DATABASE_HOST: postgres-monitoring
+        GF_DATABASE_SSL_MODE: require
 
       envValueFrom:
         GF_DATABASE_USER:
@@ -122,7 +123,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 3f63694a659361eaf3bce3da074d87a12ed01e3c9ecd739b2d7a05d77fe61aa3
+    configMapHash: 045b173cbfd60b636fdcdedd687040599b043f58f645096f8e5ea63f10f18240
   name: prometheus
   namespace: monitoring
 spec:
