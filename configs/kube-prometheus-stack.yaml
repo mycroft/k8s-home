@@ -9,7 +9,6 @@ prometheus:
           resources:
             requests:
               storage: 32Gi
-          selector: {}
 
 grafana:
   ingress:
