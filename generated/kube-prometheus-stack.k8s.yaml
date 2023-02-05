@@ -57,7 +57,7 @@ data:
   values.yaml: |
     prometheus:
       prometheusSpec:
-        storage:
+        storageSpec:
           volumeClaimTemplate:
             spec:
               storageClassName: longhorn
@@ -94,7 +94,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 60597abdf1ca29c5d9b43bfee11d8e0b138280aaa69431768846e47923e7a603
+    configMapHash: 7b3d6ec3bc09a76dbac59e5d8b6f6a40ce344d781d87d429d32fc83933b529df
   name: prometheus
   namespace: monitoring
 spec:
