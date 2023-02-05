@@ -10,6 +10,19 @@ prometheus:
             requests:
               storage: 32Gi
 
+alertmanager:
+  alertmanagerSpec:
+    replicas: 2
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 512Mi
+
 grafana:
   ingress:
     enabled: true
