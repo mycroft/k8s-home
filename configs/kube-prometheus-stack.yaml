@@ -47,6 +47,7 @@ grafana:
     GF_DATABASE_TYPE: postgres
     GF_DATABASE_NAME: grafana
     GF_DATABASE_HOST: postgres-monitoring
+    GF_DATABASE_SSL_MODE: require
 
   envValueFrom:
     GF_DATABASE_USER:
