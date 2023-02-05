@@ -66,7 +66,6 @@ data:
               resources:
                 requests:
                   storage: 32Gi
-              selector: {}
 
     grafana:
       ingress:
@@ -94,7 +93,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 7b3d6ec3bc09a76dbac59e5d8b6f6a40ce344d781d87d429d32fc83933b529df
+    configMapHash: 75af297bfa265faa6d6a637702c1dcee3b00d1c0cd9dc5bc5db066be4d893ae8
   name: prometheus
   namespace: monitoring
 spec:
