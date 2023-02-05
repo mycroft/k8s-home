@@ -94,10 +94,26 @@ data:
         - secretName: tls-grafana-cert
           hosts:
           - grafana.services.mkz.me
+
       admin:
         existingSecret: grafana-secret
         userKey: user
         passwordKey: password
+
+      env:
+        GF_DATABASE_TYPE: postgres
+        GF_DATABASE_NAME: grafana
+        GF_DATABASE_HOST: postgres-monitoring
+
+      envValueFrom:
+        GF_DATABASE_USER:
+          secretKeyRef:
+            name: grafana.postgres-monitoring.credentials.postgresql.acid.zalan.do
+            key: username
+        GF_DATABASE_PASSWORD:
+          secretKeyRef:
+            name: grafana.postgres-monitoring.credentials.postgresql.acid.zalan.do
+            key: password
 metadata:
   name: kube-prometheus-stack-helm-values-c8217b7d
   namespace: monitoring
@@ -106,7 +122,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: d062705ada850d9427e05f03ff67ba109d4eb8ab72c549c3fe5734f1e208b0f6
+    configMapHash: 3f63694a659361eaf3bce3da074d87a12ed01e3c9ecd739b2d7a05d77fe61aa3
   name: prometheus
   namespace: monitoring
 spec:
