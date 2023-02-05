@@ -1,6 +1,6 @@
 prometheus:
   prometheusSpec:
-    storage:
+    storageSpec:
       volumeClaimTemplate:
         spec:
           storageClassName: longhorn
