@@ -57,15 +57,16 @@ data:
   values.yaml: |
     prometheus:
       prometheusSpec:
-        volumeClaimTemplate:
-          spec:
-            storageClassName: longhorn
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: 32Gi
-            selector: {}
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 32Gi
+              selector: {}
 
     grafana:
       ingress:
@@ -93,7 +94,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 5467d307185897e63982cdcc4ef745f2a88406c5be6a3bed2ee0b43c17f9d010
+    configMapHash: 60597abdf1ca29c5d9b43bfee11d8e0b138280aaa69431768846e47923e7a603
   name: prometheus
   namespace: monitoring
 spec:
