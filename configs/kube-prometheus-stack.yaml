@@ -1,3 +1,15 @@
+prometheus:
+  prometheusSpec:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: longhorn
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 32Gi
+        selector: {}
+
 grafana:
   ingress:
     enabled: true
