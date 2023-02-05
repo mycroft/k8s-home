@@ -1,0 +1,133 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: longhorn-system
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: longhorn-system
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: longhorn
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://charts.longhorn.io
+---
+apiVersion: v1
+kind: ConfigMap
+data:
+  values.yaml: |
+    defaultSettings:
+        defaultDataPath: /data/k3s-longhorn-storage/
+metadata:
+  name: longhorn-system-helm-values-c84bb4f1
+  namespace: longhorn-system
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: 59a51bfb16cc81a5c5ef85670ae4c2dbee3a833db02ae2507a7db6fc5f5d6099
+  name: longhorn
+  namespace: longhorn-system
+spec:
+  chart:
+    spec:
+      chart: longhorn
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn
+        namespace: flux-system
+      version: 1.4.0
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: longhorn-system-helm-values-c84bb4f1
+      valuesKey: values.yaml
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: longhorn-system-es-basic-auth-users-c8e97f64
+  namespace: longhorn-system
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/longhorn-system/basic-auth-users
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: basic-auth-users
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: secret-tls-www
+  namespace: longhorn-system
+spec:
+  dnsNames:
+    - longhorn.services.mkz.me
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: secret-tls-www
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: basic-auth
+  namespace: longhorn-system
+spec:
+  basicAuth:
+    realm: Longhorn Authentication
+    secret: basic-auth-users
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: longhorn-system-ingress-route-c8c92fb6
+  namespace: longhorn-system
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`longhorn.services.mkz.me`)
+      middlewares:
+        - name: basic-auth
+          namespace: longhorn-system
+      services:
+        - kind: Service
+          name: longhorn-frontend
+          port: 80
+  tls:
+    secretName: secret-tls-www
