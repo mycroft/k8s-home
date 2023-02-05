@@ -57,7 +57,8 @@ func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
 		jsii.String(fmt.Sprintf("postgres-%s", namespace)),
 		&acidzalando.PostgresqlProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
-				Name: jsii.String("aaa"),
+				Name:      jsii.String(fmt.Sprintf("postgres-%s", namespace)),
+				Namespace: jsii.String(namespace),
 			},
 			Spec: &acidzalando.PostgresqlSpec{
 				TeamId: jsii.String(namespace),
