@@ -17,11 +17,11 @@ alertmanager:
       volumeClaimTemplate:
         spec:
           storageClassName: longhorn
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 512Mi
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 512Mi
 
 grafana:
   ingress:
