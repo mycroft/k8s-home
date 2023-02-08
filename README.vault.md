@@ -49,17 +49,15 @@ Success! Uploaded policy: external-secrets-ui
 
 ## Enable kubernetes based authentication
 
+In the past, the serviceaccount/token was passed in `token_reviewer_jwt` and stored in vault. However, this breaks Vault on restart.
+The `auth/kubernetes/config` should only contain the `kubernetes_host` API URL. It was tested as working after a container restart.
+
 ```sh
 > vault auth enable kubernetes
 Success! Enabled kubernetes auth method at: kubernetes/
 
-> vault write auth/kubernetes/config \
-    token_reviewer_jwt="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
-    kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443" \
-    kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
-    issuer=https://kubernetes.default.svc
+> vault write auth/kubernetes/config kubernetes_host=https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT
 Success! Data written to: auth/kubernetes/config
-
 ```
 
 
