@@ -41,17 +41,17 @@ envVars:
   - name: "GRAFANA_LOGIN_URL"
     valueFrom:
       secretKeyRef:
-        name: "grafana"
+        name: "grafana-oidc-client"
         key: "login_url"
   - name: "GRAFANA_CLIENT_ID"
     valueFrom:
       secretKeyRef:
-        name: "grafana"
+        name: "grafana-oidc-client"
         key: "client_id"
   - name: "GRAFANA_CLIENT_SECRET"
     valueFrom:
       secretKeyRef:
-        name: "stagrafanain"
+        name: "grafana-oidc-client"
         key: "client_secret"
 
 # The configuration is now in the secret
