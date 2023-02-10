@@ -149,7 +149,7 @@ spec:
 ---
 apiVersion: v1
 kind: Secret
-immutable: true
+immutable: false
 metadata:
   name: dex-config
   namespace: dex-idp
