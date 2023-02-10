@@ -35,9 +35,9 @@ telemetry:
 
 enablePasswordDB: false
 
-staticPasswords:
-- email: "{{ .Env.STATIC_ADMIN_EMAIL }}"
-  # bcrypt hash of the string "password": $(echo password | htpasswd -BinC 10 admin | cut -d: -f2)
-  hash: "{{ .Env.STATIC_ADMIN_HASH }}"
-  username: "{{ .Env.STATIC_ADMIN_USERNAME }}"
-  userID: "{{ .Env.STATIC_ADMIN_UUID }}"
+# staticPasswords:
+# - email: "{{ .Env.STATIC_ADMIN_EMAIL }}"
+#   # bcrypt hash of the string "password": $(echo password | htpasswd -BinC 10 admin | cut -d: -f2)
+#   hash: "{{ .Env.STATIC_ADMIN_HASH }}"
+#   username: "{{ .Env.STATIC_ADMIN_USERNAME }}"
+#   userID: "{{ .Env.STATIC_ADMIN_UUID }}"
