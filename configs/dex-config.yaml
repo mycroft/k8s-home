@@ -7,10 +7,10 @@ connectors:
   id: gitea
   name: Gitea
   config:
-    clientID: $GITEA_CLIENT_ID
-    clientSecret: $GITEA_CLIENT_SECRET
+    clientID: "{{ .Env.GITEA_CLIENT_ID }}"
+    clientSecret: "{{ .Env.GITEA_CLIENT_SECRET }}"
     redirectURI: https://dex.services.mkz.me/callback
-    baseURL: $GITEA_BASEURL
+    baseURL: "{{ .Env.GITEA_BASEURL }}"
 
 storage:
   type: memory
@@ -18,9 +18,9 @@ storage:
 staticClients:
 - id: grafana
   redirectURIs:
-  - $GRAFANA_LOGIN_URL
-  name: $GRAFANA_CLIENT_ID
-  secret: $GRAFANA_CLIENT_SECRET
+  - {{ Env.GRAFANA_LOGIN_URL }}
+  name: "{{ .Env.GRAFANA_CLIENT_ID }}"
+  secret: "{{ .Env.GRAFANA_CLIENT_SECRET }}"
 
 web:
   http: 0.0.0.0:5556
