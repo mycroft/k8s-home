@@ -134,6 +134,7 @@ data:
         GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://dex.services.mkz.me/auth"
         GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://dex.services.mkz.me/token"
         GF_AUTH_GENERIC_OAUTH_API_URL: "https://dex.services.mkz.me/userinfo"
+        GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "'Admin'"
 
       envValueFrom:
         GF_DATABASE_USER:
@@ -160,7 +161,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 860543c4f8676cf058b59f43a8fb82db171012cc1ba5c3de0e23d83caba94700
+    configMapHash: 61ae786adb93289e5b690b64d57d95e716f6b69a69d438ed946c32db0524db7d
   name: prometheus
   namespace: monitoring
 spec:
