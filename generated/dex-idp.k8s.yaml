@@ -175,7 +175,7 @@ stringData:
     staticClients:
     - id: grafana
       redirectURIs:
-      - {{ Env.GRAFANA_LOGIN_URL }}
+      - {{ .Env.GRAFANA_LOGIN_URL }}
       name: "{{ .Env.GRAFANA_CLIENT_ID }}"
       secret: "{{ .Env.GRAFANA_CLIENT_SECRET }}"
 
