@@ -75,17 +75,17 @@ data:
       - name: "GRAFANA_LOGIN_URL"
         valueFrom:
           secretKeyRef:
-            name: "grafana"
+            name: "grafana-oidc-client"
             key: "login_url"
       - name: "GRAFANA_CLIENT_ID"
         valueFrom:
           secretKeyRef:
-            name: "grafana"
+            name: "grafana-oidc-client"
             key: "client_id"
       - name: "GRAFANA_CLIENT_SECRET"
         valueFrom:
           secretKeyRef:
-            name: "stagrafanain"
+            name: "grafana-oidc-client"
             key: "client_secret"
 
     # The configuration is now in the secret
@@ -125,7 +125,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 9e0f96474952b0596f0946d130e099cd9ecbef58ee5c6e5edfbe1e9916e6f5c3
+    configMapHash: b1e515848c32bc89a6dd1a51a86f77453b2256be9b3e928e701e2ea5a5fbd6ec
   name: dex
   namespace: dex-idp
 spec:
