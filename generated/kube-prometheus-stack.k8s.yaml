@@ -55,12 +55,12 @@ apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
   name: kube-prometheus-stack-es-grafana-oidc-client-c8cd01d8
-  namespace: dex-idp
+  namespace: monitoring
 spec:
   dataFrom:
     - extract:
         conversionStrategy: Default
-        key: secret/namespaces/dex-idp/grafana-oidc-client
+        key: secret/namespaces/monitoring/grafana-oidc-client
   refreshInterval: 15m
   secretStoreRef:
     kind: SecretStore
