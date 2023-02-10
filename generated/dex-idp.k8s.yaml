@@ -155,9 +155,14 @@ metadata:
   namespace: dex-idp
 stringData:
   config.yaml: |
-    enablePasswordDB: true
+    # See https://github.com/dexidp/dex/blob/master/examples/config-dev.yaml
+    # Note: Modifying this file makes it mandatory to restart the deployment!
 
     issuer: https://dex.services.mkz.me
+
+    oauth2:
+      skipApprovalScreen: true
+      alwaysShowLoginScreen: false
 
     connectors:
     - type: gitea
@@ -184,6 +189,8 @@ stringData:
 
     telemetry:
       http: 0.0.0.0:5558
+
+    enablePasswordDB: false
 
     staticPasswords:
     - email: "{{ .Env.STATIC_ADMIN_EMAIL }}"
