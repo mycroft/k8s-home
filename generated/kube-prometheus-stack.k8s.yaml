@@ -51,6 +51,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: kube-prometheus-stack-es-grafana-oidc-client-c8cd01d8
+  namespace: dex-idp
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/dex-idp/grafana-oidc-client
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: grafana-oidc-client
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: ConfigMap
 data:
@@ -105,6 +128,12 @@ data:
         GF_DATABASE_NAME: grafana
         GF_DATABASE_HOST: postgres-monitoring
         GF_DATABASE_SSL_MODE: require
+        GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+        GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
+        GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email"
+        GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://dex.services.mkz.me/auth"
+        GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://dex.services.mkz.me/token"
+        GF_AUTH_GENERIC_OAUTH_API_URL: "https://dex.services.mkz.me/userinfo"
 
       envValueFrom:
         GF_DATABASE_USER:
@@ -115,6 +144,14 @@ data:
           secretKeyRef:
             name: grafana.postgres-monitoring.credentials.postgresql.acid.zalan.do
             key: password
+        GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+          secretKeyRef:
+            name: grafana-oidc-client
+            key: client_id
+        GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+          secretKeyRef:
+            name: grafana-oidc-client
+            key: client_secret
 metadata:
   name: kube-prometheus-stack-helm-values-c8217b7d
   namespace: monitoring
@@ -123,7 +160,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 045b173cbfd60b636fdcdedd687040599b043f58f645096f8e5ea63f10f18240
+    configMapHash: 860543c4f8676cf058b59f43a8fb82db171012cc1ba5c3de0e23d83caba94700
   name: prometheus
   namespace: monitoring
 spec:
