@@ -54,6 +54,7 @@ grafana:
     GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://dex.services.mkz.me/auth"
     GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://dex.services.mkz.me/token"
     GF_AUTH_GENERIC_OAUTH_API_URL: "https://dex.services.mkz.me/userinfo"
+    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "'Admin'"
 
   envValueFrom:
     GF_DATABASE_USER:
