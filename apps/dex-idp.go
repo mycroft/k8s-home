@@ -61,7 +61,7 @@ func NewDexIdpChart(scope constructs.Construct) cdk8s.Chart {
 				Namespace: jsii.String(namespace),
 				Name:      jsii.String("dex-config"), // referenced in helm chart config
 			},
-			Immutable: jsii.Bool(true),
+			Immutable: jsii.Bool(false),
 			StringData: &map[string]*string{
 				"config.yaml": jsii.String(string(contents)),
 			},
