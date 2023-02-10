@@ -48,6 +48,12 @@ grafana:
     GF_DATABASE_NAME: grafana
     GF_DATABASE_HOST: postgres-monitoring
     GF_DATABASE_SSL_MODE: require
+    GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+    GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
+    GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email"
+    GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://dex.services.mkz.me/auth"
+    GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://dex.services.mkz.me/token"
+    GF_AUTH_GENERIC_OAUTH_API_URL: "https://dex.services.mkz.me/userinfo"
 
   envValueFrom:
     GF_DATABASE_USER:
@@ -58,3 +64,11 @@ grafana:
       secretKeyRef:
         name: grafana.postgres-monitoring.credentials.postgresql.acid.zalan.do
         key: password
+    GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+      secretKeyRef:
+        name: grafana-oidc-client
+        key: client_id
+    GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+      secretKeyRef:
+        name: grafana-oidc-client
+        key: client_secret

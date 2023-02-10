@@ -71,6 +71,7 @@ func NewDexIdpChart(scope constructs.Construct) cdk8s.Chart {
 	// Create ExternalSecrets
 	k8s_helpers.CreateExternalSecret(chart, namespace, "static-admin")
 	k8s_helpers.CreateExternalSecret(chart, namespace, "gitea")
+	k8s_helpers.CreateExternalSecret(chart, namespace, "grafana-oidc-client")
 
 	return chart
 }
