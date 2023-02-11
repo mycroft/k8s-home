@@ -21,6 +21,21 @@ data:
     server:
       logLevel: "debug"
       logFormat: "standard"
+
+      dataStorage:
+        enabled: true
+        size: 1Gi
+        mountPath: "/vault/data"
+        storageClass: longhorn-crypto-global
+        accessMode: ReadWriteOnce
+
+      auditStorage:
+        enabled: true
+        size: 1Gi
+        mountPath: "/vault/audit"
+        storageClass: longhorn-crypto-global
+        accessMode: ReadWriteOnce
+
       ingress:
         enabled: true
         annotations:
@@ -52,7 +67,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 4be04a8d0fcac4b876f89f85933c90b229f3eea56ede470fe02d67e26f416275
+    configMapHash: 4bcf788312297e73c9f3a5c859d5b1c338579f40e15ec3245598b983ada090f8
   name: vault
   namespace: vault
 spec:
