@@ -122,6 +122,19 @@ spec:
   selector:
     app.kubernetes.io/name: traefik-forward-auth
 ---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-forward-auth
+  namespace: traefik-forward-auth
+spec:
+  forwardAuth:
+    address: http://traefik-forward-auth-svc-c8571b62.traefik-forward-auth:4181
+    authRequestHeaders:
+      - X-Forwarded-User
+      - Cookie
+    trustForwardHeader: true
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -130,6 +143,7 @@ metadata:
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/redirect-entry-point: https
     traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
   name: traefik-forward-auth-ingress-c89d1271
   namespace: traefik-forward-auth
 spec:
