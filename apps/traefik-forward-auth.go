@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
+	"git.mkz.me/mycroft/k8s-home/imports/traefikcontainous"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -143,11 +144,34 @@ func NewTraefikForwardAuth(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
+	traefikcontainous.NewMiddleware(
+		chart,
+		jsii.String("traefik-forward-auth-middleware"),
+		&traefikcontainous.MiddlewareProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name:      jsii.String("traefik-forward-auth"),
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &traefikcontainous.MiddlewareSpec{
+				ForwardAuth: &traefikcontainous.MiddlewareSpecForwardAuth{
+					Address:            jsii.String(fmt.Sprintf("http://%s.%s:4181", *svc.Name(), namespace)),
+					TrustForwardHeader: jsii.Bool(true),
+					AuthRequestHeaders: &[]*string{
+						jsii.String("X-Forwarded-User"),
+						jsii.String("Cookie"),
+					},
+				},
+			},
+		},
+	)
+
 	annotations := map[string]*string{
 		"kubernetes.io/ingress.class":                        jsii.String("traefik"),
 		"cert-manager.io/cluster-issuer":                     jsii.String("letsencrypt-prod"),
 		"traefik.ingress.kubernetes.io/redirect-entry-point": jsii.String("https"),
 		"traefik.ingress.kubernetes.io/redirect-permanent":   jsii.String("true"),
+		// Do not remove this! It breaks everything.
+		"traefik.ingress.kubernetes.io/router.middlewares": jsii.String("traefik-forward-auth-traefik-forward-auth@kubernetescrd"),
 	}
 
 	k8s.NewKubeIngress(
@@ -194,3 +218,8 @@ func NewTraefikForwardAuth(scope constructs.Construct) cdk8s.Chart {
 
 	return chart
 }
+
+//
+// Set the following label to service to protect:
+// traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+//
