@@ -87,6 +87,22 @@ data:
           secretKeyRef:
             name: "grafana-oidc-client"
             key: "client_secret"
+    # traefik-forward-auth
+      - name: "TRAEFIK_FORWARD_AUTH_REDIRECT_URI"
+        valueFrom:
+          secretKeyRef:
+            name: "traefik-forward-auth-oidc"
+            key: "redirect_uri"
+      - name: "TRAEFIK_FORWARD_AUTH_CLIENT_ID"
+        valueFrom:
+          secretKeyRef:
+            name: "traefik-forward-auth-oidc"
+            key: "client_id"
+      - name: "TRAEFIK_FORWARD_AUTH_CLIENT_SECRET"
+        valueFrom:
+          secretKeyRef:
+            name: "traefik-forward-auth-oidc"
+            key: "client_secret"
 
     # The configuration is now in the secret
     configSecret:
@@ -125,7 +141,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: b1e515848c32bc89a6dd1a51a86f77453b2256be9b3e928e701e2ea5a5fbd6ec
+    configMapHash: 82cf1ec0451d54f248a922ecd8cd1b1ea2682dd656327fef8e63936c99f0ed2b
   name: dex
   namespace: dex-idp
 spec:
@@ -183,6 +199,11 @@ stringData:
       - {{ .Env.GRAFANA_LOGIN_URL }}
       name: "{{ .Env.GRAFANA_CLIENT_ID }}"
       secret: "{{ .Env.GRAFANA_CLIENT_SECRET }}"
+    - id: traefik-forward-auth
+      redirectURIs:
+      - {{ .Env.TRAEFIK_FORWARD_AUTH_REDIRECT_URI }}
+      name: "{{ .Env.TRAEFIK_FORWARD_AUTH_CLIENT_ID }}"
+      secret: "{{ .Env.TRAEFIK_FORWARD_AUTH_CLIENT_SECRET }}"
 
     web:
       http: 0.0.0.0:5556
@@ -264,6 +285,29 @@ spec:
     deletionPolicy: Delete
     immutable: false
     name: grafana-oidc-client
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: dex-idp-es-traefik-forward-auth-oidc-c84cf0c8
+  namespace: dex-idp
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/dex-idp/traefik-forward-auth-oidc
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: traefik-forward-auth-oidc
     template:
       engineVersion: v2
       type: Opaque
