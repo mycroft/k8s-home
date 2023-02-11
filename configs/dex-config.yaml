@@ -26,6 +26,11 @@ staticClients:
   - {{ .Env.GRAFANA_LOGIN_URL }}
   name: "{{ .Env.GRAFANA_CLIENT_ID }}"
   secret: "{{ .Env.GRAFANA_CLIENT_SECRET }}"
+- id: traefik-forward-auth
+  redirectURIs:
+  - {{ .Env.TRAEFIK_FORWARD_AUTH_REDIRECT_URI }}
+  name: "{{ .Env.TRAEFIK_FORWARD_AUTH_CLIENT_ID }}"
+  secret: "{{ .Env.TRAEFIK_FORWARD_AUTH_CLIENT_SECRET }}"
 
 web:
   http: 0.0.0.0:5556

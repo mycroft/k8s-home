@@ -53,6 +53,22 @@ envVars:
       secretKeyRef:
         name: "grafana-oidc-client"
         key: "client_secret"
+# traefik-forward-auth
+  - name: "TRAEFIK_FORWARD_AUTH_REDIRECT_URI"
+    valueFrom:
+      secretKeyRef:
+        name: "traefik-forward-auth-oidc"
+        key: "redirect_uri"
+  - name: "TRAEFIK_FORWARD_AUTH_CLIENT_ID"
+    valueFrom:
+      secretKeyRef:
+        name: "traefik-forward-auth-oidc"
+        key: "client_id"
+  - name: "TRAEFIK_FORWARD_AUTH_CLIENT_SECRET"
+    valueFrom:
+      secretKeyRef:
+        name: "traefik-forward-auth-oidc"
+        key: "client_secret"
 
 # The configuration is now in the secret
 configSecret:

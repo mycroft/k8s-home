@@ -18,6 +18,7 @@ func main() {
 	apps.NewTrivyChart(app)
 	apps.NewFluxCDChart(app)
 	apps.NewDexIdpChart(app)
+	apps.NewTraefikForwardAuth(app)
 	apps.NewKubernetesDashboardChart(app)
 
 	apps.NewHelloKubernetesChart(app)
