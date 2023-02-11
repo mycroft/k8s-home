@@ -3,6 +3,21 @@
 server:
   logLevel: "debug"
   logFormat: "standard"
+
+  dataStorage:
+    enabled: true
+    size: 1Gi
+    mountPath: "/vault/data"
+    storageClass: longhorn-crypto-global
+    accessMode: ReadWriteOnce
+
+  auditStorage:
+    enabled: true
+    size: 1Gi
+    mountPath: "/vault/audit"
+    storageClass: longhorn-crypto-global
+    accessMode: ReadWriteOnce
+
   ingress:
     enabled: true
     annotations:
