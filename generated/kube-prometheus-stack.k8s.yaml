@@ -96,6 +96,22 @@ data:
                 requests:
                   storage: 32Gi
 
+      ingress:
+        enabled: true
+        hosts:
+        - prometheus.services.mkz.me
+        tls:
+        - secretName: tls-prometheus-cert
+          hosts:
+          - prometheus.services.mkz.me
+
+        annotations:
+          kubernetes.io/ingress.class: traefik
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          traefik.ingress.kubernetes.io/redirect-entry-point: https
+          traefik.ingress.kubernetes.io/redirect-permanent: "true"
+          traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+
     alertmanager:
       alertmanagerSpec:
         replicas: 2
@@ -109,6 +125,22 @@ data:
                 requests:
                   storage: 512Mi
 
+      ingress:
+        enabled: true
+        hosts:
+        - alertmanager.services.mkz.me
+        tls:
+        - secretName: tls-alertmanager-cert
+          hosts:
+          - alertmanager.services.mkz.me
+
+        annotations:
+          kubernetes.io/ingress.class: traefik
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          traefik.ingress.kubernetes.io/redirect-entry-point: https
+          traefik.ingress.kubernetes.io/redirect-permanent: "true"
+          traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+
     grafana:
       ingress:
         enabled: true
@@ -118,7 +150,8 @@ data:
           traefik.ingress.kubernetes.io/redirect-entry-point: "https"
           traefik.ingress.kubernetes.io/redirect-permanent: "true"
 
-        hosts: ["grafana.services.mkz.me"]
+        hosts:
+        - grafana.services.mkz.me
         tls:
         - secretName: tls-grafana-cert
           hosts:
@@ -167,7 +200,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 8e92a4b41c7af4543392ecd0363e84605baa6ea855e39555f972c4eda6cb209c
+    configMapHash: d588d5ea4466d91e0343fe26d5a46efc4a67e82fd23cae8c1100117637c13ac7
   name: prometheus
   namespace: monitoring
 spec:
