@@ -74,6 +74,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: kube-prometheus-stack-es-telegram-bot-c82c588f
+  namespace: monitoring
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/monitoring/telegram-bot
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: telegram-bot
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: ConfigMap
 data:
@@ -124,6 +147,15 @@ data:
               resources:
                 requests:
                   storage: 512Mi
+        # This allows expanding configuration with an "external" AlertmanagerConfig:
+        alertmanagerConfigNamespaceSelector:
+          matchLabels:
+            name: kube-prometheus-stack
+
+      # Basic configuration:
+      config:
+        global:
+          resolve_timeout: 5m
 
       ingress:
         enabled: true
@@ -200,7 +232,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: d588d5ea4466d91e0343fe26d5a46efc4a67e82fd23cae8c1100117637c13ac7
+    configMapHash: b94150d29877a68defe7570d32ac1ed7d580c6571c762b931d9bb299e28b7abe
   name: prometheus
   namespace: monitoring
 spec:
@@ -242,3 +274,24 @@ spec:
 metadata:
   name: postgres-monitoring
   namespace: monitoring
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  labels:
+    app.kubernetes.io/instance: kube-prometheus-stack
+    app.kubernetes.io/name: alertmanagerconfig
+  name: kube-prometheus-stack-alertmanagerconfig
+  namespace: monitoring
+spec:
+  inhibitRules: []
+  receivers:
+    - name: telegram
+      telegramConfigs:
+        - apiURL: https://api.telegram.org
+          botToken:
+            key: key
+            name: telegram-bot
+          chatID: 15279606
+  route:
+    receiver: telegram
