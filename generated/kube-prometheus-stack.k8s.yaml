@@ -77,13 +77,13 @@ spec:
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: kube-prometheus-stack-es-telegram-bot-c82c588f
+  name: kube-prometheus-stack-es-alertmanager-config-c84a2f77
   namespace: monitoring
 spec:
   dataFrom:
     - extract:
         conversionStrategy: Default
-        key: secret/namespaces/monitoring/telegram-bot
+        key: secret/namespaces/monitoring/alertmanager-config
   refreshInterval: 15m
   secretStoreRef:
     kind: SecretStore
@@ -92,7 +92,7 @@ spec:
     creationPolicy: Owner
     deletionPolicy: Delete
     immutable: false
-    name: telegram-bot
+    name: alertmanager-config
     template:
       engineVersion: v2
       type: Opaque
@@ -138,6 +138,9 @@ data:
     alertmanager:
       alertmanagerSpec:
         replicas: 2
+        useExistingSecret: true
+        configSecret: alertmanager-config
+
         storage:
           volumeClaimTemplate:
             spec:
@@ -147,15 +150,7 @@ data:
               resources:
                 requests:
                   storage: 512Mi
-        # This allows expanding configuration with an "external" AlertmanagerConfig:
-        alertmanagerConfigNamespaceSelector:
-          matchLabels:
-            name: kube-prometheus-stack
 
-      # Basic configuration:
-      config:
-        global:
-          resolve_timeout: 5m
 
       ingress:
         enabled: true
@@ -232,7 +227,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: b94150d29877a68defe7570d32ac1ed7d580c6571c762b931d9bb299e28b7abe
+    configMapHash: 5d61ea26ac29bda6309ad8c33db5d26c4f63c51e4a932455b9080076182700d3
   name: prometheus
   namespace: monitoring
 spec:
@@ -274,24 +269,3 @@ spec:
 metadata:
   name: postgres-monitoring
   namespace: monitoring
----
-apiVersion: monitoring.coreos.com/v1alpha1
-kind: AlertmanagerConfig
-metadata:
-  labels:
-    app.kubernetes.io/instance: kube-prometheus-stack
-    app.kubernetes.io/name: alertmanagerconfig
-  name: kube-prometheus-stack-alertmanagerconfig
-  namespace: monitoring
-spec:
-  inhibitRules: []
-  receivers:
-    - name: telegram
-      telegramConfigs:
-        - apiURL: https://api.telegram.org
-          botToken:
-            key: key
-            name: telegram-bot
-          chatID: 15279606
-  route:
-    receiver: telegram
