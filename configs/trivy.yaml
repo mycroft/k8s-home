@@ -1,0 +1,9 @@
+# https://github.com/aquasecurity/trivy/blob/main/helm/trivy/values.yaml
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 1024Mi
+  limits:
+    cpu: 1
+    memory: 2Gi

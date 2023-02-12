@@ -31,11 +31,17 @@ func NewTrivyChart(scope constructs.Construct) cdk8s.Chart {
 		"aqua",
 		"trivy-operator",
 		"trivy-operator",
-		"0.4.0",
+		"0.5.0",
 		map[string]string{
 			"trivy.ignoreUnfixed": "true",
 		},
-		nil, // config maps
+		[]k8s_helpers.HelmReleaseConfigMap{
+			k8s_helpers.CreateHelmValuesConfig(
+				chart,
+				namespace,
+				"trivy.yaml",
+			),
+		},
 		nil, // annotations
 	)
 
