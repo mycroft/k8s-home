@@ -78,8 +78,14 @@ apiVersion: v1
 kind: ConfigMap
 data:
   values.yaml: |
+    # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+
     prometheus:
       prometheusSpec:
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        probeSelectorNilUsesHelmValues: false
+
         storageSpec:
           volumeClaimTemplate:
             spec:
@@ -161,7 +167,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 61ae786adb93289e5b690b64d57d95e716f6b69a69d438ed946c32db0524db7d
+    configMapHash: 8e92a4b41c7af4543392ecd0363e84605baa6ea855e39555f972c4eda6cb209c
   name: prometheus
   namespace: monitoring
 spec:
@@ -172,7 +178,7 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
-      version: 41.3.1
+      version: 45.0.0
   install:
     createNamespace: false
     skipCRDs: false
