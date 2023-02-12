@@ -35,6 +35,9 @@ prometheus:
 alertmanager:
   alertmanagerSpec:
     replicas: 2
+    useExistingSecret: true
+    configSecret: alertmanager-config
+
     storage:
       volumeClaimTemplate:
         spec:
@@ -44,15 +47,7 @@ alertmanager:
           resources:
             requests:
               storage: 512Mi
-    # This allows expanding configuration with an "external" AlertmanagerConfig:
-    alertmanagerConfigNamespaceSelector:
-      matchLabels:
-        name: kube-prometheus-stack
 
-  # Basic configuration:
-  config:
-    global:
-      resolve_timeout: 5m
 
   ingress:
     enabled: true

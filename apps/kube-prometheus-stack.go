@@ -8,7 +8,6 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 
 	"git.mkz.me/mycroft/k8s-home/imports/acidzalando"
-	"git.mkz.me/mycroft/k8s-home/imports/alertmanagerconfig_monitoringcoreoscom"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 )
 
@@ -34,7 +33,7 @@ func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateExternalSecret(chart, namespace, "grafana-secret")
 	k8s_helpers.CreateExternalSecret(chart, namespace, "grafana-oidc-client")
-	k8s_helpers.CreateExternalSecret(chart, namespace, "telegram-bot")
+	k8s_helpers.CreateExternalSecret(chart, namespace, "alertmanager-config")
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
@@ -82,42 +81,6 @@ func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
 				},
 				Postgresql: &acidzalando.PostgresqlSpecPostgresql{
 					Version: acidzalando.PostgresqlSpecPostgresqlVersion_VALUE_15,
-				},
-			},
-		},
-	)
-
-	alertmanagerconfig_monitoringcoreoscom.NewAlertmanagerConfig(
-		chart,
-		jsii.String("alertmanager-config"),
-		&alertmanagerconfig_monitoringcoreoscom.AlertmanagerConfigProps{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Name:      jsii.String("kube-prometheus-stack-alertmanagerconfig"),
-				Namespace: jsii.String(namespace),
-				Labels: &map[string]*string{
-					"app.kubernetes.io/instance": jsii.String("kube-prometheus-stack"),
-					"app.kubernetes.io/name":     jsii.String("alertmanagerconfig"),
-				},
-			},
-			Spec: &alertmanagerconfig_monitoringcoreoscom.AlertmanagerConfigSpec{
-				InhibitRules: &[]*alertmanagerconfig_monitoringcoreoscom.AlertmanagerConfigSpecInhibitRules{},
-				Route: &alertmanagerconfig_monitoringcoreoscom.AlertmanagerConfigSpecRoute{
-					Receiver: jsii.String("telegram"),
-				},
-				Receivers: &[]*alertmanagerconfig_monitoringcoreoscom.AlertmanagerConfigSpecReceivers{
-					{
-						Name: jsii.String("telegram"),
-						TelegramConfigs: &[]*alertmanagerconfig_monitoringcoreoscom.AlertmanagerConfigSpecReceiversTelegramConfigs{
-							{
-								ApiUrl: jsii.String("https://api.telegram.org"),
-								BotToken: &alertmanagerconfig_monitoringcoreoscom.AlertmanagerConfigSpecReceiversTelegramConfigsBotToken{
-									Name: jsii.String("telegram-bot"),
-									Key:  jsii.String("key"),
-								},
-								ChatId: jsii.Number(15279606),
-							},
-						},
-					},
 				},
 			},
 		},
