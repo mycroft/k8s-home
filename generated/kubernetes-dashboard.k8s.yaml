@@ -20,6 +20,9 @@ data:
 
     extraArgs:
       - --system-banner="Welcome to Kubernetes"
+      - --enable-skip-login
+      - --disable-settings-authorizer
+      - --enable-insecure-login
 
     ingress:
       enabled: true
@@ -28,6 +31,7 @@ data:
         cert-manager.io/cluster-issuer: letsencrypt-prod
         traefik.ingress.kubernetes.io/redirect-entry-point: https
         traefik.ingress.kubernetes.io/redirect-permanent: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
 
       hosts:
         - kubernetes-dashboard.services.mkz.me
@@ -36,6 +40,12 @@ data:
         - secretName: kubernetes-dashboard-tls
           hosts:
             - kubernetes-dashboard.services.mkz.me
+
+    serviceMonitor:
+      enabled: true
+
+    metricsScraper:
+      enabled: true
 metadata:
   name: kubernetes-dashboard-helm-values-c8caabd2
   namespace: kubernetes-dashboard
@@ -44,7 +54,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 1f818863e8acb599f00fdaeec22b6c2bf2aecf929dedc85e86e6a58854a1924b
+    configMapHash: af0b5b6985f0c57860687d97695be9ecf1ec34d0a2e38f6e54ff63abd63e9dc7
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 spec:
@@ -55,7 +65,7 @@ spec:
         kind: HelmRepository
         name: kubernetes-dashboard
         namespace: flux-system
-      version: 5.11.0
+      version: 6.0.0
   install:
     createNamespace: false
     skipCRDs: false
@@ -83,4 +93,64 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: admin
+    namespace: kubernetes-dashboard
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    kubernetes.io/service-account.name: admin
+  name: secret-sa
+  namespace: kubernetes-dashboard
+type: kubernetes.io/service-account-token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-role-read-only
+rules:
+  - apiGroups:
+      - "*"
+    resources:
+      - namespaces
+      - events
+      - pods
+      - cronjobs
+      - jobs
+      - replicasets
+      - deployments
+      - daemonsets
+      - replicationcontrollers
+      - statefulsets
+      - ingresses
+      - ingressesclasses
+      - services
+      - configmaps
+      - persistentvolumeclaims
+      - storageclasses
+      - clusterrolebindings
+      - clusterroles
+      - networkpolicies
+      - nodes
+      - persistentvolumes
+      - rolebindings
+      - roles
+      - serviceaccounts
+      - customresourcedefinitions
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubernetes-dashboard
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-role-read-only
+subjects:
+  - kind: ServiceAccount
+    name: kubernetes-dashboard
     namespace: kubernetes-dashboard
