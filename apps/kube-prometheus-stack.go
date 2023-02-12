@@ -40,7 +40,7 @@ func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
 		"prometheus-community",  // repoName; must be in flux-system
 		"kube-prometheus-stack", // chart name
 		"prometheus",            // release name
-		"41.3.1",
+		"45.0.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
