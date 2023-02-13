@@ -12,9 +12,29 @@ spec:
   interval: 1m0s
   url: https://operator.min.io/
 ---
+apiVersion: v1
+kind: ConfigMap
+data:
+  values.yaml: |
+    # https://github.com/minio/operator/blob/master/helm/tenant/values.yaml
+    tenant:
+      name: minio
+      pools:
+        - servers: 4
+          name: pool
+          volumesPerServer: 2
+          storageClassName: longhorn-crypto-global
+      metrics:
+        enabled: true
+metadata:
+  name: minio-operator-helm-values-c8582209
+  namespace: minio-operator
+---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
+  annotations:
+    configMapHash: 5402535840dededfbf3b4551944d9bd2464dde1001dc3cfdbb5c903fdac267ea
   name: minio-operator
   namespace: minio-operator
 spec:
@@ -31,4 +51,7 @@ spec:
     skipCRDs: false
   interval: 1m0s
   values: {}
-  valuesFrom: []
+  valuesFrom:
+    - kind: ConfigMap
+      name: minio-operator-helm-values-c8582209
+      valuesKey: values.yaml
