@@ -25,7 +25,7 @@ spec:
         kind: HelmRepository
         name: minio
         namespace: flux-system
-      version: 4.5.8
+      version: 4.3.7
   install:
     createNamespace: false
     skipCRDs: false
