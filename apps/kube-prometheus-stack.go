@@ -34,6 +34,7 @@ func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateExternalSecret(chart, namespace, "grafana-secret")
 	k8s_helpers.CreateExternalSecret(chart, namespace, "grafana-oidc-client")
 	k8s_helpers.CreateExternalSecret(chart, namespace, "alertmanager-config")
+	k8s_helpers.CreateExternalSecret(chart, namespace, "grafana-postgres")
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
