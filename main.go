@@ -15,6 +15,7 @@ func main() {
 	apps.NewExternalSecretsChart(app)
 	apps.NewLonghornChart(app)
 	apps.NewPostgresOperator(app)
+	apps.NewPostgres(app)
 	apps.NewTrivyChart(app)
 	apps.NewFluxCDChart(app)
 	apps.NewDexIdpChart(app)
