@@ -23,7 +23,7 @@ spec:
       chart: minio
       sourceRef:
         kind: HelmRepository
-        name: minio-operator
+        name: minio
         namespace: flux-system
       version: 4.5.8
   install:
