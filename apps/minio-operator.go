@@ -32,7 +32,13 @@ func NewMinioOperator(scope constructs.Construct) cdk8s.Chart {
 		"minio-operator",
 		"4.3.7",
 		map[string]string{},
-		nil,
+		[]k8s_helpers.HelmReleaseConfigMap{
+			k8s_helpers.CreateHelmValuesConfig(
+				chart,
+				namespace,
+				"minio-operator.yaml",
+			),
+		},
 		nil,
 	)
 

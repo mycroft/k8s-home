@@ -1,0 +1,10 @@
+# https://github.com/minio/operator/blob/master/helm/tenant/values.yaml
+tenant:
+  name: minio
+  pools:
+    - servers: 4
+      name: pool
+      volumesPerServer: 2
+      storageClassName: longhorn-crypto-global
+  metrics:
+    enabled: true
