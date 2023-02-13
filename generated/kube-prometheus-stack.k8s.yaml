@@ -97,6 +97,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: kube-prometheus-stack-es-grafana-postgres-c893b633
+  namespace: monitoring
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/monitoring/grafana-postgres
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: grafana-postgres
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: ConfigMap
 data:
@@ -151,7 +174,6 @@ data:
                 requests:
                   storage: 512Mi
 
-
       ingress:
         enabled: true
         hosts:
@@ -192,7 +214,7 @@ data:
       env:
         GF_DATABASE_TYPE: postgres
         GF_DATABASE_NAME: grafana
-        GF_DATABASE_HOST: postgres-monitoring
+        GF_DATABASE_HOST: postgres-instance.postgres
         GF_DATABASE_SSL_MODE: require
         GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
         GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
@@ -205,11 +227,11 @@ data:
       envValueFrom:
         GF_DATABASE_USER:
           secretKeyRef:
-            name: grafana.postgres-monitoring.credentials.postgresql.acid.zalan.do
+            name: grafana-postgres
             key: username
         GF_DATABASE_PASSWORD:
           secretKeyRef:
-            name: grafana.postgres-monitoring.credentials.postgresql.acid.zalan.do
+            name: grafana-postgres
             key: password
         GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
           secretKeyRef:
@@ -261,7 +283,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 40a95a3b422a003ec0017b16cdc335f40a78d6b621aec7b1a42d2bf3964d2285
+    configMapHash: f068f06256e8a5e461cf809fadc24b3a4436148e6d73d279fe9f102e24bf3505
   name: prometheus
   namespace: monitoring
 spec:
