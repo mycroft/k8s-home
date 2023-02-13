@@ -1,13 +1,10 @@
 package apps
 
 import (
-	"fmt"
-
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 
-	"git.mkz.me/mycroft/k8s-home/imports/acidzalando"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 )
 
@@ -52,39 +49,6 @@ func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
 			),
 		},
 		nil,
-	)
-
-	// Spawn a PostgreSQL server for Grafana.
-	acidzalando.NewPostgresql(
-		chart,
-		jsii.String(fmt.Sprintf("postgres-%s", namespace)),
-		&acidzalando.PostgresqlProps{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Name:      jsii.String(fmt.Sprintf("postgres-%s", namespace)),
-				Namespace: jsii.String(namespace),
-			},
-			Spec: &acidzalando.PostgresqlSpec{
-				TeamId: jsii.String(namespace),
-				Volume: &acidzalando.PostgresqlSpecVolume{
-					StorageClass: jsii.String("longhorn"),
-					Size:         jsii.String("512Mi"),
-				},
-				NumberOfInstances: jsii.Number(float64(1)),
-				Databases: &map[string]*string{
-					"grafana": jsii.String("grafana"),
-				},
-				Users: &map[string]*[]acidzalando.PostgresqlSpecUsers{
-					"grafana-admin": {
-						acidzalando.PostgresqlSpecUsers_SUPERUSER,
-						acidzalando.PostgresqlSpecUsers_CREATEDB,
-					},
-					"grafana": {},
-				},
-				Postgresql: &acidzalando.PostgresqlSpecPostgresql{
-					Version: acidzalando.PostgresqlSpecPostgresqlVersion_VALUE_15,
-				},
-			},
-		},
 	)
 
 	return chart
