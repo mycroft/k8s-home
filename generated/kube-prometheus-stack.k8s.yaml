@@ -112,7 +112,7 @@ data:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: longhorn
+              storageClassName: longhorn-crypto-global
               accessModes:
                 - ReadWriteOnce
               resources:
@@ -144,7 +144,7 @@ data:
         storage:
           volumeClaimTemplate:
             spec:
-              storageClassName: longhorn
+              storageClassName: longhorn-crypto-global
               accessModes:
                 - ReadWriteOnce
               resources:
@@ -261,7 +261,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 52833d390e05e4dfb1996c764740dcca96fb78956d843808b244d6b19aba15c9
+    configMapHash: 40a95a3b422a003ec0017b16cdc335f40a78d6b621aec7b1a42d2bf3964d2285
   name: prometheus
   namespace: monitoring
 spec:
