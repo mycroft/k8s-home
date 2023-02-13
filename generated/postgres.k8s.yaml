@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: postgres
+---
+apiVersion: acid.zalan.do/v1
+kind: postgresql
+spec:
+  databases:
+    grafana: grafana-admin
+    testaroo: testaroo-admin
+  numberOfInstances: 1
+  postgresql:
+    version: "15"
+  teamId: postgres
+  users:
+    grafana: []
+    grafana-admin:
+      - superuser
+      - createdb
+    testaroo: []
+    testaroo-admin:
+      - superuser
+      - createdb
+  volume:
+    size: 64Gi
+    storageClass: longhorn-crypto-global
+metadata:
+  name: postgres-instance
+  namespace: postgres
