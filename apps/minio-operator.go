@@ -24,6 +24,9 @@ func NewMinioOperator(scope constructs.Construct) cdk8s.Chart {
 		"https://operator.min.io/",
 	)
 
+	k8s_helpers.CreateExternalSecret(chart, namespace, "root")
+	k8s_helpers.CreateExternalSecret(chart, namespace, "minio-tenant")
+
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,

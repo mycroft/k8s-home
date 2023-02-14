@@ -1,10 +1,26 @@
+# https://github.com/minio/operator/blob/master/helm/operator/values.yaml
+operator:
+  env:
+    - name: MINIO_ROOT_USER
+      valueFrom:
+        secretKeyRef:
+          key: username
+    - name: MINIO_ROOT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: password
+
+
 # https://github.com/minio/operator/blob/master/helm/tenant/values.yaml
-tenant:
-  name: minio
-  pools:
-    - servers: 4
-      name: pool
-      volumesPerServer: 2
-      storageClassName: longhorn-crypto-global
-  metrics:
-    enabled: true
+tenants:
+  - name: minio
+    pools:
+      - servers: 4
+        name: pool
+        volumesPerServer: 2
+        storageClassName: longhorn-crypto-global
+    metrics:
+      enabled: true
+
+# Warning: The HR was suspended
+# It requires some secrets. See https://github.com/minio/operator/issues/856
