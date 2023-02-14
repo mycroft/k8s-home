@@ -78,16 +78,21 @@ apiVersion: v1
 kind: ConfigMap
 data:
   values.yaml: |-
+    # Manual upgrade:
+    # helm upgrade minio-operator minio/minio-operator -n minio-operator --values ~/dev/k8s-home/configs/minio-operator.yaml
+
     # https://github.com/minio/operator/blob/master/helm/operator/values.yaml
     operator:
       env:
         - name: MINIO_ROOT_USER
           valueFrom:
             secretKeyRef:
+              name: root
               key: username
         - name: MINIO_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
+              name: root
               key: password
 
 
@@ -102,7 +107,6 @@ data:
         metrics:
           enabled: true
 
-    # Warning: The HR was suspended
     # It requires some secrets. See https://github.com/minio/operator/issues/856
 metadata:
   name: minio-operator-helm-values-c8582209
@@ -112,7 +116,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 4e01076316992a36be0422d5e671e93760a6d73b39661bc088a9e868706490bb
+    configMapHash: ed4edc28e3eda541dd68e92bb1498f2c551d57a8dedb2c036d9a7ce04b6d6999
   name: minio-operator
   namespace: minio-operator
 spec:
