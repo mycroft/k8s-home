@@ -32,7 +32,7 @@ func NewMinioOperator(scope constructs.Construct) cdk8s.Chart {
 		chart,
 		namespace,
 		"minio",
-		"minio-operator",
+		"operator",
 		"minio-operator",
 		"4.3.7",
 		map[string]string{},

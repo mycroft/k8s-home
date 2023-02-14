@@ -1,3 +1,5 @@
+# Warning: The file is called `minio-operator` but this is minio's operator that is installed, not `minio-operator` which seems to be deprecated.
+
 # Manual upgrade:
 # helm upgrade minio-operator minio/minio-operator -n minio-operator --values ~/dev/k8s-home/configs/minio-operator.yaml
 
@@ -14,17 +16,5 @@ operator:
         secretKeyRef:
           name: root
           key: password
-
-
-# https://github.com/minio/operator/blob/master/helm/tenant/values.yaml
-tenants:
-  - name: minio
-    pools:
-      - servers: 4
-        name: pool
-        volumesPerServer: 2
-        storageClassName: longhorn-crypto-global
-    metrics:
-      enabled: true
 
 # It requires some secrets. See https://github.com/minio/operator/issues/856
