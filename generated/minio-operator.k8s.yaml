@@ -51,29 +51,6 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: minio-operator-es-minio-tenant-c8bf83d7
-  namespace: minio-operator
-spec:
-  dataFrom:
-    - extract:
-        conversionStrategy: Default
-        key: secret/namespaces/minio-operator/minio-tenant
-  refreshInterval: 15m
-  secretStoreRef:
-    kind: SecretStore
-    name: secretstore-vault
-  target:
-    creationPolicy: Owner
-    deletionPolicy: Delete
-    immutable: false
-    name: minio-tenant
-    template:
-      engineVersion: v2
-      type: Opaque
----
 apiVersion: v1
 kind: ConfigMap
 data:
