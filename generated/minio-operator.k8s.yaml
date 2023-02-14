@@ -12,20 +12,82 @@ spec:
   interval: 1m0s
   url: https://operator.min.io/
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: minio-operator-es-root-c8c61a9b
+  namespace: minio-operator
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/minio-operator/root
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: root
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: minio-operator-es-minio-tenant-c8bf83d7
+  namespace: minio-operator
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/minio-operator/minio-tenant
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: minio-tenant
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: ConfigMap
 data:
-  values.yaml: |
+  values.yaml: |-
+    # https://github.com/minio/operator/blob/master/helm/operator/values.yaml
+    operator:
+      env:
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+
+
     # https://github.com/minio/operator/blob/master/helm/tenant/values.yaml
-    tenant:
-      name: minio
-      pools:
-        - servers: 4
-          name: pool
-          volumesPerServer: 2
-          storageClassName: longhorn-crypto-global
-      metrics:
-        enabled: true
+    tenants:
+      - name: minio
+        pools:
+          - servers: 4
+            name: pool
+            volumesPerServer: 2
+            storageClassName: longhorn-crypto-global
+        metrics:
+          enabled: true
+
+    # Warning: The HR was suspended
+    # It requires some secrets. See https://github.com/minio/operator/issues/856
 metadata:
   name: minio-operator-helm-values-c8582209
   namespace: minio-operator
@@ -34,7 +96,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 5402535840dededfbf3b4551944d9bd2464dde1001dc3cfdbb5c903fdac267ea
+    configMapHash: 4e01076316992a36be0422d5e671e93760a6d73b39661bc088a9e868706490bb
   name: minio-operator
   namespace: minio-operator
 spec:
