@@ -17,6 +17,7 @@ func NewMinioOperator(scope constructs.Construct) cdk8s.Chart {
 	)
 
 	k8s_helpers.NewNamespace(chart, namespace)
+	k8s_helpers.CreateSecretStore(chart, namespace)
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
