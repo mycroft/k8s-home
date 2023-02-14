@@ -57,5 +57,8 @@ func NewMinioOperator(scope constructs.Construct) cdk8s.Chart {
 		type: kubernetes.io/service-account-token
 	*/
 
+	// XXX TODO: Create ingress for following service:
+	// console    ClusterIP   10.43.17.23     <none>        9090/TCP,9443/TCP   68m
+
 	return chart
 }

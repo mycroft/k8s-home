@@ -22,6 +22,35 @@ func NewMinio(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateExternalSecret(chart, namespace, "minio-tenant")
 
 	// XXX TODO: Create the tenant here
+	/*
+			apiVersion: minio.min.io/v2
+		kind: Tenant
+		metadata:
+		  name: minio-storage
+		  namespace: minio
+		spec:
+		  credsSecret:
+		    name: minio-tenant
+		  pools:
+		    - servers: 4
+		      name: pool
+		      volumesPerServer: 2
+		      volumeClaimTemplate:
+		        metadata:
+		          name: data
+		        spec:
+		          storageClassName: longhorn-crypto-global
+		          accessModes:
+		            - ReadWriteOnce
+		          resources:
+		            requests:
+		              storage: 2Gi
+		      containerSecurityContext:
+		        runAsUser: 1000
+		        runAsGroup: 1000
+		        runAsNonRoot: true
+	*/
+	// XXX Configure TLS certs?
 
 	return chart
 }
