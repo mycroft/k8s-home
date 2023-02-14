@@ -78,6 +78,8 @@ apiVersion: v1
 kind: ConfigMap
 data:
   values.yaml: |-
+    # Warning: The file is called `minio-operator` but this is minio's operator that is installed, not `minio-operator` which seems to be deprecated.
+
     # Manual upgrade:
     # helm upgrade minio-operator minio/minio-operator -n minio-operator --values ~/dev/k8s-home/configs/minio-operator.yaml
 
@@ -95,18 +97,6 @@ data:
               name: root
               key: password
 
-
-    # https://github.com/minio/operator/blob/master/helm/tenant/values.yaml
-    tenants:
-      - name: minio
-        pools:
-          - servers: 4
-            name: pool
-            volumesPerServer: 2
-            storageClassName: longhorn-crypto-global
-        metrics:
-          enabled: true
-
     # It requires some secrets. See https://github.com/minio/operator/issues/856
 metadata:
   name: minio-operator-helm-values-c8582209
@@ -116,13 +106,13 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: ed4edc28e3eda541dd68e92bb1498f2c551d57a8dedb2c036d9a7ce04b6d6999
+    configMapHash: ee2b48d23fa0f2f8ec8791874a003f6bd43052fbcfef4cc821589c054181b6f7
   name: minio-operator
   namespace: minio-operator
 spec:
   chart:
     spec:
-      chart: minio-operator
+      chart: operator
       sourceRef:
         kind: HelmRepository
         name: minio
