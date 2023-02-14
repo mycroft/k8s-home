@@ -107,7 +107,7 @@ kind: HelmRelease
 metadata:
   annotations:
     configMapHash: ee2b48d23fa0f2f8ec8791874a003f6bd43052fbcfef4cc821589c054181b6f7
-  name: minio-operator
+  name: operator
   namespace: minio-operator
 spec:
   chart:
@@ -117,7 +117,7 @@ spec:
         kind: HelmRepository
         name: minio
         namespace: flux-system
-      version: 4.3.7
+      version: 4.5.8
   install:
     createNamespace: false
     skipCRDs: false
