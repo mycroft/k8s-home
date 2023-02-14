@@ -1,13 +1,18 @@
+# Manual upgrade:
+# helm upgrade minio-operator minio/minio-operator -n minio-operator --values ~/dev/k8s-home/configs/minio-operator.yaml
+
 # https://github.com/minio/operator/blob/master/helm/operator/values.yaml
 operator:
   env:
     - name: MINIO_ROOT_USER
       valueFrom:
         secretKeyRef:
+          name: root
           key: username
     - name: MINIO_ROOT_PASSWORD
       valueFrom:
         secretKeyRef:
+          name: root
           key: password
 
 
@@ -22,5 +27,4 @@ tenants:
     metrics:
       enabled: true
 
-# Warning: The HR was suspended
 # It requires some secrets. See https://github.com/minio/operator/issues/856
