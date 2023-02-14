@@ -17,6 +17,7 @@ func main() {
 	apps.NewPostgresOperator(app)
 	apps.NewPostgres(app)
 	apps.NewMinioOperator(app)
+	apps.NewMinio(app)
 	apps.NewTrivyChart(app)
 	apps.NewFluxCDChart(app)
 	apps.NewDexIdpChart(app)

@@ -26,7 +26,6 @@ func NewMinioOperator(scope constructs.Construct) cdk8s.Chart {
 	)
 
 	k8s_helpers.CreateExternalSecret(chart, namespace, "root")
-	k8s_helpers.CreateExternalSecret(chart, namespace, "minio-tenant")
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
@@ -45,6 +44,18 @@ func NewMinioOperator(scope constructs.Construct) cdk8s.Chart {
 		},
 		nil,
 	)
+
+	// XXX TODO: Create a service account secret
+	/*
+		apiVersion: v1
+		kind: Secret
+		metadata:
+		  name: console-sa-secret
+		  namespace: minio-operator
+		  annotations:
+		    kubernetes.io/service-account.name: console-sa
+		type: kubernetes.io/service-account-token
+	*/
 
 	return chart
 }
