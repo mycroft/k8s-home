@@ -54,7 +54,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 data:
-  values.yaml: |-
+  values.yaml: |
     # Warning: The file is called `minio-operator` but this is minio's operator that is installed, not `minio-operator` which seems to be deprecated.
 
     # Manual upgrade:
@@ -74,6 +74,21 @@ data:
               name: root
               key: password
 
+    console:
+      ingress:
+        enabled: true
+        host: minio-console.services.mkz.me
+        annotations:
+          kubernetes.io/ingress.class: traefik
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          traefik.ingress.kubernetes.io/redirect-entry-point: https
+          traefik.ingress.kubernetes.io/redirect-permanent: "true"
+          traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+        tls:
+          - hosts:
+            - minio-console.services.mkz.me
+            secretName: secret-tls-www
+
     # It requires some secrets. See https://github.com/minio/operator/issues/856
 metadata:
   name: minio-operator-helm-values-c8582209
@@ -83,7 +98,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: ee2b48d23fa0f2f8ec8791874a003f6bd43052fbcfef4cc821589c054181b6f7
+    configMapHash: 188e096ceb5b0b9205c250691f8799738c287f991fc42090dc9055157cf65055
   name: operator
   namespace: minio-operator
 spec:
