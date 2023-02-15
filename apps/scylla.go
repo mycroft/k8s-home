@@ -44,11 +44,11 @@ func NewScyllaChart(scope constructs.Construct) cdk8s.Chart {
 							Resources: &scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResources{
 								Requests: &map[string]scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesRequests{
 									"cpu":    scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesRequests_FromString(jsii.String("0.25")),
-									"memory": scyllascylladbcom.ScyllaClusterSpecDatacenterRacksAgentResourcesLimits_FromString(jsii.String("2Gi")),
+									"memory": scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesRequests_FromString(jsii.String("2Gi")),
 								},
 								Limits: &map[string]scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesLimits{
-									"cpu":    scyllascylladbcom.ScyllaClusterSpecDatacenterRacksAgentResourcesLimits_FromString(jsii.String("1")),
-									"memory": scyllascylladbcom.ScyllaClusterSpecDatacenterRacksAgentResourcesLimits_FromString(jsii.String("4Gi")),
+									"cpu":    scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesLimits_FromString(jsii.String("1")),
+									"memory": scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesLimits_FromString(jsii.String("4Gi")),
 								},
 							},
 						},
