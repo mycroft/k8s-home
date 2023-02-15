@@ -30,6 +30,9 @@ func NewScyllaChart(scope constructs.Construct) cdk8s.Chart {
 				Namespace: jsii.String("scylla"),
 			},
 			Spec: &scyllascylladbcom.ScyllaClusterSpec{
+				Version:       jsii.String("5.1"),
+				AgentVersion:  jsii.String("3.0.1"),
+				Repository:    jsii.String("scylladb/scylla"),
 				DeveloperMode: jsii.Bool(false),
 				Datacenter: &scyllascylladbcom.ScyllaClusterSpecDatacenter{
 					Name: jsii.String("eu-west-1"),
