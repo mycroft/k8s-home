@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 data:
-  values.yaml: |
+  values.yaml: |+
     # https://github.com/nats-io/k8s/blob/main/helm/charts/nats/values.yaml
 
     nats:
@@ -31,7 +31,16 @@ data:
           size: "10Gi"
           storageClassName: "longhorn-crypto-global"
 
+      # Enabling this requires to bump nats-boot-config to 0.9.3
+      # and to add to nodes the following label:
+      # nats.io/node-external-ip
       externalAccess: false
+
+    exporter:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+
 metadata:
   name: nats-helm-values-c8d24546
   namespace: nats
@@ -40,7 +49,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: ae85f6a8954bdc547ae2d24afc1a1a09ca2ab8ccd23bade1c49fe56f4eb9042b
+    configMapHash: 04efc02907114c77f75f57d90925bd8022840f1560f7070c8b0feba2a35668fd
   name: nats
   namespace: nats
 spec:
