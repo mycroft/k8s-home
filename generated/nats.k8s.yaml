@@ -31,7 +31,7 @@ data:
           size: "10Gi"
           storageClassName: "longhorn-crypto-global"
 
-      externalAccess: true
+      externalAccess: false
 metadata:
   name: nats-helm-values-c8d24546
   namespace: nats
@@ -40,7 +40,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: e07573471b9f7dd66764e7b8f13974000eb4ae45d0c2a918f5465526f0f15767
+    configMapHash: ae85f6a8954bdc547ae2d24afc1a1a09ca2ab8ccd23bade1c49fe56f4eb9042b
   name: nats
   namespace: nats
 spec:
