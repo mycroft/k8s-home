@@ -25,6 +25,6 @@ spec:
         storage:
           capacity: 32Gi
           storageClassName: longhorn-crypto-global
-  developerMode: false
+  developerMode: true
   repository: scylladb/scylla
   version: "5.1"
