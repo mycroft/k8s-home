@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -45,20 +46,20 @@ func NewMinioOperator(scope constructs.Construct) cdk8s.Chart {
 		nil,
 	)
 
-	// XXX TODO: Create a service account secret
-	/*
-		apiVersion: v1
-		kind: Secret
-		metadata:
-		  name: console-sa-secret
-		  namespace: minio-operator
-		  annotations:
-		    kubernetes.io/service-account.name: console-sa
-		type: kubernetes.io/service-account-token
-	*/
-
-	// XXX TODO: Create ingress for following service:
-	// console    ClusterIP   10.43.17.23     <none>        9090/TCP,9443/TCP   68m
+	k8s.NewKubeSecret(
+		chart,
+		jsii.String("console-sa-secret"),
+		&k8s.KubeSecretProps{
+			Metadata: &k8s.ObjectMeta{
+				Name:      jsii.String("console-sa-secret"),
+				Namespace: jsii.String(namespace),
+				Annotations: &map[string]*string{
+					"kubernetes.io/service-account.name": jsii.String("console-sa"),
+				},
+			},
+			Type: jsii.String("kubernetes.io/service-account-token"),
+		},
+	)
 
 	return chart
 }
