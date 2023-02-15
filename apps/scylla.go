@@ -39,7 +39,7 @@ func NewScyllaChart(scope constructs.Construct) cdk8s.Chart {
 					Racks: &[]*scyllascylladbcom.ScyllaClusterSpecDatacenterRacks{
 						{
 							Name:    jsii.String("eu-west-1a"),
-							Members: jsii.Number(3),
+							Members: jsii.Number(2),
 							Storage: &scyllascylladbcom.ScyllaClusterSpecDatacenterRacksStorage{
 								Capacity:         jsii.String("32Gi"),
 								StorageClassName: jsii.String("longhorn-crypto-global"),
@@ -52,6 +52,23 @@ func NewScyllaChart(scope constructs.Construct) cdk8s.Chart {
 								Limits: &map[string]scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesLimits{
 									"cpu":    scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesLimits_FromString(jsii.String("1")),
 									"memory": scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesLimits_FromString(jsii.String("4Gi")),
+								},
+							},
+							Placement: &scyllascylladbcom.ScyllaClusterSpecDatacenterRacksPlacement{
+								PodAntiAffinity: &scyllascylladbcom.ScyllaClusterSpecDatacenterRacksPlacementPodAntiAffinity{
+									RequiredDuringSchedulingIgnoredDuringExecution: &[]*scyllascylladbcom.ScyllaClusterSpecDatacenterRacksPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution{
+										{
+											TopologyKey: jsii.String("kubernetes.io/hostname"),
+											Namespaces: &[]*string{
+												jsii.String(namespace),
+											},
+											LabelSelector: &scyllascylladbcom.ScyllaClusterSpecDatacenterRacksPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector{
+												MatchLabels: &map[string]*string{
+													"scylla/cluster": jsii.String("scylla-cluster"),
+												},
+											},
+										},
+									},
 								},
 							},
 						},
