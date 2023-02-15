@@ -7,8 +7,8 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewNATSChart(scope constructs.Construct) cdk8s.Chart {
-	namespace := "nats"
+func NewScyllaOperatorChart(scope constructs.Construct) cdk8s.Chart {
+	namespace := "scylla-operator"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -20,23 +20,23 @@ func NewNATSChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"nats",
-		"https://nats-io.github.io/k8s/helm/charts/",
+		"scylla",
+		"https://scylla-operator-charts.storage.googleapis.com/stable",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"nats",
-		"nats",
-		"nats",
-		"0.19.9",
+		"scylla",
+		"scylla-operator",
+		"scylla-operator",
+		"v1.7.4",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"nats.yaml",
+				"scylla-operator.yaml",
 			),
 		},
 		nil,
