@@ -1,0 +1,16 @@
+# https://github.com/nats-io/k8s/blob/main/helm/charts/nats/values.yaml
+
+nats:
+  jetstream:
+    enabled: true
+
+    memStorage:
+      enabled: true
+      size: "2Gi"
+
+    fileStorage:
+      enabled: true
+      size: "10Gi"
+      storageClassName: "longhorn-crypto-global"
+
+  externalAccess: false
