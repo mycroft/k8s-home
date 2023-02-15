@@ -33,7 +33,7 @@ func NewScyllaChart(scope constructs.Construct) cdk8s.Chart {
 				Version:       jsii.String("5.1"),
 				AgentVersion:  jsii.String("3.0.1"),
 				Repository:    jsii.String("scylladb/scylla"),
-				DeveloperMode: jsii.Bool(false),
+				DeveloperMode: jsii.Bool(true), // using DeveloperMode to bypass FS checks
 				Datacenter: &scyllascylladbcom.ScyllaClusterSpecDatacenter{
 					Name: jsii.String("eu-west-1"),
 					Racks: &[]*scyllascylladbcom.ScyllaClusterSpecDatacenterRacks{
