@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: scylla
+---
+apiVersion: scylla.scylladb.com/v1
+kind: ScyllaCluster
+metadata:
+  name: scylla-cluster
+  namespace: scylla
+spec:
+  datacenter:
+    name: eu-west-1
+    racks:
+      - members: 3
+        name: eu-west-1a
+        storage:
+          capacity: 32Gi
+          storageClassName: longhorn-crypto-global
+  developerMode: false
