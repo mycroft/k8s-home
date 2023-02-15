@@ -57,9 +57,6 @@ data:
   values.yaml: |
     # Warning: The file is called `minio-operator` but this is minio's operator that is installed, not `minio-operator` which seems to be deprecated.
 
-    # Manual upgrade:
-    # helm upgrade minio-operator minio/minio-operator -n minio-operator --values ~/dev/k8s-home/configs/minio-operator.yaml
-
     # https://github.com/minio/operator/blob/master/helm/operator/values.yaml
     operator:
       env:
@@ -88,8 +85,6 @@ data:
           - hosts:
             - minio-console.services.mkz.me
             secretName: secret-tls-www
-
-    # It requires some secrets. See https://github.com/minio/operator/issues/856
 metadata:
   name: minio-operator-helm-values-c8582209
   namespace: minio-operator
@@ -98,7 +93,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 188e096ceb5b0b9205c250691f8799738c287f991fc42090dc9055157cf65055
+    configMapHash: c63145dbc6534662f0f6a5f1a74b704596b953001a3c84ce206ace3a0fc769ad
   name: operator
   namespace: minio-operator
 spec:
@@ -119,3 +114,12 @@ spec:
     - kind: ConfigMap
       name: minio-operator-helm-values-c8582209
       valuesKey: values.yaml
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    kubernetes.io/service-account.name: console-sa
+  name: console-sa-secret
+  namespace: minio-operator
+type: kubernetes.io/service-account-token

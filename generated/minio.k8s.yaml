@@ -41,3 +41,76 @@ spec:
     template:
       engineVersion: v2
       type: Opaque
+---
+apiVersion: minio.min.io/v2
+kind: Tenant
+metadata:
+  name: minio-storage
+  namespace: minio
+spec:
+  credsSecret:
+    name: minio-tenant
+  env:
+    - name: MINIO_DOMAIN
+      value: minio-storage.services.mkz.me
+    - name: MINIO_SERVER_URL
+      value: https://minio-storage.services.mkz.me
+    - name: MINIO_BROWSER_REDIRECT_URL
+      value: https://minio-storage-console.services.mkz.me
+  pools:
+    - containerSecurityContext:
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      name: pool
+      servers: 4
+      volumeClaimTemplate:
+        metadata:
+          name: data
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi
+          storageClassName: longhorn-crypto-global
+      volumesPerServer: 2
+  requestAutoCert: false
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+  name: minio-minio-storage-ingress-c84ffb72
+  namespace: minio
+spec:
+  rules:
+    - host: minio-storage.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: minio
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+    - host: minio-storage-console.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: minio-storage-console
+                port:
+                  number: 9090
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - minio-storage.services.mkz.me
+        - minio-storage-console.services.mkz.me
+      secretName: secret-tls-www
