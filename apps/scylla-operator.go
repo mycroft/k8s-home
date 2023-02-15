@@ -30,7 +30,7 @@ func NewScyllaOperatorChart(scope constructs.Construct) cdk8s.Chart {
 		"scylla",
 		"scylla-operator",
 		"scylla-operator",
-		"v1.7.4",
+		"v1.8.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
