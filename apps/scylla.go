@@ -41,6 +41,16 @@ func NewScyllaChart(scope constructs.Construct) cdk8s.Chart {
 								Capacity:         jsii.String("32Gi"),
 								StorageClassName: jsii.String("longhorn-crypto-global"),
 							},
+							Resources: &scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResources{
+								Requests: &map[string]scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesRequests{
+									"cpu":    scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesRequests_FromString(jsii.String("0.25")),
+									"memory": scyllascylladbcom.ScyllaClusterSpecDatacenterRacksAgentResourcesLimits_FromString(jsii.String("2Gi")),
+								},
+								Limits: &map[string]scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesLimits{
+									"cpu":    scyllascylladbcom.ScyllaClusterSpecDatacenterRacksAgentResourcesLimits_FromString(jsii.String("1")),
+									"memory": scyllascylladbcom.ScyllaClusterSpecDatacenterRacksAgentResourcesLimits_FromString(jsii.String("4Gi")),
+								},
+							},
 						},
 					},
 				},
