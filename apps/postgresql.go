@@ -40,6 +40,7 @@ func NewPostgres(scope constructs.Construct) cdk8s.Chart {
 				Databases: &map[string]*string{
 					"grafana":  jsii.String("grafana-admin"),
 					"testaroo": jsii.String("testaroo-admin"),
+					"wallabag": jsii.String("wallabag-admin"),
 				},
 				Users: &map[string]*[]acidzalando.PostgresqlSpecUsers{
 					"grafana-admin": {
@@ -52,6 +53,11 @@ func NewPostgres(scope constructs.Construct) cdk8s.Chart {
 						acidzalando.PostgresqlSpecUsers_CREATEDB,
 					},
 					"testaroo": {},
+					"wallabag-admin": {
+						acidzalando.PostgresqlSpecUsers_SUPERUSER,
+						acidzalando.PostgresqlSpecUsers_CREATEDB,
+					},
+					"wallabag": {},
 				},
 				Postgresql: &acidzalando.PostgresqlSpecPostgresql{
 					Version: acidzalando.PostgresqlSpecPostgresqlVersion_VALUE_15,
