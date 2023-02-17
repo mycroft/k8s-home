@@ -9,6 +9,7 @@ spec:
   databases:
     grafana: grafana-admin
     testaroo: testaroo-admin
+    wallabag: wallabag-admin
   numberOfInstances: 1
   postgresql:
     version: "15"
@@ -20,6 +21,10 @@ spec:
       - createdb
     testaroo: []
     testaroo-admin:
+      - superuser
+      - createdb
+    wallabag: []
+    wallabag-admin:
       - superuser
       - createdb
   volume:
