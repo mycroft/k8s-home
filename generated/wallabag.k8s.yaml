@@ -1,0 +1,170 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wallabag
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: wallabag
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: wallabag-es-postgresql-c87857a4
+  namespace: wallabag
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/wallabag/postgresql
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: wallabag-es-mailrelay-c8a3e685
+  namespace: wallabag
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/wallabag/mailrelay
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: mailrelay
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wallabag-deploy-c868d268
+  namespace: wallabag
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: wallabag
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: wallabag
+    spec:
+      containers:
+        - env:
+            - name: SYMFONY__ENV__DATABASE_DRIVER
+              value: pdo_pgsql
+            - name: SYMFONY__ENV__DATABASE_HOST
+              value: postgres-instance.postgres
+            - name: SYMFONY__ENV__DATABASE_PORT
+              value: "5432"
+            - name: SYMFONY__ENV__DATABASE_NAME
+              value: wallabag
+            - name: POPULATE_DATABASE
+              value: "True"
+            - name: SYMFONY__ENV__DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: postgresql
+            - name: SYMFONY__ENV__DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: postgresql
+            - name: SYMFONY__ENV__DOMAIN_NAME
+              value: https://wallabag.services.mkz.me
+            - name: SYMFONY__ENV__MAILER_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: mailrelay
+            - name: SYMFONY__ENV__MAILER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: mailrelay
+            - name: SYMFONY__ENV__MAILER_TRANSPORT
+              value: smtp
+            - name: SYMFONY__ENV__MAILER_HOST
+              value: maki.mkz.me
+            - name: SYMFONY__ENV__MAILER_PORT
+              value: "465"
+            - name: SYMFONY__ENV__MAILER_ENCRYPTION
+              value: ssl
+            - name: SYMFONY__ENV__MAILER_AUTH_MODE
+              value: plain
+            - name: SYMFONY__ENV__FROM_EMAIL
+              value: wallabag@mkz.me
+            - name: SYMFONY__ENV__FOSUSER_REGISTRATION
+              value: "false"
+          image: wallabag/wallabag:2.5.4
+          name: wallabag
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wallabag-svc-c8a62292
+  namespace: wallabag
+spec:
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app.kubernetes.io/name: wallabag
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+  name: wallabag-ingress-c80f0a9c
+  namespace: wallabag
+spec:
+  rules:
+    - host: wallabag.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: wallabag-svc-c8a62292
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - wallabag.services.mkz.me
+      secretName: secret-tls-www
