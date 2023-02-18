@@ -41,18 +41,19 @@ func createClusterIssueur(chart constructs.Construct, name, server string) certm
 }
 
 func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
+	namespace := "cert-manager"
 	appName := "cert-manager"
 
 	chart := cdk8s.NewChart(
 		scope,
-		jsii.String(appName),
+		jsii.String(namespace),
 		&cdk8s.ChartProps{},
 	)
 
 	// create a namespace for cert-manager
 	// reason to create the namespace is that flux will append the release name using the targetNamespace used.
 	// therefore, the HelmRepository will lie in fluxcd, while HelmRelease will live in cert-manager.
-	k8s_helpers.NewNamespace(chart, appName)
+	k8s_helpers.NewNamespace(chart, namespace)
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
@@ -62,7 +63,7 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
-		appName,
+		namespace,
 		"jetstack",
 		appName,
 		appName,
@@ -70,7 +71,13 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		map[string]string{
 			"installCRDs": "true",
 		},
-		nil,
+		[]k8s_helpers.HelmReleaseConfigMap{
+			k8s_helpers.CreateHelmValuesConfig(
+				chart,
+				namespace,
+				"cert-manager.yaml",
+			),
+		},
 		nil,
 	)
 
