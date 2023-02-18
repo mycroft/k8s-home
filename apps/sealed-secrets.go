@@ -8,11 +8,12 @@ import (
 )
 
 func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
+	namespace := "sealed-secrets"
 	appName := "sealed-secrets"
 
 	chart := cdk8s.NewChart(
 		scope,
-		jsii.String(appName),
+		jsii.String(namespace),
 		&cdk8s.ChartProps{},
 	)
 
@@ -34,7 +35,13 @@ func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
 		map[string]string{
 			"fullnameOverride": "sealed-secrets-controller",
 		},
-		nil,
+		[]k8s_helpers.HelmReleaseConfigMap{
+			k8s_helpers.CreateHelmValuesConfig(
+				chart,
+				namespace,
+				"sealed-secrets.yaml",
+			),
+		},
 		nil,
 	)
 
