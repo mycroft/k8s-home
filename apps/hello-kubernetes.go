@@ -30,6 +30,33 @@ func NewHelloKubernetesChart(scope constructs.Construct) cdk8s.Chart {
 		"app.kubernetes.io/name": jsii.String(appName),
 	}
 
+	env := []*k8s.EnvVar{
+		{
+			Name: jsii.String("KUBERNETES_NAMESPACE"),
+			ValueFrom: &k8s.EnvVarSource{
+				FieldRef: &k8s.ObjectFieldSelector{
+					FieldPath: jsii.String("metadata.namespace"),
+				},
+			},
+		},
+		{
+			Name: jsii.String("KUBERNETES_POD_NAME"),
+			ValueFrom: &k8s.EnvVarSource{
+				FieldRef: &k8s.ObjectFieldSelector{
+					FieldPath: jsii.String("metadata.name"),
+				},
+			},
+		},
+		{
+			Name: jsii.String("KUBERNETES_NODE_NAME"),
+			ValueFrom: &k8s.EnvVarSource{
+				FieldRef: &k8s.ObjectFieldSelector{
+					FieldPath: jsii.String("spec.nodeName"),
+				},
+			},
+		},
+	}
+
 	k8s.NewKubeDeployment(
 		chart,
 		jsii.String("deploy"),
@@ -50,6 +77,7 @@ func NewHelloKubernetesChart(scope constructs.Construct) cdk8s.Chart {
 							{
 								Name:  jsii.String(appName),
 								Image: jsii.String("paulbouwer/hello-kubernetes:1.10.1"),
+								Env:   &env,
 							},
 						},
 					},
