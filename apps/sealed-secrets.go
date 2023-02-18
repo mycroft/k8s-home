@@ -17,7 +17,7 @@ func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, appName)
+	k8s_helpers.NewNamespace(chart, namespace)
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
@@ -27,7 +27,7 @@ func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
-		"kube-system",    // namespace
+		namespace,        // namespace
 		"sealed-secrets", // repo name
 		"sealed-secrets", // chart name
 		appName,          // release name
