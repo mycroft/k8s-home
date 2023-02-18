@@ -32,7 +32,13 @@ func NewExternalSecretsChart(scope constructs.Construct) cdk8s.Chart {
 		"external-secrets", // release name
 		"0.6.0",
 		map[string]string{},
-		[]k8s_helpers.HelmReleaseConfigMap{},
+		[]k8s_helpers.HelmReleaseConfigMap{
+			k8s_helpers.CreateHelmValuesConfig(
+				chart,
+				namespace,
+				"external-secrets.yaml",
+			),
+		},
 		nil,
 	)
 
