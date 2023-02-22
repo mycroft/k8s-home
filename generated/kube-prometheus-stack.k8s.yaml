@@ -278,12 +278,58 @@ data:
       enabled: true
       endpoints:
       - 10.0.0.2
+
+
+    additionalPrometheusRulesMap:
+      vault-alerts:
+        groups:
+        - name: vault
+          rules:
+            - alert: VaultUp
+              expr: avg by(instance) (vault_up) != 1
+              for: 10m
+              labels:
+                service: vault
+                severity: critical
+              annotations:
+                summary: "Vault instance `{{$labels.instance}}` is down"
+                description: "The Vault instance at `{{$labels.instance}}` has been down for the last 10m"
+
+            - alert: VaultUninitialized
+              expr: avg by(instance) (vault_initialized) != 1
+              for: 10m
+              labels:
+                service: vault
+                severity: critical
+              annotations:
+                summary: "Vault instance `{{$labels.instance}}` is uninitialized"
+                description: "The Vault instance at `{{$labels.instance}}` has been uninitialized for the last 10m"
+
+            - alert: VaultSealed
+              expr: avg by(instance) (vault_sealed) != 0
+              for: 10m
+              labels:
+                service: vault
+                severity: critical
+              annotations:
+                summary: "Vault instance `{{$labels.instance}}` is sealed"
+                description: "The Vault instance at `{{$labels.instance}}` has been sealed for the last 10m"
+
+            - alert: VaultStandby
+              expr: count(avg by(instance) (vault_standby) == 0) != 1
+              for: 10m
+              labels:
+                service: vault
+                severity: critical
+              annotations:
+                summary: "There are {{ $value }} active Vault instance(s)"
+                description: "The Vault instance at `{{$labels.instance}}` has been Standby for the last 10m"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: f068f06256e8a5e461cf809fadc24b3a4436148e6d73d279fe9f102e24bf3505
+    configMapHash: 2cf0ac37beed31188311f06ce17444908b977bb265c8c907ed6ae3d2cac6cd82
   name: prometheus
   namespace: monitoring
 spec:
