@@ -39,6 +39,40 @@ data:
         storageClass: longhorn-crypto-global
         accessMode: ReadWriteOnce
 
+
+      standalone:
+        config: |
+          ui = true
+
+          listener "tcp" {
+            tls_disable = 1
+            address = "[::]:8200"
+            cluster_address = "[::]:8201"
+            # Enable unauthenticated metrics access (necessary for Prometheus Operator)
+            telemetry {
+              unauthenticated_metrics_access = "true"
+            }
+          }
+          storage "file" {
+            path = "/vault/data"
+          }
+
+          # Example configuration for using auto-unseal, using Google Cloud KMS. The
+          # GKMS keys must already exist, and the cluster must have a service account
+          # that is authorized to access GCP KMS.
+          #seal "gcpckms" {
+          #   project     = "vault-helm-dev"
+          #   region      = "global"
+          #   key_ring    = "vault-helm-unseal-kr"
+          #   crypto_key  = "vault-helm-unseal-key"
+          #}
+
+          # Example configuration for enabling Prometheus metrics in your config.
+          telemetry {
+            prometheus_retention_time = "30s"
+            disable_hostname = true
+          }
+
       ingress:
         enabled: true
         annotations:
@@ -73,7 +107,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 1680a104290cd4d4129f5894b962f3d70090b03a9c797f14cf9c0e46f4391e2d
+    configMapHash: 9cfa6d65553cde358774f1ffaeb03988124c7ade185371823fa52d2d57662f36
   name: vault
   namespace: vault
 spec:
