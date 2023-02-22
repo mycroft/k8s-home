@@ -14,6 +14,9 @@ spec:
 ---
 apiVersion: v1
 kind: ConfigMap
+metadata:
+  name: trivy-helm-values-c80e8437
+  namespace: trivy-system
 data:
   values.yaml: |
     # https://github.com/aquasecurity/trivy/blob/main/helm/trivy/values.yaml
@@ -25,9 +28,6 @@ data:
       limits:
         cpu: 1
         memory: 2Gi
-metadata:
-  name: trivy-helm-values-c80e8437
-  namespace: trivy-system
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease

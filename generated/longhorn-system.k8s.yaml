@@ -18,9 +18,9 @@ spec:
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
-allowVolumeExpansion: true
 metadata:
   name: longhorn-crypto-global
+allowVolumeExpansion: true
 parameters:
   csi.storage.k8s.io/node-publish-secret-name: longhorn-crypto
   csi.storage.k8s.io/node-publish-secret-namespace: longhorn-system
@@ -66,13 +66,13 @@ spec:
 ---
 apiVersion: v1
 kind: ConfigMap
+metadata:
+  name: longhorn-system-helm-values-c84bb4f1
+  namespace: longhorn-system
 data:
   values.yaml: |
     defaultSettings:
         defaultDataPath: /data/k3s-longhorn-storage/
-metadata:
-  name: longhorn-system-helm-values-c84bb4f1
-  namespace: longhorn-system
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease

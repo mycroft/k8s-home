@@ -53,6 +53,9 @@ spec:
 ---
 apiVersion: v1
 kind: ConfigMap
+metadata:
+  name: minio-operator-helm-values-c8582209
+  namespace: minio-operator
 data:
   values.yaml: |
     # Warning: The file is called `minio-operator` but this is minio's operator that is installed, not `minio-operator` which seems to be deprecated.
@@ -85,9 +88,6 @@ data:
           - hosts:
             - minio-console.services.mkz.me
             secretName: secret-tls-www
-metadata:
-  name: minio-operator-helm-values-c8582209
-  namespace: minio-operator
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease

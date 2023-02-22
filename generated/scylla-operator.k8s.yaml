@@ -14,11 +14,11 @@ spec:
 ---
 apiVersion: v1
 kind: ConfigMap
-data:
-  values.yaml: "# https://github.com/scylladb/scylla-operator/blob/master/helm/scylla-operator/values.yaml"
 metadata:
   name: scylla-operator-helm-values-c8254b9a
   namespace: scylla-operator
+data:
+  values.yaml: "# https://github.com/scylladb/scylla-operator/blob/master/helm/scylla-operator/values.yaml"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease

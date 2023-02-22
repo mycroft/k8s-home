@@ -14,6 +14,9 @@ spec:
 ---
 apiVersion: v1
 kind: ConfigMap
+metadata:
+  name: kubernetes-dashboard-helm-values-c8caabd2
+  namespace: kubernetes-dashboard
 data:
   values.yaml: |
     # See https://github.com/kubernetes/dashboard/blob/master/charts/helm-chart/kubernetes-dashboard/values.yaml
@@ -46,9 +49,6 @@ data:
 
     metricsScraper:
       enabled: true
-metadata:
-  name: kubernetes-dashboard-helm-values-c8caabd2
-  namespace: kubernetes-dashboard
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease

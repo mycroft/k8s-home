@@ -30,6 +30,9 @@ spec:
 ---
 apiVersion: v1
 kind: ConfigMap
+metadata:
+  name: dex-idp-helm-values-c8c7e322
+  namespace: dex-idp
 data:
   values.yaml: |
     # https://github.com/dexidp/helm-charts/blob/master/charts/dex/values.yaml
@@ -133,9 +136,6 @@ data:
       enabled: true
       labels:
         release: prometheus
-metadata:
-  name: dex-idp-helm-values-c8c7e322
-  namespace: dex-idp
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
@@ -165,10 +165,10 @@ spec:
 ---
 apiVersion: v1
 kind: Secret
-immutable: false
 metadata:
   name: dex-config
   namespace: dex-idp
+immutable: false
 stringData:
   config.yaml: |
     # See https://github.com/dexidp/dex/blob/master/examples/config-dev.yaml

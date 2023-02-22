@@ -14,6 +14,9 @@ spec:
 ---
 apiVersion: v1
 kind: ConfigMap
+metadata:
+  name: cert-manager-helm-values-c8b1f36c
+  namespace: cert-manager
 data:
   values.yaml: |
     # https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
@@ -22,9 +25,6 @@ data:
       enabled: true
       servicemonitor:
         enabled: true
-metadata:
-  name: cert-manager-helm-values-c8b1f36c
-  namespace: cert-manager
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease

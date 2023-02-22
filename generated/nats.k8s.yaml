@@ -14,6 +14,9 @@ spec:
 ---
 apiVersion: v1
 kind: ConfigMap
+metadata:
+  name: nats-helm-values-c8d24546
+  namespace: nats
 data:
   values.yaml: |+
     # https://github.com/nats-io/k8s/blob/main/helm/charts/nats/values.yaml
@@ -41,9 +44,6 @@ data:
       serviceMonitor:
         enabled: true
 
-metadata:
-  name: nats-helm-values-c8d24546
-  namespace: nats
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease

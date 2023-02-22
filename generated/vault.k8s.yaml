@@ -14,8 +14,11 @@ spec:
 ---
 apiVersion: v1
 kind: ConfigMap
+metadata:
+  name: vault-helm-values-c8b20a1d
+  namespace: vault
 data:
-  values.yaml: |
+  values.yaml: |-
     # https://github.com/hashicorp/vault-helm/blob/main/values.yaml
 
     server:
@@ -59,15 +62,18 @@ data:
 
     ui:
       enabled: true
-metadata:
-  name: vault-helm-values-c8b20a1d
-  namespace: vault
+
+    serverTelemetry:
+      serviceMonitor:
+        enabled: true
+      prometheusRules:
+        enabled: true
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 4bcf788312297e73c9f3a5c859d5b1c338579f40e15ec3245598b983ada090f8
+    configMapHash: 1680a104290cd4d4129f5894b962f3d70090b03a9c797f14cf9c0e46f4391e2d
   name: vault
   namespace: vault
 spec:
