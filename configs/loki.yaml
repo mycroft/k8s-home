@@ -12,8 +12,8 @@ loki:
       s3: null
       endpoint: http://minio-storage-hl.minio:9000
       region: null
-      secretAccessKey: $MINIO_SECRET_ACCESS_KEY
-      accessKeyId: $MINIO_ACCESS_KEY_ID
+      secretAccessKey: ${MINIO_SECRET_ACCESS_KEY}
+      accessKeyId: ${MINIO_ACCESS_KEY_ID}
       s3ForcePathStyle: true
       insecure: true
       http_config: {}
