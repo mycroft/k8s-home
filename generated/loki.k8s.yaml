@@ -78,6 +78,18 @@ data:
           insecure: true
           http_config: {}
 
+    write:
+      persistence:
+        enableStatefulSetAutoDeletePVC: false
+        size: 10Gi
+        storageClass: longhorn-crypto-global
+
+    read:
+      persistence:
+        enableStatefulSetAutoDeletePVC: false
+        size: 10Gi
+        storageClass: longhorn-crypto-global
+
     env:
       - name: MINIO_ACCESS_KEY_ID
         valueFrom:
@@ -94,7 +106,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 9dda046307a6ec206fa57486d8c670d4a7b221b5865ff20d6155dd8a9886365d
+    configMapHash: bdb4a7e4db96132df61650fa46e975a602ad7ebe9b14cc4d5fd2f1091e39c03f
   name: loki
   namespace: loki
 spec:
