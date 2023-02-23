@@ -1,0 +1,8 @@
+# https://github.com/grafana/helm-charts/blob/main/charts/promtail/values.yaml
+
+config:
+  clients:
+    - url: http://loki-gateway.loki/loki/api/v1/push
+
+serviceMonitor:
+  enabled: true

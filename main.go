@@ -20,6 +20,7 @@ func main() {
 	apps.NewMinio(app)
 	apps.NewNATSChart(app)
 	apps.NewLokiChart(app)
+	apps.NewPromtailChart(app)
 	apps.NewScyllaOperatorChart(app)
 	apps.NewScyllaChart(app)
 	apps.NewTrivyChart(app)
