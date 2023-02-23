@@ -80,7 +80,7 @@ data:
 
     write:
       extraArgs:
-      - config.expand-env: true
+      - --config.expand-env=true
 
       extraEnv:
       - name: MINIO_ACCESS_KEY_ID
@@ -101,7 +101,7 @@ data:
 
     read:
       extraArgs:
-      - config.expand-env: true
+      - --config.expand-env=true
 
       extraEnv:
       - name: MINIO_ACCESS_KEY_ID
@@ -124,7 +124,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 2cd5434fe5516e078d7dfad218a64b3942b471578a680631ae71740b682fbb85
+    configMapHash: 03854e23958ed4476d5e4bfe08735ce9ad07a9b2f30a58207ec8778a8b6dd224
   name: loki
   namespace: loki
 spec:
