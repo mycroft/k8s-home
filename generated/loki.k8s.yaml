@@ -60,6 +60,7 @@ data:
   values.yaml: |
     # https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
     loki:
+      auth_enabled: false
       commonConfig:
         replication_factor: 1
       storage:
@@ -124,7 +125,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 03854e23958ed4476d5e4bfe08735ce9ad07a9b2f30a58207ec8778a8b6dd224
+    configMapHash: b1608488c82842d0ff429b5143c4714c55819bb4df8709c2b884ed1b58b53868
   name: loki
   namespace: loki
 spec:
