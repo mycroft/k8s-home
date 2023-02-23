@@ -41,7 +41,7 @@ write:
 
 read:
   extraArgs:
-    config.expand-env: true
+  - config.expand-env: true
 
   extraEnv:
   - name: MINIO_ACCESS_KEY_ID
