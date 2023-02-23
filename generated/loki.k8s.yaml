@@ -70,7 +70,7 @@ data:
         type: s3
         s3:
           s3: null
-          endpoint: http://minio.minio:9000
+          endpoint: http://minio-storage-hl.minio:9000
           region: null
           secretAccessKey: $MINIO_SECRET_ACCESS_KEY
           accessKeyId: $MINIO_ACCESS_KEY_ID
@@ -106,7 +106,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: bdb4a7e4db96132df61650fa46e975a602ad7ebe9b14cc4d5fd2f1091e39c03f
+    configMapHash: 0bbf8c72b7d1ef8ba243b352d0ece1e9f7581059664a8a0c335815ede887b2a5
   name: loki
   namespace: loki
 spec:
