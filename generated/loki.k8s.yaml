@@ -79,6 +79,9 @@ data:
           http_config: {}
 
     write:
+      extraArgs:
+        config.expand-env: true
+
       extraEnv:
       - name: MINIO_ACCESS_KEY_ID
         valueFrom:
@@ -97,6 +100,9 @@ data:
         storageClass: longhorn-crypto-global
 
     read:
+      extraArgs:
+        config.expand-env: true
+
       extraEnv:
       - name: MINIO_ACCESS_KEY_ID
         valueFrom:
@@ -118,7 +124,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 29b638946eb67bf0f97c487901fb70f00fe63982ea98bfceefdbe9a48d895006
+    configMapHash: b3353d6ae7ddbe557551ab1d1afbbc9adedc11f5085ec4958dda5006c3152bf5
   name: loki
   namespace: loki
 spec:
