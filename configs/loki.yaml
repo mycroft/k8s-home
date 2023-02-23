@@ -19,6 +19,9 @@ loki:
       http_config: {}
 
 write:
+  extraArgs:
+    config.expand-env: true
+
   extraEnv:
   - name: MINIO_ACCESS_KEY_ID
     valueFrom:
@@ -37,6 +40,9 @@ write:
     storageClass: longhorn-crypto-global
 
 read:
+  extraArgs:
+    config.expand-env: true
+
   extraEnv:
   - name: MINIO_ACCESS_KEY_ID
     valueFrom:
