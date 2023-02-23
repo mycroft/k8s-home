@@ -18,6 +18,18 @@ loki:
       insecure: true
       http_config: {}
 
+write:
+  persistence:
+    enableStatefulSetAutoDeletePVC: false
+    size: 10Gi
+    storageClass: longhorn-crypto-global
+
+read:
+  persistence:
+    enableStatefulSetAutoDeletePVC: false
+    size: 10Gi
+    storageClass: longhorn-crypto-global
+
 env:
   - name: MINIO_ACCESS_KEY_ID
     valueFrom:
