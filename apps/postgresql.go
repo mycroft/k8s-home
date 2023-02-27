@@ -22,6 +22,9 @@ func NewPostgres(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.NewNamespace(chart, namespace)
 
 	// Spawn a PostgreSQL server for multiple databases.
+	// Don't forget that "users" do not have the right to change stuff in schemas.
+	// Therefore you might want to do the following:
+	// GRANT CREATE ON SCHEMA public TO PUBLIC;
 	acidzalando.NewPostgresql(
 		chart,
 		jsii.String(fmt.Sprintf("%s-instance", namespace)),
