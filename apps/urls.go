@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	urlsImage = "git.mkz.me/mycroft/urls:0.0.2"
+	urlsImage = "git.mkz.me/mycroft/urls:latest"
 )
 
 func NewUrlsChart(scope constructs.Construct) cdk8s.Chart {
@@ -49,8 +49,9 @@ func NewUrlsChart(scope constructs.Construct) cdk8s.Chart {
 					Spec: &k8s.PodSpec{
 						Containers: &[]*k8s.Container{
 							{
-								Name:  jsii.String(appName),
-								Image: jsii.String(urlsImage),
+								ImagePullPolicy: jsii.String("Always"),
+								Name:            jsii.String(appName),
+								Image:           jsii.String(urlsImage),
 							},
 						},
 					},
