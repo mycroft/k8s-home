@@ -18,7 +18,7 @@ spec:
         app.kubernetes.io/name: urls
     spec:
       containers:
-        - image: git.mkz.me/mycroft/urls:0.0.1
+        - image: git.mkz.me/mycroft/urls:0.0.2
           name: urls
 ---
 apiVersion: v1
