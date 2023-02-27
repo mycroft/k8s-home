@@ -32,6 +32,7 @@ func main() {
 	apps.NewHelloKubernetesChart(app)
 	apps.NewWhatIsMyIpChart(app)
 	apps.NewWallabagChart(app)
+	apps.NewUrlsChart(app)
 
 	app.Synth()
 }
