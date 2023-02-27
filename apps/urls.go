@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	urlsImage = "git.mkz.me/mycroft/urls:0.0.1"
+	urlsImage = "git.mkz.me/mycroft/urls:0.0.2"
 )
 
 func NewUrlsChart(scope constructs.Construct) cdk8s.Chart {
