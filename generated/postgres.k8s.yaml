@@ -10,6 +10,7 @@ metadata:
   namespace: postgres
 spec:
   databases:
+    freshrss: freshrss-admin
     grafana: grafana-admin
     testaroo: testaroo-admin
     wallabag: wallabag-admin
@@ -18,6 +19,10 @@ spec:
     version: "15"
   teamId: postgres
   users:
+    freshrss: []
+    freshrss-admin:
+      - superuser
+      - createdb
     grafana: []
     grafana-admin:
       - superuser
