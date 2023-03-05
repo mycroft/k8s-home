@@ -33,6 +33,7 @@ func main() {
 	apps.NewWhatIsMyIpChart(app)
 	apps.NewWallabagChart(app)
 	apps.NewUrlsChart(app)
+	apps.NewFreshRSS(app)
 
 	app.Synth()
 }

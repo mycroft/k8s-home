@@ -21,6 +21,24 @@ func NewPostgres(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.NewNamespace(chart, namespace)
 
+	databases := []string{
+		"grafana",
+		"testaroo",
+		"wallabag",
+		"freshrss",
+	}
+
+	databaseSpecs := map[string]*string{}
+	databaseUsers := map[string]*[]acidzalando.PostgresqlSpecUsers{}
+	for _, database := range databases {
+		databaseSpecs[database] = jsii.String(fmt.Sprintf("%s-admin", database))
+		databaseUsers[database] = &[]acidzalando.PostgresqlSpecUsers{}
+		databaseUsers[fmt.Sprintf("%s-admin", database)] = &[]acidzalando.PostgresqlSpecUsers{
+			acidzalando.PostgresqlSpecUsers_SUPERUSER,
+			acidzalando.PostgresqlSpecUsers_CREATEDB,
+		}
+	}
+
 	// Spawn a PostgreSQL server for multiple databases.
 	// Don't forget that "users" do not have the right to change stuff in schemas.
 	// Therefore you might want to do the following:
@@ -40,28 +58,8 @@ func NewPostgres(scope constructs.Construct) cdk8s.Chart {
 					Size:         jsii.String("64Gi"),
 				},
 				NumberOfInstances: jsii.Number(float64(1)),
-				Databases: &map[string]*string{
-					"grafana":  jsii.String("grafana-admin"),
-					"testaroo": jsii.String("testaroo-admin"),
-					"wallabag": jsii.String("wallabag-admin"),
-				},
-				Users: &map[string]*[]acidzalando.PostgresqlSpecUsers{
-					"grafana-admin": {
-						acidzalando.PostgresqlSpecUsers_SUPERUSER,
-						acidzalando.PostgresqlSpecUsers_CREATEDB,
-					},
-					"grafana": {},
-					"testaroo-admin": {
-						acidzalando.PostgresqlSpecUsers_SUPERUSER,
-						acidzalando.PostgresqlSpecUsers_CREATEDB,
-					},
-					"testaroo": {},
-					"wallabag-admin": {
-						acidzalando.PostgresqlSpecUsers_SUPERUSER,
-						acidzalando.PostgresqlSpecUsers_CREATEDB,
-					},
-					"wallabag": {},
-				},
+				Databases:         &databaseSpecs,
+				Users:             &databaseUsers,
 				Postgresql: &acidzalando.PostgresqlSpecPostgresql{
 					Version: acidzalando.PostgresqlSpecPostgresqlVersion_VALUE_15,
 				},
