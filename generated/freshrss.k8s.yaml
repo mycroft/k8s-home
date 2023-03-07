@@ -40,16 +40,29 @@ spec:
               value: "1000"
             - name: TZ
               value: Etc/UTC
-          image: linuxserver/freshrss:1.21.0
+          image: freshrss/freshrss:1.21.0
           name: freshrss
           volumeMounts:
-            - mountPath: /config
-              name: config
+            - mountPath: /var/www/FreshRSS/data
+              name: data
+            - mountPath: /var/www/FreshRSS/extensions
+              name: extensions
   volumeClaimTemplates:
     - metadata:
         labels:
           app.kubernetes.io/name: freshrss
-        name: config
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: longhorn-crypto-global
+    - metadata:
+        labels:
+          app.kubernetes.io/name: freshrss
+        name: extensions
       spec:
         accessModes:
           - ReadWriteOnce
