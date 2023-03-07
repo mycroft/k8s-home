@@ -11,7 +11,7 @@ import (
 func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 	namespace := "freshrss"
 	appName := namespace
-	appImage := "linuxserver/freshrss:1.21.0"
+	appImage := "freshrss/freshrss:1.21.0"
 	appPort := 80
 	appIngress := "freshrss.services.mkz.me"
 
@@ -43,8 +43,13 @@ func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 		env,
 		[]k8s_helpers.StatefulSetVolume{
 			{
-				Name:        "config",
-				MountPath:   "/config",
+				Name:        "data",
+				MountPath:   "/var/www/FreshRSS/data",
+				StorageSize: "1Gi",
+			},
+			{
+				Name:        "extensions",
+				MountPath:   "/var/www/FreshRSS/extensions",
 				StorageSize: "1Gi",
 			},
 		},
