@@ -66,6 +66,9 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 		&k8s.KubeStorageClassProps{
 			Metadata: &k8s.ObjectMeta{
 				Name: jsii.String("longhorn-crypto-global"),
+				Annotations: &map[string]*string{
+					"storageclass.kubernetes.io/is-default-class": jsii.String("true"),
+				},
 			},
 			Provisioner:          jsii.String("driver.longhorn.io"),
 			AllowVolumeExpansion: jsii.Bool(true),
