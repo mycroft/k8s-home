@@ -81,6 +81,7 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 				"csi.storage.k8s.io/node-stage-secret-name":        jsii.String("longhorn-crypto"),
 				"csi.storage.k8s.io/node-stage-secret-namespace":   jsii.String("longhorn-system"),
 			},
+			ReclaimPolicy: jsii.String("Retain"),
 		},
 	)
 
