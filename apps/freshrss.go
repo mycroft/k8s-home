@@ -1,6 +1,8 @@
 package apps
 
 import (
+	"fmt"
+
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
@@ -33,7 +35,7 @@ func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.NewNamespace(chart, namespace)
 
-	k8s_helpers.NewStatefulSet(
+	stsName := k8s_helpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -51,6 +53,57 @@ func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 				Name:        "extensions",
 				MountPath:   "/var/www/FreshRSS/extensions",
 				StorageSize: "1Gi",
+			},
+		},
+	)
+
+	k8s.NewKubeCronJob(
+		chart,
+		jsii.String("cronjob"),
+		&k8s.KubeCronJobProps{
+			Metadata: &k8s.ObjectMeta{
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &k8s.CronJobSpec{
+				Schedule: jsii.String("12,42 * * * *"),
+				JobTemplate: &k8s.JobTemplateSpec{
+					Metadata: &k8s.ObjectMeta{
+						Namespace: jsii.String(namespace),
+					},
+					Spec: &k8s.JobSpec{
+						Template: &k8s.PodTemplateSpec{
+							Metadata: &k8s.ObjectMeta{
+								Namespace: jsii.String(namespace),
+							},
+							Spec: &k8s.PodSpec{
+								Containers: &[]*k8s.Container{
+									{
+										Name: jsii.String("updater"),
+										Command: &[]*string{
+											jsii.String("/var/www/FreshRSS/app/actualize_script.php"),
+										},
+										Image: jsii.String(appImage),
+										VolumeMounts: &[]*k8s.VolumeMount{
+											{
+												Name:      jsii.String("data"),
+												MountPath: jsii.String("/var/www/FreshRSS/data"),
+											},
+										},
+									},
+								},
+								RestartPolicy: jsii.String("Never"),
+								Volumes: &[]*k8s.Volume{
+									{
+										Name: jsii.String("data"),
+										PersistentVolumeClaim: &k8s.PersistentVolumeClaimVolumeSource{
+											ClaimName: jsii.String(fmt.Sprintf("data-%s-0", stsName)),
+										},
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 		},
 	)

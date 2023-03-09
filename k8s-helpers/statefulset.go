@@ -12,6 +12,7 @@ type StatefulSetVolume struct {
 	StorageSize string
 }
 
+// NewStatefulSet creates a new statefulset and returns its name
 func NewStatefulSet(
 	chart cdk8s.Chart,
 	namespace, appName, appImage string,
@@ -19,7 +20,7 @@ func NewStatefulSet(
 	labels map[string]*string,
 	env []*k8s.EnvVar,
 	storages []StatefulSetVolume,
-) {
+) string {
 	svc := k8s.NewKubeService(
 		chart,
 		jsii.String("service"),
@@ -66,7 +67,7 @@ func NewStatefulSet(
 		})
 	}
 
-	k8s.NewKubeStatefulSet(
+	sts := k8s.NewKubeStatefulSet(
 		chart,
 		jsii.String("statefulset"),
 		&k8s.KubeStatefulSetProps{
@@ -97,4 +98,6 @@ func NewStatefulSet(
 			},
 		},
 	)
+
+	return *sts.Name()
 }
