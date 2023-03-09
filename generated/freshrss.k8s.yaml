@@ -71,6 +71,35 @@ spec:
             storage: 1Gi
         storageClassName: longhorn-crypto-global
 ---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: freshrss-cronjob-c8609a6c
+  namespace: freshrss
+spec:
+  jobTemplate:
+    metadata:
+      namespace: freshrss
+    spec:
+      template:
+        metadata:
+          namespace: freshrss
+        spec:
+          containers:
+            - command:
+                - /var/www/FreshRSS/app/actualize_script.php
+              image: freshrss/freshrss:1.21.0
+              name: updater
+              volumeMounts:
+                - mountPath: /var/www/FreshRSS/data
+                  name: data
+          restartPolicy: Never
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: data-freshrss-statefulset-c899f017-0
+  schedule: 12,42 * * * *
+---
 apiVersion: v1
 kind: Service
 metadata:
