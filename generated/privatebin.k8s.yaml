@@ -46,6 +46,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: privatebin-config-c8e3bb26
+  namespace: privatebin
 data:
   conf.php: |
     ;<?php http_response_code(403); /*
