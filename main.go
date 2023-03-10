@@ -34,6 +34,7 @@ func main() {
 	apps.NewWallabagChart(app)
 	apps.NewUrlsChart(app)
 	apps.NewFreshRSS(app)
+	apps.NewLinkdingChart(app)
 
 	app.Synth()
 }

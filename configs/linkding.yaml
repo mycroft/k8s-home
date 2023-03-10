@@ -1,0 +1,4 @@
+# https://github.com/pascaliske/helm-charts/blob/master/charts/linkding/values.yaml
+
+persistentVolumeClaim:
+  storageClassName: 'longhorn-crypto-global'
