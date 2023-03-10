@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: linkding
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: linkding
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: linkding
+  name: linkding-service-c85caae2
+  namespace: linkding
+spec:
+  ports:
+    - name: http
+      port: 9090
+  selector:
+    app.kubernetes.io/name: linkding
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: linkding-statefulset-c8b6957e
+  namespace: linkding
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: linkding
+  serviceName: linkding-service-c85caae2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: linkding
+    spec:
+      containers:
+        - env: []
+          image: sissbruecker/linkding
+          name: linkding
+          volumeMounts:
+            - mountPath: /etc/linkding/data
+              name: data
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/name: linkding
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkding-svc-c803f321
+  namespace: linkding
+spec:
+  ports:
+    - name: http
+      port: 9090
+  selector:
+    app.kubernetes.io/name: linkding
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+  name: linkding-ingress-c8c5befa
+  namespace: linkding
+spec:
+  rules:
+    - host: links.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: linkding-svc-c803f321
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - links.services.mkz.me
+      secretName: secret-tls-www

@@ -74,6 +74,7 @@ metadata:
   namespace: longhorn-system
 data:
   values.yaml: |
+    # https://github.com/longhorn/longhorn/blob/master/chart/values.yaml
     defaultSettings:
         defaultDataPath: /data/k3s-longhorn-storage/
 ---
@@ -81,7 +82,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 59a51bfb16cc81a5c5ef85670ae4c2dbee3a833db02ae2507a7db6fc5f5d6099
+    configMapHash: 091b9ada4b4d90f5e2300b538688b883f5a5430f3e72ab9e4942f186b1a2df4d
   name: longhorn
   namespace: longhorn-system
 spec:
