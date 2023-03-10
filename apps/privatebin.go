@@ -45,6 +45,9 @@ func NewPrivatebinChart(scope constructs.Construct) cdk8s.Chart {
 		chart,
 		jsii.String("config"),
 		&k8s.KubeConfigMapProps{
+			Metadata: &k8s.ObjectMeta{
+				Namespace: jsii.String(namespace),
+			},
 			Data: &map[string]*string{
 				"conf.php": jsii.String(string(confPHP)),
 			},
