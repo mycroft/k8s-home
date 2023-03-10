@@ -129,6 +129,8 @@ spec:
               value: "false"
           image: wallabag/wallabag:2.5.4
           name: wallabag
+          volumeMounts: []
+      volumes: []
 ---
 apiVersion: v1
 kind: Service

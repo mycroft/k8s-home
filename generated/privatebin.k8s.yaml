@@ -1,0 +1,183 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: privatebin
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: privatebin
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: privatebin-es-minio-c843c129
+  namespace: privatebin
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/privatebin/minio
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: minio
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: privatebin-config-c8e3bb26
+data:
+  conf.php: |
+    ;<?php http_response_code(403); /*
+
+    [main]
+    name = "PrivateBin"
+    ; basepath = "https://privatebin.example.com/"
+    discussion = true
+    opendiscussion = false
+    password = true
+    fileupload = false
+    burnafterreadingselected = false
+    defaultformatter = "plaintext"
+    sizelimit = 10485760
+    template = "bootstrap"
+    languageselection = false
+
+    [expire]
+    default = "1week"
+
+    [expire_options]
+    5min = 300
+    10min = 600
+    1hour = 3600
+    1day = 86400
+    1week = 604800
+    1month = 2592000
+    1year = 31536000
+    never = 0
+
+    [formatter_options]
+    plaintext = "Plain Text"
+    syntaxhighlighting = "Source Code"
+    markdown = "Markdown"
+
+    [traffic]
+    limit = 10
+
+    [purge]
+    limit = 300
+    batchsize = 10
+
+    [model]
+    class = S3Storage
+    [model_options]
+    region = ""
+    version = "latest"
+    endpoint = "http://minio-storage-hl.minio:9000"
+    use_path_style_endpoint = true
+    bucket = "privatebin"
+    accesskey = "AWS_ACCESS_KEY_ID"
+    secretkey = "AWS_SECRET_ACCESS_KEY"
+
+    [yourls]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: privatebin-deploy-c849ed77
+  namespace: privatebin
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: privatebin
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: privatebin
+    spec:
+      containers:
+        - command:
+            - /bin/sh
+            - -c
+            - mkdir /run/cfg && cp /srv/cfg/conf.php /run/cfg/conf.php && sed -i "s/AWS_ACCESS_KEY_ID/$AWS_ACCESS_KEY_ID/" /run/cfg/conf.php && sed -i "s/AWS_SECRET_ACCESS_KEY/$AWS_SECRET_ACCESS_KEY/" /run/cfg/conf.php && /etc/init.d/rc.local
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: access_key_id
+                  name: minio
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: secret_access_key
+                  name: minio
+            - name: CONFIG_PATH
+              value: /run/cfg
+          image: privatebin/nginx-fpm-alpine
+          name: privatebin
+          volumeMounts:
+            - mountPath: /srv/cfg
+              name: config
+      volumes:
+        - configMap:
+            name: privatebin-config-c8e3bb26
+          name: config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: privatebin-svc-c83b1859
+  namespace: privatebin
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app.kubernetes.io/name: privatebin
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+  name: privatebin-ingress-c8edcc11
+  namespace: privatebin
+spec:
+  rules:
+    - host: privatebin.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: privatebin-svc-c83b1859
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - privatebin.services.mkz.me
+      secretName: secret-tls-www
