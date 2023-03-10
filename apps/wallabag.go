@@ -92,6 +92,8 @@ func NewWallabagChart(scope constructs.Construct) cdk8s.Chart {
 		appImage,
 		labels,
 		env,
+		[]string{},
+		[]k8s_helpers.ConfigMapMount{},
 	)
 
 	k8s_helpers.NewAppIngress(

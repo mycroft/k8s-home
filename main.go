@@ -35,6 +35,7 @@ func main() {
 	apps.NewUrlsChart(app)
 	apps.NewFreshRSS(app)
 	apps.NewLinkdingChart(app)
+	apps.NewPrivatebinChart(app)
 
 	app.Synth()
 }
