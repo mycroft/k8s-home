@@ -24,7 +24,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: linkding
-  name: linkding-linkding-svc-c8a6d246
+  name: linkding-service-c85caae2
   namespace: linkding
 spec:
   ports:
@@ -36,13 +36,13 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: linkding-linkding-sts-c83f867d
+  name: linkding-statefulset-c8b6957e
   namespace: linkding
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: linkding
-  serviceName: linkding-linkding-svc-c8a6d246
+  serviceName: linkding-service-c85caae2
   template:
     metadata:
       labels:

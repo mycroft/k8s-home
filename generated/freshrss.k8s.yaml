@@ -8,7 +8,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/name: freshrss
-  name: freshrss-freshrss-svc-c8dfddbc
+  name: freshrss-service-c8663e7c
   namespace: freshrss
 spec:
   ports:
@@ -20,13 +20,13 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: freshrss-freshrss-sts-c88554ab
+  name: freshrss-statefulset-c899f017
   namespace: freshrss
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: freshrss
-  serviceName: freshrss-freshrss-svc-c8dfddbc
+  serviceName: freshrss-service-c8663e7c
   template:
     metadata:
       labels:
@@ -97,7 +97,7 @@ spec:
           volumes:
             - name: data
               persistentVolumeClaim:
-                claimName: data-freshrss-freshrss-sts-c88554ab-0
+                claimName: data-freshrss-statefulset-c899f017-0
   schedule: 12,42 * * * *
 ---
 apiVersion: v1
