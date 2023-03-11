@@ -77,6 +77,14 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 			},
 		},
 		{Name: jsii.String("PAPERLESS_URL"), Value: jsii.String(fmt.Sprintf("https://%s", appIngress))},
+		{
+			Name:  jsii.String("PAPERLESS_MEDIA_ROOT"),
+			Value: jsii.String("/usr/src/paperless/media"),
+		},
+		{
+			Name:  jsii.String("PAPERLESS_DATA_DIR"),
+			Value: jsii.String("/usr/src/paperless/data"),
+		},
 	}
 
 	paperlessngxLabels := map[string]*string{
@@ -95,7 +103,18 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 		paperlessngxLabels,
 		env,
 		[]string{},
-		[]k8s_helpers.StatefulSetVolume{},
+		[]k8s_helpers.StatefulSetVolume{
+			{ // PAPERLESS_DATA_DIR
+				Name:        "data",
+				MountPath:   "/usr/src/paperless/data",
+				StorageSize: "2Gi",
+			},
+			{ // PAPERLESS_MEDIA_ROOT
+				Name:        "media",
+				MountPath:   "/usr/src/paperless/media",
+				StorageSize: "32Gi",
+			},
+		},
 	)
 
 	k8s_helpers.NewAppIngress(
