@@ -50,7 +50,12 @@ spec:
     spec:
       containers:
         - command:
-            - redis-server --save 60 1 --loglevel warning
+            - redis-server
+            - --save
+            - "60"
+            - "1"
+            - --loglevel
+            - warning
           env: []
           image: redis:7.0.9
           name: redis
