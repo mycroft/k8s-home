@@ -1,6 +1,7 @@
 package k8s_helpers
 
 import (
+	"fmt"
 	"strings"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -26,7 +27,7 @@ func NewStatefulSet(
 ) string {
 	svc := k8s.NewKubeService(
 		chart,
-		jsii.String("service"),
+		jsii.String(fmt.Sprintf("%s-svc", appName)),
 		&k8s.KubeServiceProps{
 			Metadata: &k8s.ObjectMeta{
 				Namespace: jsii.String(namespace),
@@ -95,7 +96,7 @@ func NewStatefulSet(
 
 	sts := k8s.NewKubeStatefulSet(
 		chart,
-		jsii.String("statefulset"),
+		jsii.String(fmt.Sprintf("%s-sts", appName)),
 		&k8s.KubeStatefulSetProps{
 			Metadata: &k8s.ObjectMeta{
 				Namespace: jsii.String(namespace),

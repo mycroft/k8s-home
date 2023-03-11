@@ -1,6 +1,8 @@
 package apps
 
 import (
+	"fmt"
+
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
@@ -10,6 +12,7 @@ import (
 
 func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "paperless-ngx"
+	appIngress := "paperless.services.mkz.me"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -19,6 +22,7 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.NewNamespace(chart, namespace)
 	k8s_helpers.CreateSecretStore(chart, namespace)
+	k8s_helpers.CreateExternalSecret(chart, namespace, "postgresql")
 
 	redisLabels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("redis"),
@@ -44,13 +48,58 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewAppService(
+	env := []*k8s.EnvVar{
+		{Name: jsii.String("PAPERLESS_REDIS"), Value: jsii.String("redis://paperless-ngx-service-c8ebcf27:6789")},
+		{Name: jsii.String("PAPERLESS_DBENGINE"), Value: jsii.String("postgresql")},
+		{Name: jsii.String("PAPERLESS_DBHOST"), Value: jsii.String("postgres-instance.postgres")},
+		{Name: jsii.String("PAPERLESS_DBPORT"), Value: jsii.String("5432")},
+		{Name: jsii.String("PAPERLESS_DBNAME"), Value: jsii.String("paperlessngx")},
+		{
+			Name: jsii.String("PAPERLESS_DBUSER"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Name: jsii.String("postgresql"),
+					Key:  jsii.String("username"),
+				},
+			},
+		},
+		{
+			Name: jsii.String("PAPERLESS_DBPASS"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Name: jsii.String("postgresql"),
+					Key:  jsii.String("password"),
+				},
+			},
+		},
+		{Name: jsii.String("PAPERLESS_URL"), Value: jsii.String(fmt.Sprintf("https://%s", appIngress))},
+	}
+
+	paperlessngxLabels := map[string]*string{
+		"app.kubernetes.io/component": jsii.String("paperless-ngx"),
+	}
+
+	appName := "paperless-ngx"
+	appPort := 8000
+
+	k8s_helpers.NewStatefulSet(
 		chart,
 		namespace,
-		"svc-redis",
-		redisLabels,
-		"redis",
-		6879,
+		appName,
+		"paperlessngx/paperless-ngx:1.13",
+		appPort,
+		paperlessngxLabels,
+		env,
+		[]string{},
+		[]k8s_helpers.StatefulSetVolume{},
+	)
+
+	k8s_helpers.NewAppIngress(
+		chart,
+		paperlessngxLabels,
+		appName,
+		appPort,
+		appIngress,
 	)
 
 	return chart
