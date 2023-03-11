@@ -59,6 +59,27 @@ func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 		true, // use legacy naming
 	)
 
+	affinity := &k8s.Affinity{
+		PodAffinity: &k8s.PodAffinity{
+			RequiredDuringSchedulingIgnoredDuringExecution: &[]*k8s.PodAffinityTerm{
+				{
+					TopologyKey: jsii.String("kubernetes.io/hostname"),
+					LabelSelector: &k8s.LabelSelector{
+						MatchExpressions: &[]*k8s.LabelSelectorRequirement{
+							{
+								Key:      jsii.String("statefulset.kubernetes.io/pod-name"),
+								Operator: jsii.String("In"),
+								Values: &[]*string{
+									jsii.String("freshrss-statefulset-c899f017-0"),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
 	k8s.NewKubeCronJob(
 		chart,
 		jsii.String("cronjob"),
@@ -78,6 +99,7 @@ func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 								Namespace: jsii.String(namespace),
 							},
 							Spec: &k8s.PodSpec{
+								Affinity: affinity,
 								Containers: &[]*k8s.Container{
 									{
 										Name: jsii.String("updater"),
