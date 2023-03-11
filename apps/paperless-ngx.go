@@ -17,6 +17,9 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
+	k8s_helpers.NewNamespace(chart, namespace)
+	k8s_helpers.CreateSecretStore(chart, namespace)
+
 	redisLabels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("redis"),
 	}
