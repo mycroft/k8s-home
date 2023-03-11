@@ -52,7 +52,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 6789
+      port: 6379
   selector:
     app.kubernetes.io/component: redis
 ---
@@ -130,7 +130,7 @@ spec:
       containers:
         - env:
             - name: PAPERLESS_REDIS
-              value: redis://paperless-ngx-redis-svc-c86d771a:6789
+              value: redis://paperless-ngx-redis-svc-c86d771a:6379
             - name: PAPERLESS_DBENGINE
               value: postgresql
             - name: PAPERLESS_DBHOST
