@@ -77,11 +77,15 @@ func NewStatefulSet(
 		VolumeMounts: &mounts,
 	}
 
+	// If only one command...
 	if len(commands) == 1 {
-		container.Command = &[]*string{
-			jsii.String(commands[0]),
+		commandsElmts := strings.Split(commands[0], " ")
+		command := []*string{}
+		for _, el := range commandsElmts {
+			command = append(command, jsii.String(el))
 		}
-	} else if len(commands) > 0 {
+		container.Command = &command
+	} else if len(commands) > 0 { // or multiple...
 		container.Command = &[]*string{
 			jsii.String("/bin/sh"),
 			jsii.String("-c"),
