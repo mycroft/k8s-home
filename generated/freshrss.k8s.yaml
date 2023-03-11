@@ -85,6 +85,16 @@ spec:
         metadata:
           namespace: freshrss
         spec:
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: statefulset.kubernetes.io/pod-name
+                        operator: In
+                        values:
+                          - freshrss-statefulset-c899f017-0
+                  topologyKey: kubernetes.io/hostname
           containers:
             - command:
                 - /var/www/FreshRSS/app/actualize_script.php
