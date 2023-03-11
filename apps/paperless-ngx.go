@@ -33,7 +33,7 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 		namespace,
 		"redis",
 		"redis:7.0.9",
-		6789,
+		6379,
 		redisLabels,
 		[]*k8s.EnvVar{},
 		[]string{
@@ -50,7 +50,10 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 
 	env := []*k8s.EnvVar{
 		// XXX fix url here
-		{Name: jsii.String("PAPERLESS_REDIS"), Value: jsii.String("redis://paperless-ngx-redis-svc-c86d771a:6789")},
+		{
+			Name: jsii.String("PAPERLESS_REDIS"),
+			Value: jsii.String("redis://paperless-ngx-redis-svc-c86d771a:6379")
+		},
 		{Name: jsii.String("PAPERLESS_DBENGINE"), Value: jsii.String("postgresql")},
 		{Name: jsii.String("PAPERLESS_DBHOST"), Value: jsii.String("postgres-instance.postgres")},
 		{Name: jsii.String("PAPERLESS_DBPORT"), Value: jsii.String("5432")},
