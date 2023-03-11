@@ -130,7 +130,7 @@ spec:
       containers:
         - env:
             - name: PAPERLESS_REDIS
-              value: redis://paperless-ngx-service-c8ebcf27:6789
+              value: redis://paperless-ngx-redis-svc-c86d771a:6789
             - name: PAPERLESS_DBENGINE
               value: postgresql
             - name: PAPERLESS_DBHOST
