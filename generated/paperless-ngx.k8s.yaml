@@ -19,12 +19,35 @@ spec:
       server: http://vault.vault:8200
       version: v2
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: paperless-ngx-es-postgresql-c89239a8
+  namespace: paperless-ngx
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/paperless-ngx/postgresql
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
     app.kubernetes.io/component: redis
-  name: paperless-ngx-service-c8ebcf27
+  name: paperless-ngx-redis-svc-c86d771a
   namespace: paperless-ngx
 spec:
   ports:
@@ -36,13 +59,13 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: paperless-ngx-statefulset-c8860380
+  name: paperless-ngx-redis-sts-c8ae33ed
   namespace: paperless-ngx
 spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: redis
-  serviceName: paperless-ngx-service-c8ebcf27
+  serviceName: paperless-ngx-redis-svc-c86d771a
   template:
     metadata:
       labels:
@@ -78,11 +101,96 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: paperless-ngx-svc-redis-c8eaca31
+  labels:
+    app.kubernetes.io/component: paperless-ngx
+  name: paperless-ngx-paperless-ngx-svc-c8f47743
   namespace: paperless-ngx
 spec:
   ports:
-    - name: redis
-      port: 6879
+    - name: http
+      port: 8000
   selector:
-    app.kubernetes.io/component: redis
+    app.kubernetes.io/component: paperless-ngx
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: paperless-ngx-paperless-ngx-sts-c8df4066
+  namespace: paperless-ngx
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: paperless-ngx
+  serviceName: paperless-ngx-paperless-ngx-svc-c8f47743
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: paperless-ngx
+    spec:
+      containers:
+        - env:
+            - name: PAPERLESS_REDIS
+              value: redis://paperless-ngx-service-c8ebcf27:6789
+            - name: PAPERLESS_DBENGINE
+              value: postgresql
+            - name: PAPERLESS_DBHOST
+              value: postgres-instance.postgres
+            - name: PAPERLESS_DBPORT
+              value: "5432"
+            - name: PAPERLESS_DBNAME
+              value: paperlessngx
+            - name: PAPERLESS_DBUSER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: postgresql
+            - name: PAPERLESS_DBPASS
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: postgresql
+            - name: PAPERLESS_URL
+              value: https://paperless.services.mkz.me
+          image: paperlessngx/paperless-ngx:1.13
+          name: paperless-ngx
+          volumeMounts: []
+  volumeClaimTemplates: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paperless-ngx-svc-c81b4690
+  namespace: paperless-ngx
+spec:
+  ports:
+    - name: http
+      port: 8000
+  selector:
+    app.kubernetes.io/component: paperless-ngx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+  name: paperless-ngx-ingress-c8fe133e
+  namespace: paperless-ngx
+spec:
+  rules:
+    - host: paperless.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: paperless-ngx-svc-c81b4690
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - paperless.services.mkz.me
+      secretName: secret-tls-www
