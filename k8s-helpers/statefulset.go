@@ -24,10 +24,19 @@ func NewStatefulSet(
 	env []*k8s.EnvVar,
 	commands []string,
 	storages []StatefulSetVolume,
+	useLegacyNames bool,
 ) string {
+	// Warning: Changing statefulSet object names will rename PVCs
+	serviceObjectName := fmt.Sprintf("%s-svc", appName)
+	statefulSetObjectName := fmt.Sprintf("%s-sts", appName)
+	if useLegacyNames {
+		serviceObjectName = "service"
+		statefulSetObjectName = "statefulset"
+	}
+
 	svc := k8s.NewKubeService(
 		chart,
-		jsii.String(fmt.Sprintf("%s-svc", appName)),
+		jsii.String(serviceObjectName),
 		&k8s.KubeServiceProps{
 			Metadata: &k8s.ObjectMeta{
 				Namespace: jsii.String(namespace),
@@ -96,7 +105,7 @@ func NewStatefulSet(
 
 	sts := k8s.NewKubeStatefulSet(
 		chart,
-		jsii.String(fmt.Sprintf("%s-sts", appName)),
+		jsii.String(statefulSetObjectName),
 		&k8s.KubeStatefulSetProps{
 			Metadata: &k8s.ObjectMeta{
 				Namespace: jsii.String(namespace),

@@ -47,6 +47,7 @@ func NewLinkdingChart(scope constructs.Construct) cdk8s.Chart {
 				StorageSize: "1Gi",
 			},
 		},
+		true, // use legacy naming
 	)
 
 	k8s_helpers.NewAppIngress(
