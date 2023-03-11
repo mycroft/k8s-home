@@ -12,6 +12,7 @@ spec:
   databases:
     freshrss: freshrss-admin
     grafana: grafana-admin
+    paperlessngx: paperlessngx-admin
     testaroo: testaroo-admin
     wallabag: wallabag-admin
   numberOfInstances: 1
@@ -25,6 +26,10 @@ spec:
       - createdb
     grafana: []
     grafana-admin:
+      - superuser
+      - createdb
+    paperlessngx: []
+    paperlessngx-admin:
       - superuser
       - createdb
     testaroo: []
