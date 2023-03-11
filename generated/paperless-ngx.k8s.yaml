@@ -151,10 +151,40 @@ spec:
                   name: postgresql
             - name: PAPERLESS_URL
               value: https://paperless.services.mkz.me
+            - name: PAPERLESS_MEDIA_ROOT
+              value: /usr/src/paperless/media
+            - name: PAPERLESS_DATA_DIR
+              value: /usr/src/paperless/data
           image: paperlessngx/paperless-ngx:1.13
           name: paperless-ngx
-          volumeMounts: []
-  volumeClaimTemplates: []
+          volumeMounts:
+            - mountPath: /usr/src/paperless/data
+              name: data
+            - mountPath: /usr/src/paperless/media
+              name: media
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/component: paperless-ngx
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 2Gi
+        storageClassName: longhorn-crypto-global
+    - metadata:
+        labels:
+          app.kubernetes.io/component: paperless-ngx
+        name: media
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 32Gi
+        storageClassName: longhorn-crypto-global
 ---
 apiVersion: v1
 kind: Service
