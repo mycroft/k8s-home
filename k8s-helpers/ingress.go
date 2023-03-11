@@ -6,10 +6,38 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
+func NewAppService(
+	chart cdk8s.Chart,
+	namespace string,
+	serviceName string,
+	labels map[string]*string,
+	portName string,
+	portNumber uint,
+) k8s.KubeService {
+	return k8s.NewKubeService(
+		chart,
+		jsii.String(serviceName),
+		&k8s.KubeServiceProps{
+			Metadata: &k8s.ObjectMeta{
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &k8s.ServiceSpec{
+				Ports: &[]*k8s.ServicePort{
+					{
+						Name: jsii.String(portName),
+						Port: jsii.Number(float64(portNumber)),
+					},
+				},
+				Selector: &labels,
+			},
+		},
+	)
+}
+
 func NewAppIngress(
 	chart cdk8s.Chart,
-	labelSelector map[string]*string,
-	appName string,
+	labels map[string]*string,
+	namespace string,
 	appPort int,
 	ingressHost string,
 ) {
@@ -20,23 +48,15 @@ func NewAppIngress(
 		"traefik.ingress.kubernetes.io/redirect-permanent":   jsii.String("true"),
 	}
 
-	svc := k8s.NewKubeService(
+	portName := "http"
+
+	svc := NewAppService(
 		chart,
-		jsii.String("svc"),
-		&k8s.KubeServiceProps{
-			Metadata: &k8s.ObjectMeta{
-				Namespace: jsii.String(appName),
-			},
-			Spec: &k8s.ServiceSpec{
-				Ports: &[]*k8s.ServicePort{
-					{
-						Name: jsii.String("http"),
-						Port: jsii.Number(float64(appPort)),
-					},
-				},
-				Selector: &labelSelector,
-			},
-		},
+		namespace,
+		"svc",
+		labels,
+		portName,
+		uint(appPort),
 	)
 
 	k8s.NewKubeIngress(
@@ -45,7 +65,7 @@ func NewAppIngress(
 		&k8s.KubeIngressProps{
 			Metadata: &k8s.ObjectMeta{
 				Annotations: &annotations,
-				Namespace:   jsii.String(appName),
+				Namespace:   jsii.String(namespace),
 			},
 			Spec: &k8s.IngressSpec{
 				Rules: &[]*k8s.IngressRule{
@@ -58,7 +78,7 @@ func NewAppIngress(
 										Service: &k8s.IngressServiceBackend{
 											Name: svc.Name(),
 											Port: &k8s.ServiceBackendPort{
-												Name: jsii.String("http"),
+												Name: jsii.String(portName),
 											},
 										},
 									},
@@ -80,5 +100,4 @@ func NewAppIngress(
 			},
 		},
 	)
-
 }

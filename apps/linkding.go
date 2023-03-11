@@ -39,6 +39,7 @@ func NewLinkdingChart(scope constructs.Construct) cdk8s.Chart {
 		appPort,
 		labels,
 		[]*k8s.EnvVar{},
+		[]string{},
 		[]k8s_helpers.StatefulSetVolume{
 			{
 				Name:        "data",

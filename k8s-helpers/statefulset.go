@@ -1,6 +1,8 @@
 package k8s_helpers
 
 import (
+	"strings"
+
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -19,6 +21,7 @@ func NewStatefulSet(
 	appPort int,
 	labels map[string]*string,
 	env []*k8s.EnvVar,
+	commands []string,
 	storages []StatefulSetVolume,
 ) string {
 	svc := k8s.NewKubeService(
@@ -67,6 +70,25 @@ func NewStatefulSet(
 		})
 	}
 
+	container := k8s.Container{
+		Name:         jsii.String(appName),
+		Image:        jsii.String(appImage),
+		Env:          &env,
+		VolumeMounts: &mounts,
+	}
+
+	if len(commands) == 1 {
+		container.Command = &[]*string{
+			jsii.String(commands[0]),
+		}
+	} else if len(commands) > 0 {
+		container.Command = &[]*string{
+			jsii.String("/bin/sh"),
+			jsii.String("-c"),
+			jsii.String(strings.Join(commands, " && ")),
+		}
+	}
+
 	sts := k8s.NewKubeStatefulSet(
 		chart,
 		jsii.String("statefulset"),
@@ -85,12 +107,7 @@ func NewStatefulSet(
 					},
 					Spec: &k8s.PodSpec{
 						Containers: &[]*k8s.Container{
-							{
-								Name:         jsii.String(appName),
-								Image:        jsii.String(appImage),
-								Env:          &env,
-								VolumeMounts: &mounts,
-							},
+							&container,
 						},
 					},
 				},

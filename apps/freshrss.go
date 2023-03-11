@@ -43,6 +43,7 @@ func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 		appPort,
 		labels,
 		env,
+		[]string{},
 		[]k8s_helpers.StatefulSetVolume{
 			{
 				Name:        "data",
