@@ -24,16 +24,16 @@ data:
     resources:
       requests:
         cpu: 200m
-        memory: 1024Mi
+        memory: 6Gi
       limits:
         cpu: 1
-        memory: 2Gi
+        memory: 8Gi
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: f4dd9b2beb9dd7cbe0fb4fe56f309ef2ae0e43bb7447e4bc73048745e1b64cbb
+    configMapHash: 2051be7e62003502adad6afffc8426c9a321f4d7605a3509044d14b4400a3ed3
   name: trivy-operator
   namespace: trivy-system
 spec:
