@@ -157,14 +157,13 @@ metadata:
   namespace: longhorn-system
 spec:
   entryPoints:
-    - web
     - websecure
   routes:
     - kind: Rule
       match: Host(`longhorn.services.mkz.me`)
       middlewares:
-        - name: basic-auth
-          namespace: longhorn-system
+        - name: traefik-forward-auth
+          namespace: traefik-forward-auth
       services:
         - kind: Service
           name: longhorn-frontend
