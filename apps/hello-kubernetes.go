@@ -87,12 +87,18 @@ func NewHelloKubernetesChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
+	// It is required to add the following annotation:
+	// traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+
 	k8s_helpers.NewAppIngress(
 		chart,
 		labels,
 		appName,
 		8080,
 		"hello-kubernetes.services.mkz.me",
+		map[string]string{
+			"traefik.ingress.kubernetes.io/router.middlewares": "traefik-forward-auth-traefik-forward-auth@kubernetescrd",
+		},
 	)
 
 	return chart

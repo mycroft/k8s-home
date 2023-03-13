@@ -65,6 +65,7 @@ func NewWhatIsMyIpChart(scope constructs.Construct) cdk8s.Chart {
 		appName,
 		8080,
 		ingressHost,
+		map[string]string{},
 	)
 
 	return chart

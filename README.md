@@ -32,6 +32,16 @@ On master node, edit `/var/lib/rancher/k3s/server/manifests/traefik.yaml` and ad
 k3s will automatically redeploy the helm chart.
 
 
+Also, it should allow `IngressRoutes` to use `middlewares` from another namespaces the ingressroutes is in (disabled by default)
+
+```
+    providers:
+      kubernetesCRD:
+        allowCrossNamespace: true
+```
+
+
+
 ### Viewing traefik dashboard
 
 port-forward the 9000 port and reach `http://localhost:9000/dashboard/`:

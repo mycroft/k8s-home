@@ -40,10 +40,15 @@ func NewAppIngress(
 	namespace string,
 	appPort int,
 	ingressHost string,
+	customAnnotations map[string]string,
 ) {
 	annotations := map[string]*string{
 		"kubernetes.io/ingress.class":    jsii.String("traefik"),
 		"cert-manager.io/cluster-issuer": jsii.String("letsencrypt-prod"),
+	}
+
+	for k, v := range customAnnotations {
+		annotations[k] = jsii.String(v)
 	}
 
 	portName := "http"

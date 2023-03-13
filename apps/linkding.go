@@ -56,6 +56,7 @@ func NewLinkdingChart(scope constructs.Construct) cdk8s.Chart {
 		appName,
 		appPort,
 		appIngress,
+		map[string]string{},
 	)
 
 	return chart
