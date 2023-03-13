@@ -52,6 +52,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
   name: hello-kubernetes-ingress-c8762254
   namespace: hello-kubernetes
 spec:
