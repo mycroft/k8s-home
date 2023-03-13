@@ -138,6 +138,7 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
+	// The following is no longer useful.
 	traefikcontainous.NewMiddleware(
 		chart,
 		jsii.String("basic-auth"),
@@ -164,7 +165,7 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 			},
 			Spec: &traefikcontainous.IngressRouteSpec{
 				EntryPoints: &[]*string{
-					jsii.String("web"),
+					// jsii.String("web"),
 					jsii.String("websecure"),
 				},
 				Routes: &[]*traefikcontainous.IngressRouteSpecRoutes{
@@ -172,9 +173,13 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 						Kind:  traefikcontainous.IngressRouteSpecRoutesKind_RULE,
 						Match: jsii.String("Host(`longhorn.services.mkz.me`)"),
 						Middlewares: &[]*traefikcontainous.IngressRouteSpecRoutesMiddlewares{
+							// {
+							// 	Name:      jsii.String("basic-auth"),
+							// 	Namespace: jsii.String(namespace),
+							// },
 							{
-								Name:      jsii.String("basic-auth"),
-								Namespace: jsii.String(namespace),
+								Name:      jsii.String("traefik-forward-auth"),
+								Namespace: jsii.String("traefik-forward-auth"),
 							},
 						},
 						Services: &[]*traefikcontainous.IngressRouteSpecRoutesServices{

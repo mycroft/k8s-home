@@ -16,6 +16,33 @@ flux bootstrap git \
 
 ## Services
 
+### Traefik tweaks
+
+traefik should/must be reconfigured to redirect all `http://` requests to `https://`.
+
+On master node, edit `/var/lib/rancher/k3s/server/manifests/traefik.yaml` and add the following snippet in `valuesContent` section:
+
+```
+  valuesContent: |-
+    ports:
+      web:
+        redirectTo: websecure
+```
+
+k3s will automatically redeploy the helm chart.
+
+
+### Viewing traefik dashboard
+
+port-forward the 9000 port and reach `http://localhost:9000/dashboard/`:
+
+```
+> k port-forward -n kube-system (k get pods -n kube-system | grep ^traefik | cut -d' ' -f1) 9000:9000
+Forwarding from 127.0.0.1:9000 -> 9000
+Forwarding from [::1]:9000 -> 9000
+```
+
+
 ### Kubernetes-Dashboard
 
 Generate a login and use it on https://kubernetes-dashboard.services.mkz.me/

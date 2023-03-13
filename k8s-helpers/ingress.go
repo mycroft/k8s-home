@@ -42,10 +42,8 @@ func NewAppIngress(
 	ingressHost string,
 ) {
 	annotations := map[string]*string{
-		"kubernetes.io/ingress.class":                        jsii.String("traefik"),
-		"cert-manager.io/cluster-issuer":                     jsii.String("letsencrypt-prod"),
-		"traefik.ingress.kubernetes.io/redirect-entry-point": jsii.String("https"),
-		"traefik.ingress.kubernetes.io/redirect-permanent":   jsii.String("true"),
+		"kubernetes.io/ingress.class":    jsii.String("traefik"),
+		"cert-manager.io/cluster-issuer": jsii.String("letsencrypt-prod"),
 	}
 
 	portName := "http"
