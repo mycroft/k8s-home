@@ -124,12 +124,15 @@ data:
     monitoring:
       lokiCanary:
         enabled: false
+
+    test:
+      enabled: false
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: c888c216310690773023fe024775e420d966ddfa14809312616108e136e5d95a
+    configMapHash: 5e47848f8a9b1d8d624d844400bae2d84548a5e381a6ab9c42ff126526bcc73d
   name: loki
   namespace: loki
 spec:
