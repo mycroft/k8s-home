@@ -64,3 +64,6 @@ read:
 monitoring:
   lokiCanary:
     enabled: false
+
+test:
+  enabled: false
