@@ -51,7 +51,7 @@ func NewMinio(scope constructs.Construct) cdk8s.Chart {
 								},
 								Resources: &miniominio.TenantV2SpecPoolsVolumeClaimTemplateSpecResources{
 									Requests: &map[string]miniominio.TenantV2SpecPoolsVolumeClaimTemplateSpecResourcesRequests{
-										"storage": miniominio.TenantV2SpecPoolsVolumeClaimTemplateSpecResourcesRequests_FromString(jsii.String("2Gi")),
+										"storage": miniominio.TenantV2SpecPoolsVolumeClaimTemplateSpecResourcesRequests_FromString(jsii.String("5Gi")),
 									},
 								},
 							},
