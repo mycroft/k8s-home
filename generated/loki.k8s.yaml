@@ -78,9 +78,6 @@ data:
           s3ForcePathStyle: true
           insecure: true
           http_config: {}
-      monitoring:
-        lokiCanary:
-          enabled: false
 
     write:
       extraArgs:
@@ -123,12 +120,16 @@ data:
         enableStatefulSetAutoDeletePVC: false
         size: 10Gi
         storageClass: longhorn-crypto-global
+
+    monitoring:
+      lokiCanary:
+        enabled: false
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 753c1667724df0f03e4c8ecb98cfbf51188d948bb995899684bc6cdb3b84c90b
+    configMapHash: c888c216310690773023fe024775e420d966ddfa14809312616108e136e5d95a
   name: loki
   namespace: loki
 spec:
