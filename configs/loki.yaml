@@ -18,9 +18,6 @@ loki:
       s3ForcePathStyle: true
       insecure: true
       http_config: {}
-  monitoring:
-    lokiCanary:
-      enabled: false
 
 write:
   extraArgs:
@@ -63,3 +60,7 @@ read:
     enableStatefulSetAutoDeletePVC: false
     size: 10Gi
     storageClass: longhorn-crypto-global
+
+monitoring:
+  lokiCanary:
+    enabled: false
