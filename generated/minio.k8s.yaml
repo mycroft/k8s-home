@@ -72,7 +72,7 @@ spec:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 2Gi
+              storage: 5Gi
           storageClassName: longhorn-crypto-global
       volumesPerServer: 2
   requestAutoCert: false
