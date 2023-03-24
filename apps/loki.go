@@ -33,7 +33,7 @@ func NewLokiChart(scope constructs.Construct) cdk8s.Chart {
 		"grafana", // repo name
 		"loki",    // chart name
 		"loki",    // release name
-		"4.6.1",
+		"4.8.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
