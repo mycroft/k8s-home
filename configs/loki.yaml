@@ -18,6 +18,9 @@ loki:
       s3ForcePathStyle: true
       insecure: true
       http_config: {}
+  monitoring:
+    lokiCanary:
+      enabled: false
 
 write:
   extraArgs:
