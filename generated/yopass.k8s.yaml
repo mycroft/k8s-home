@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: yopass
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: redis
+  name: yopass-redis-svc-c8a159bf
+  namespace: yopass
+spec:
+  ports:
+    - name: http
+      port: 6379
+  selector:
+    app.kubernetes.io/component: redis
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: yopass-redis-sts-c8baefba
+  namespace: yopass
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: redis
+  serviceName: yopass-redis-svc-c8a159bf
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: redis
+    spec:
+      containers:
+        - command:
+            - redis-server
+            - --save
+            - "60"
+            - "1"
+            - --loglevel
+            - warning
+          env: []
+          image: redis:7.0.9
+          name: redis
+          volumeMounts:
+            - mountPath: /data
+              name: data
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/component: redis
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yopass-deploy-c8741b5b
+  namespace: yopass
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: paperless-ngx
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: paperless-ngx
+    spec:
+      containers:
+        - command:
+            - /yopass-server
+            - --database
+            - redis
+            - --metrics-port
+            - "1338"
+            - --port
+            - "1337"
+            - --redis
+            - redis://yopass-redis-svc-c8a159bf:6379
+          env: []
+          image: jhaals/yopass:11.5.0
+          name: yopass
+          volumeMounts: []
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yopass-svc-c8a1cf88
+  namespace: yopass
+spec:
+  ports:
+    - name: http
+      port: 1337
+  selector:
+    app.kubernetes.io/component: paperless-ngx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: traefik
+  name: yopass-ingress-c8775acd
+  namespace: yopass
+spec:
+  rules:
+    - host: yopass.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: yopass-svc-c8a1cf88
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - yopass.services.mkz.me
+      secretName: secret-tls-www
