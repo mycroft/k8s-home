@@ -37,6 +37,7 @@ func main() {
 	apps.NewLinkdingChart(app)
 	apps.NewPrivatebinChart(app)
 	apps.NewPaperlessNGXChart(app)
+	apps.NewYopassChart(app)
 
 	app.Synth()
 }

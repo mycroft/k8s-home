@@ -47,14 +47,20 @@ func NewAppDeployment(
 		VolumeMounts: &volumeMounts,
 	}
 
-	if len(commands) > 0 {
+	if len(commands) == 1 {
+		commandsElmts := strings.Split(commands[0], " ")
+		command := []*string{}
+		for _, el := range commandsElmts {
+			command = append(command, jsii.String(el))
+		}
+		container.Command = &command
+	} else if len(commands) > 0 { // or multiple...
 		container.Command = &[]*string{
 			jsii.String("/bin/sh"),
 			jsii.String("-c"),
 			jsii.String(strings.Join(commands, " && ")),
 		}
 	}
-
 	k8s.NewKubeDeployment(
 		chart,
 		jsii.String("deploy"),
