@@ -47,7 +47,7 @@ func NewAppDeployment(
 		VolumeMounts: &volumeMounts,
 	}
 
-	if len(commands) == 1 {
+	if len(commands) == 1 { // if one command...
 		commandsElmts := strings.Split(commands[0], " ")
 		command := []*string{}
 		for _, el := range commandsElmts {
@@ -61,6 +61,7 @@ func NewAppDeployment(
 			jsii.String(strings.Join(commands, " && ")),
 		}
 	}
+
 	k8s.NewKubeDeployment(
 		chart,
 		jsii.String("deploy"),

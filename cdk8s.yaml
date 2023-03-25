@@ -14,6 +14,8 @@ imports:
   # see https://github.com/cdk8s-team/cdk8s/issues/932
   # - podmonitor:=https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-41.3.1/charts/kube-prometheus-stack/crds/crd-podmonitors.yaml
   - podmonitor:=crds/crd-podmonitors.yaml
+  # - servicemonitor:=https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-41.3.1/charts/kube-prometheus-stack/crds/crd-servicemonitors.yaml
+  - servicemonitor:=crds/crd-servicemonitors.yaml
   - https://raw.githubusercontent.com/traefik/traefik/v2.9/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
   # there is a bunch of duplicates in the following CRD:
   # - https://raw.githubusercontent.com/zalando/postgres-operator/v1.9.0/manifests/postgresql.crd.yaml

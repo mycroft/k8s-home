@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
+	"git.mkz.me/mycroft/k8s-home/imports/servicemonitor_monitoringcoreoscom"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -52,7 +53,7 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 	redisUrl := "redis://yopass-redis-svc-c8a159bf:6379"
 
 	yopassLabels := map[string]*string{
-		"app.kubernetes.io/component": jsii.String("paperless-ngx"),
+		"app.kubernetes.io/component": jsii.String("yopass"),
 	}
 
 	k8s_helpers.NewAppDeployment(
@@ -75,6 +76,38 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 		appPort,
 		appIngress,
 		map[string]string{},
+	)
+
+	k8s_helpers.NewAppService(
+		chart,
+		namespace,
+		"metrics",
+		yopassLabels,
+		"metrics",
+		1338,
+	)
+
+	servicemonitor_monitoringcoreoscom.NewServiceMonitor(
+		chart,
+		jsii.String("sm"),
+		&servicemonitor_monitoringcoreoscom.ServiceMonitorProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Namespace: jsii.String(namespace),
+				Labels: &map[string]*string{
+					"release": jsii.String("prometheus"),
+				},
+			},
+			Spec: &servicemonitor_monitoringcoreoscom.ServiceMonitorSpec{
+				Selector: &servicemonitor_monitoringcoreoscom.ServiceMonitorSpecSelector{
+					MatchLabels: &map[string]*string{},
+				},
+				Endpoints: &[]*servicemonitor_monitoringcoreoscom.ServiceMonitorSpecEndpoints{
+					{
+						Port: jsii.String("metrics"),
+					},
+				},
+			},
+		},
 	)
 
 	return chart
