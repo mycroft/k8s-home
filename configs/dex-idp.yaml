@@ -69,6 +69,18 @@ envVars:
       secretKeyRef:
         name: "traefik-forward-auth-oidc"
         key: "client_secret"
+# postgresql
+  - name: "POSTGRESQL_USERNAME"
+    valueFrom:
+      secretKeyRef:
+        name: "postgresql"
+        key: "username"
+  - name: "POSTGRESQL_PASSWORD"
+    valueFrom:
+      secretKeyRef:
+        name: "postgresql"
+        key: "password"
+
 
 # The configuration is now in the secret
 configSecret:

@@ -153,3 +153,30 @@ kubeseal <mysecret.json >mysealedsecret.json
 # Eventually:
 kubectl create -f mysealedsecret.json
 ```
+
+
+### Creating PostgreSQL storage
+
+To create and be able to use a PostgreSQL database, a few steps are required:
+
+- In `postgresql.go`, add a record in the list. Commit and push the file; It will spawn the database and create secrets in the `postgres` namespace;
+- When database is ready, connect to database with psql to allow user to create tables:
+
+```
+$ k exec -ti -n postgres postgres-instance-0 -- psql -U dex-admin dex
+dex=# GRANT CREATE ON SCHEMA public TO PUBLIC;
+GRANT
+```
+
+- Retrieve username & password from `Secret` in the `postgres` namespace:
+
+```sh
+$ k get secret -n postgres dex-admin.postgres-instance.credentials.postgresql.acid.zalan.do -o yaml | yq -r .data.username | base64 -d
+...
+$ k get secret -n postgres dex-admin.postgres-instance.credentials.postgresql.acid.zalan.do -o yaml | yq -r .data.password | base64 -d
+...
+```
+
+- Create a record in `vault` (ie: `namespaces/<namespace>/postgresql`) and create an `username` and a `password` record with the values retrieved in the `Secret`.
+
+- In the target namespace, create an ExternalSecret

@@ -73,6 +73,7 @@ func NewDexIdpChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateExternalSecret(chart, namespace, "gitea")
 	k8s_helpers.CreateExternalSecret(chart, namespace, "grafana-oidc-client")
 	k8s_helpers.CreateExternalSecret(chart, namespace, "traefik-forward-auth-oidc")
+	k8s_helpers.CreateExternalSecret(chart, namespace, "postgresql")
 
 	return chart
 }

@@ -18,7 +18,15 @@ connectors:
     baseURL: "{{ .Env.GITEA_BASEURL }}"
 
 storage:
-  type: memory
+  type: postgres
+  config:
+    host: postgres-instance.postgres
+    port: 5432
+    database: dex
+    user: "{{ .Env.POSTGRESQL_USERNAME }}"
+    password: "{{ .Env.POSTGRESQL_PASSWORD }}"
+    ssl:
+      mode: disable
 
 staticClients:
 - id: grafana
