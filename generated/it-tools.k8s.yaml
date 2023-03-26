@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: it-tools
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: it-tools-deploy-c88c2419
+  namespace: it-tools
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: it-tools
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: it-tools
+    spec:
+      containers:
+        - env: []
+          image: corentinth/it-tools:latest
+          name: it-tools
+          volumeMounts: []
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: it-tools-svc-c81df85c
+  namespace: it-tools
+spec:
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app.kubernetes.io/component: it-tools
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: traefik
+  name: it-tools-ingress-c87ca7a7
+  namespace: it-tools
+spec:
+  rules:
+    - host: it-tools.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: it-tools-svc-c81df85c
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - it-tools.services.mkz.me
+      secretName: secret-tls-www
