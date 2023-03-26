@@ -27,6 +27,7 @@ func NewPostgres(scope constructs.Construct) cdk8s.Chart {
 		"wallabag",
 		"freshrss",
 		"paperlessngx",
+		"dex",
 	}
 
 	databaseSpecs := map[string]*string{}
