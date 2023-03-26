@@ -38,6 +38,7 @@ func main() {
 	apps.NewPrivatebinChart(app)
 	apps.NewPaperlessNGXChart(app)
 	apps.NewYopassChart(app)
+	apps.NewITToolsChart(app)
 
 	app.Synth()
 }
