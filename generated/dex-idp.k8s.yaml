@@ -211,7 +211,7 @@ stringData:
         user: "{{ .Env.POSTGRESQL_USERNAME }}"
         password: "{{ .Env.POSTGRESQL_PASSWORD }}"
         ssl:
-          mode: disable
+          mode: require
 
     staticClients:
     - id: grafana
