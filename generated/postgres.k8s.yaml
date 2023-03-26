@@ -10,6 +10,7 @@ metadata:
   namespace: postgres
 spec:
   databases:
+    dex: dex-admin
     freshrss: freshrss-admin
     grafana: grafana-admin
     paperlessngx: paperlessngx-admin
@@ -20,6 +21,10 @@ spec:
     version: "15"
   teamId: postgres
   users:
+    dex: []
+    dex-admin:
+      - superuser
+      - createdb
     freshrss: []
     freshrss-admin:
       - superuser
