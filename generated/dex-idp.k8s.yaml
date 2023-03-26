@@ -106,6 +106,18 @@ data:
           secretKeyRef:
             name: "traefik-forward-auth-oidc"
             key: "client_secret"
+    # postgresql
+      - name: "POSTGRESQL_USERNAME"
+        valueFrom:
+          secretKeyRef:
+            name: "postgresql"
+            key: "username"
+      - name: "POSTGRESQL_PASSWORD"
+        valueFrom:
+          secretKeyRef:
+            name: "postgresql"
+            key: "password"
+
 
     # The configuration is now in the secret
     configSecret:
@@ -141,7 +153,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 82cf1ec0451d54f248a922ecd8cd1b1ea2682dd656327fef8e63936c99f0ed2b
+    configMapHash: b8cdc1f60a4fa0c3fb153ec95ebce9b252e08666f3a9ce731bfd06fe29026e48
   name: dex
   namespace: dex-idp
 spec:
@@ -191,7 +203,15 @@ stringData:
         baseURL: "{{ .Env.GITEA_BASEURL }}"
 
     storage:
-      type: memory
+      type: postgres
+      config:
+        host: postgres-instance.postgres
+        port: 5432
+        database: dex
+        user: "{{ .Env.POSTGRESQL_USERNAME }}"
+        password: "{{ .Env.POSTGRESQL_PASSWORD }}"
+        ssl:
+          mode: disable
 
     staticClients:
     - id: grafana
@@ -308,6 +328,29 @@ spec:
     deletionPolicy: Delete
     immutable: false
     name: traefik-forward-auth-oidc
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: dex-idp-es-postgresql-c8fc46d7
+  namespace: dex-idp
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/dex-idp/postgresql
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql
     template:
       engineVersion: v2
       type: Opaque
