@@ -37,6 +37,7 @@ func NewKubernetesDashboardChart(scope constructs.Construct) cdk8s.Chart {
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
+				"", // release name to be modified
 				"kubernetes-dashboard.yaml",
 			),
 		},

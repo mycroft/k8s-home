@@ -99,7 +99,7 @@ func CreateHelmRelease(
 
 func CreateHelmValuesConfig(
 	chart constructs.Construct,
-	namespace, filename string,
+	namespace, releaseName, filename string,
 ) HelmReleaseConfigMap {
 	filepath := filepath.Join("configs", filename)
 	contents, err := os.ReadFile(filepath)
@@ -107,9 +107,14 @@ func CreateHelmValuesConfig(
 		panic(err)
 	}
 
+	constructName := "helm-values"
+	if releaseName != "" {
+		constructName = fmt.Sprintf("helm-val-%s", releaseName)
+	}
+
 	cm := k8s.NewKubeConfigMap(
 		chart,
-		jsii.String("helm-values"),
+		jsii.String(constructName),
 		&k8s.KubeConfigMapProps{
 			Metadata: &k8s.ObjectMeta{
 				Namespace: jsii.String(namespace),

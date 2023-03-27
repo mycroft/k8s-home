@@ -8,27 +8,37 @@ import (
 
 func main() {
 	app := cdk8s.NewApp(nil)
+
+	// security
 	apps.NewCertManagerChart(app)
-	apps.NewKubePrometheusStackChart(app)
 	apps.NewSealedSecretsChart(app)
 	apps.NewVaultChart(app)
 	apps.NewExternalSecretsChart(app)
+	apps.NewTrivyChart(app)
+	apps.NewDexIdpChart(app)
+	apps.NewTraefikForwardAuth(app)
+
+	// storage
 	apps.NewLonghornChart(app)
 	apps.NewPostgresOperator(app)
 	apps.NewPostgres(app)
 	apps.NewMinioOperator(app)
 	apps.NewMinio(app)
-	apps.NewNATSChart(app)
-	apps.NewLokiChart(app)
-	apps.NewPromtailChart(app)
 	apps.NewScyllaOperatorChart(app)
 	apps.NewScyllaChart(app)
-	apps.NewTrivyChart(app)
+	apps.NewNATSChart(app)
+	apps.NewOpenSearchChart(app)
+
+	// observability
+	apps.NewKubePrometheusStackChart(app)
+	apps.NewLokiChart(app)
+	apps.NewPromtailChart(app)
+
+	// misc tooling
 	apps.NewFluxCDChart(app)
-	apps.NewDexIdpChart(app)
-	apps.NewTraefikForwardAuth(app)
 	apps.NewKubernetesDashboardChart(app)
 
+	// apps
 	apps.NewHelloKubernetesChart(app)
 	apps.NewWhatIsMyIpChart(app)
 	apps.NewWallabagChart(app)

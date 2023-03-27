@@ -1,0 +1,36 @@
+# https://github.com/opensearch-project/helm-charts/blob/main/charts/opensearch/values.yaml
+
+singleNode: true
+replicas: 1
+
+config:
+  opensearch.yml: |
+    cluster.name: opensearch-cluster
+    network.host: 0.0.0.0
+    discovery.type: single-node
+    plugins:
+      security:
+        disabled: true
+
+securityConfig:
+  enabled: false
+
+persistence:
+  enabled: true
+  enableInitChown: true
+  labels:
+    enabled: false
+  storageClass: "longhorn-crypto-global"
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+  annotations: {}
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  # readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
