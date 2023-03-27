@@ -1,0 +1,133 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mariadb
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: mariadb
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mariadb-es-mariadb-c883d1dc
+  namespace: mariadb
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/mariadb/mariadb
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: mariadb
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mariadb-es-mariadb-testaroo-c8c1eb76
+  namespace: mariadb
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/mariadb/mariadb-testaroo
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: mariadb-testaroo
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: mariadb.mmontes.io/v1alpha1
+kind: MariaDB
+metadata:
+  name: mariadb
+  namespace: mariadb
+spec:
+  image:
+    pullPolicy: IfNotPresent
+    repository: mariadb
+    tag: 10.7.4
+  port: 3306
+  rootPasswordSecretKeyRef:
+    key: root-password
+    name: mariadb
+  volumeClaimTemplate:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 8Gi
+    storageClassName: longhorn-crypto-global
+---
+apiVersion: mariadb.mmontes.io/v1alpha1
+kind: Database
+metadata:
+  name: mariadb
+  namespace: mariadb
+spec:
+  characterSet: utf8
+  collate: utf8_general_ci
+  mariaDbRef:
+    name: mariadb
+---
+apiVersion: mariadb.mmontes.io/v1alpha1
+kind: User
+metadata:
+  name: mariadb-testaroo
+  namespace: mariadb
+spec:
+  mariaDbRef:
+    name: mariadb
+  passwordSecretKeyRef:
+    key: password
+    name: mariadb-testaroo
+---
+apiVersion: mariadb.mmontes.io/v1alpha1
+kind: Grant
+metadata:
+  name: mariadb-testaroo
+  namespace: mariadb
+spec:
+  database: mariadb
+  grantOption: true
+  mariaDbRef:
+    name: mariadb
+  privileges:
+    - SELECT
+    - INSERT
+    - UPDATE
+    - CREATE
+    - ALTER
+    - DELETE
+    - DROP
+    - INDEX
+  table: "*"
+  username: mariadb-testaroo
