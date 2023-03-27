@@ -1,0 +1,156 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: opensearch
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: opensearch
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://opensearch-project.github.io/helm-charts
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opensearch-helm-val-opensearch-c80d79aa
+  namespace: opensearch
+data:
+  values.yaml: |+
+    # https://github.com/opensearch-project/helm-charts/blob/main/charts/opensearch/values.yaml
+
+    singleNode: true
+    replicas: 1
+
+    config:
+      opensearch.yml: |
+        cluster.name: opensearch-cluster
+        network.host: 0.0.0.0
+        discovery.type: single-node
+        plugins:
+          security:
+            disabled: true
+
+    securityConfig:
+      enabled: false
+
+    persistence:
+      enabled: true
+      enableInitChown: true
+      labels:
+        enabled: false
+      storageClass: "longhorn-crypto-global"
+      accessModes:
+        - ReadWriteOnce
+      size: 8Gi
+      annotations: {}
+
+    securityContext:
+      capabilities:
+        drop:
+          - ALL
+      # readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 1000
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: 7044127d092ab2208db06dc065f0701f69cbb67a522f7d8e47dd2e389c4cd2e1
+  name: opensearch
+  namespace: opensearch
+spec:
+  chart:
+    spec:
+      chart: opensearch
+      sourceRef:
+        kind: HelmRepository
+        name: opensearch
+        namespace: flux-system
+      version: 2.11.2
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: opensearch-helm-val-opensearch-c80d79aa
+      valuesKey: values.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opensearch-helm-val-opensearch-dashboards-c8f9e141
+  namespace: opensearch
+data:
+  values.yaml: |
+    # https://github.com/opensearch-project/helm-charts/blob/main/charts/opensearch-dashboards/values.yaml
+
+    opensearchHosts: "http://opensearch-cluster-master:9200"
+
+    image:
+      repository: "opensearchproject/opensearch-dashboards"
+
+    config:
+      opensearch_dashboards.yml:
+        opensearch:
+          hosts:
+          - http://opensearch-cluster-master:9200
+          ssl:
+            verificationMode: none
+
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: traefik
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        traefik.ingress.kubernetes.io/redirect-entry-point: https
+        traefik.ingress.kubernetes.io/redirect-permanent: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+
+      hosts:
+      - host: opensearch-dashboards.services.mkz.me
+        paths:
+          - path: /
+            backend:
+              serviceName: ""
+              servicePort: ""
+      tls:
+      - secretName: opensearch-dashboards-services-mkz-me-tls
+        hosts:
+        - opensearch-dashboards.services.mkz.me
+
+    extraEnvs:
+      - name: "DISABLE_SECURITY_DASHBOARDS_PLUGIN"
+        value: "true"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: b522bca73a40884a4d50e099b8ff0857029d232fdf2ec4bb57a3cb67bbbfcc05
+  name: opensearch-dashboards
+  namespace: opensearch
+spec:
+  chart:
+    spec:
+      chart: opensearch-dashboards
+      sourceRef:
+        kind: HelmRepository
+        name: opensearch
+        namespace: flux-system
+      version: 2.9.1
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: opensearch-helm-val-opensearch-dashboards-c8f9e141
+      valuesKey: values.yaml
