@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cert-manager-helm-values-c8b1f36c
+  name: cert-manager-helm-val-cert-manager-c8bc2bb8
   namespace: cert-manager
 data:
   values.yaml: |
@@ -50,7 +50,7 @@ spec:
     installCRDs: "true"
   valuesFrom:
     - kind: ConfigMap
-      name: cert-manager-helm-values-c8b1f36c
+      name: cert-manager-helm-val-cert-manager-c8bc2bb8
       valuesKey: values.yaml
 ---
 apiVersion: cert-manager.io/v1
