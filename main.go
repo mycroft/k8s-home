@@ -28,6 +28,8 @@ func main() {
 	apps.NewScyllaChart(app)
 	apps.NewNATSChart(app)
 	apps.NewOpenSearchChart(app)
+	apps.NewMariaDBOperator(app)
+	apps.NewMariaDBChart(app)
 
 	// observability
 	apps.NewKubePrometheusStackChart(app)
