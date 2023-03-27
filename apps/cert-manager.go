@@ -64,9 +64,9 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"jetstack",
-		appName,
-		appName,
+		"jetstack", // repository name
+		appName,    // chart name
+		appName,    // release name
 		"v1.9.1",
 		map[string]string{
 			"installCRDs": "true",
@@ -75,7 +75,7 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				appName, // release name
 				"cert-manager.yaml",
 			),
 		},
