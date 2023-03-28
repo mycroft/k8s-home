@@ -10,6 +10,10 @@ import (
 func NewExternalSecretsChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "external-secrets"
 
+	repositoryName := "external-secrets"
+	chartName := "external-secrets"
+	releaseName := "external-secrets"
+
 	chart := cdk8s.NewChart(
 		scope,
 		jsii.String(namespace),
@@ -20,23 +24,23 @@ func NewExternalSecretsChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"external-secrets",
+		repositoryName,
 		"https://charts.external-secrets.io",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"external-secrets", // repo name
-		"external-secrets", // chart name
-		"external-secrets", // release name
-		"0.6.0",
+		repositoryName, // repo name
+		chartName,      // chart name
+		releaseName,    // release name
+		"0.8.1",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				releaseName,
 				"external-secrets.yaml",
 			),
 		},
