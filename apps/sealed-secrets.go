@@ -9,7 +9,7 @@ import (
 
 func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "sealed-secrets"
-	appName := "sealed-secrets"
+	releaseName := namespace
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -30,8 +30,8 @@ func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
 		namespace,        // namespace
 		"sealed-secrets", // repo name
 		"sealed-secrets", // chart name
-		appName,          // release name
-		"2.6.9",
+		releaseName,      // release name
+		"2.8.1",
 		map[string]string{
 			"fullnameOverride": "sealed-secrets-controller",
 		},
@@ -39,7 +39,7 @@ func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				releaseName,
 				"sealed-secrets.yaml",
 			),
 		},
