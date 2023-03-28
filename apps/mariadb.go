@@ -1,6 +1,8 @@
 package apps
 
 import (
+	"fmt"
+
 	"git.mkz.me/mycroft/k8s-home/imports/mariadbmmontesio"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
@@ -20,14 +22,15 @@ func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.NewNamespace(chart, namespace)
 	k8s_helpers.CreateSecretStore(chart, namespace)
 	k8s_helpers.CreateExternalSecret(chart, namespace, "mariadb")
-	k8s_helpers.CreateExternalSecret(chart, namespace, "mariadb-testaroo")
+
+	mariadbInstance := "mariadb"
 
 	mariadbmmontesio.NewMariaDb(
 		chart,
 		jsii.String("mariadb"),
 		&mariadbmmontesio.MariaDbProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
-				Name:      jsii.String("mariadb"),
+				Name:      jsii.String(mariadbInstance),
 				Namespace: jsii.String(namespace),
 			},
 			Spec: &mariadbmmontesio.MariaDbSpec{
@@ -56,73 +59,87 @@ func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	mariadbmmontesio.NewDatabase(
-		chart,
-		jsii.String("mariadb-database-mariadb"),
-		&mariadbmmontesio.DatabaseProps{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Name:      jsii.String("mariadb"),
-				Namespace: jsii.String(namespace),
-			},
-			Spec: &mariadbmmontesio.DatabaseSpec{
-				MariaDbRef: &mariadbmmontesio.DatabaseSpecMariaDbRef{
-					Name: jsii.String("mariadb"),
-				},
-				CharacterSet: jsii.String("utf8"),
-				Collate:      jsii.String("utf8_general_ci"),
-			},
+	databases := map[string][]string{
+		"mariadb": {
+			"mariadb",
 		},
-	)
+		"bookstack": {
+			"bookstack",
+		},
+	}
 
-	mariadbmmontesio.NewUser(
-		chart,
-		jsii.String("mariadb-user-testaroo"),
-		&mariadbmmontesio.UserProps{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Namespace: jsii.String(namespace),
-				Name:      jsii.String("mariadb-testaroo"),
-			},
-			Spec: &mariadbmmontesio.UserSpec{
-				MariaDbRef: &mariadbmmontesio.UserSpecMariaDbRef{
-					Name: jsii.String("mariadb"),
+	for database := range databases {
+		mariadbmmontesio.NewDatabase(
+			chart,
+			jsii.String(fmt.Sprintf("%s-database", database)),
+			&mariadbmmontesio.DatabaseProps{
+				Metadata: &cdk8s.ApiObjectMetadata{
+					Namespace: jsii.String(namespace),
+					Name:      jsii.String(database),
 				},
-				PasswordSecretKeyRef: &mariadbmmontesio.UserSpecPasswordSecretKeyRef{
-					Name: jsii.String("mariadb-testaroo"),
-					Key:  jsii.String("password"),
+				Spec: &mariadbmmontesio.DatabaseSpec{
+					MariaDbRef: &mariadbmmontesio.DatabaseSpecMariaDbRef{
+						Name: jsii.String(mariadbInstance),
+					},
+					CharacterSet: jsii.String("utf8"),
+					Collate:      jsii.String("utf8_general_ci"),
 				},
 			},
-		},
-	)
+		)
 
-	mariadbmmontesio.NewGrant(
-		chart,
-		jsii.String("mariadb-chart-testaroo"),
-		&mariadbmmontesio.GrantProps{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Namespace: jsii.String(namespace),
-				Name:      jsii.String("mariadb-testaroo"),
-			},
-			Spec: &mariadbmmontesio.GrantSpec{
-				MariaDbRef: &mariadbmmontesio.GrantSpecMariaDbRef{
-					Name: jsii.String("mariadb"),
+		for _, user := range databases[database] {
+			k8s_helpers.CreateExternalSecret(chart, namespace, fmt.Sprintf("user-%s", user))
+			mariadbmmontesio.NewUser(
+				chart,
+				jsii.String(fmt.Sprintf("%s-user-%s", database, user)),
+				&mariadbmmontesio.UserProps{
+					Metadata: &cdk8s.ApiObjectMetadata{
+						Namespace: jsii.String(namespace),
+						Name:      jsii.String(user),
+					},
+					Spec: &mariadbmmontesio.UserSpec{
+						MariaDbRef: &mariadbmmontesio.UserSpecMariaDbRef{
+							Name: jsii.String(mariadbInstance),
+						},
+						PasswordSecretKeyRef: &mariadbmmontesio.UserSpecPasswordSecretKeyRef{
+							Name: jsii.String(fmt.Sprintf("user-%s", user)),
+							Key:  jsii.String("password"),
+						},
+					},
 				},
-				Database: jsii.String("mariadb"),
-				Username: jsii.String("mariadb-testaroo"),
-				Table:    jsii.String("*"),
-				Privileges: &[]*string{
-					jsii.String("SELECT"),
-					jsii.String("INSERT"),
-					jsii.String("UPDATE"),
-					jsii.String("CREATE"),
-					jsii.String("ALTER"),
-					jsii.String("DELETE"),
-					jsii.String("DROP"),
-					jsii.String("INDEX"),
+			)
+
+			mariadbmmontesio.NewGrant(
+				chart,
+				jsii.String(fmt.Sprintf("%s-grant-%s", database, user)),
+				&mariadbmmontesio.GrantProps{
+					Metadata: &cdk8s.ApiObjectMetadata{
+						Namespace: jsii.String(namespace),
+						Name:      jsii.String(user),
+					},
+					Spec: &mariadbmmontesio.GrantSpec{
+						MariaDbRef: &mariadbmmontesio.GrantSpecMariaDbRef{
+							Name: jsii.String(mariadbInstance),
+						},
+						Database: jsii.String(database),
+						Username: jsii.String(user),
+						Table:    jsii.String("*"),
+						Privileges: &[]*string{
+							jsii.String("SELECT"),
+							jsii.String("INSERT"),
+							jsii.String("UPDATE"),
+							jsii.String("CREATE"),
+							jsii.String("ALTER"),
+							jsii.String("DELETE"),
+							jsii.String("DROP"),
+							jsii.String("INDEX"),
+						},
+						GrantOption: jsii.Bool(true),
+					},
 				},
-				GrantOption: jsii.Bool(true),
-			},
-		},
-	)
+			)
+		}
+	}
 
 	return chart
 }
