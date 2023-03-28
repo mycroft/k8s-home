@@ -1,0 +1,150 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bookstack
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: bookstack
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: bookstack-es-mariadb-c8f1211c
+  namespace: bookstack
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/bookstack/mariadb
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: mariadb
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: bookstack
+  name: bookstack-bookstack-svc-c872573f
+  namespace: bookstack
+spec:
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app.kubernetes.io/name: bookstack
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: bookstack-bookstack-sts-c87c8b1f
+  namespace: bookstack
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: bookstack
+  serviceName: bookstack-bookstack-svc-c872573f
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: bookstack
+    spec:
+      containers:
+        - env:
+            - name: APP_URL
+              value: https://bookstack.services.mkz.me
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: Etc/UTC
+            - name: DB_HOST
+              value: mariadb.mariadb
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: bookstack
+            - name: DB_DATABASE
+              value: bookstack
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: mariadb
+          image: linuxserver/bookstack:23.02.2
+          name: bookstack
+          volumeMounts:
+            - mountPath: /config
+              name: data
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/name: bookstack
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookstack-svc-c8e87854
+  namespace: bookstack
+spec:
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app.kubernetes.io/name: bookstack
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: traefik
+  name: bookstack-ingress-c87508e9
+  namespace: bookstack
+spec:
+  rules:
+    - host: bookstack.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: bookstack-svc-c8e87854
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - bookstack.services.mkz.me
+      secretName: secret-tls-www
