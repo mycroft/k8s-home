@@ -56,7 +56,7 @@ func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 				StorageSize: "1Gi",
 			},
 		},
-		true, // use legacy naming
+		false, // use legacy naming
 	)
 
 	affinity := &k8s.Affinity{

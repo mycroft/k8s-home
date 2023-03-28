@@ -20,7 +20,7 @@ flux bootstrap git \
 
 traefik should/must be reconfigured to redirect all `http://` requests to `https://`.
 
-On master node, edit `/var/lib/rancher/k3s/server/manifests/traefik.yaml` and add the following snippet in `valuesContent` section:
+On master node, edit `/var/lib/rancher/k3s/server/manifests/traefik-config.yaml` and add the following snippet in `valuesContent` section:
 
 ```
   valuesContent: |-
@@ -40,6 +40,7 @@ Also, it should allow `IngressRoutes` to use `middlewares` from another namespac
         allowCrossNamespace: true
 ```
 
+Note: Do not edit `traefik.yaml`. It is overwritten on restart.
 
 
 ### Viewing traefik dashboard
