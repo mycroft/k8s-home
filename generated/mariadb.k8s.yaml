@@ -67,74 +67,6 @@ spec:
 apiVersion: mariadb.mmontes.io/v1alpha1
 kind: Database
 metadata:
-  name: mariadb
-  namespace: mariadb
-spec:
-  characterSet: utf8
-  collate: utf8_general_ci
-  mariaDbRef:
-    name: mariadb
----
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: mariadb-es-user-mariadb-c8320001
-  namespace: mariadb
-spec:
-  dataFrom:
-    - extract:
-        conversionStrategy: Default
-        key: secret/namespaces/mariadb/user-mariadb
-  refreshInterval: 15m
-  secretStoreRef:
-    kind: SecretStore
-    name: secretstore-vault
-  target:
-    creationPolicy: Owner
-    deletionPolicy: Delete
-    immutable: false
-    name: user-mariadb
-    template:
-      engineVersion: v2
-      type: Opaque
----
-apiVersion: mariadb.mmontes.io/v1alpha1
-kind: User
-metadata:
-  name: mariadb
-  namespace: mariadb
-spec:
-  mariaDbRef:
-    name: mariadb
-  passwordSecretKeyRef:
-    key: password
-    name: user-mariadb
----
-apiVersion: mariadb.mmontes.io/v1alpha1
-kind: Grant
-metadata:
-  name: mariadb
-  namespace: mariadb
-spec:
-  database: mariadb
-  grantOption: true
-  mariaDbRef:
-    name: mariadb
-  privileges:
-    - SELECT
-    - INSERT
-    - UPDATE
-    - CREATE
-    - ALTER
-    - DELETE
-    - DROP
-    - INDEX
-  table: "*"
-  username: mariadb
----
-apiVersion: mariadb.mmontes.io/v1alpha1
-kind: Database
-metadata:
   name: bookstack
   namespace: mariadb
 spec:
@@ -199,3 +131,71 @@ spec:
     - INDEX
   table: "*"
   username: bookstack
+---
+apiVersion: mariadb.mmontes.io/v1alpha1
+kind: Database
+metadata:
+  name: mariadb
+  namespace: mariadb
+spec:
+  characterSet: utf8
+  collate: utf8_general_ci
+  mariaDbRef:
+    name: mariadb
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mariadb-es-user-mariadb-c8320001
+  namespace: mariadb
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/mariadb/user-mariadb
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: user-mariadb
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: mariadb.mmontes.io/v1alpha1
+kind: User
+metadata:
+  name: mariadb
+  namespace: mariadb
+spec:
+  mariaDbRef:
+    name: mariadb
+  passwordSecretKeyRef:
+    key: password
+    name: user-mariadb
+---
+apiVersion: mariadb.mmontes.io/v1alpha1
+kind: Grant
+metadata:
+  name: mariadb
+  namespace: mariadb
+spec:
+  database: mariadb
+  grantOption: true
+  mariaDbRef:
+    name: mariadb
+  privileges:
+    - SELECT
+    - INSERT
+    - UPDATE
+    - CREATE
+    - ALTER
+    - DELETE
+    - DROP
+    - INDEX
+  table: "*"
+  username: mariadb
