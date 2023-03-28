@@ -42,29 +42,6 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: mariadb-es-mariadb-testaroo-c8c1eb76
-  namespace: mariadb
-spec:
-  dataFrom:
-    - extract:
-        conversionStrategy: Default
-        key: secret/namespaces/mariadb/mariadb-testaroo
-  refreshInterval: 15m
-  secretStoreRef:
-    kind: SecretStore
-    name: secretstore-vault
-  target:
-    creationPolicy: Owner
-    deletionPolicy: Delete
-    immutable: false
-    name: mariadb-testaroo
-    template:
-      engineVersion: v2
-      type: Opaque
----
 apiVersion: mariadb.mmontes.io/v1alpha1
 kind: MariaDB
 metadata:
@@ -98,22 +75,45 @@ spec:
   mariaDbRef:
     name: mariadb
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mariadb-es-user-mariadb-c8320001
+  namespace: mariadb
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/mariadb/user-mariadb
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: user-mariadb
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: mariadb.mmontes.io/v1alpha1
 kind: User
 metadata:
-  name: mariadb-testaroo
+  name: mariadb
   namespace: mariadb
 spec:
   mariaDbRef:
     name: mariadb
   passwordSecretKeyRef:
     key: password
-    name: mariadb-testaroo
+    name: user-mariadb
 ---
 apiVersion: mariadb.mmontes.io/v1alpha1
 kind: Grant
 metadata:
-  name: mariadb-testaroo
+  name: mariadb
   namespace: mariadb
 spec:
   database: mariadb
@@ -130,4 +130,72 @@ spec:
     - DROP
     - INDEX
   table: "*"
-  username: mariadb-testaroo
+  username: mariadb
+---
+apiVersion: mariadb.mmontes.io/v1alpha1
+kind: Database
+metadata:
+  name: bookstack
+  namespace: mariadb
+spec:
+  characterSet: utf8
+  collate: utf8_general_ci
+  mariaDbRef:
+    name: mariadb
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mariadb-es-user-bookstack-c8fcabd7
+  namespace: mariadb
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/mariadb/user-bookstack
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: user-bookstack
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: mariadb.mmontes.io/v1alpha1
+kind: User
+metadata:
+  name: bookstack
+  namespace: mariadb
+spec:
+  mariaDbRef:
+    name: mariadb
+  passwordSecretKeyRef:
+    key: password
+    name: user-bookstack
+---
+apiVersion: mariadb.mmontes.io/v1alpha1
+kind: Grant
+metadata:
+  name: bookstack
+  namespace: mariadb
+spec:
+  database: bookstack
+  grantOption: true
+  mariaDbRef:
+    name: mariadb
+  privileges:
+    - SELECT
+    - INSERT
+    - UPDATE
+    - CREATE
+    - ALTER
+    - DELETE
+    - DROP
+    - INDEX
+  table: "*"
+  username: bookstack
