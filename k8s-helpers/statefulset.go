@@ -2,7 +2,6 @@ package k8s_helpers
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -25,16 +24,10 @@ func NewStatefulSet(
 	env []*k8s.EnvVar,
 	commands []string,
 	storages []StatefulSetVolume,
-	useLegacyNames bool,
 ) string {
 	// Warning: Changing statefulSet object names will rename PVCs
 	serviceObjectName := fmt.Sprintf("%s-svc", appName)
 	statefulSetObjectName := fmt.Sprintf("%s-sts", appName)
-	if useLegacyNames {
-		log.Printf("WARNING: Statefulset %s ns:%s is still using legacy names.", appName, namespace)
-		serviceObjectName = "service"
-		statefulSetObjectName = "statefulset"
-	}
 
 	svc := k8s.NewKubeService(
 		chart,

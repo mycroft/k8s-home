@@ -47,7 +47,6 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 				StorageSize: "1Gi",
 			},
 		},
-		false,
 	)
 
 	redisUrl := "redis://yopass-redis-svc-c8a159bf:6379"

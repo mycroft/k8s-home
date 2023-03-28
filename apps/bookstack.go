@@ -67,7 +67,6 @@ func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
 				StorageSize: "1Gi",
 			},
 		},
-		false,
 	)
 
 	k8s_helpers.NewAppIngress(

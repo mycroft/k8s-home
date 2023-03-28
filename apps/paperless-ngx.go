@@ -46,7 +46,6 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 				StorageSize: "1Gi",
 			},
 		},
-		false,
 	)
 
 	env := []*k8s.EnvVar{
@@ -119,7 +118,6 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 				StorageSize: "32Gi",
 			},
 		},
-		false,
 	)
 
 	k8s_helpers.NewAppIngress(
