@@ -70,7 +70,7 @@ func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 								Key:      jsii.String("statefulset.kubernetes.io/pod-name"),
 								Operator: jsii.String("In"),
 								Values: &[]*string{
-									jsii.String("freshrss-statefulset-c899f017-0"),
+									jsii.String(fmt.Sprintf("%s-0", stsName)),
 								},
 							},
 						},
