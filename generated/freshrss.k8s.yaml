@@ -93,7 +93,7 @@ spec:
                       - key: statefulset.kubernetes.io/pod-name
                         operator: In
                         values:
-                          - freshrss-statefulset-c899f017-0
+                          - freshrss-freshrss-sts-c88554ab-0
                   topologyKey: kubernetes.io/hostname
           containers:
             - command:
