@@ -2,6 +2,7 @@ package k8s_helpers
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -110,6 +111,8 @@ func CreateHelmValuesConfig(
 	constructName := "helm-values"
 	if releaseName != "" {
 		constructName = fmt.Sprintf("helm-val-%s", releaseName)
+	} else {
+		log.Printf("WARNING: HelmValues in ns:%s is still using legacy name", namespace)
 	}
 
 	cm := k8s.NewKubeConfigMap(

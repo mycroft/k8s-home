@@ -2,6 +2,7 @@ package k8s_helpers
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -30,6 +31,7 @@ func NewStatefulSet(
 	serviceObjectName := fmt.Sprintf("%s-svc", appName)
 	statefulSetObjectName := fmt.Sprintf("%s-sts", appName)
 	if useLegacyNames {
+		log.Printf("WARNING: Statefulset %s ns:%s is still using legacy names.", appName, namespace)
 		serviceObjectName = "service"
 		statefulSetObjectName = "statefulset"
 	}

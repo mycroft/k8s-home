@@ -51,6 +51,7 @@ func main() {
 	apps.NewPaperlessNGXChart(app)
 	apps.NewYopassChart(app)
 	apps.NewITToolsChart(app)
+	apps.NewBookstackChart(app)
 
 	app.Synth()
 }
