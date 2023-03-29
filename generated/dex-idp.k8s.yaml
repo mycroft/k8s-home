@@ -31,7 +31,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: dex-idp-helm-values-c8c7e322
+  name: dex-idp-helm-val-dex-c812a9f8
   namespace: dex-idp
 data:
   values.yaml: |
@@ -164,7 +164,7 @@ spec:
         kind: HelmRepository
         name: dex
         namespace: flux-system
-      version: 0.12.1
+      version: 0.14.0
   install:
     createNamespace: false
     skipCRDs: false
@@ -172,7 +172,7 @@ spec:
   values: {}
   valuesFrom:
     - kind: ConfigMap
-      name: dex-idp-helm-values-c8c7e322
+      name: dex-idp-helm-val-dex-c812a9f8
       valuesKey: values.yaml
 ---
 apiVersion: v1
