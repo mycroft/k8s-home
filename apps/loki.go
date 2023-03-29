@@ -9,6 +9,9 @@ import (
 
 func NewLokiChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "loki"
+	repositoryName := "grafana"
+	chartName := "loki"
+	releaseName := "loki"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -21,7 +24,7 @@ func NewLokiChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"grafana",
+		repositoryName,
 		"https://grafana.github.io/helm-charts",
 	)
 
@@ -30,16 +33,16 @@ func NewLokiChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"grafana", // repo name
-		"loki",    // chart name
-		"loki",    // release name
-		"4.8.0",
+		repositoryName,
+		chartName,
+		releaseName,
+		"4.9.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				releaseName,
 				"loki.yaml",
 			),
 		},
