@@ -54,7 +54,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: loki-helm-values-c8d1b40b
+  name: loki-helm-val-loki-c8d03bab
   namespace: loki
 data:
   values.yaml: |
@@ -143,7 +143,7 @@ spec:
         kind: HelmRepository
         name: grafana
         namespace: flux-system
-      version: 4.8.0
+      version: 4.9.0
   install:
     createNamespace: false
     skipCRDs: false
@@ -151,5 +151,5 @@ spec:
   values: {}
   valuesFrom:
     - kind: ConfigMap
-      name: loki-helm-values-c8d1b40b
+      name: loki-helm-val-loki-c8d03bab
       valuesKey: values.yaml
