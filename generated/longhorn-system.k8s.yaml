@@ -70,7 +70,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: longhorn-system-helm-values-c84bb4f1
+  name: longhorn-system-helm-val-longhorn-c89d0ba2
   namespace: longhorn-system
 data:
   values.yaml: |
@@ -93,7 +93,7 @@ spec:
         kind: HelmRepository
         name: longhorn
         namespace: flux-system
-      version: 1.4.0
+      version: 1.4.1
   install:
     createNamespace: false
     skipCRDs: false
@@ -101,7 +101,7 @@ spec:
   values: {}
   valuesFrom:
     - kind: ConfigMap
-      name: longhorn-system-helm-values-c84bb4f1
+      name: longhorn-system-helm-val-longhorn-c89d0ba2
       valuesKey: values.yaml
 ---
 apiVersion: external-secrets.io/v1beta1
