@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kubernetes-dashboard-helm-values-c8caabd2
+  name: kubernetes-dashboard-helm-val-kubernetes-dashboard-c80a302b
   namespace: kubernetes-dashboard
 data:
   values.yaml: |
@@ -65,7 +65,7 @@ spec:
         kind: HelmRepository
         name: kubernetes-dashboard
         namespace: flux-system
-      version: 6.0.0
+      version: 6.0.6
   install:
     createNamespace: false
     skipCRDs: false
@@ -73,7 +73,7 @@ spec:
   values: {}
   valuesFrom:
     - kind: ConfigMap
-      name: kubernetes-dashboard-helm-values-c8caabd2
+      name: kubernetes-dashboard-helm-val-kubernetes-dashboard-c80a302b
       valuesKey: values.yaml
 ---
 apiVersion: v1
