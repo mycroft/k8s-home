@@ -24,6 +24,9 @@ const (
 
 func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "longhorn-system"
+	repositoryName := "longhorn"
+	chartName := "longhorn"
+	releaseName := "longhorn"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -93,23 +96,23 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"longhorn",
+		repositoryName,
 		"https://charts.longhorn.io",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"longhorn", // repo name
-		"longhorn", // chart name
-		"longhorn", // release name
-		"1.4.0",
+		repositoryName,
+		chartName,
+		releaseName,
+		"1.4.1",
 		nil,
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				releaseName,
 				"longhorn.yaml",
 			),
 		},
