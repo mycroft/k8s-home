@@ -10,6 +10,9 @@ import (
 
 func NewKubernetesDashboardChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "kubernetes-dashboard"
+	repositoryName := "kubernetes-dashboard"
+	chartName := "kubernetes-dashboard"
+	releaseName := "kubernetes-dashboard"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -21,23 +24,23 @@ func NewKubernetesDashboardChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"kubernetes-dashboard",
+		repositoryName,
 		"https://kubernetes.github.io/dashboard/",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"kubernetes-dashboard",
-		"kubernetes-dashboard", // chart name
-		"kubernetes-dashboard", // release name
-		"6.0.0",
+		repositoryName,
+		chartName,
+		releaseName,
+		"6.0.6",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				repositoryName,
 				"kubernetes-dashboard.yaml",
 			),
 		},
