@@ -13,6 +13,9 @@ import (
 
 func NewDexIdpChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "dex-idp"
+	repositoryName := "dex"
+	chartName := "dex"
+	releaseName := "dex"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -32,16 +35,16 @@ func NewDexIdpChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"dex", // repo name
-		"dex", // chart name
-		"dex", // release name
-		"0.12.1",
+		repositoryName, // repo name
+		chartName,      // chart name
+		releaseName,    // release name
+		"0.14.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				releaseName,
 				"dex-idp.yaml",
 			),
 		},
