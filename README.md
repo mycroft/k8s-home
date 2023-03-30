@@ -14,6 +14,17 @@ flux bootstrap git \
   --path=generated/
 ```
 
+## Upgrade flux
+
+Dump key file:
+
+```sh
+k get secret -n flux-system -o yaml flux-system | yq .data.identity -r | base64 -d > /tmp/rsa
+```
+
+Then re-run the `bootstrap` command.
+
+
 ## Services
 
 ### Traefik tweaks
