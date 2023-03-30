@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nats-helm-values-c8d24546
+  name: nats-helm-val-nats-c8e3a028
   namespace: nats
 data:
   values.yaml: |+
@@ -60,7 +60,7 @@ spec:
         kind: HelmRepository
         name: nats
         namespace: flux-system
-      version: 0.19.9
+      version: 0.19.12
   install:
     createNamespace: false
     skipCRDs: false
@@ -68,5 +68,5 @@ spec:
   values: {}
   valuesFrom:
     - kind: ConfigMap
-      name: nats-helm-values-c8d24546
+      name: nats-helm-val-nats-c8e3a028
       valuesKey: values.yaml
