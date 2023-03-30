@@ -9,6 +9,9 @@ import (
 
 func NewPromtailChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "promtail"
+	repositoryName := "grafana"
+	chartName := "promtail"
+	releaseName := "promtail"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -22,16 +25,16 @@ func NewPromtailChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"grafana",  // repo name; was installed in Loki
-		"promtail", // chart name
-		"promtail", // release name
-		"6.9.0",
+		repositoryName, // repo name; was installed in Loki
+		chartName,      // chart name
+		chartName,      // release name
+		"6.9.3",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				releaseName, // release name to be modified
 				"promtail.yaml",
 			),
 		},
