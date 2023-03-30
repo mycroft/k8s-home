@@ -9,6 +9,9 @@ import (
 
 func NewNATSChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "nats"
+	repositoryName := "nats"
+	chartName := "nats"
+	releaseName := "nats"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -20,23 +23,23 @@ func NewNATSChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"nats",
+		repositoryName,
 		"https://nats-io.github.io/k8s/helm/charts/",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"nats",
-		"nats",
-		"nats",
-		"0.19.9",
+		repositoryName,
+		chartName,
+		releaseName,
+		"0.19.12",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				releaseName,
 				"nats.yaml",
 			),
 		},
