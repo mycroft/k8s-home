@@ -22,7 +22,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: promtail-helm-values-c857c5cc
+  name: promtail-helm-val-promtail-c865fd71
   namespace: promtail
 data:
   values.yaml: |
@@ -50,7 +50,7 @@ spec:
         kind: HelmRepository
         name: grafana
         namespace: flux-system
-      version: 6.9.0
+      version: 6.9.3
   install:
     createNamespace: false
     skipCRDs: false
@@ -58,5 +58,5 @@ spec:
   values: {}
   valuesFrom:
     - kind: ConfigMap
-      name: promtail-helm-values-c857c5cc
+      name: promtail-helm-val-promtail-c865fd71
       valuesKey: values.yaml
