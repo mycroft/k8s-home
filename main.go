@@ -35,6 +35,7 @@ func main() {
 	apps.NewKubePrometheusStackChart(app)
 	apps.NewLokiChart(app)
 	apps.NewPromtailChart(app)
+	apps.NewJaegerChart(app)
 
 	// misc tooling
 	apps.NewFluxCDChart(app)
