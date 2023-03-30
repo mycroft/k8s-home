@@ -123,7 +123,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kube-prometheus-stack-helm-values-c8217b7d
+  name: kube-prometheus-stack-helm-val-prometheus-c840a4c5
   namespace: monitoring
 data:
   values.yaml: |
@@ -340,7 +340,7 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
-      version: 45.0.0
+      version: 45.8.1
   install:
     createNamespace: false
     skipCRDs: false
@@ -348,5 +348,5 @@ spec:
   values: {}
   valuesFrom:
     - kind: ConfigMap
-      name: kube-prometheus-stack-helm-values-c8217b7d
+      name: kube-prometheus-stack-helm-val-prometheus-c840a4c5
       valuesKey: values.yaml
