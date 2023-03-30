@@ -12,6 +12,10 @@ func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "kube-prometheus-stack"
 	namespace := "monitoring"
 
+	repositoryName := "prometheus-community"
+	chartName := "kube-prometheus-stack"
+	releaseName := "prometheus"
+
 	chart := cdk8s.NewChart(
 		scope,
 		jsii.String(appName),
@@ -24,7 +28,7 @@ func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"prometheus-community",
+		repositoryName,
 		"https://prometheus-community.github.io/helm-charts",
 	)
 
@@ -36,16 +40,16 @@ func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"prometheus-community",  // repoName; must be in flux-system
-		"kube-prometheus-stack", // chart name
-		"prometheus",            // release name
-		"45.0.0",
+		repositoryName, // repoName; must be in flux-system
+		chartName,      // chart name
+		releaseName,    // release name
+		"45.8.1",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				releaseName,
 				"kube-prometheus-stack.yaml",
 			),
 		},
