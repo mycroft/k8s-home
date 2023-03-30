@@ -52,6 +52,7 @@ func main() {
 	apps.NewYopassChart(app)
 	apps.NewITToolsChart(app)
 	apps.NewBookstackChart(app)
+	apps.NewHeimdallChart(app)
 
 	app.Synth()
 }
