@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: velero
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: velero
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: velero-es-nas0-minio-c83fc2f4
+  namespace: velero
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/velero/nas0-minio
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: nas0-minio
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: vmware-tanzu
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://vmware-tanzu.github.io/helm-charts
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: velero-helm-val-velero-c8a297a5
+  namespace: velero
+data:
+  values.yaml: |
+    # https://github.com/vmware-tanzu/helm-charts/blob/main/charts/velero/values.yaml
+
+    backupsEnabled: true
+    snapshotsEnabled: false
+
+    metrics:
+      serviceMonitor:
+        enabled: true
+
+    configuration:
+      provider: aws
+      backupStorageLocation:
+        default: true
+        bucket: k8s-backup
+        config:
+          region: minio
+          s3Url: "http://nas0.lan.mkz.me:9000"
+          s3ForcePathStyle: true
+
+    credentials:
+      existingSecret: nas0-minio
+
+    initContainers:
+    - name: velero-plugin-for-aws
+      image: velero/velero-plugin-for-aws:v1.1.0
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+      - mountPath: /target
+        name: plugins
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: 32d950f0335e56596453d5b7c456642f77638db3215632eb60a9d4a813f2bc06
+  name: velero
+  namespace: velero
+spec:
+  chart:
+    spec:
+      chart: velero
+      sourceRef:
+        kind: HelmRepository
+        name: vmware-tanzu
+        namespace: flux-system
+      version: 3.1.5
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: velero-helm-val-velero-c8a297a5
+      valuesKey: values.yaml
