@@ -119,6 +119,7 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 		nil,
 	)
 
+	k8s_helpers.CreateExternalSecret(chart, namespace, "nas0-minio")
 	k8s_helpers.CreateExternalSecret(chart, namespace, "basic-auth-users")
 
 	certificates_certmanagerio.NewCertificate(
