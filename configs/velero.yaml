@@ -1,0 +1,29 @@
+# https://github.com/vmware-tanzu/helm-charts/blob/main/charts/velero/values.yaml
+
+backupsEnabled: true
+snapshotsEnabled: false
+
+metrics:
+  serviceMonitor:
+    enabled: true
+
+configuration:
+  provider: aws
+  backupStorageLocation:
+    default: true
+    bucket: k8s-backup
+    config:
+      region: minio
+      s3Url: "http://nas0.lan.mkz.me:9000"
+      s3ForcePathStyle: true
+
+credentials:
+  existingSecret: nas0-minio
+
+initContainers:
+- name: velero-plugin-for-aws
+  image: velero/velero-plugin-for-aws:v1.1.0
+  imagePullPolicy: IfNotPresent
+  volumeMounts:
+  - mountPath: /target
+    name: plugins

@@ -30,6 +30,7 @@ func main() {
 	apps.NewOpenSearchChart(app)
 	apps.NewMariaDBOperator(app)
 	apps.NewMariaDBChart(app)
+	apps.NewVeleroChart(app)
 
 	// observability
 	apps.NewKubePrometheusStackChart(app)
