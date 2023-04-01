@@ -113,3 +113,13 @@ spec:
     - kind: ConfigMap
       name: velero-helm-val-velero-c8a297a5
       valuesKey: values.yaml
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: backup-schedule
+  namespace: velero
+spec:
+  schedule: 30 7 * * *
+  template:
+    ttl: 720h0m0s

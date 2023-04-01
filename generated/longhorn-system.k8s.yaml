@@ -195,3 +195,63 @@ spec:
           port: 80
   tls:
     secretName: secret-tls-www
+---
+apiVersion: longhorn.io/v1beta1
+kind: RecurringJob
+metadata:
+  name: longhorn-backups
+  namespace: longhorn-system
+spec:
+  concurrency: 2
+  cron: 45 6 * * *
+  groups:
+    - default
+  labels:
+    job: daily-backup
+  retain: 3
+  task: backup
+---
+apiVersion: longhorn.io/v1beta1
+kind: RecurringJob
+metadata:
+  name: longhorn-backups-disabled
+  namespace: longhorn-system
+spec:
+  concurrency: 2
+  cron: 0 5 31 2 *
+  groups:
+    - disabled
+  labels:
+    job: daily-backup
+  retain: 3
+  task: backup
+---
+apiVersion: longhorn.io/v1beta1
+kind: RecurringJob
+metadata:
+  name: longhorn-snapshots
+  namespace: longhorn-system
+spec:
+  concurrency: 2
+  cron: 15 1,7,13,19 * * *
+  groups:
+    - default
+  labels:
+    job: multiple-snapshot
+  retain: 3
+  task: snapshot
+---
+apiVersion: longhorn.io/v1beta1
+kind: RecurringJob
+metadata:
+  name: longhorn-snapshots-disabled
+  namespace: longhorn-system
+spec:
+  concurrency: 2
+  cron: 0 5 31 2 *
+  groups:
+    - disabled
+  labels:
+    job: multiple-snapshot
+  retain: 3
+  task: snapshot
