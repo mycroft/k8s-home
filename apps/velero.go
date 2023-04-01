@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"git.mkz.me/mycroft/k8s-home/imports/veleroio"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -46,6 +47,24 @@ func NewVeleroChart(scope constructs.Construct) cdk8s.Chart {
 			),
 		},
 		nil,
+	)
+
+	// Create a default backup
+	veleroio.NewSchedule(
+		chart,
+		jsii.String("backup-schedule"),
+		&veleroio.ScheduleProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Namespace: jsii.String(namespace),
+				Name:      jsii.String("backup-schedule"),
+			},
+			Spec: &veleroio.ScheduleSpec{
+				Schedule: jsii.String("30 7 * * *"),
+				Template: &veleroio.ScheduleSpecTemplate{
+					Ttl: jsii.String("720h0m0s"),
+				},
+			},
+		},
 	)
 
 	return chart
