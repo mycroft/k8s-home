@@ -41,6 +41,7 @@ func main() {
 	// misc tooling
 	apps.NewFluxCDChart(app)
 	apps.NewKubernetesDashboardChart(app)
+	apps.NewLinkerdChart(app)
 
 	// apps
 	apps.NewHelloKubernetesChart(app)
