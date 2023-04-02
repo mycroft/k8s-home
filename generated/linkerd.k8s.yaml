@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: linkerd
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: linkerd
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://helm.linkerd.io/stable
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: linkerd-crds
+  namespace: linkerd
+spec:
+  chart:
+    spec:
+      chart: linkerd-crds
+      sourceRef:
+        kind: HelmRepository
+        name: linkerd
+        namespace: flux-system
+      version: 1.4.0
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom: []
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: linkerd-helm-val-linkerd-control-plane-c8340032
+  namespace: linkerd
+data:
+  values.yaml: |
+    # https://github.com/linkerd/linkerd2/blob/main/charts/linkerd-control-plane/values.yaml
+
+    # ca was generated with:
+    # > step-cli certificate create root.linkerd.cluster.local ca.crt ca.key \
+    #       --profile root-ca --no-password --insecure
+    identityTrustAnchorsPEM: |
+      -----BEGIN CERTIFICATE-----
+      MIIBjTCCATOgAwIBAgIQB1JPDyXPlctPeeNcS3ihaDAKBggqhkjOPQQDAjAlMSMw
+      IQYDVQQDExpyb290LmxpbmtlcmQuY2x1c3Rlci5sb2NhbDAeFw0yMzA0MDEyMDUy
+      NTVaFw0zMzAzMjkyMDUyNTVaMCUxIzAhBgNVBAMTGnJvb3QubGlua2VyZC5jbHVz
+      dGVyLmxvY2FsMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEN9n22hon+hzgEBmg
+      UQrMsICtEycHiLjwz4KZ5jV+Zst38tADntl/DUP2i1of7M8CxPIzLNmjOtbj05A6
+      bU7ip6NFMEMwDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQEwHQYD
+      VR0OBBYEFEygzq/YmWnsEjzgKlCoynKdIPhpMAoGCCqGSM49BAMCA0gAMEUCIQDL
+      /jmZ6NlD+Xg3CAvCgDFAeRUWhm7VdvZaBRsNKHRwWAIgMw6TOITI6TKBDu94WUN8
+      jI8BL1SICygTlTRu4RDW1fM=
+      -----END CERTIFICATE-----
+
+    # identity.issuer.tls were generated with:
+    # > step-cli certificate create identity.linkerd.cluster.local issuer.crt issuer.key \
+    #       --profile intermediate-ca --not-after 87600h --no-password --insecure \
+    #       --ca ca.crt --ca-key ca.key
+    identity:
+      issuer:
+        tls:
+          crtPEM: |
+            -----BEGIN CERTIFICATE-----
+            MIIBszCCAVmgAwIBAgIRAMQ6wMLbq+Oqidc9AMx72CowCgYIKoZIzj0EAwIwJTEj
+            MCEGA1UEAxMacm9vdC5saW5rZXJkLmNsdXN0ZXIubG9jYWwwHhcNMjMwNDAxMjA1
+            MzMzWhcNMzMwMzI5MjA1MzMzWjApMScwJQYDVQQDEx5pZGVudGl0eS5saW5rZXJk
+            LmNsdXN0ZXIubG9jYWwwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASj9+vC7709
+            zPhlHyIrKnBbIDw80eaIMikkWU+tzzZFy+Zbi/LnF7Z2vpCDyyEOGugXzdWKC5J7
+            sMOlPJbj3jw2o2YwZDAOBgNVHQ8BAf8EBAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIB
+            ADAdBgNVHQ4EFgQU6gnyXSrHLuaSHqi/mE0l8uAcC6swHwYDVR0jBBgwFoAUTKDO
+            r9iZaewSPOAqUKjKcp0g+GkwCgYIKoZIzj0EAwIDSAAwRQIhANp6NG1QLdiZMVDK
+            wKnhQVpdzAywtO8OGJDdhxEdwzaBAiAdZeGZLJHksB34WXIYwF/UgHi1TspgvDfR
+            0jYtZ5TxAA==
+            -----END CERTIFICATE-----
+          keyPEM: |
+            -----BEGIN EC PRIVATE KEY-----
+            MHcCAQEEIAEvrvS6lJ7CQD30llLLZQM+bwJ0ah4jUL8CMy6rVqNpoAoGCCqGSM49
+            AwEHoUQDQgAEo/frwu+9Pcz4ZR8iKypwWyA8PNHmiDIpJFlPrc82RcvmW4vy5xe2
+            dr6Qg8shDhroF83ViguSe7DDpTyW4948Ng==
+            -----END EC PRIVATE KEY-----
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: 7b65a15cf891ba926b40057e0aff62ed0775f1091a3203a9af77460b451ef484
+  name: linkerd-control-plane
+  namespace: linkerd
+spec:
+  chart:
+    spec:
+      chart: linkerd-control-plane
+      sourceRef:
+        kind: HelmRepository
+        name: linkerd
+        namespace: flux-system
+      version: 1.9.6
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: linkerd-helm-val-linkerd-control-plane-c8340032
+      valuesKey: values.yaml
