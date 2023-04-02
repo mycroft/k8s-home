@@ -110,3 +110,24 @@ spec:
     - kind: ConfigMap
       name: linkerd-helm-val-linkerd-control-plane-c8340032
       valuesKey: values.yaml
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: linkerd-viz
+  namespace: linkerd
+spec:
+  chart:
+    spec:
+      chart: linkerd-viz
+      sourceRef:
+        kind: HelmRepository
+        name: linkerd
+        namespace: flux-system
+      version: 30.3.6
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom: []
