@@ -255,3 +255,18 @@ spec:
     job: multiple-snapshot
   retain: 3
   task: snapshot
+---
+apiVersion: longhorn.io/v1beta1
+kind: RecurringJob
+metadata:
+  name: longhorn-snapshots-daily
+  namespace: longhorn-system
+spec:
+  concurrency: 2
+  cron: 0 5 31 2 *
+  groups:
+    - daily
+  labels:
+    job: multiple-daily
+  retain: 3
+  task: snapshot
