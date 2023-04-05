@@ -297,5 +297,28 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
+	longhornio.NewRecurringJob(
+		chart,
+		jsii.String("longhorn-snapshots-daily"),
+		&longhornio.RecurringJobProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Namespace: jsii.String(namespace),
+				Name:      jsii.String("longhorn-snapshots-daily"),
+			},
+			Spec: map[string]interface{}{
+				"cron": jsii.String("0 5 31 2 *"),
+				"task": jsii.String("snapshot"),
+				"groups": []*string{
+					jsii.String("daily"),
+				},
+				"retain":      jsii.Number(3),
+				"concurrency": jsii.Number(2),
+				"labels": map[string]interface{}{
+					"job": jsii.String("multiple-daily"),
+				},
+			},
+		},
+	)
+
 	return chart
 }
