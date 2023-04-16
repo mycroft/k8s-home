@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	linkdingImage = "sissbruecker/linkding"
+	linkdingImage = "sissbruecker/linkding:1.17.2"
 )
 
 func NewLinkdingChart(scope constructs.Construct) cdk8s.Chart {
