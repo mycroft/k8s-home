@@ -94,7 +94,7 @@ spec:
                 secretKeyRef:
                   key: password
                   name: mariadb
-          image: linuxserver/bookstack:23.02.2
+          image: linuxserver/bookstack:23.02.3
           name: bookstack
           volumeMounts:
             - mountPath: /config
