@@ -36,7 +36,7 @@ func NewLokiChart(scope constructs.Construct) cdk8s.Chart {
 		repositoryName,
 		chartName,
 		releaseName,
-		"4.9.0",
+		"5.0.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
