@@ -67,7 +67,7 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		"jetstack", // repository name
 		appName,    // chart name
 		appName,    // release name
-		"v1.11.0",
+		"v1.11.1",
 		map[string]string{
 			"installCRDs": "true",
 		},
