@@ -34,7 +34,7 @@ func NewMinioOperator(scope constructs.Construct) cdk8s.Chart {
 		"minio",    // repository name, same as above
 		"operator", // the chart name
 		"operator", // the release name
-		"4.5.8",
+		"5.0.4",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
