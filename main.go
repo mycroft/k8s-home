@@ -1,12 +1,23 @@
 package main
 
 import (
+	"flag"
+
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 
 	"git.mkz.me/mycroft/k8s-home/apps"
+	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 )
 
+var checkVersion bool
+
+func init() {
+	flag.BoolVar(&checkVersion, "check-version", false, "check the installed versions")
+}
+
 func main() {
+	flag.Parse()
+
 	app := cdk8s.NewApp(nil)
 
 	// security
@@ -59,6 +70,10 @@ func main() {
 	apps.NewEmojivotoChart(app)
 	apps.NewVaultWardenChart(app)
 	apps.NewSendChart(app)
+
+	if checkVersion {
+		k8s_helpers.CheckVersions()
+	}
 
 	app.Synth()
 }

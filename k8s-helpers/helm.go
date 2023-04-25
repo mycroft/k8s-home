@@ -14,10 +14,21 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
+type HelmChartVersion struct {
+	RepositoryName string
+	ChartName      string
+	Version        string
+}
+
+var helmRepositories = map[string]string{}
+var helmChartVersions = []HelmChartVersion{}
+
 // CreateHelmRepository creates a HelmRepository into the flux-system namespace
 // similar to:
 // - helm repo add jetstack https://charts.jetstack.io
 func CreateHelmRepository(chart constructs.Construct, name, url string) sourcetoolkitfluxcdio.HelmRepository {
+	helmRepositories[name] = url
+
 	return sourcetoolkitfluxcdio.NewHelmRepository(
 		chart,
 		jsii.String(fmt.Sprintf("helm-repo-%s", name)),
@@ -51,6 +62,12 @@ func CreateHelmRelease(
 	configMaps []HelmReleaseConfigMap,
 	annotations map[string]*string,
 ) helmtoolkitfluxcdio.HelmRelease {
+	helmChartVersions = append(helmChartVersions, HelmChartVersion{
+		RepositoryName: repoName,
+		ChartName:      chartName,
+		Version:        version,
+	})
+
 	// Prepare configMaps.
 	valuesFrom := []*helmtoolkitfluxcdio.HelmReleaseSpecValuesFrom{}
 	for _, configMap := range configMaps {
