@@ -30,7 +30,7 @@ func NewVaultChart(scope constructs.Construct) cdk8s.Chart {
 		"hashicorp", // repo name
 		"vault",     // chart name
 		"vault",     // release name
-		"0.22.0",
+		"0.24.1",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
