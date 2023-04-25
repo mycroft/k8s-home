@@ -30,7 +30,7 @@ func NewPostgresOperator(scope constructs.Construct) cdk8s.Chart {
 		"postgres-operator",
 		"postgres-operator",
 		"postgres-operator",
-		"1.9.0",
+		"1.10.0",
 		map[string]string{},
 		nil,
 		nil,
