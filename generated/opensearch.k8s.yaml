@@ -71,7 +71,7 @@ spec:
         kind: HelmRepository
         name: opensearch
         namespace: flux-system
-      version: 2.11.2
+      version: 2.11.4
   install:
     createNamespace: false
     skipCRDs: false
@@ -144,7 +144,7 @@ spec:
         kind: HelmRepository
         name: opensearch
         namespace: flux-system
-      version: 2.9.1
+      version: 2.9.3
   install:
     createNamespace: false
     skipCRDs: false
