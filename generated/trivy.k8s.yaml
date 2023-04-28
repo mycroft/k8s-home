@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: trivy-helm-values-c80e8437
+  name: trivy-helm-val-trivy-operator-c88a521d
   namespace: trivy-system
 data:
   values.yaml: |
@@ -44,7 +44,7 @@ spec:
         kind: HelmRepository
         name: aqua
         namespace: flux-system
-      version: 0.13.1
+      version: 0.13.2
   install:
     createNamespace: false
     skipCRDs: false
@@ -53,5 +53,5 @@ spec:
     trivy.ignoreUnfixed: "true"
   valuesFrom:
     - kind: ConfigMap
-      name: trivy-helm-values-c80e8437
+      name: trivy-helm-val-trivy-operator-c88a521d
       valuesKey: values.yaml
