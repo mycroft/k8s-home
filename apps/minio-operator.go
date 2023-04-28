@@ -11,6 +11,9 @@ import (
 func NewMinioOperator(scope constructs.Construct) cdk8s.Chart {
 	namespace := "minio-operator"
 
+	repoName := "minio"
+	releaseName := "operator"
+
 	chart := cdk8s.NewChart(
 		scope,
 		jsii.String(namespace),
@@ -22,7 +25,7 @@ func NewMinioOperator(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"minio",
+		repoName,
 		"https://operator.min.io/",
 	)
 
@@ -30,17 +33,17 @@ func NewMinioOperator(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
-		namespace,  // namespace
-		"minio",    // repository name, same as above
-		"operator", // the chart name
-		"operator", // the release name
+		namespace,   // namespace
+		repoName,    // repository name, same as above
+		"operator",  // the chart name
+		releaseName, // the release name
 		"5.0.4",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				releaseName,
 				"minio-operator.yaml",
 			),
 		},
