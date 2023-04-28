@@ -122,6 +122,21 @@ data:
         storageClass: longhorn-crypto-global
 
     backend:
+      extraArgs:
+      - --config.expand-env=true
+
+      extraEnv:
+      - name: MINIO_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: minio
+            key: access_key_id
+      - name: MINIO_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: minio
+            key: secret_access_key
+
       persistence:
         enableStatefulSetAutoDeletePVC: false
         size: 10Gi
@@ -138,7 +153,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: f6f0c1cf8137ff09cceab0d14f5ea54dc48c04b48f66c07297226409d890a34e
+    configMapHash: 1e797ec6bafd6863b6caa66a425762d1dfcae5f382588ad8a18e17770e67b260
   name: loki
   namespace: loki
 spec:
