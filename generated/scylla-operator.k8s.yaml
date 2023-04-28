@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: scylla-operator-helm-values-c8254b9a
+  name: scylla-operator-helm-val-scylla-operator-c8cf5f7c
   namespace: scylla-operator
 data:
   values.yaml: "# https://github.com/scylladb/scylla-operator/blob/master/helm/scylla-operator/values.yaml"
@@ -43,5 +43,5 @@ spec:
   values: {}
   valuesFrom:
     - kind: ConfigMap
-      name: scylla-operator-helm-values-c8254b9a
+      name: scylla-operator-helm-val-scylla-operator-c8cf5f7c
       valuesKey: values.yaml
