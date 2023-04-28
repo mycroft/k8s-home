@@ -54,7 +54,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: minio-operator-helm-values-c8582209
+  name: minio-operator-helm-val-operator-c8f58c16
   namespace: minio-operator
 data:
   values.yaml: |
@@ -112,7 +112,7 @@ spec:
   values: {}
   valuesFrom:
     - kind: ConfigMap
-      name: minio-operator-helm-values-c8582209
+      name: minio-operator-helm-val-operator-c8f58c16
       valuesKey: values.yaml
 ---
 apiVersion: v1
