@@ -121,6 +121,12 @@ data:
         size: 10Gi
         storageClass: longhorn-crypto-global
 
+    backend:
+      persistence:
+        enableStatefulSetAutoDeletePVC: false
+        size: 10Gi
+        storageClass: longhorn-crypto-global
+
     monitoring:
       lokiCanary:
         enabled: false
@@ -132,7 +138,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 5e47848f8a9b1d8d624d844400bae2d84548a5e381a6ab9c42ff126526bcc73d
+    configMapHash: f6f0c1cf8137ff09cceab0d14f5ea54dc48c04b48f66c07297226409d890a34e
   name: loki
   namespace: loki
 spec:
