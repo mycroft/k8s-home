@@ -62,6 +62,21 @@ read:
     storageClass: longhorn-crypto-global
 
 backend:
+  extraArgs:
+  - --config.expand-env=true
+
+  extraEnv:
+  - name: MINIO_ACCESS_KEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: minio
+        key: access_key_id
+  - name: MINIO_SECRET_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: minio
+        key: secret_access_key
+
   persistence:
     enableStatefulSetAutoDeletePVC: false
     size: 10Gi
