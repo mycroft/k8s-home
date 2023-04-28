@@ -61,6 +61,12 @@ read:
     size: 10Gi
     storageClass: longhorn-crypto-global
 
+backend:
+  persistence:
+    enableStatefulSetAutoDeletePVC: false
+    size: 10Gi
+    storageClass: longhorn-crypto-global
+
 monitoring:
   lokiCanary:
     enabled: false
