@@ -11,6 +11,9 @@ func NewTrivyChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "trivy"
 	namespace := "trivy-system"
 
+	repoName := "aqua"
+	releaseName := "trivy-operator"
+
 	chart := cdk8s.NewChart(
 		scope,
 		jsii.String(appName),
@@ -21,17 +24,17 @@ func NewTrivyChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"aqua",
+		repoName,
 		"https://aquasecurity.github.io/helm-charts/",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"aqua",
+		repoName,
 		"trivy-operator",
-		"trivy-operator",
-		"0.13.1",
+		releaseName,
+		"0.13.2",
 		map[string]string{
 			"trivy.ignoreUnfixed": "true",
 		},
@@ -39,11 +42,11 @@ func NewTrivyChart(scope constructs.Construct) cdk8s.Chart {
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				releaseName,
 				"trivy.yaml",
 			),
 		},
-		nil, // annotations
+		nil,
 	)
 
 	return chart
