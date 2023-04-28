@@ -10,6 +10,9 @@ import (
 func NewScyllaOperatorChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "scylla-operator"
 
+	repoName := "scylla"
+	releaseName := "scylla-operator"
+
 	chart := cdk8s.NewChart(
 		scope,
 		jsii.String(namespace),
@@ -20,23 +23,23 @@ func NewScyllaOperatorChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"scylla",
+		repoName,
 		"https://scylla-operator-charts.storage.googleapis.com/stable",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"scylla",
+		repoName,
 		"scylla-operator",
-		"scylla-operator",
+		releaseName,
 		"v1.8.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				releaseName,
 				"scylla-operator.yaml",
 			),
 		},
