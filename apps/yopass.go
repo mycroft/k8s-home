@@ -16,6 +16,7 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 	appIngress := "yopass.services.mkz.me"
 	appName := "yopass"
 	appPort := 1337
+	image := k8s_helpers.RegisterDockerImage("jhaals/yopass:11.5.0")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -59,7 +60,7 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 		chart,
 		namespace,
 		appName,
-		"jhaals/yopass:11.5.0",
+		image,
 		yopassLabels,
 		[]*k8s.EnvVar{},
 		[]string{

@@ -10,6 +10,7 @@ import (
 
 func NewHelloKubernetesChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "hello-kubernetes"
+	image := k8s_helpers.RegisterDockerImage("paulbouwer/hello-kubernetes:1.10.1")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -77,7 +78,7 @@ func NewHelloKubernetesChart(scope constructs.Construct) cdk8s.Chart {
 						Containers: &[]*k8s.Container{
 							{
 								Name:  jsii.String(appName),
-								Image: jsii.String("paulbouwer/hello-kubernetes:1.10.1"),
+								Image: jsii.String(image),
 								Env:   &env,
 							},
 						},

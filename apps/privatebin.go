@@ -11,15 +11,12 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-const (
-	privatebinImage = "privatebin/nginx-fpm-alpine"
-)
-
 func NewPrivatebinChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "privatebin"
 	appName := namespace
 	appPort := 8080
 	appIngress := "privatebin.services.mkz.me"
+	privatebinImage := k8s_helpers.RegisterDockerImage("privatebin/nginx-fpm-alpine:latest")
 
 	chart := cdk8s.NewChart(
 		scope,

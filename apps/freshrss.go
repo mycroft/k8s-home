@@ -13,7 +13,7 @@ import (
 func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 	namespace := "freshrss"
 	appName := namespace
-	appImage := "freshrss/freshrss:1.21.0"
+	appImage := k8s_helpers.RegisterDockerImage("freshrss/freshrss:1.21.0")
 	appPort := 80
 	appIngress := "freshrss.services.mkz.me"
 

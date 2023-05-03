@@ -8,15 +8,12 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-const (
-	linkdingImage = "sissbruecker/linkding:1.17.2"
-)
-
 func NewLinkdingChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "linkding"
 	appName := namespace
 	appPort := 9090
 	appIngress := "links.services.mkz.me"
+	linkdingImage := k8s_helpers.RegisterDockerImage("sissbruecker/linkding:1.17.2")
 
 	chart := cdk8s.NewChart(
 		scope,

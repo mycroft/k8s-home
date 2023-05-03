@@ -14,6 +14,7 @@ import (
 func NewTraefikForwardAuth(scope constructs.Construct) cdk8s.Chart {
 	appName := "traefik-forward-auth"
 	namespace := appName
+	image := k8s_helpers.RegisterDockerImage("thomseddon/traefik-forward-auth:2.2.0")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -115,7 +116,7 @@ func NewTraefikForwardAuth(scope constructs.Construct) cdk8s.Chart {
 						Containers: &[]*k8s.Container{
 							{
 								Name:  jsii.String(appName),
-								Image: jsii.String("thomseddon/traefik-forward-auth:2.2.0"),
+								Image: jsii.String(image),
 								Env:   env,
 							},
 						},

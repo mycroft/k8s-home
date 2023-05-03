@@ -14,6 +14,8 @@ func NewITToolsChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "it-tools"
 	appPort := 80
 
+	image := k8s_helpers.RegisterDockerImage("corentinth/it-tools:latest")
+
 	chart := cdk8s.NewChart(
 		scope,
 		jsii.String(namespace),
@@ -30,7 +32,7 @@ func NewITToolsChart(scope constructs.Construct) cdk8s.Chart {
 		chart,
 		namespace,
 		appName,
-		"corentinth/it-tools:latest",
+		image,
 		appLabels,
 		[]*k8s.EnvVar{},
 		[]string{},

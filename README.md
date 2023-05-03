@@ -24,6 +24,13 @@ k get secret -n flux-system -o yaml flux-system | yq .data.identity -r | base64 
 
 Then re-run the `bootstrap` command.
 
+## Upgrade services
+
+To check outdated Helm charts, use:
+
+```sh
+go build && ./k8s-home -check-version
+```
 
 ## Services
 

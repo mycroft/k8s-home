@@ -13,6 +13,7 @@ func NewSendChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "send"
 	ingressHost := "send.services.mkz.me"
 	appPort := 1443
+	image := k8s_helpers.RegisterDockerImage("registry.gitlab.com/timvisee/send:latest")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -83,7 +84,7 @@ func NewSendChart(scope constructs.Construct) cdk8s.Chart {
 		chart,
 		namespace,
 		appName,
-		"registry.gitlab.com/timvisee/send:latest",
+		image,
 		sendLabels,
 		env,
 		[]string{},

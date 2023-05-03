@@ -13,6 +13,9 @@ import (
 func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "emojivoto"
 	ingressName := "emojivoto.services.mkz.me"
+	imageEmojiSvc := k8s_helpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-emoji-svc:v11")
+	imageWeb := k8s_helpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-web:v11")
+	imageVotingSvc := k8s_helpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-voting-svc:v11")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -89,7 +92,7 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 									{Name: jsii.String("GRPC_PORT"), Value: jsii.String("8080")},
 									{Name: jsii.String("PROM_PORT"), Value: jsii.String("8081")},
 								},
-								Image: jsii.String("docker.l5d.io/buoyantio/emojivoto-emoji-svc:v11"),
+								Image: jsii.String(imageEmojiSvc),
 								Name:  jsii.String("emoji-svc"),
 								Ports: &[]*k8s.ContainerPort{
 									{ContainerPort: jsii.Number(8080), Name: jsii.String("grpc")},
@@ -142,7 +145,7 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 								Env: &[]*k8s.EnvVar{
 									{Name: jsii.String("WEB_HOST"), Value: jsii.String("web-svc.emojivoto:80")},
 								},
-								Image: jsii.String("docker.l5d.io/buoyantio/emojivoto-web:v11"),
+								Image: jsii.String(imageWeb),
 								Ports: &[]*k8s.ContainerPort{
 									{ContainerPort: jsii.Number(8080), Name: jsii.String("grpc")},
 									{ContainerPort: jsii.Number(8081), Name: jsii.String("prom")},
@@ -191,7 +194,7 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 									{Name: jsii.String("GRPC_PORT"), Value: jsii.String("8080")},
 									{Name: jsii.String("PROM_PORT"), Value: jsii.String("8081")},
 								},
-								Image: jsii.String("docker.l5d.io/buoyantio/emojivoto-voting-svc:v11"),
+								Image: jsii.String(imageVotingSvc),
 								Name:  jsii.String("voting-svc"),
 								Ports: &[]*k8s.ContainerPort{
 									{ContainerPort: jsii.Number(8080), Name: jsii.String("grpc")},
@@ -244,7 +247,7 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 									{Name: jsii.String("VOTINGSVC_HOST"), Value: jsii.String("voting-svc.emojivoto:8080")},
 									{Name: jsii.String("INDEX_BUNDLE"), Value: jsii.String("dist/index_bundle.js")},
 								},
-								Image: jsii.String("docker.l5d.io/buoyantio/emojivoto-web:v11"),
+								Image: jsii.String(imageWeb),
 								Name:  jsii.String("web-svc"),
 								Ports: &[]*k8s.ContainerPort{
 									{ContainerPort: jsii.Number(8080), Name: jsii.String("http")},
