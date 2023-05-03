@@ -15,7 +15,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: vault-helm-values-c8b20a1d
+  name: vault-helm-val-vault-c826ee21
   namespace: vault
 data:
   values.yaml: |-
@@ -126,5 +126,5 @@ spec:
   values: {}
   valuesFrom:
     - kind: ConfigMap
-      name: vault-helm-values-c8b20a1d
+      name: vault-helm-val-vault-c826ee21
       valuesKey: values.yaml
