@@ -9,6 +9,8 @@ import (
 
 func NewVaultChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "vault"
+	repoName := "hashicorp"
+	releaseName := "vault"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -20,23 +22,23 @@ func NewVaultChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"hashicorp",
+		repoName,
 		"https://helm.releases.hashicorp.com",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"hashicorp", // repo name
+		repoName,
 		"vault",     // chart name
-		"vault",     // release name
+		releaseName, // release name
 		"0.24.1",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"", // release name to be modified
+				releaseName, // release name to be modified
 				"vault.yaml",
 			),
 		},
