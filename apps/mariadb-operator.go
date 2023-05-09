@@ -30,7 +30,7 @@ func NewMariaDBOperator(scope constructs.Construct) cdk8s.Chart {
 		"mariadb-operator", // repository name, same as above
 		"mariadb-operator", // the chart name
 		"mariadb-operator", // the release name
-		"0.11.0",
+		"0.12.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
