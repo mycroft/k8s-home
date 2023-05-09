@@ -16,8 +16,9 @@ loki:
       secretAccessKey: ${MINIO_SECRET_ACCESS_KEY}
       accessKeyId: ${MINIO_ACCESS_KEY_ID}
       s3ForcePathStyle: true
-      insecure: true
-      http_config: {}
+      insecure: false
+      http_config:
+        insecure_skip_verify: true
 
 write:
   extraArgs:
