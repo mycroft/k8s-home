@@ -20,51 +20,49 @@ func NewMinio(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.NewNamespace(chart, namespace)
 	k8s_helpers.CreateSecretStore(chart, namespace)
+	k8s_helpers.CreateExternalSecret(chart, namespace, "storage-configuration")
 
-	k8s_helpers.CreateExternalSecret(chart, namespace, "minio-tenant")
-
-	miniominio.NewTenantV2(
+	miniominio.NewTenant(
 		chart,
 		jsii.String("minio-storage"),
-		&miniominio.TenantV2Props{
+		&miniominio.TenantProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name:      jsii.String("minio-storage"),
 				Namespace: jsii.String(namespace),
 			},
-			Spec: &miniominio.TenantV2Spec{
-				CredsSecret: &miniominio.TenantV2SpecCredsSecret{
-					Name: jsii.String("minio-tenant"),
+			Spec: &miniominio.TenantSpec{
+				Configuration: &miniominio.TenantSpecConfiguration{
+					Name: jsii.String("storage-configuration"),
 				},
-				Pools: &[]*miniominio.TenantV2SpecPools{
+				Pools: &[]*miniominio.TenantSpecPools{
 					{
-						Servers:          jsii.Number(4),
+						Servers:          jsii.Number(2),
 						Name:             jsii.String("pool"),
 						VolumesPerServer: jsii.Number(2),
-						VolumeClaimTemplate: &miniominio.TenantV2SpecPoolsVolumeClaimTemplate{
-							Metadata: &miniominio.TenantV2SpecPoolsVolumeClaimTemplateMetadata{
+						VolumeClaimTemplate: &miniominio.TenantSpecPoolsVolumeClaimTemplate{
+							Metadata: &miniominio.TenantSpecPoolsVolumeClaimTemplateMetadata{
 								Name: jsii.String("data"),
 							},
-							Spec: &miniominio.TenantV2SpecPoolsVolumeClaimTemplateSpec{
+							Spec: &miniominio.TenantSpecPoolsVolumeClaimTemplateSpec{
 								StorageClassName: jsii.String("longhorn-crypto-global"),
 								AccessModes: &[]*string{
 									jsii.String("ReadWriteOnce"),
 								},
-								Resources: &miniominio.TenantV2SpecPoolsVolumeClaimTemplateSpecResources{
-									Requests: &map[string]miniominio.TenantV2SpecPoolsVolumeClaimTemplateSpecResourcesRequests{
-										"storage": miniominio.TenantV2SpecPoolsVolumeClaimTemplateSpecResourcesRequests_FromString(jsii.String("16Gi")),
+								Resources: &miniominio.TenantSpecPoolsVolumeClaimTemplateSpecResources{
+									Requests: &map[string]miniominio.TenantSpecPoolsVolumeClaimTemplateSpecResourcesRequests{
+										"storage": miniominio.TenantSpecPoolsVolumeClaimTemplateSpecResourcesRequests_FromString(jsii.String("32Gi")),
 									},
 								},
 							},
 						},
-						ContainerSecurityContext: &miniominio.TenantV2SpecPoolsContainerSecurityContext{
+						ContainerSecurityContext: &miniominio.TenantSpecPoolsContainerSecurityContext{
 							RunAsUser:    jsii.Number(1000),
 							RunAsGroup:   jsii.Number(1000),
 							RunAsNonRoot: jsii.Bool(true),
 						},
 					},
 				},
-				RequestAutoCert: jsii.Bool(false),
-				Env: &[]*miniominio.TenantV2SpecEnv{
+				Env: &[]*miniominio.TenantSpecEnv{
 					{
 						Name:  jsii.String("MINIO_DOMAIN"),
 						Value: jsii.String("minio-storage.services.mkz.me"),
@@ -114,7 +112,7 @@ func NewMinio(scope constructs.Construct) cdk8s.Chart {
 										Service: &k8s.IngressServiceBackend{
 											Name: jsii.String("minio"),
 											Port: &k8s.ServiceBackendPort{
-												Number: jsii.Number(80),
+												Number: jsii.Number(443),
 											},
 										},
 									},
@@ -133,7 +131,7 @@ func NewMinio(scope constructs.Construct) cdk8s.Chart {
 										Service: &k8s.IngressServiceBackend{
 											Name: jsii.String("minio-storage-console"),
 											Port: &k8s.ServiceBackendPort{
-												Number: jsii.Number(9090),
+												Number: jsii.Number(9443),
 											},
 										},
 									},

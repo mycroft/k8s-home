@@ -20,7 +20,7 @@ imports:
   # there is a bunch of duplicates in the following CRD:
   # - https://raw.githubusercontent.com/zalando/postgres-operator/v1.9.0/manifests/postgresql.crd.yaml
   - crds/postgresql.crd.yaml
-  - https://raw.githubusercontent.com/minio/operator/master/bundles/community-operators/4.5.8/manifests/minio.min.io_tenants.yaml
+  - https://raw.githubusercontent.com/minio/operator/master/bundles/community-operators/5.0.4/manifests/minio.min.io_tenants.yaml
   - https://raw.githubusercontent.com/scylladb/scylla-operator/master/pkg/api/scylla/v1/scylla.scylladb.com_scyllaclusters.yaml
   - https://raw.githubusercontent.com/mariadb-operator/mariadb-operator/helm-chart-0.11.0/deploy/charts/mariadb-operator/crds/crds.yaml
   - https://raw.githubusercontent.com/vmware-tanzu/helm-charts/main/charts/velero/crds/schedules.yaml
