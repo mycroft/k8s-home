@@ -43,7 +43,7 @@ class = S3Storage
 [model_options]
 region = ""
 version = "latest"
-endpoint = "http://minio-storage-hl.minio:9000"
+endpoint = "https://minio-storage-hl.minio:9000"
 use_path_style_endpoint = true
 bucket = "privatebin"
 accesskey = "AWS_ACCESS_KEY_ID"
