@@ -7,6 +7,7 @@ import (
 	"git.mkz.me/mycroft/k8s-home/imports/certificates_certmanagerio"
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/longhornio"
+	"git.mkz.me/mycroft/k8s-home/imports/servicemonitor_monitoringcoreoscom"
 	"git.mkz.me/mycroft/k8s-home/imports/traefikcontainous"
 
 	"github.com/aws/constructs-go/constructs/v10"
@@ -315,6 +316,37 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 				"concurrency": jsii.Number(2),
 				"labels": map[string]interface{}{
 					"job": jsii.String("multiple-daily"),
+				},
+			},
+		},
+	)
+
+	// Adding service monitor
+	servicemonitor_monitoringcoreoscom.NewServiceMonitor(
+		chart,
+		jsii.String("sm"),
+		&servicemonitor_monitoringcoreoscom.ServiceMonitorProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Namespace: jsii.String(namespace),
+				Labels: &map[string]*string{
+					"release": jsii.String("prometheus"),
+				},
+			},
+			Spec: &servicemonitor_monitoringcoreoscom.ServiceMonitorSpec{
+				Selector: &servicemonitor_monitoringcoreoscom.ServiceMonitorSpecSelector{
+					MatchLabels: &map[string]*string{
+						"app": jsii.String("longhorn-manager"),
+					},
+				},
+				NamespaceSelector: &servicemonitor_monitoringcoreoscom.ServiceMonitorSpecNamespaceSelector{
+					MatchNames: &[]*string{
+						jsii.String("longhorn-system"),
+					},
+				},
+				Endpoints: &[]*servicemonitor_monitoringcoreoscom.ServiceMonitorSpecEndpoints{
+					{
+						Port: jsii.String("manager"),
+					},
 				},
 			},
 		},
