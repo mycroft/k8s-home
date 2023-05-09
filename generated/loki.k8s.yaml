@@ -76,8 +76,9 @@ data:
           secretAccessKey: ${MINIO_SECRET_ACCESS_KEY}
           accessKeyId: ${MINIO_ACCESS_KEY_ID}
           s3ForcePathStyle: true
-          insecure: true
-          http_config: {}
+          insecure: false
+          http_config:
+            insecure_skip_verify: true
 
     write:
       extraArgs:
@@ -153,7 +154,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 244b83bf0ea3d8d23d614e92e3199b4f9acc281c37f92fc37f77da92b4e3eac8
+    configMapHash: e8371b93e7708721ec7f48ebcce05afc3584f9fb2856625d5faf8979ca76633c
   name: loki
   namespace: loki
 spec:
