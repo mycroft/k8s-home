@@ -270,3 +270,20 @@ spec:
     job: multiple-daily
   retain: 3
   task: snapshot
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: prometheus
+  name: longhorn-system-sm-c8c03c02
+  namespace: longhorn-system
+spec:
+  endpoints:
+    - port: manager
+  namespaceSelector:
+    matchNames:
+      - longhorn-system
+  selector:
+    matchLabels:
+      app: longhorn-manager
