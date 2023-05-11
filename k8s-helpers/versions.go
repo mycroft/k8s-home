@@ -50,10 +50,8 @@ func GetEntriesFromIndex(body []byte) (map[string][]*Entry, error) {
 	return index.Entries, nil
 }
 
-// CheckVersions checks the installed releases for update
-func CheckVersions() {
-
-	fmt.Printf("Helm charts updates:\n")
+func GetHelmUpdates() (map[string]string, error) {
+	retVersions := map[string]string{}
 
 	for _, helmRelease := range helmChartVersions {
 		if _, ok := helmRepositories[helmRelease.RepositoryName]; !ok {
@@ -112,15 +110,37 @@ func CheckVersions() {
 		}
 
 		if lastVersion != helmRelease.Version {
-			fmt.Printf("%s: %s => %s\n", helmRelease.ChartName, helmRelease.Version, lastVersion)
+			retVersions[helmRelease.ChartName] = fmt.Sprintf("%s => %s", helmRelease.Version, lastVersion)
 		}
 	}
 
+	return retVersions, nil
+}
+
+// CheckVersions checks the installed releases for update
+func CheckVersions() {
+	helmVersions, err := GetHelmUpdates()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Helm charts updates:\n")
+	for k, v := range helmVersions {
+		fmt.Printf("%s => %s\n", k, v)
+	}
+
+	fmt.Println()
 	fmt.Printf("Docker images:\n")
 
 	for _, image := range dockerImages {
 		parts := strings.Split(image, ":")
-		GetLastImageTag(parts[0], parts[1])
+
+		versions := GetLastImageTag(parts[0], parts[1])
+
+		if len(versions) > 0 {
+			fmt.Printf("%s:%s => %s\n", parts[0], parts[1], versions[len(versions)-1])
+		}
+
 	}
 }
 
@@ -132,7 +152,8 @@ func RegisterDockerImage(image string) string {
 	return image
 }
 
-func GetLastImageTag(image, version string) {
+func GetLastImageTag(image, version string) []string {
+	retVersions := []string{}
 	// Set the image name and registry URL
 	imageName := image
 	// registryURL := "https://registry-1.docker.io"
@@ -150,10 +171,8 @@ func GetLastImageTag(image, version string) {
 		panic(err)
 	}
 
-	fmt.Printf("%s: %s\n", image, version)
-
 	if version == "latest" || version == "" {
-		return
+		return retVersions
 	}
 
 	v, err := semver.NewVersion(version)
@@ -168,7 +187,9 @@ func GetLastImageTag(image, version string) {
 		}
 
 		if v2.GreaterThan(v) {
-			fmt.Printf("New version: %s\n", v2)
+			retVersions = append(retVersions, v2.String())
 		}
 	}
+
+	return retVersions
 }
