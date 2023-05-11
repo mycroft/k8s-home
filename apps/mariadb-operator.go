@@ -9,6 +9,7 @@ import (
 
 func NewMariaDBOperator(scope constructs.Construct) cdk8s.Chart {
 	namespace := "mariadb-operator"
+	releaseName := "mariadb-operator"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -29,14 +30,14 @@ func NewMariaDBOperator(scope constructs.Construct) cdk8s.Chart {
 		namespace,          // namespace
 		"mariadb-operator", // repository name, same as above
 		"mariadb-operator", // the chart name
-		"mariadb-operator", // the release name
-		"0.12.0",
+		releaseName,
+		"0.13.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"mariadb-operator", // release name
+				releaseName,
 				"mariadb-operator.yaml",
 			),
 		},
