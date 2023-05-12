@@ -70,6 +70,7 @@ func main() {
 	apps.NewEmojivotoChart(app)
 	apps.NewVaultWardenChart(app)
 	apps.NewSendChart(app)
+	apps.NewHeyChart(app)
 
 	if checkVersion {
 		k8s_helpers.CheckVersions()
