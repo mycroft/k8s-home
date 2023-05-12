@@ -28,7 +28,7 @@ func NewPromtailChart(scope constructs.Construct) cdk8s.Chart {
 		repositoryName, // repo name; was installed in Loki
 		chartName,      // chart name
 		chartName,      // release name
-		"6.11.1",
+		"6.11.2",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
