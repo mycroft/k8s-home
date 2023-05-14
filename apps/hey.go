@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	heyImage = "git.mkz.me/mycroft/hey:latest"
+	heyImage = "git.mkz.me/mycroft/hey:0.0.4"
 )
 
 func NewHeyChart(scope constructs.Construct) cdk8s.Chart {
