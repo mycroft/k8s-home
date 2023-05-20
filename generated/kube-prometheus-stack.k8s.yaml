@@ -340,7 +340,7 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
-      version: 45.28.1
+      version: 45.29.0
   install:
     createNamespace: false
     skipCRDs: false
