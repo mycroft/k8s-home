@@ -13,7 +13,7 @@ func NewLinkdingChart(scope constructs.Construct) cdk8s.Chart {
 	appName := namespace
 	appPort := 9090
 	appIngress := "links.services.mkz.me"
-	linkdingImage := k8s_helpers.RegisterDockerImage("sissbruecker/linkding:1.17.2")
+	linkdingImage := k8s_helpers.RegisterDockerImage("sissbruecker/linkding:1.19.0")
 
 	chart := cdk8s.NewChart(
 		scope,
