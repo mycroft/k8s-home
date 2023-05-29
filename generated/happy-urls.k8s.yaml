@@ -3,6 +3,67 @@ kind: Namespace
 metadata:
   name: happy-urls
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: redis
+    app.kubernetes.io/name: happy-urls
+  name: happy-urls-redis-svc-c8857158
+  namespace: happy-urls
+spec:
+  ports:
+    - name: http
+      port: 6379
+  selector:
+    app.kubernetes.io/component: redis
+    app.kubernetes.io/name: happy-urls
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: happy-urls-redis-sts-c8557871
+  namespace: happy-urls
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: redis
+      app.kubernetes.io/name: happy-urls
+  serviceName: happy-urls-redis-svc-c8857158
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: redis
+        app.kubernetes.io/name: happy-urls
+    spec:
+      containers:
+        - command:
+            - redis-server
+            - --save
+            - "60"
+            - "1"
+            - --loglevel
+            - warning
+          env: []
+          image: redis:7.0.9
+          name: redis
+          volumeMounts:
+            - mountPath: /data
+              name: data
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/component: redis
+          app.kubernetes.io/name: happy-urls
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: longhorn-crypto-global
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -11,14 +72,19 @@ metadata:
 spec:
   selector:
     matchLabels:
+      app.kubernetes.io/component: happy-urls
       app.kubernetes.io/name: happy-urls
   template:
     metadata:
       labels:
+        app.kubernetes.io/component: happy-urls
         app.kubernetes.io/name: happy-urls
     spec:
       containers:
-        - image: git.mkz.me/mycroft/happy-urls:latest
+        - env:
+            - name: REDIS_URL
+              value: redis://happy-urls-redis-svc-c8857158:6379
+          image: git.mkz.me/mycroft/happy-urls:latest
           imagePullPolicy: Always
           name: happy-urls
 ---
@@ -32,6 +98,7 @@ spec:
     - name: http
       port: 3000
   selector:
+    app.kubernetes.io/component: happy-urls
     app.kubernetes.io/name: happy-urls
 ---
 apiVersion: networking.k8s.io/v1
