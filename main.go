@@ -71,6 +71,7 @@ func main() {
 	apps.NewVaultWardenChart(app)
 	apps.NewSendChart(app)
 	apps.NewHeyChart(app)
+	apps.NewHappyUrlsChart(app)
 
 	if checkVersion {
 		k8s_helpers.CheckVersions()
