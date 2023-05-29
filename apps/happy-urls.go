@@ -28,8 +28,41 @@ func NewHappyUrlsChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.NewNamespace(chart, namespace)
 
+	redisLabels := map[string]*string{
+		"app.kubernetes.io/name":      jsii.String(appName),
+		"app.kubernetes.io/component": jsii.String("redis"),
+	}
+
+	_, svcName := k8s_helpers.NewStatefulSet(
+		chart,
+		namespace,
+		"redis",
+		"redis:7.0.9",
+		6379,
+		redisLabels,
+		[]*k8s.EnvVar{},
+		[]string{
+			"redis-server --save 60 1 --loglevel warning",
+		},
+		[]k8s_helpers.StatefulSetVolume{
+			{
+				Name:        "data",
+				MountPath:   "/data",
+				StorageSize: "1Gi",
+			},
+		},
+	)
+
 	labels := map[string]*string{
-		"app.kubernetes.io/name": jsii.String(appName),
+		"app.kubernetes.io/name":      jsii.String(appName),
+		"app.kubernetes.io/component": jsii.String(appName),
+	}
+
+	envVars := []*k8s.EnvVar{
+		{
+			Name:  jsii.String("REDIS_URL"),
+			Value: jsii.String(fmt.Sprintf("redis://%s:6379", svcName)),
+		},
 	}
 
 	k8s.NewKubeDeployment(
@@ -50,6 +83,7 @@ func NewHappyUrlsChart(scope constructs.Construct) cdk8s.Chart {
 					Spec: &k8s.PodSpec{
 						Containers: &[]*k8s.Container{
 							{
+								Env:             &envVars,
 								ImagePullPolicy: jsii.String("Always"),
 								Name:            jsii.String(appName),
 								Image:           jsii.String(happyUrlsImage),

@@ -35,7 +35,7 @@ func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.NewNamespace(chart, namespace)
 
-	stsName := k8s_helpers.NewStatefulSet(
+	stsName, _ := k8s_helpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,

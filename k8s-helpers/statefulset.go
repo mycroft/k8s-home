@@ -24,7 +24,7 @@ func NewStatefulSet(
 	env []*k8s.EnvVar,
 	commands []string,
 	storages []StatefulSetVolume,
-) string {
+) (string, string) {
 	// Warning: Changing statefulSet object names will rename PVCs
 	serviceObjectName := fmt.Sprintf("%s-svc", appName)
 	statefulSetObjectName := fmt.Sprintf("%s-sts", appName)
@@ -125,5 +125,5 @@ func NewStatefulSet(
 		},
 	)
 
-	return *sts.Name()
+	return *sts.Name(), *svc.Name()
 }

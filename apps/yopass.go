@@ -50,6 +50,7 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
+	// XXX fixt the service url here
 	redisUrl := "redis://yopass-redis-svc-c8a159bf:6379"
 
 	yopassLabels := map[string]*string{
