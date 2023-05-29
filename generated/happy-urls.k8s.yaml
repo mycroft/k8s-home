@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: happy-urls
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: happy-urls-deploy-c8e5a5c2
+  namespace: happy-urls
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: happy-urls
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: happy-urls
+    spec:
+      containers:
+        - image: git.mkz.me/mycroft/happy-urls:latest
+          imagePullPolicy: Always
+          name: happy-urls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: happy-urls-svc-c8e83750
+  namespace: happy-urls
+spec:
+  ports:
+    - name: http
+      port: 3000
+  selector:
+    app.kubernetes.io/name: happy-urls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: traefik
+  name: happy-urls-ingress-c8b56949
+  namespace: happy-urls
+spec:
+  rules:
+    - host: happy-urls.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: happy-urls-svc-c8e83750
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - happy-urls.services.mkz.me
+      secretName: secret-tls-www
