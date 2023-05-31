@@ -25,7 +25,7 @@ func main() {
 	apps.NewSealedSecretsChart(app)
 	apps.NewVaultChart(app)
 	apps.NewExternalSecretsChart(app)
-	apps.NewTrivyChart(app)
+	// apps.NewTrivyChart(app)
 	apps.NewDexIdpChart(app)
 	apps.NewTraefikForwardAuth(app)
 
@@ -38,16 +38,16 @@ func main() {
 	apps.NewScyllaOperatorChart(app)
 	apps.NewScyllaChart(app)
 	apps.NewNATSChart(app)
-	apps.NewOpenSearchChart(app)
+	// apps.NewOpenSearchChart(app)
 	apps.NewMariaDBOperator(app)
 	apps.NewMariaDBChart(app)
 	apps.NewVeleroChart(app)
 
 	// observability
 	apps.NewKubePrometheusStackChart(app)
-	apps.NewLokiChart(app)
-	apps.NewPromtailChart(app)
-	apps.NewJaegerChart(app)
+	// apps.NewLokiChart(app)
+	// apps.NewPromtailChart(app)
+	// apps.NewJaegerChart(app)
 
 	// misc tooling
 	apps.NewFluxCDChart(app)
