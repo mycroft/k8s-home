@@ -41,7 +41,7 @@ alertmanager:
     storage:
       volumeClaimTemplate:
         spec:
-          storageClassName: localpath
+          storageClassName: local-path
           accessModes:
             - ReadWriteOnce
           resources:
