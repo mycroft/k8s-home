@@ -170,7 +170,7 @@ data:
         storage:
           volumeClaimTemplate:
             spec:
-              storageClassName: localpath
+              storageClassName: local-path
               accessModes:
                 - ReadWriteOnce
               resources:
@@ -329,7 +329,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 94f0cb13fc5d1686fd6d5adc52c93ec974143b7a3d3bfdf6cb82a500e5e95490
+    configMapHash: 24403521fb58b1e23994cbe725231286aad28b4e2c2cc10e6fdefd29d223cc4f
   name: prometheus
   namespace: monitoring
 spec:
