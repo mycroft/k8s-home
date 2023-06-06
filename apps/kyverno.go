@@ -47,5 +47,24 @@ func NewKyvernoChart(scope constructs.Construct) cdk8s.Chart {
 		nil,
 	)
 
+	k8s_helpers.CreateHelmRelease(
+		chart,
+		namespace,
+		repositoryName,
+		"kyverno-policies",
+		"kyverno-policies",
+		"v3.0.0",
+		map[string]string{},
+		[]k8s_helpers.HelmReleaseConfigMap{
+			k8s_helpers.CreateHelmValuesConfig(
+				chart,
+				namespace,
+				"kyverno-policies",
+				"kyverno-policies.yaml",
+			),
+		},
+		nil,
+	)
+
 	return chart
 }
