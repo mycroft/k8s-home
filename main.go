@@ -28,6 +28,7 @@ func main() {
 	// apps.NewTrivyChart(app)
 	apps.NewDexIdpChart(app)
 	apps.NewTraefikForwardAuth(app)
+	apps.NewKyvernoChart(app)
 
 	// storage
 	apps.NewLonghornChart(app)
