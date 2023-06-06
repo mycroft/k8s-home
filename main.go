@@ -25,7 +25,7 @@ func main() {
 	apps.NewSealedSecretsChart(app)
 	apps.NewVaultChart(app)
 	apps.NewExternalSecretsChart(app)
-	// apps.NewTrivyChart(app)
+	apps.NewTrivyChart(app)
 	apps.NewDexIdpChart(app)
 	apps.NewTraefikForwardAuth(app)
 	apps.NewKyvernoChart(app)
