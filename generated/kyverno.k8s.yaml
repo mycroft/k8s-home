@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kyverno
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: kyverno
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://kyverno.github.io/kyverno/
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kyverno-helm-val-kyverno-c84ded9b
+  namespace: kyverno
+data:
+  values.yaml: "# https://github.com/kyverno/kyverno/blob/main/charts/kyverno/values.yaml"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: a8b268d4de46cdf382e6b9b92430a06ce2c703d690ab338e8acc3ff86661be0f
+  name: kyverno
+  namespace: kyverno
+spec:
+  chart:
+    spec:
+      chart: kyverno
+      sourceRef:
+        kind: HelmRepository
+        name: kyverno
+        namespace: flux-system
+      version: v3.0.1
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: kyverno-helm-val-kyverno-c84ded9b
+      valuesKey: values.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kyverno-helm-val-kyverno-policies-c82755ed
+  namespace: kyverno
+data:
+  values.yaml: "# kyverno-policies"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: 5f468c13f68c33b92179fb18cd860cf101c9879e7e00138f3a8d86d5b83e2dc7
+  name: kyverno-policies
+  namespace: kyverno
+spec:
+  chart:
+    spec:
+      chart: kyverno-policies
+      sourceRef:
+        kind: HelmRepository
+        name: kyverno
+        namespace: flux-system
+      version: v3.0.0
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: kyverno-helm-val-kyverno-policies-c82755ed
+      valuesKey: values.yaml
