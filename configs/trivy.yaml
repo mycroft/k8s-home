@@ -7,3 +7,7 @@ resources:
   limits:
     cpu: 1
     memory: 8Gi
+
+trivy:
+  extraEnvVars:
+    OPERATOR_CONCURRENT_SCAN_JOBS_LIMIT: "1"
