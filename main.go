@@ -7,6 +7,8 @@ import (
 
 	"git.mkz.me/mycroft/k8s-home/apps"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+
+	charts_apps "git.mkz.me/mycroft/k8s-home/charts/apps"
 )
 
 var checkVersion bool
@@ -73,6 +75,8 @@ func main() {
 	apps.NewSendChart(app)
 	apps.NewHeyChart(app)
 	apps.NewHappyUrlsChart(app)
+
+	charts_apps.NewSnippetBoxChart(app)
 
 	if checkVersion {
 		k8s_helpers.CheckVersions()
