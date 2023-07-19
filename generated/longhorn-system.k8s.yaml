@@ -95,7 +95,7 @@ spec:
         kind: HelmRepository
         name: longhorn
         namespace: flux-system
-      version: 1.4.2
+      version: 1.5.1
   install:
     createNamespace: false
     skipCRDs: false
