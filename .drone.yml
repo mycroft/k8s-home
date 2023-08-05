@@ -16,6 +16,8 @@ steps:
   - apt-get install -y nodejs
   - npm install -g cdk8s-cli
   - cdk8s import
+  - git diff
+  - git checkout cdk8s.yaml
   - cdk8s synth
 
 - name: prepare generated

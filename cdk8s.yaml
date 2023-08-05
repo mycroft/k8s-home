@@ -21,8 +21,3 @@ imports:
   - https://raw.githubusercontent.com/mariadb-operator/mariadb-operator/helm-chart-0.11.0/deploy/charts/mariadb-operator/crds/crds.yaml
   - https://raw.githubusercontent.com/vmware-tanzu/helm-charts/main/charts/velero/crds/schedules.yaml
   - https://raw.githubusercontent.com/longhorn/longhorn-manager/v1.4.1/k8s/crds.yaml
-  - https://raw.githubusercontent.com/cert-manager/cert-manager/master/deploy/crds/crd-certificates.yaml
-  - https://raw.githubusercontent.com/external-secrets/external-secrets/main/config/crds/bases/external-secrets.io_secretstores.yaml
-  - https://raw.githubusercontent.com/external-secrets/external-secrets/main/config/crds/bases/external-secrets.io_externalsecrets.yaml
-  - crds/crd-podmonitors.yaml
-  - crds/crd-servicemonitors.yaml
