@@ -1,8 +1,9 @@
+output: dist
+pluginsDirectory: /home/mycroft/.cdk8s/plugins
 language: go
 app: go run .
 imports:
   - k8s
-  # - https://github.com/fluxcd/source-controller/releases/download/v0.30.0/source-controller.crds.yaml
   - https://raw.githubusercontent.com/fluxcd/source-controller/v0.30.0/config/crd/bases/source.toolkit.fluxcd.io_helmcharts.yaml
   - https://raw.githubusercontent.com/fluxcd/source-controller/v0.30.0/config/crd/bases/source.toolkit.fluxcd.io_helmrepositories.yaml
   - https://github.com/fluxcd/helm-controller/releases/download/v0.25.0/helm-controller.crds.yaml
@@ -11,17 +12,17 @@ imports:
   - https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.20.2/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
   - secretstore:=https://raw.githubusercontent.com/external-secrets/external-secrets/main/config/crds/bases/external-secrets.io_secretstores.yaml
   - externalsecrets:=https://raw.githubusercontent.com/external-secrets/external-secrets/main/config/crds/bases/external-secrets.io_externalsecrets.yaml
-  # see https://github.com/cdk8s-team/cdk8s/issues/932
-  # - podmonitor:=https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-46.3.0/charts/kube-prometheus-stack/crds/crd-podmonitors.yaml
   - podmonitor:=crds/crd-podmonitors.yaml
-  # - servicemonitor:=https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-46.3.0/charts/kube-prometheus-stack/crds/crd-servicemonitors.yaml
   - servicemonitor:=crds/crd-servicemonitors.yaml
   - https://raw.githubusercontent.com/traefik/traefik/v2.9/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
-  # there is a bunch of duplicates in the following CRD:
-  # - https://raw.githubusercontent.com/zalando/postgres-operator/v1.9.0/manifests/postgresql.crd.yaml
   - crds/postgresql.crd.yaml
   - https://raw.githubusercontent.com/minio/operator/master/bundles/community-operators/5.0.4/manifests/minio.min.io_tenants.yaml
   - https://raw.githubusercontent.com/scylladb/scylla-operator/master/pkg/api/scylla/v1/scylla.scylladb.com_scyllaclusters.yaml
   - https://raw.githubusercontent.com/mariadb-operator/mariadb-operator/helm-chart-0.11.0/deploy/charts/mariadb-operator/crds/crds.yaml
   - https://raw.githubusercontent.com/vmware-tanzu/helm-charts/main/charts/velero/crds/schedules.yaml
   - https://raw.githubusercontent.com/longhorn/longhorn-manager/v1.4.1/k8s/crds.yaml
+  - https://raw.githubusercontent.com/cert-manager/cert-manager/master/deploy/crds/crd-certificates.yaml
+  - https://raw.githubusercontent.com/external-secrets/external-secrets/main/config/crds/bases/external-secrets.io_secretstores.yaml
+  - https://raw.githubusercontent.com/external-secrets/external-secrets/main/config/crds/bases/external-secrets.io_externalsecrets.yaml
+  - crds/crd-podmonitors.yaml
+  - crds/crd-servicemonitors.yaml
