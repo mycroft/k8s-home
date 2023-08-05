@@ -13,7 +13,7 @@ import (
 func NewWallabagChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "wallabag"
 	appName := namespace
-	appImage := k8s_helpers.RegisterDockerImage("wallabag/wallabag:2.6.1")
+	appImage := k8s_helpers.RegisterDockerImage("wallabag/wallabag:2.6.2")
 	appIngress := "wallabag.services.mkz.me"
 	appPort := 80
 
