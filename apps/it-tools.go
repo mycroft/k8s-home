@@ -14,7 +14,7 @@ func NewITToolsChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "it-tools"
 	appPort := 80
 
-	image := k8s_helpers.RegisterDockerImage("corentinth/it-tools:latest")
+	image := k8s_helpers.RegisterDockerImage("corentinth/it-tools:2023.8.16-9bd4ad4")
 
 	chart := cdk8s.NewChart(
 		scope,
