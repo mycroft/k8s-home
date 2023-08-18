@@ -34,7 +34,7 @@ func NewTrivyChart(scope constructs.Construct) cdk8s.Chart {
 		repoName,
 		"trivy-operator",
 		releaseName,
-		"0.14.1",
+		"0.15.1",
 		map[string]string{
 			"trivy.ignoreUnfixed": "true",
 		},
