@@ -37,7 +37,7 @@ func NewHappyUrlsChart(scope constructs.Construct) cdk8s.Chart {
 		chart,
 		namespace,
 		"redis",
-		"redis:7.0.9",
+		"redis:7.2.0",
 		6379,
 		redisLabels,
 		[]*k8s.EnvVar{},
