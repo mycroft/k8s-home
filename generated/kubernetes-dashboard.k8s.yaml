@@ -49,12 +49,16 @@ data:
 
     metricsScraper:
       enabled: true
+
+    cert-manager:
+      enabled: false
+      installCRDs: false
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: af0b5b6985f0c57860687d97695be9ecf1ec34d0a2e38f6e54ff63abd63e9dc7
+    configMapHash: f604d905afdb70fed48d8067ca570a99569ff175a2707a81c95e34dbfc83f444
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 spec:
