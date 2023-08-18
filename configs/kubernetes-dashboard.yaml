@@ -28,7 +28,3 @@ serviceMonitor:
 
 metricsScraper:
   enabled: true
-
-cert-manager:
-  enabled: false
-  installCRDs: false
