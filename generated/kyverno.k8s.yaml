@@ -35,7 +35,7 @@ spec:
         kind: HelmRepository
         name: kyverno
         namespace: flux-system
-      version: v3.0.2
+      version: v3.0.5
   install:
     createNamespace: false
     skipCRDs: false
@@ -69,7 +69,7 @@ spec:
         kind: HelmRepository
         name: kyverno
         namespace: flux-system
-      version: v3.0.1
+      version: v3.0.4
   install:
     createNamespace: false
     skipCRDs: false
