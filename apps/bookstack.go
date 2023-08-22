@@ -13,7 +13,7 @@ import (
 func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "bookstack"
 	appName := namespace
-	appImage := k8s_helpers.RegisterDockerImage("linuxserver/bookstack:23.05.20230503")
+	appImage := k8s_helpers.RegisterDockerImage("linuxserver/bookstack:v23.06.2-ls99")
 	appPort := 80
 	appIngress := "bookstack.services.mkz.me"
 
