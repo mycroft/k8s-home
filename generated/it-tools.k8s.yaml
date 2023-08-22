@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - env: []
-          image: corentinth/it-tools:2023.8.16-9bd4ad4
+          image: corentinth/it-tools:2023.8.21-6f93cba
           name: it-tools
           volumeMounts: []
       volumes: []
