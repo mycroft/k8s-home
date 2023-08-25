@@ -25,7 +25,7 @@ spec:
         kind: HelmRepository
         name: linkerd
         namespace: flux-system
-      version: 1.6.1
+      version: 1.8.0
   install:
     createNamespace: false
     skipCRDs: false
@@ -100,7 +100,7 @@ spec:
         kind: HelmRepository
         name: linkerd
         namespace: flux-system
-      version: 1.12.6
+      version: 1.15.0
   install:
     createNamespace: false
     skipCRDs: false
@@ -124,7 +124,7 @@ spec:
         kind: HelmRepository
         name: linkerd
         namespace: flux-system
-      version: 30.8.6
+      version: 30.11.0
   install:
     createNamespace: false
     skipCRDs: false
