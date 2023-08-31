@@ -9,6 +9,7 @@ import (
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 
 	charts_apps "git.mkz.me/mycroft/k8s-home/charts/apps"
+	charts_infra "git.mkz.me/mycroft/k8s-home/charts/infra"
 )
 
 var checkVersion bool
@@ -53,7 +54,7 @@ func main() {
 	// apps.NewJaegerChart(app)
 
 	// misc tooling
-	apps.NewFluxCDChart(app)
+	charts_infra.NewFluxCDChart(app)
 	apps.NewKubernetesDashboardChart(app)
 	apps.NewLinkerdChart(app)
 

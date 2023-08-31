@@ -1,4 +1,4 @@
-package apps
+package infra
 
 import (
 	podmonitor "git.mkz.me/mycroft/k8s-home/imports/podmonitor_monitoringcoreoscom"
