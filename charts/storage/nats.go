@@ -1,4 +1,4 @@
-package apps
+package storage
 
 import (
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
@@ -7,12 +7,11 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewExternalSecretsChart(scope constructs.Construct) cdk8s.Chart {
-	namespace := "external-secrets"
-
-	repositoryName := "external-secrets"
-	chartName := "external-secrets"
-	releaseName := "external-secrets"
+func NewNATSChart(scope constructs.Construct) cdk8s.Chart {
+	namespace := "nats"
+	repositoryName := "nats"
+	chartName := "nats"
+	releaseName := "nats"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -25,30 +24,27 @@ func NewExternalSecretsChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateHelmRepository(
 		chart,
 		repositoryName,
-		"https://charts.external-secrets.io",
+		"https://nats-io.github.io/k8s/helm/charts/",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		repositoryName, // repo name
-		chartName,      // chart name
-		releaseName,    // release name
-		"0.9.4",
+		repositoryName,
+		chartName,
+		releaseName,
+		"1.0.2",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
 				releaseName,
-				"external-secrets.yaml",
+				"nats.yaml",
 			),
 		},
 		nil,
 	)
-
-	k8s_helpers.CreateSecretStore(chart, namespace)
-	k8s_helpers.CreateExternalSecret(chart, namespace, "testaroo")
 
 	return chart
 }

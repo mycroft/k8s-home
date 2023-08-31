@@ -1,4 +1,4 @@
-package apps
+package infra
 
 import (
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"

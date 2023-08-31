@@ -1,4 +1,4 @@
-package apps
+package security
 
 import (
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
@@ -7,11 +7,9 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewJaegerChart(scope constructs.Construct) cdk8s.Chart {
-	namespace := "jaeger"
-	repositoryName := "jaegertracing"
-	chartName := "jaeger"
-	releaseName := chartName
+func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
+	namespace := "sealed-secrets"
+	releaseName := namespace
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -20,27 +18,29 @@ func NewJaegerChart(scope constructs.Construct) cdk8s.Chart {
 	)
 
 	k8s_helpers.NewNamespace(chart, namespace)
-	k8s_helpers.CreateSecretStore(chart, namespace)
+
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		repositoryName,
-		"https://jaegertracing.github.io/helm-charts",
+		"sealed-secrets",
+		"https://bitnami-labs.github.io/sealed-secrets",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
-		namespace,
-		repositoryName,
-		chartName,
-		releaseName,
-		"0.71.2",
-		map[string]string{},
+		namespace,        // namespace
+		"sealed-secrets", // repo name
+		"sealed-secrets", // chart name
+		releaseName,      // release name
+		"2.12.0",
+		map[string]string{
+			"fullnameOverride": "sealed-secrets-controller",
+		},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
 				releaseName,
-				"jaeger.yaml",
+				"sealed-secrets.yaml",
 			),
 		},
 		nil,

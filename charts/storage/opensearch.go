@@ -1,4 +1,4 @@
-package apps
+package storage
 
 import (
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
@@ -7,16 +7,13 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewKyvernoChart(scope constructs.Construct) cdk8s.Chart {
-	namespace := "kyverno"
-
-	repositoryName := "kyverno"
-	chartName := "kyverno"
-	releaseName := "kyverno"
+func NewOpenSearchChart(scope constructs.Construct) cdk8s.Chart {
+	appName := "opensearch"
+	namespace := "opensearch"
 
 	chart := cdk8s.NewChart(
 		scope,
-		jsii.String(namespace),
+		jsii.String(appName),
 		&cdk8s.ChartProps{},
 	)
 
@@ -24,24 +21,24 @@ func NewKyvernoChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		repositoryName,
-		"https://kyverno.github.io/kyverno/",
+		"opensearch",
+		"https://opensearch-project.github.io/helm-charts",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		repositoryName, // repo name
-		chartName,      // chart name
-		releaseName,    // release name
-		"v3.0.5",
+		"opensearch", // repoName; must be in flux-system
+		"opensearch", // chart name
+		"opensearch", // release name
+		"2.12.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				releaseName,
-				"kyverno.yaml",
+				"opensearch", // release name
+				"opensearch.yaml",
 			),
 		},
 		nil,
@@ -50,17 +47,17 @@ func NewKyvernoChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		repositoryName,
-		"kyverno-policies",
-		"kyverno-policies",
-		"v3.0.4",
+		"opensearch",            // repoName; must be in flux-system
+		"opensearch-dashboards", // chart name
+		"opensearch-dashboards", // release name
+		"2.10.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"kyverno-policies",
-				"kyverno-policies.yaml",
+				"opensearch-dashboards", // release name
+				"opensearch-dashboards.yaml",
 			),
 		},
 		nil,

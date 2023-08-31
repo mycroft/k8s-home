@@ -1,4 +1,4 @@
-package apps
+package security
 
 import (
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
@@ -7,8 +7,10 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewPostgresOperator(scope constructs.Construct) cdk8s.Chart {
-	namespace := "postgres-operator"
+func NewVaultChart(scope constructs.Construct) cdk8s.Chart {
+	namespace := "vault"
+	repoName := "hashicorp"
+	releaseName := "vault"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -20,19 +22,26 @@ func NewPostgresOperator(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"postgres-operator",
-		"https://opensource.zalando.com/postgres-operator/charts/postgres-operator",
+		repoName,
+		"https://helm.releases.hashicorp.com",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"postgres-operator",
-		"postgres-operator",
-		"postgres-operator",
-		"1.10.0",
+		repoName,
+		"vault",     // chart name
+		releaseName, // release name
+		"0.25.0",
 		map[string]string{},
-		nil,
+		[]k8s_helpers.HelmReleaseConfigMap{
+			k8s_helpers.CreateHelmValuesConfig(
+				chart,
+				namespace,
+				releaseName, // release name to be modified
+				"vault.yaml",
+			),
+		},
 		nil,
 	)
 

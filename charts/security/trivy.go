@@ -1,4 +1,4 @@
-package apps
+package security
 
 import (
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
@@ -7,14 +7,16 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewVaultChart(scope constructs.Construct) cdk8s.Chart {
-	namespace := "vault"
-	repoName := "hashicorp"
-	releaseName := "vault"
+func NewTrivyChart(scope constructs.Construct) cdk8s.Chart {
+	appName := "trivy"
+	namespace := "trivy-system"
+
+	repoName := "aqua"
+	releaseName := "trivy-operator"
 
 	chart := cdk8s.NewChart(
 		scope,
-		jsii.String(namespace),
+		jsii.String(appName),
 		&cdk8s.ChartProps{},
 	)
 
@@ -23,23 +25,25 @@ func NewVaultChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateHelmRepository(
 		chart,
 		repoName,
-		"https://helm.releases.hashicorp.com",
+		"https://aquasecurity.github.io/helm-charts/",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
 		repoName,
-		"vault",     // chart name
-		releaseName, // release name
-		"0.25.0",
-		map[string]string{},
+		"trivy-operator",
+		releaseName,
+		"0.15.1",
+		map[string]string{
+			"trivy.ignoreUnfixed": "true",
+		},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				releaseName, // release name to be modified
-				"vault.yaml",
+				releaseName,
+				"trivy.yaml",
 			),
 		},
 		nil,

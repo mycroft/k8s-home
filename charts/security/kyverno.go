@@ -1,4 +1,4 @@
-package apps
+package security
 
 import (
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
@@ -7,13 +7,16 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewOpenSearchChart(scope constructs.Construct) cdk8s.Chart {
-	appName := "opensearch"
-	namespace := "opensearch"
+func NewKyvernoChart(scope constructs.Construct) cdk8s.Chart {
+	namespace := "kyverno"
+
+	repositoryName := "kyverno"
+	chartName := "kyverno"
+	releaseName := "kyverno"
 
 	chart := cdk8s.NewChart(
 		scope,
-		jsii.String(appName),
+		jsii.String(namespace),
 		&cdk8s.ChartProps{},
 	)
 
@@ -21,24 +24,24 @@ func NewOpenSearchChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"opensearch",
-		"https://opensearch-project.github.io/helm-charts",
+		repositoryName,
+		"https://kyverno.github.io/kyverno/",
 	)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"opensearch", // repoName; must be in flux-system
-		"opensearch", // chart name
-		"opensearch", // release name
-		"2.12.0",
+		repositoryName, // repo name
+		chartName,      // chart name
+		releaseName,    // release name
+		"v3.0.5",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"opensearch", // release name
-				"opensearch.yaml",
+				releaseName,
+				"kyverno.yaml",
 			),
 		},
 		nil,
@@ -47,17 +50,17 @@ func NewOpenSearchChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateHelmRelease(
 		chart,
 		namespace,
-		"opensearch",            // repoName; must be in flux-system
-		"opensearch-dashboards", // chart name
-		"opensearch-dashboards", // release name
-		"2.10.0",
+		repositoryName,
+		"kyverno-policies",
+		"kyverno-policies",
+		"v3.0.4",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				"opensearch-dashboards", // release name
-				"opensearch-dashboards.yaml",
+				"kyverno-policies",
+				"kyverno-policies.yaml",
 			),
 		},
 		nil,

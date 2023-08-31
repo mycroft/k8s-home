@@ -1,4 +1,4 @@
-package apps
+package observability
 
 import (
 	"github.com/aws/constructs-go/constructs/v10"

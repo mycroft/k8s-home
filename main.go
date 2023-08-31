@@ -5,11 +5,12 @@ import (
 
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 
-	"git.mkz.me/mycroft/k8s-home/apps"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 
 	charts_apps "git.mkz.me/mycroft/k8s-home/charts/apps"
 	charts_infra "git.mkz.me/mycroft/k8s-home/charts/infra"
+	charts_observability "git.mkz.me/mycroft/k8s-home/charts/observability"
+	charts_security "git.mkz.me/mycroft/k8s-home/charts/security"
 	charts_storage "git.mkz.me/mycroft/k8s-home/charts/storage"
 )
 
@@ -25,39 +26,39 @@ func main() {
 	app := cdk8s.NewApp(nil)
 
 	// security
-	apps.NewCertManagerChart(app)
-	apps.NewSealedSecretsChart(app)
-	apps.NewVaultChart(app)
-	apps.NewExternalSecretsChart(app)
-	apps.NewTrivyChart(app)
-	apps.NewDexIdpChart(app)
-	apps.NewTraefikForwardAuth(app)
-	apps.NewKyvernoChart(app)
+	charts_security.NewCertManagerChart(app)
+	charts_security.NewSealedSecretsChart(app)
+	charts_security.NewVaultChart(app)
+	charts_security.NewExternalSecretsChart(app)
+	charts_security.NewTrivyChart(app)
+	charts_security.NewDexIdpChart(app)
+	charts_security.NewTraefikForwardAuth(app)
+	charts_security.NewKyvernoChart(app)
 
 	// storage
 	charts_storage.NewLonghornChart(app)
-	apps.NewPostgresOperator(app)
-	apps.NewPostgres(app)
-	apps.NewMinioOperator(app)
-	apps.NewMinio(app)
-	apps.NewScyllaOperatorChart(app)
-	apps.NewScyllaChart(app)
-	apps.NewNATSChart(app)
+	charts_storage.NewPostgresOperator(app)
+	charts_storage.NewPostgres(app)
+	charts_storage.NewMinioOperator(app)
+	charts_storage.NewMinio(app)
+	charts_storage.NewScyllaOperatorChart(app)
+	charts_storage.NewScyllaChart(app)
+	charts_storage.NewNATSChart(app)
 	// apps.NewOpenSearchChart(app)
-	apps.NewMariaDBOperator(app)
-	apps.NewMariaDBChart(app)
-	apps.NewVeleroChart(app)
+	charts_storage.NewMariaDBOperator(app)
+	charts_storage.NewMariaDBChart(app)
+	charts_infra.NewVeleroChart(app)
 
 	// observability
-	apps.NewKubePrometheusStackChart(app)
-	// apps.NewLokiChart(app)
-	// apps.NewPromtailChart(app)
-	// apps.NewJaegerChart(app)
+	charts_observability.NewKubePrometheusStackChart(app)
+	// charts_observability.NewLokiChart(app)
+	// charts_observability.NewPromtailChart(app)
+	// charts_observability.NewJaegerChart(app)
 
 	// misc tooling
 	charts_infra.NewFluxCDChart(app)
-	apps.NewKubernetesDashboardChart(app)
-	apps.NewLinkerdChart(app)
+	charts_infra.NewKubernetesDashboardChart(app)
+	charts_infra.NewLinkerdChart(app)
 
 	// apps
 	charts_apps.NewHelloKubernetesChart(app)

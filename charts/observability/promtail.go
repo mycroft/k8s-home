@@ -1,4 +1,4 @@
-package apps
+package observability
 
 import (
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
@@ -7,9 +7,11 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewMariaDBOperator(scope constructs.Construct) cdk8s.Chart {
-	namespace := "mariadb-operator"
-	releaseName := "mariadb-operator"
+func NewPromtailChart(scope constructs.Construct) cdk8s.Chart {
+	namespace := "promtail"
+	repositoryName := "grafana"
+	chartName := "promtail"
+	releaseName := "promtail"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -18,27 +20,22 @@ func NewMariaDBOperator(scope constructs.Construct) cdk8s.Chart {
 	)
 
 	k8s_helpers.NewNamespace(chart, namespace)
-
-	k8s_helpers.CreateHelmRepository(
-		chart,
-		"mariadb-operator", // repository name
-		"https://mariadb-operator.github.io/mariadb-operator",
-	)
+	k8s_helpers.CreateSecretStore(chart, namespace)
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
-		namespace,          // namespace
-		"mariadb-operator", // repository name, same as above
-		"mariadb-operator", // the chart name
-		releaseName,
-		"0.19.0",
+		namespace,
+		repositoryName, // repo name; was installed in Loki
+		chartName,      // chart name
+		chartName,      // release name
+		"6.11.2",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
-				releaseName,
-				"mariadb-operator.yaml",
+				releaseName, // release name to be modified
+				"promtail.yaml",
 			),
 		},
 		nil,

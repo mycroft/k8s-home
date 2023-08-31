@@ -1,4 +1,4 @@
-package apps
+package observability
 
 import (
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
@@ -7,9 +7,11 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
-	namespace := "sealed-secrets"
-	releaseName := namespace
+func NewLokiChart(scope constructs.Construct) cdk8s.Chart {
+	namespace := "loki"
+	repositoryName := "grafana"
+	chartName := "loki"
+	releaseName := "loki"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -18,29 +20,30 @@ func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
 	)
 
 	k8s_helpers.NewNamespace(chart, namespace)
+	k8s_helpers.CreateSecretStore(chart, namespace)
 
 	k8s_helpers.CreateHelmRepository(
 		chart,
-		"sealed-secrets",
-		"https://bitnami-labs.github.io/sealed-secrets",
+		repositoryName,
+		"https://grafana.github.io/helm-charts",
 	)
+
+	k8s_helpers.CreateExternalSecret(chart, namespace, "minio")
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
-		namespace,        // namespace
-		"sealed-secrets", // repo name
-		"sealed-secrets", // chart name
-		releaseName,      // release name
-		"2.12.0",
-		map[string]string{
-			"fullnameOverride": "sealed-secrets-controller",
-		},
+		namespace,
+		repositoryName,
+		chartName,
+		releaseName,
+		"5.5.10",
+		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
 				releaseName,
-				"sealed-secrets.yaml",
+				"loki.yaml",
 			),
 		},
 		nil,
