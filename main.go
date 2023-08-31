@@ -10,6 +10,7 @@ import (
 
 	charts_apps "git.mkz.me/mycroft/k8s-home/charts/apps"
 	charts_infra "git.mkz.me/mycroft/k8s-home/charts/infra"
+	charts_storage "git.mkz.me/mycroft/k8s-home/charts/storage"
 )
 
 var checkVersion bool
@@ -34,7 +35,7 @@ func main() {
 	apps.NewKyvernoChart(app)
 
 	// storage
-	apps.NewLonghornChart(app)
+	charts_storage.NewLonghornChart(app)
 	apps.NewPostgresOperator(app)
 	apps.NewPostgres(app)
 	apps.NewMinioOperator(app)

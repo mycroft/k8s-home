@@ -1,4 +1,4 @@
-package apps
+package storage
 
 import (
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
