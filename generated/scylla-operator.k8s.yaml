@@ -35,7 +35,7 @@ spec:
         kind: HelmRepository
         name: scylla
         namespace: flux-system
-      version: v1.9.0
+      version: v1.10.0
   install:
     createNamespace: false
     skipCRDs: false
