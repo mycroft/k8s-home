@@ -2,7 +2,17 @@
 
 This repository builds & stores k8s configuration.
 
+Thanks to `cdk8s`, it builds kubernetes charts for all helm charts & apps prior to store them in the `generated` branch. This branch is then used by [Flux CD](https://fluxcd.io) to reconcile the k8s state with the built charts.
+
+
+## Contents
+
+I install and manage several apps for both infra and endusers. It includes secure encrypted storage with `longhorn`, secrets management, several databases, and some apps.
+
+
 ## Installation
+
+Initial installation of `Flux CD` comes with the `flux` binary. The whole installation procedure is available on the [official website](https://fluxcd.io/flux/get-started/).
 
 Please start `fluxcd`:
 
@@ -14,7 +24,8 @@ flux bootstrap git \
   --path=generated/
 ```
 
-## Upgrade flux
+
+## Upgrading flux
 
 Dump key file:
 
@@ -22,7 +33,8 @@ Dump key file:
 k get secret -n flux-system -o yaml flux-system | yq .data.identity -r | base64 -d > /tmp/rsa
 ```
 
-Then re-run the `bootstrap` command.
+Then re-run the `bootstrap` command as seen in the `Installation` section.
+
 
 ## Upgrade services
 
