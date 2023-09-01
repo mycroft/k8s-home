@@ -10,7 +10,7 @@ Thanks to `cdk8s`, it builds kubernetes charts for all helm charts & apps prior 
 I install and manage several apps for both infra and endusers. It includes secure encrypted storage with `longhorn`, secrets management, several databases, and some apps.
 
 
-## Installation
+## Initial installation with flux
 
 Initial installation of `Flux CD` comes with the `flux` binary. The whole installation procedure is available on the [official website](https://fluxcd.io/flux/get-started/).
 
@@ -25,7 +25,7 @@ flux bootstrap git \
 ```
 
 
-## Upgrading flux
+### Upgrading flux
 
 Dump key file:
 
@@ -43,6 +43,14 @@ To check outdated Helm charts, use:
 ```sh
 go build && ./k8s-home -check-version
 ```
+
+Services must be updated by modifying versions in source code.
+
+## Security
+
+Secrets can be either stored in source code thanks to `sealed-secrets` or in `vault` and deployed as a `Secret` in Kubernetes with `external-secrets`.
+
+Ingresses can be protected thanks to `traefik-forward-auth` which perform an `Oauth` process using my own private and external `gitea` instance.
 
 ## Services
 
