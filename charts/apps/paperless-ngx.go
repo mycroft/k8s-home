@@ -15,7 +15,7 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 	appIngress := "paperless.services.mkz.me"
 
 	redisImage := k8s_helpers.RegisterDockerImage("redis:7.2.0")
-	paperlessNgxImage := k8s_helpers.RegisterDockerImage("paperlessngx/paperless-ngx:1.17.1")
+	paperlessNgxImage := k8s_helpers.RegisterDockerImage("paperlessngx/paperless-ngx:1.17.4")
 
 	chart := cdk8s.NewChart(
 		scope,
