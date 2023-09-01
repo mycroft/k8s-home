@@ -181,13 +181,21 @@ func GetLastImageTag(image, version string) []string {
 	}
 
 	for _, tag := range tags {
+		if strings.HasPrefix(image, "linuxserver") && !strings.HasPrefix(tag, "v") {
+			continue
+		}
+
 		v2, err := semver.NewVersion(tag)
 		if err != nil {
 			continue
 		}
 
 		if v2.GreaterThan(v) {
-			retVersions = append(retVersions, v2.String())
+			if strings.HasPrefix(image, "linuxserver") {
+				retVersions = append(retVersions, tag)
+			} else {
+				retVersions = append(retVersions, v2.String())
+			}
 		}
 	}
 
