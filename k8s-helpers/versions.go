@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"sort"
 	"strings"
 
@@ -147,6 +148,12 @@ func CheckVersions() {
 var dockerImages = []string{}
 
 func RegisterDockerImage(image string) string {
+	ReadVersions()
+
+	if val, exists := versions.Images[image]; exists {
+		image = fmt.Sprintf("%s:%s", image, val)
+	}
+
 	dockerImages = append(dockerImages, image)
 
 	return image
@@ -200,4 +207,27 @@ func GetLastImageTag(image, version string) []string {
 	}
 
 	return retVersions
+}
+
+type Versions struct {
+	HelmCharts map[string]string `yaml:"helmcharts"`
+	Images     map[string]string `yaml:"images"`
+}
+
+var versions = Versions{}
+
+func ReadVersions() {
+	if len(versions.Images) != 0 || len(versions.HelmCharts) != 0 {
+		return
+	}
+
+	body, err := os.ReadFile("versions.yaml")
+	if err != nil {
+		panic(fmt.Sprintf("Could not open versions.yaml: %s", err.Error()))
+	}
+
+	err = yaml.Unmarshal(body, &versions)
+	if err != nil {
+		panic(fmt.Sprintf("Could not unmarshal versions.yaml: %s", err.Error()))
+	}
 }
