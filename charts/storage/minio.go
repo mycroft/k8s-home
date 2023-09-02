@@ -84,7 +84,6 @@ func NewMinio(scope constructs.Construct) cdk8s.Chart {
 	// Using https://github.com/minio/operator/blob/master/examples/kustomization/tenant-letsencrypt/ingress.yaml
 
 	annotations := map[string]*string{
-		"kubernetes.io/ingress.class":                        jsii.String("traefik"),
 		"cert-manager.io/cluster-issuer":                     jsii.String("letsencrypt-prod"),
 		"traefik.ingress.kubernetes.io/redirect-entry-point": jsii.String("https"),
 		"traefik.ingress.kubernetes.io/redirect-permanent":   jsii.String("true"),
@@ -102,6 +101,7 @@ func NewMinio(scope constructs.Construct) cdk8s.Chart {
 				Namespace:   jsii.String(namespace),
 			},
 			Spec: &k8s.IngressSpec{
+				IngressClassName: jsii.String("traefik"),
 				Rules: &[]*k8s.IngressRule{
 					{
 						Host: jsii.String(storageIngress),

@@ -20,13 +20,13 @@ prometheus:
     enabled: true
     hosts:
     - prometheus.services.mkz.me
+    ingressClassName: traefik
     tls:
     - secretName: tls-prometheus-cert
       hosts:
       - prometheus.services.mkz.me
 
     annotations:
-      kubernetes.io/ingress.class: traefik
       cert-manager.io/cluster-issuer: letsencrypt-prod
       traefik.ingress.kubernetes.io/redirect-entry-point: https
       traefik.ingress.kubernetes.io/redirect-permanent: "true"
@@ -52,13 +52,13 @@ alertmanager:
     enabled: true
     hosts:
     - alertmanager.services.mkz.me
+    ingressClassName: traefik
     tls:
     - secretName: tls-alertmanager-cert
       hosts:
       - alertmanager.services.mkz.me
 
     annotations:
-      kubernetes.io/ingress.class: traefik
       cert-manager.io/cluster-issuer: letsencrypt-prod
       traefik.ingress.kubernetes.io/redirect-entry-point: https
       traefik.ingress.kubernetes.io/redirect-permanent: "true"
@@ -68,13 +68,13 @@ grafana:
   ingress:
     enabled: true
     annotations:
-      kubernetes.io/ingress.class: "traefik"
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
       traefik.ingress.kubernetes.io/redirect-entry-point: "https"
       traefik.ingress.kubernetes.io/redirect-permanent: "true"
 
     hosts:
     - grafana.services.mkz.me
+    ingressClassName: traefik
     tls:
     - secretName: tls-grafana-cert
       hosts:

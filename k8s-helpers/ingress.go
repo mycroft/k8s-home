@@ -43,7 +43,6 @@ func NewAppIngress(
 	customAnnotations map[string]string,
 ) {
 	annotations := map[string]*string{
-		"kubernetes.io/ingress.class":    jsii.String("traefik"),
 		"cert-manager.io/cluster-issuer": jsii.String("letsencrypt-prod"),
 	}
 
@@ -71,6 +70,7 @@ func NewAppIngress(
 				Namespace:   jsii.String(namespace),
 			},
 			Spec: &k8s.IngressSpec{
+				IngressClassName: jsii.String("traefik"),
 				Rules: &[]*k8s.IngressRule{
 					{
 						Host: jsii.String(ingressHost),
