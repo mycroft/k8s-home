@@ -40,7 +40,7 @@ spec:
               value: "1000"
             - name: TZ
               value: Etc/UTC
-          image: linuxserver/heimdall:v2.5.6-ls228
+          image: linuxserver/heimdall:v2.5.6-ls229
           name: heimdall
           volumeMounts:
             - mountPath: /config
