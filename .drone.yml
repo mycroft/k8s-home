@@ -41,4 +41,26 @@ steps:
     commit: true
     commit_message: Update generated configuration
     ssh_key:
-      from_secret: ssh_key
+      from_secret: ssh_key_drone
+
+- name: github-mirror-main
+  image: appleboy/drone-git-push
+  settings:
+    local_branch: main
+    branch: main
+    remote: git@github.com:mycroft/k8s-home.git
+    force: false
+    commit: false
+    ssh_key:
+      from_secret: ssh_key_drone
+
+- name: github-mirror-generated
+  image: appleboy/drone-git-push
+  settings:
+    local_branch: generated
+    branch: generated
+    remote: git@github.com:mycroft/k8s-home.git
+    force: false
+    commit: false
+    ssh_key:
+      from_secret: ssh_key_drone
