@@ -14,7 +14,7 @@ func NewSnippetBoxChart(scope constructs.Construct) cdk8s.Chart {
 	appIngress := "snippetbox.services.mkz.me"
 	appName := "snippetbox"
 	appPort := 5000
-	image := k8s_helpers.RegisterDockerImage("pawelmalak/snippet-box:latest")
+	image := k8s_helpers.RegisterDockerImage("pawelmalak/snippet-box")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("snippetbox"),

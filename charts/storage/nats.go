@@ -33,7 +33,6 @@ func NewNATSChart(scope constructs.Construct) cdk8s.Chart {
 		repositoryName,
 		chartName,
 		releaseName,
-		"1.0.2",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(

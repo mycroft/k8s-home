@@ -13,7 +13,7 @@ func NewSendChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "send"
 	ingressHost := "send.services.mkz.me"
 	appPort := 1443
-	image := k8s_helpers.RegisterDockerImage("registry.gitlab.com/timvisee/send:latest")
+	image := k8s_helpers.RegisterDockerImage("registry.gitlab.com/timvisee/send")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -36,7 +36,7 @@ func NewSendChart(scope constructs.Construct) cdk8s.Chart {
 		chart,
 		namespace,
 		"redis",
-		"redis:7.2.0",
+		k8s_helpers.RegisterDockerImage("redis"),
 		6379,
 		redisLabels,
 		[]*k8s.EnvVar{},

@@ -16,7 +16,7 @@ func NewPrivatebinChart(scope constructs.Construct) cdk8s.Chart {
 	appName := namespace
 	appPort := 8080
 	appIngress := "privatebin.services.mkz.me"
-	privatebinImage := k8s_helpers.RegisterDockerImage("privatebin/nginx-fpm-alpine:latest")
+	privatebinImage := k8s_helpers.RegisterDockerImage("privatebin/nginx-fpm-alpine")
 
 	chart := cdk8s.NewChart(
 		scope,

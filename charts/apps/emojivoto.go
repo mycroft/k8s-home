@@ -13,9 +13,9 @@ import (
 func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "emojivoto"
 	ingressName := "emojivoto.services.mkz.me"
-	imageEmojiSvc := k8s_helpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-emoji-svc:v12")
-	imageWeb := k8s_helpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-web:v12")
-	imageVotingSvc := k8s_helpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-voting-svc:v12")
+	imageEmojiSvc := k8s_helpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-emoji-svc")
+	imageWeb := k8s_helpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-web")
+	imageVotingSvc := k8s_helpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-voting-svc")
 
 	chart := cdk8s.NewChart(
 		scope,

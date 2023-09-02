@@ -34,7 +34,6 @@ func NewKubernetesDashboardChart(scope constructs.Construct) cdk8s.Chart {
 		repositoryName,
 		chartName,
 		releaseName,
-		"6.0.8",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(

@@ -33,7 +33,6 @@ func NewLinkerdChart(scope constructs.Construct) cdk8s.Chart {
 		repositoryName, // repo name
 		"linkerd-crds", // chart name
 		"linkerd-crds", // release name
-		"1.8.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{},
 		nil,
@@ -45,7 +44,6 @@ func NewLinkerdChart(scope constructs.Construct) cdk8s.Chart {
 		repositoryName, // repo name
 		chartName,      // chart name
 		releaseName,    // release name
-		"1.15.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
@@ -64,7 +62,6 @@ func NewLinkerdChart(scope constructs.Construct) cdk8s.Chart {
 		repositoryName, // repo name
 		"linkerd-viz",  // chart name
 		"linkerd-viz",  // release name
-		"30.11.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{},
 		nil,

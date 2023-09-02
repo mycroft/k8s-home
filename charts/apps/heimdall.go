@@ -11,7 +11,7 @@ import (
 func NewHeimdallChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "heimdall"
 	appName := "heimdall"
-	appImage := k8s_helpers.RegisterDockerImage("linuxserver/heimdall:v2.5.6-ls228")
+	appImage := k8s_helpers.RegisterDockerImage("linuxserver/heimdall")
 	appPort := 80
 	appIngress := "heimdall.services.mkz.me"
 

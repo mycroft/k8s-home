@@ -31,7 +31,6 @@ func NewOpenSearchChart(scope constructs.Construct) cdk8s.Chart {
 		"opensearch", // repoName; must be in flux-system
 		"opensearch", // chart name
 		"opensearch", // release name
-		"2.12.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(
@@ -50,7 +49,6 @@ func NewOpenSearchChart(scope constructs.Construct) cdk8s.Chart {
 		"opensearch",            // repoName; must be in flux-system
 		"opensearch-dashboards", // chart name
 		"opensearch-dashboards", // release name
-		"2.10.0",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(

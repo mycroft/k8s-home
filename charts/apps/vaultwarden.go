@@ -11,7 +11,7 @@ import (
 func NewVaultWardenChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "vaultwarden"
 	appName := namespace
-	appImage := k8s_helpers.RegisterDockerImage("vaultwarden/server:1.29.1")
+	appImage := k8s_helpers.RegisterDockerImage("vaultwarden/server")
 	appPort := 80
 	appIngress := "vaultwarden.services.mkz.me"
 

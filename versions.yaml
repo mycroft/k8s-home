@@ -1,3 +1,46 @@
-helmcharts: ~
+helmcharts:
+  aqua/trivy-operator: 0.15.1
+  dex/dex: 0.15.3
+  external-secrets/external-secrets: 0.9.4
+  grafana/loki: 5.5.10
+  grafana/promtail: 6.11.2
+  hashicorp/vault: 0.25.0
+  jaegertracing/jaeger: 0.71.2
+  jetstack/cert-manager: v1.12.3
+  kubernetes-dashboard/kubernetes-dashboard: 6.0.8
+  kyverno/kyverno: v3.0.5
+  kyverno/kyverno-policies: v3.0.4
+  linkerd/linkerd-crds: 1.8.0
+  linkerd/linkerd-control-plane: 1.15.0
+  linkerd/linkerd-viz: 30.11.0
+  longhorn/longhorn: 1.5.1
+  mariadb-operator/mariadb-operator: 0.19.0
+  minio/operator: 5.0.7
+  nats/nats: 1.0.2
+  opensearch/opensearch: 2.12.0
+  opensearch/opensearch-dashboards: 2.10.0
+  postgres-operator/postgres-operator: 1.10.0
+  prometheus-community/kube-prometheus-stack: 48.3.2
+  scylla/scylla-operator: v1.10.0
+  sealed-secrets/sealed-secrets: 2.12.0
+  vmware-tanzu/velero: 5.0.2
 images:
+  corentinth/it-tools: 2023.8.21-6f93cba
+  docker.l5d.io/buoyantio/emojivoto-emoji-svc: v12
+  docker.l5d.io/buoyantio/emojivoto-web: v12
+  docker.l5d.io/buoyantio/emojivoto-voting-svc: v12
+  freshrss/freshrss: 1.21.0
+  jhaals/yopass: 11.5.1
+  linuxserver/bookstack: v23.08-ls101
+  linuxserver/heimdall: v2.5.6-ls228
+  paulbouwer/hello-kubernetes: 1.10.1
+  paperlessngx/paperless-ngx: 1.17.4
+  pawelmalak/snippet-box: latest
+  privatebin/nginx-fpm-alpine: latest
+  registry.gitlab.com/timvisee/send: latest
+  registry.mkz.me/mycroft/whatismyip: 5
+  redis: 7.2.0
   sissbruecker/linkding: 1.20.1
+  thomseddon/traefik-forward-auth: 2.2.0
+  vaultwarden/server: 1.29.1
+  wallabag/wallabag: 2.6.2

@@ -38,7 +38,6 @@ func NewDexIdpChart(scope constructs.Construct) cdk8s.Chart {
 		repositoryName, // repo name
 		chartName,      // chart name
 		releaseName,    // release name
-		"0.15.3",
 		map[string]string{},
 		[]k8s_helpers.HelmReleaseConfigMap{
 			k8s_helpers.CreateHelmValuesConfig(

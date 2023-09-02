@@ -57,15 +57,25 @@ type HelmReleaseConfigMap struct {
 // - helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.9.1 --set installCRDs=true
 func CreateHelmRelease(
 	chart constructs.Construct,
-	namespace, repoName, chartName, releaseName, version string,
+	namespace, repoName, chartName, releaseName string,
 	values map[string]string,
 	configMaps []HelmReleaseConfigMap,
 	annotations map[string]*string,
 ) helmtoolkitfluxcdio.HelmRelease {
+	cachedVersion := ""
+
+	ReadVersions()
+
+	if version, exists := versions.HelmCharts[fmt.Sprintf("%s/%s", repoName, chartName)]; exists {
+		cachedVersion = version
+	} else {
+		panic(fmt.Sprintf("Could not find version for HelmRelease %s/%s", repoName, chartName))
+	}
+
 	helmChartVersions = append(helmChartVersions, HelmChartVersion{
 		RepositoryName: repoName,
 		ChartName:      chartName,
-		Version:        version,
+		Version:        cachedVersion,
 	})
 
 	// Prepare configMaps.
@@ -104,7 +114,7 @@ func CreateHelmRelease(
 							Name:      jsii.String(repoName),
 							Namespace: jsii.String("flux-system"),
 						},
-						Version: jsii.String(version),
+						Version: jsii.String(cachedVersion),
 					},
 				},
 				Interval:   jsii.String("1m0s"),
