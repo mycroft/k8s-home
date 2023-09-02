@@ -59,16 +59,21 @@ func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	databases := map[string][]string{
-		"mariadb": {
-			"mariadb",
-		},
-		"bookstack": {
+	databases := []string{
+		"bookstack",
+		"mariadb",
+	}
+
+	users := map[string][]string{
+		"bookstack": []string{
 			"bookstack",
+		},
+		"mariadb": []string{
+			"mariadb",
 		},
 	}
 
-	for database := range databases {
+	for _, database := range databases {
 		mariadbmmontesio.NewDatabase(
 			chart,
 			jsii.String(fmt.Sprintf("%s-database", database)),
@@ -87,7 +92,8 @@ func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
 			},
 		)
 
-		for _, user := range databases[database] {
+		// users names are the same than databases (for now).
+		for _, user := range users[database] {
 			k8s_helpers.CreateExternalSecret(chart, namespace, fmt.Sprintf("user-%s", user))
 			mariadbmmontesio.NewUser(
 				chart,
