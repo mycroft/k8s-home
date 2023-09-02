@@ -19,11 +19,11 @@ console:
     enabled: true
     host: minio-console.services.mkz.me
     annotations:
-      kubernetes.io/ingress.class: traefik
       cert-manager.io/cluster-issuer: letsencrypt-prod
       traefik.ingress.kubernetes.io/redirect-entry-point: https
       traefik.ingress.kubernetes.io/redirect-permanent: "true"
       traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+    ingressClassName: traefik
     tls:
       - hosts:
         - minio-console.services.mkz.me
