@@ -79,11 +79,11 @@ data:
         enabled: true
         host: minio-console.services.mkz.me
         annotations:
-          kubernetes.io/ingress.class: traefik
           cert-manager.io/cluster-issuer: letsencrypt-prod
           traefik.ingress.kubernetes.io/redirect-entry-point: https
           traefik.ingress.kubernetes.io/redirect-permanent: "true"
           traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+        ingressClassName: traefik
         tls:
           - hosts:
             - minio-console.services.mkz.me
@@ -93,7 +93,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: c63145dbc6534662f0f6a5f1a74b704596b953001a3c84ce206ace3a0fc769ad
+    configMapHash: 18d125335e0288a4bf81ce6cffbc607a31293cde93f6343ef1c6994f7276c88a
   name: operator
   namespace: minio-operator
 spec:

@@ -76,7 +76,6 @@ data:
       ingress:
         enabled: true
         annotations:
-          kubernetes.io/ingress.class: traefik
           cert-manager.io/cluster-issuer: letsencrypt-prod
           traefik.ingress.kubernetes.io/redirect-entry-point: https
           traefik.ingress.kubernetes.io/redirect-permanent: "true"
@@ -84,6 +83,8 @@ data:
         hosts:
           - host: vault.services.mkz.me
             paths: []
+
+        ingressClassName: traefik
 
         tls:
           - secretName: vault-tls
@@ -107,7 +108,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 9cfa6d65553cde358774f1ffaeb03988124c7ade185371823fa52d2d57662f36
+    configMapHash: 8feede43ff870b2b267ad69aab66b2d9bf6be898b1bb6b2c2275dc3f7154ec34
   name: vault
   namespace: vault
 spec:

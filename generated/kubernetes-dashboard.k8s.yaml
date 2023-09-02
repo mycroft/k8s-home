@@ -30,7 +30,6 @@ data:
     ingress:
       enabled: true
       annotations:
-        kubernetes.io/ingress.class: traefik
         cert-manager.io/cluster-issuer: letsencrypt-prod
         traefik.ingress.kubernetes.io/redirect-entry-point: https
         traefik.ingress.kubernetes.io/redirect-permanent: "true"
@@ -38,6 +37,8 @@ data:
 
       hosts:
         - kubernetes-dashboard.services.mkz.me
+
+      ingressClassName: traefik
 
       tls:
         - secretName: kubernetes-dashboard-tls
@@ -54,7 +55,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: af0b5b6985f0c57860687d97695be9ecf1ec34d0a2e38f6e54ff63abd63e9dc7
+    configMapHash: 3b850eed534cc88d01cfc4683c090d940523937618891f9c4e27246e2a4d2235
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 spec:

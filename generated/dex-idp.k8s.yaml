@@ -128,10 +128,11 @@ data:
       enabled: true
 
       annotations:
-        kubernetes.io/ingress.class: "traefik"
         cert-manager.io/cluster-issuer: "letsencrypt-prod"
         traefik.ingress.kubernetes.io/redirect-entry-point: "https"
         traefik.ingress.kubernetes.io/redirect-permanent: "true"
+      
+      className: traefik
 
       hosts:
         - host: dex.services.mkz.me
@@ -153,7 +154,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: b8cdc1f60a4fa0c3fb153ec95ebce9b252e08666f3a9ce731bfd06fe29026e48
+    configMapHash: 928fe3b9ed4baab9bcc71d7aa2fb8672a16c744ad52595fe94e450b76b35cd16
   name: dex
   namespace: dex-idp
 spec:
