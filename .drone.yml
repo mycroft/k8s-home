@@ -48,7 +48,7 @@ steps:
   settings:
     local_branch: main
     branch: main
-    remote: git@github.com:mycroft/k8s-home.git
+    remote: ssh://git@github.com:mycroft/k8s-home.git
     force: false
     commit: false
     ssh_key:
@@ -59,7 +59,7 @@ steps:
   settings:
     local_branch: generated
     branch: generated
-    remote: git@github.com:mycroft/k8s-home.git
+    remote: ssh://git@github.com:mycroft/k8s-home.git
     force: false
     commit: false
     ssh_key:
