@@ -29,6 +29,7 @@ images:
   docker.l5d.io/buoyantio/emojivoto-emoji-svc: v12
   docker.l5d.io/buoyantio/emojivoto-web: v12
   docker.l5d.io/buoyantio/emojivoto-voting-svc: v12
+  excalidraw/excalidraw: latest
   freshrss/freshrss: 1.21.0
   jhaals/yopass: 11.5.1
   linuxserver/bookstack: v23.08-ls101

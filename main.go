@@ -78,8 +78,8 @@ func main() {
 	charts_apps.NewSendChart(app)
 	charts_apps.NewHeyChart(app)
 	charts_apps.NewHappyUrlsChart(app)
-
 	charts_apps.NewSnippetBoxChart(app)
+	charts_apps.NewExcalidrawChart(app)
 
 	if checkVersion {
 		k8s_helpers.CheckVersions()
