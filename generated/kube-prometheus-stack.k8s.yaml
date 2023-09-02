@@ -149,13 +149,13 @@ data:
         enabled: true
         hosts:
         - prometheus.services.mkz.me
+        ingressClassName: traefik
         tls:
         - secretName: tls-prometheus-cert
           hosts:
           - prometheus.services.mkz.me
 
         annotations:
-          kubernetes.io/ingress.class: traefik
           cert-manager.io/cluster-issuer: letsencrypt-prod
           traefik.ingress.kubernetes.io/redirect-entry-point: https
           traefik.ingress.kubernetes.io/redirect-permanent: "true"
@@ -181,13 +181,13 @@ data:
         enabled: true
         hosts:
         - alertmanager.services.mkz.me
+        ingressClassName: traefik
         tls:
         - secretName: tls-alertmanager-cert
           hosts:
           - alertmanager.services.mkz.me
 
         annotations:
-          kubernetes.io/ingress.class: traefik
           cert-manager.io/cluster-issuer: letsencrypt-prod
           traefik.ingress.kubernetes.io/redirect-entry-point: https
           traefik.ingress.kubernetes.io/redirect-permanent: "true"
@@ -197,13 +197,13 @@ data:
       ingress:
         enabled: true
         annotations:
-          kubernetes.io/ingress.class: "traefik"
           cert-manager.io/cluster-issuer: "letsencrypt-prod"
           traefik.ingress.kubernetes.io/redirect-entry-point: "https"
           traefik.ingress.kubernetes.io/redirect-permanent: "true"
 
         hosts:
         - grafana.services.mkz.me
+        ingressClassName: traefik
         tls:
         - secretName: tls-grafana-cert
           hosts:
@@ -329,7 +329,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 55621199a019f807523f1dba0ea9787c6cae89e1ac0275c157df528aa4436508
+    configMapHash: ee57e0370a3fdbc1926fcddbe21077acd121361d6127c1ef4c97c2cbb4b378a9
   name: prometheus
   namespace: monitoring
 spec:

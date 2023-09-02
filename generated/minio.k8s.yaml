@@ -81,12 +81,12 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/redirect-entry-point: https
     traefik.ingress.kubernetes.io/redirect-permanent: "true"
   name: minio-minio-storage-ingress-c84ffb72
   namespace: minio
 spec:
+  ingressClassName: traefik
   rules:
     - host: minio-storage.services.mkz.me
       http:

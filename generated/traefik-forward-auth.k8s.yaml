@@ -140,13 +140,13 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/redirect-entry-point: https
     traefik.ingress.kubernetes.io/redirect-permanent: "true"
     traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
   name: traefik-forward-auth-ingress-c89d1271
   namespace: traefik-forward-auth
 spec:
+  ingressClassName: traefik
   rules:
     - host: forward-auth.services.mkz.me
       http:

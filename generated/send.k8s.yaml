@@ -156,10 +156,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: send-ingress-c84bea81
   namespace: send
 spec:
+  ingressClassName: traefik
   rules:
     - host: send.services.mkz.me
       http:

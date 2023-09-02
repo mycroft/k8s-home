@@ -69,10 +69,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: vaultwarden-ingress-c802bdba
   namespace: vaultwarden
 spec:
+  ingressClassName: traefik
   rules:
     - host: vaultwarden.services.mkz.me
       http:

@@ -39,10 +39,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: urls-ingress-c88d9173
   namespace: urls
 spec:
+  ingressClassName: traefik
   rules:
     - host: urls.services.mkz.me
       http:

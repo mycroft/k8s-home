@@ -129,10 +129,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: bookstack-ingress-c87508e9
   namespace: bookstack
 spec:
+  ingressClassName: traefik
   rules:
     - host: bookstack.services.mkz.me
       http:

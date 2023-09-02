@@ -127,10 +127,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: freshrss-ingress-c8de4878
   namespace: freshrss
 spec:
+  ingressClassName: traefik
   rules:
     - host: freshrss.services.mkz.me
       http:

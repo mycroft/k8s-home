@@ -149,10 +149,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: wallabag-ingress-c80f0a9c
   namespace: wallabag
 spec:
+  ingressClassName: traefik
   rules:
     - host: wallabag.services.mkz.me
       http:

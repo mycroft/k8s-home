@@ -38,10 +38,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: whatismyip-ingress-c895b01b
   namespace: whatismyip
 spec:
+  ingressClassName: traefik
   rules:
     - host: whatismyip.services.mkz.me
       http:

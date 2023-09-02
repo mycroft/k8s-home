@@ -88,10 +88,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: heimdall-ingress-c895cdca
   namespace: heimdall
 spec:
+  ingressClassName: traefik
   rules:
     - host: heimdall.services.mkz.me
       http:

@@ -203,10 +203,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: paperless-ngx-ingress-c8fe133e
   namespace: paperless-ngx
 spec:
+  ingressClassName: traefik
   rules:
     - host: paperless.services.mkz.me
       http:

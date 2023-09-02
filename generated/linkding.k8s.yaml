@@ -85,10 +85,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: linkding-ingress-c8c5befa
   namespace: linkding
 spec:
+  ingressClassName: traefik
   rules:
     - host: links.services.mkz.me
       http:

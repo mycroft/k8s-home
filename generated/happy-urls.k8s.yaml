@@ -106,10 +106,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: happy-urls-ingress-c8b56949
   namespace: happy-urls
 spec:
+  ingressClassName: traefik
   rules:
     - host: happy-urls.services.mkz.me
       http:

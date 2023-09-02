@@ -238,10 +238,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: emojivoto-ingress-c880ffa6
   namespace: emojivoto
 spec:
+  ingressClassName: traefik
   rules:
     - host: emojivoto.services.mkz.me
       http:

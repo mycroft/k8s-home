@@ -69,10 +69,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
   name: snippetbox-ingress-c8b8bf10
   namespace: snippetbox
 spec:
+  ingressClassName: traefik
   rules:
     - host: snippetbox.services.mkz.me
       http:
