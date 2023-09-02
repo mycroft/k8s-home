@@ -1,0 +1,21 @@
+# https://github.com/jitsi-contrib/jitsi-helm/blob/main/values.yaml
+
+tz: Europe/Paris
+
+web:
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      traefik.ingress.kubernetes.io/redirect-entry-point: https
+      traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    hosts:
+    - host: jitsi.services.mkz.me
+      paths: ['/']
+    ingressClassName: "traefik"
+    tls:
+    - secretName: tls-jitsi-web-cert
+      hosts:
+      - jitsi.services.mkz.me
+
+# Todo: configure jvb

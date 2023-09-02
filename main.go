@@ -80,6 +80,7 @@ func main() {
 	charts_apps.NewHappyUrlsChart(app)
 	charts_apps.NewSnippetBoxChart(app)
 	charts_apps.NewExcalidrawChart(app)
+	// charts_apps.NewJitsiChart(app)
 
 	if checkVersion {
 		k8s_helpers.CheckVersions()

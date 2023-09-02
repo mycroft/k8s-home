@@ -7,6 +7,7 @@ helmcharts:
   hashicorp/vault: 0.25.0
   jaegertracing/jaeger: 0.71.2
   jetstack/cert-manager: v1.12.4
+  jitsi/jitsi-meet: v1.3.7
   kubernetes-dashboard/kubernetes-dashboard: 6.0.8
   kyverno/kyverno: v3.0.5
   kyverno/kyverno-policies: v3.0.4
