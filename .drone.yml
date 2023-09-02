@@ -12,7 +12,11 @@ steps:
 - name: build on main
   image: golang
   commands:
-  - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+  - apt-get update
+  - apt-get install -y ca-certificates curl gnupg
+  - mkdir -p /etc/apt/keyrings
+  - curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor --no-tty --yes -o /etc/apt/keyrings/nodesource.gpg
+  - echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
   - apt-get install -y nodejs
   - npm install -g cdk8s-cli
   - cdk8s import
@@ -48,7 +52,7 @@ steps:
   settings:
     local_branch: main
     branch: main
-    remote: ssh://git@github.com:mycroft/k8s-home.git
+    remote: ssh://git@github.com/mycroft/k8s-home.git
     force: false
     commit: false
     ssh_key:
@@ -59,7 +63,7 @@ steps:
   settings:
     local_branch: generated
     branch: generated
-    remote: ssh://git@github.com:mycroft/k8s-home.git
+    remote: ssh://git@github.com/mycroft/k8s-home.git
     force: false
     commit: false
     ssh_key:
