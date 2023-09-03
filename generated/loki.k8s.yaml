@@ -1,0 +1,177 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: loki
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: loki
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: grafana
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://grafana.github.io/helm-charts
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: loki-es-minio-c8c26923
+  namespace: loki
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/loki/minio
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: minio
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loki-helm-val-loki-c8d03bab
+  namespace: loki
+data:
+  values.yaml: |
+    # https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
+    loki:
+      auth_enabled: false
+      commonConfig:
+        replication_factor: 1
+      storage:
+        bucketNames:
+          chunks: loki-chunks
+          ruler: loki-ruler
+          admin: loki-admin
+        type: s3
+        s3:
+          s3: null
+          endpoint: https://minio-storage-hl.minio.svc.cluster.local:9000
+          region: null
+          secretAccessKey: ${MINIO_SECRET_ACCESS_KEY}
+          accessKeyId: ${MINIO_ACCESS_KEY_ID}
+          s3ForcePathStyle: true
+          insecure: false
+          http_config:
+            insecure_skip_verify: true
+
+    write:
+      extraArgs:
+      - --config.expand-env=true
+
+      extraEnv:
+      - name: MINIO_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: minio
+            key: access_key_id
+      - name: MINIO_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: minio
+            key: secret_access_key
+
+      persistence:
+        enableStatefulSetAutoDeletePVC: false
+        size: 10Gi
+        storageClass: longhorn-crypto-global
+
+    read:
+      extraArgs:
+      - --config.expand-env=true
+
+      extraEnv:
+      - name: MINIO_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: minio
+            key: access_key_id
+      - name: MINIO_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: minio
+            key: secret_access_key
+
+      persistence:
+        enableStatefulSetAutoDeletePVC: false
+        size: 10Gi
+        storageClass: longhorn-crypto-global
+
+    backend:
+      extraArgs:
+      - --config.expand-env=true
+
+      extraEnv:
+      - name: MINIO_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: minio
+            key: access_key_id
+      - name: MINIO_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: minio
+            key: secret_access_key
+
+      persistence:
+        enableStatefulSetAutoDeletePVC: false
+        size: 10Gi
+        storageClass: longhorn-crypto-global
+
+    monitoring:
+      lokiCanary:
+        enabled: false
+
+    test:
+      enabled: false
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: e8371b93e7708721ec7f48ebcce05afc3584f9fb2856625d5faf8979ca76633c
+  name: loki
+  namespace: loki
+spec:
+  chart:
+    spec:
+      chart: loki
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+      version: 5.5.10
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: loki-helm-val-loki-c8d03bab
+      valuesKey: values.yaml
