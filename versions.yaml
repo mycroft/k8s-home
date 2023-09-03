@@ -1,5 +1,5 @@
 helmcharts:
-  aqua/trivy-operator: 0.15.1
+  aqua/trivy-operator: 0.17.0
   dex/dex: 0.15.3
   external-secrets/external-secrets: 0.9.4
   grafana/loki: 5.5.10
@@ -15,7 +15,7 @@ helmcharts:
   linkerd/linkerd-control-plane: 1.15.0
   linkerd/linkerd-viz: 30.11.0
   longhorn/longhorn: 1.5.1
-  mariadb-operator/mariadb-operator: 0.19.0
+  mariadb-operator/mariadb-operator: 0.20.0
   minio/operator: 5.0.7
   nats/nats: 1.0.2
   opensearch/opensearch: 2.12.0
