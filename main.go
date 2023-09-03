@@ -51,8 +51,8 @@ func main() {
 
 	// observability
 	charts_observability.NewKubePrometheusStackChart(app)
-	// charts_observability.NewLokiChart(app)
-	// charts_observability.NewPromtailChart(app)
+	charts_observability.NewLokiChart(app)
+	charts_observability.NewPromtailChart(app)
 	// charts_observability.NewJaegerChart(app)
 
 	// misc tooling
