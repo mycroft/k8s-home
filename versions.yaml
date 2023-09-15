@@ -2,7 +2,7 @@ helmcharts:
   aqua/trivy-operator: 0.18.0
   dex/dex: 0.15.3
   external-secrets/external-secrets: 0.9.4
-  grafana/loki: 5.20.0
+  grafana/loki: 5.22.0
   grafana/promtail: 6.15.1
   hashicorp/vault: 0.25.0
   jaegertracing/jaeger: 0.71.2
@@ -21,9 +21,9 @@ helmcharts:
   opensearch/opensearch: 2.12.0
   opensearch/opensearch-dashboards: 2.10.0
   postgres-operator/postgres-operator: 1.10.1
-  prometheus-community/kube-prometheus-stack: 51.0.2
+  prometheus-community/kube-prometheus-stack: 51.0.3
   scylla/scylla-operator: v1.10.0
-  sealed-secrets/sealed-secrets: 2.12.0
+  sealed-secrets/sealed-secrets: 2.13.0
   vmware-tanzu/velero: 5.0.2
 images:
   corentinth/it-tools: 2023.8.21-6f93cba
@@ -33,8 +33,8 @@ images:
   excalidraw/excalidraw: latest
   freshrss/freshrss: 1.21.0
   jhaals/yopass: 11.5.1
-  linuxserver/bookstack: v23.08.2-ls103
-  linuxserver/heimdall: v2.5.6-ls229
+  linuxserver/bookstack: v23.08.3-ls105
+  linuxserver/heimdall: v2.5.6-ls230
   paulbouwer/hello-kubernetes: 1.10.1
   paperlessngx/paperless-ngx: 1.17.4
   pawelmalak/snippet-box: latest
