@@ -1,27 +1,27 @@
 helmcharts:
-  aqua/trivy-operator: 0.18.0
+  aqua/trivy-operator: 0.18.1
   dex/dex: 0.15.3
   external-secrets/external-secrets: 0.9.5
   grafana/loki: 5.23.0
   grafana/promtail: 6.15.2
   hashicorp/vault: 0.25.0
   jaegertracing/jaeger: 0.71.2
-  jetstack/cert-manager: v1.13.0
+  jetstack/cert-manager: v1.13.1
   jitsi/jitsi-meet: v1.3.7
   kubernetes-dashboard/kubernetes-dashboard: 6.0.8
   kyverno/kyverno: v3.0.5
   kyverno/kyverno-policies: v3.0.4
   linkerd/linkerd-crds: 1.8.0
-  linkerd/linkerd-control-plane: 1.15.0
-  linkerd/linkerd-viz: 30.11.0
+  linkerd/linkerd-control-plane: 1.16.2
+  linkerd/linkerd-viz: 30.12.2
   longhorn/longhorn: 1.5.1
   mariadb-operator/mariadb-operator: 0.20.0
   minio/operator: 5.0.9
-  nats/nats: 1.0.3
+  nats/nats: 1.1.0
   opensearch/opensearch: 2.12.0
   opensearch/opensearch-dashboards: 2.10.0
   postgres-operator/postgres-operator: 1.10.1
-  prometheus-community/kube-prometheus-stack: 51.1.1
+  prometheus-community/kube-prometheus-stack: 51.2.0
   scylla/scylla-operator: v1.10.0
   sealed-secrets/sealed-secrets: 2.13.0
   vmware-tanzu/velero: 5.0.2
