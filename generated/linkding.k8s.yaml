@@ -50,7 +50,7 @@ spec:
     spec:
       containers:
         - env: []
-          image: sissbruecker/linkding:1.21.0
+          image: sissbruecker/linkding:1.21.1
           name: linkding
           volumeMounts:
             - mountPath: /etc/linkding/data
