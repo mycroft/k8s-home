@@ -34,6 +34,12 @@ func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
 				Namespace: jsii.String(namespace),
 			},
 			Spec: &mariadbmmontesio.MariaDbSpec{
+				Env: &[]*mariadbmmontesio.MariaDbSpecEnv{
+					{
+						Name:  jsii.String("MARIADB_AUTO_UPGRADE"),
+						Value: jsii.String("1"),
+					},
+				},
 				RootPasswordSecretKeyRef: &mariadbmmontesio.MariaDbSpecRootPasswordSecretKeyRef{
 					Name: jsii.String("mariadb"),
 					Key:  jsii.String("root-password"),
