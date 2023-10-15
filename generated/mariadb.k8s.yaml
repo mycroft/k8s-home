@@ -48,6 +48,9 @@ metadata:
   name: mariadb
   namespace: mariadb
 spec:
+  env:
+    - name: MARIADB_AUTO_UPGRADE
+      value: "1"
   image: mariadb:10.11
   port: 3306
   rootPasswordSecretKeyRef:
