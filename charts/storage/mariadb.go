@@ -38,12 +38,8 @@ func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
 					Name: jsii.String("mariadb"),
 					Key:  jsii.String("root-password"),
 				},
-				Image: &mariadbmmontesio.MariaDbSpecImage{
-					Repository: jsii.String("mariadb"),
-					Tag:        jsii.String("10.7.4"),
-					PullPolicy: jsii.String("IfNotPresent"),
-				},
-				Port: jsii.Number(3306),
+				Image: jsii.String("mariadb:10.11"),
+				Port:  jsii.Number(3306),
 				VolumeClaimTemplate: &mariadbmmontesio.MariaDbSpecVolumeClaimTemplate{
 					Resources: &mariadbmmontesio.MariaDbSpecVolumeClaimTemplateResources{
 						Requests: &map[string]mariadbmmontesio.MariaDbSpecVolumeClaimTemplateResourcesRequests{
