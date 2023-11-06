@@ -2,7 +2,7 @@ helmcharts:
   aqua/trivy-operator: 0.18.4
   dex/dex: 0.15.3
   external-secrets/external-secrets: 0.9.7
-  grafana/loki: 5.23.0
+  grafana/loki: 5.36.3
   grafana/promtail: 6.15.3
   hashicorp/vault: 0.25.0
   jaegertracing/jaeger: 0.71.2
@@ -21,7 +21,7 @@ helmcharts:
   opensearch/opensearch: 2.12.0
   opensearch/opensearch-dashboards: 2.10.0
   postgres-operator/postgres-operator: 1.10.1
-  prometheus-community/kube-prometheus-stack: 51.10.0
+  prometheus-community/kube-prometheus-stack: 52.1.0
   scylla/scylla-operator: v1.10.0
   sealed-secrets/sealed-secrets: 2.13.2
   vmware-tanzu/velero: 5.1.3
