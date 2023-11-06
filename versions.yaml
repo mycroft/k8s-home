@@ -23,17 +23,17 @@ helmcharts:
   postgres-operator/postgres-operator: 1.10.1
   prometheus-community/kube-prometheus-stack: 51.10.0
   scylla/scylla-operator: v1.10.0
-  sealed-secrets/sealed-secrets: 2.13.0
+  sealed-secrets/sealed-secrets: 2.13.2
   vmware-tanzu/velero: 5.1.3
 images:
-  corentinth/it-tools: 2023.8.21-6f93cba
+  corentinth/it-tools: 2023.11.2-7d94e11
   docker.l5d.io/buoyantio/emojivoto-emoji-svc: v12
   docker.l5d.io/buoyantio/emojivoto-web: v12
   docker.l5d.io/buoyantio/emojivoto-voting-svc: v12
   excalidraw/excalidraw: latest
-  freshrss/freshrss: 1.21.0
+  freshrss/freshrss: 1.21.1
   jhaals/yopass: 11.15.1
-  linuxserver/bookstack: v23.08.3-ls109
+  linuxserver/bookstack: v23.10.1-ls112
   linuxserver/heimdall: v2.5.6-ls235
   paulbouwer/hello-kubernetes: 1.10.1
   paperlessngx/paperless-ngx: 1.17.4
@@ -41,8 +41,8 @@ images:
   privatebin/nginx-fpm-alpine: latest
   registry.gitlab.com/timvisee/send: latest
   registry.mkz.me/mycroft/whatismyip: 5
-  redis: 7.2.1
-  sissbruecker/linkding: 1.22.1
+  redis: 7.2.3
+  sissbruecker/linkding: 1.22.3
   thomseddon/traefik-forward-auth: 2.2.0
-  vaultwarden/server: 1.29.2
+  vaultwarden/server: 1.30.0
   wallabag/wallabag: 2.6.7
