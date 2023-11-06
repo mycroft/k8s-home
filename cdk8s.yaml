@@ -10,8 +10,8 @@ imports:
   - https://raw.githubusercontent.com/cert-manager/cert-manager/master/deploy/crds/crd-clusterissuers.yaml
   - certificates:=https://raw.githubusercontent.com/cert-manager/cert-manager/master/deploy/crds/crd-certificates.yaml
   - https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.20.2/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
-  - secretstore:=https://raw.githubusercontent.com/external-secrets/external-secrets/main/config/crds/bases/external-secrets.io_secretstores.yaml
-  - externalsecrets:=https://raw.githubusercontent.com/external-secrets/external-secrets/main/config/crds/bases/external-secrets.io_externalsecrets.yaml
+  - secretstore:=https://raw.githubusercontent.com/external-secrets/external-secrets/v0.9.7/config/crds/bases/external-secrets.io_secretstores.yaml
+  - externalsecrets:=https://raw.githubusercontent.com/external-secrets/external-secrets/v0.9.7/config/crds/bases/external-secrets.io_externalsecrets.yaml
   - podmonitor:=crds/crd-podmonitors.yaml
   - servicemonitor:=crds/crd-servicemonitors.yaml
   - https://raw.githubusercontent.com/traefik/traefik/v2.9/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
