@@ -28,3 +28,11 @@ initContainers:
   volumeMounts:
   - mountPath: /target
     name: plugins
+
+upgradeJobResources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 100m
+    memory: 1024Mi
