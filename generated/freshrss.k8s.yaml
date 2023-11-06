@@ -40,7 +40,7 @@ spec:
               value: "1000"
             - name: TZ
               value: Etc/UTC
-          image: freshrss/freshrss:1.21.0
+          image: freshrss/freshrss:1.21.1
           name: freshrss
           volumeMounts:
             - mountPath: /var/www/FreshRSS/data
@@ -98,7 +98,7 @@ spec:
           containers:
             - command:
                 - /var/www/FreshRSS/app/actualize_script.php
-              image: freshrss/freshrss:1.21.0
+              image: freshrss/freshrss:1.21.1
               name: updater
               volumeMounts:
                 - mountPath: /var/www/FreshRSS/data

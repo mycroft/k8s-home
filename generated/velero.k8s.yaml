@@ -72,6 +72,7 @@ data:
         - provider: aws
           default: true
           bucket: k8s-backup
+          prefix: velero-backup
           config:
             region: minio
             s3Url: "http://nas0.lan.mkz.me:9000"
@@ -92,7 +93,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 742807f429f9b5520541d15f3e2f722b73017df7c733341fd0ecb65b6ed04587
+    configMapHash: e9f94783eca88b47c341b4d290f2df9d8b7e707d2025b31f697369127ad2599d
   name: velero
   namespace: velero
 spec:
