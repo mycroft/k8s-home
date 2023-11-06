@@ -12,6 +12,7 @@ configuration:
     - provider: aws
       default: true
       bucket: k8s-backup
+      prefix: velero-backup
       config:
         region: minio
         s3Url: "http://nas0.lan.mkz.me:9000"
