@@ -88,12 +88,20 @@ data:
       volumeMounts:
       - mountPath: /target
         name: plugins
+
+    upgradeJobResources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 100m
+        memory: 1024Mi
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: e9f94783eca88b47c341b4d290f2df9d8b7e707d2025b31f697369127ad2599d
+    configMapHash: b1927108d967daeafc32a9bc1869fd87ef1162707e4a85aa099d2071a7e1bf13
   name: velero
   namespace: velero
 spec:
