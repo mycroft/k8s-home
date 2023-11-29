@@ -30,10 +30,10 @@ func main() {
 	charts_security.NewSealedSecretsChart(app)
 	charts_security.NewVaultChart(app)
 	charts_security.NewExternalSecretsChart(app)
-	charts_security.NewTrivyChart(app)
+	// charts_security.NewTrivyChart(app)
 	charts_security.NewDexIdpChart(app)
 	charts_security.NewTraefikForwardAuth(app)
-	charts_security.NewKyvernoChart(app)
+	// charts_security.NewKyvernoChart(app)
 
 	// storage
 	charts_storage.NewLonghornChart(app)
