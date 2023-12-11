@@ -140,7 +140,7 @@ data:
             requiredDuringSchedulingIgnoredDuringExecution:
               nodeSelectorTerms:
               - matchExpressions:
-                - key: k3s.io/hostname
+                - key: kubernetes.io/hostname
                   operator: NotIn
                   values:
                   - star-train.mkz.me
@@ -339,7 +339,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 1b20bc074e4783241f3afe3d0b07b399db0d62f51ac3655185846383c4d73e6f
+    configMapHash: b0ed1685319d5300da07dc62300548b51c4821aaeed542a65507f11fde62ff6c
   name: prometheus
   namespace: monitoring
 spec:
