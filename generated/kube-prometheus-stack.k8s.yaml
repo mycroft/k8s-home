@@ -135,6 +135,16 @@ data:
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
 
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: k3s.io/hostname
+                  operator: NotIn
+                  values:
+                  - star-train.mkz.me
+
         storageSpec:
           volumeClaimTemplate:
             spec:
@@ -329,7 +339,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: ee57e0370a3fdbc1926fcddbe21077acd121361d6127c1ef4c97c2cbb4b378a9
+    configMapHash: 1b20bc074e4783241f3afe3d0b07b399db0d62f51ac3655185846383c4d73e6f
   name: prometheus
   namespace: monitoring
 spec:
