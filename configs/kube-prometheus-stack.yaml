@@ -6,6 +6,16 @@ prometheus:
     podMonitorSelectorNilUsesHelmValues: false
     probeSelectorNilUsesHelmValues: false
 
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: k3s.io/hostname
+              operator: NotIn
+              values:
+              - star-train.mkz.me
+
     storageSpec:
       volumeClaimTemplate:
         spec:
