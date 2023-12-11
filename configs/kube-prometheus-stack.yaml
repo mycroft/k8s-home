@@ -11,7 +11,7 @@ prometheus:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
-            - key: k3s.io/hostname
+            - key: kubernetes.io/hostname
               operator: NotIn
               values:
               - star-train.mkz.me
