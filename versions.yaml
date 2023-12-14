@@ -12,8 +12,8 @@ helmcharts:
   kyverno/kyverno: v3.0.5
   kyverno/kyverno-policies: v3.0.4
   linkerd/linkerd-crds: 1.8.0
-  linkerd/linkerd-control-plane: 1.16.6
-  linkerd/linkerd-viz: 30.12.6
+  linkerd/linkerd-control-plane: 1.16.7
+  linkerd/linkerd-viz: 30.12.7
   longhorn/longhorn: 1.5.3
   mariadb-operator/mariadb-operator: 0.22.0
   minio/operator: 5.0.10
