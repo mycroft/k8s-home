@@ -24,7 +24,7 @@ helmcharts:
   prometheus-community/kube-prometheus-stack: 54.2.2
   scylla/scylla-operator: v1.10.0
   sealed-secrets/sealed-secrets: 2.13.3
-  vmware-tanzu/velero: 5.1.4
+  vmware-tanzu/velero: 5.2.0
 images:
   corentinth/it-tools: 2023.11.2-7d94e11
   docker.l5d.io/buoyantio/emojivoto-emoji-svc: v12
