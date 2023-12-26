@@ -178,6 +178,26 @@ data:
         useExistingSecret: true
         configSecret: alertmanager-config
 
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                  - polygon-wave.mkz.me
+                  - tokimeki.mkz.me
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: alertmanager
+                  operator: In
+                  values:
+                  - prometheus-kube-prometheus-alertmanager
+              topologyKey: kubernetes.io/hostname
+
         storage:
           volumeClaimTemplate:
             spec:
@@ -340,7 +360,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 6f26b71cd199a7f9244fe740f76953d7fb591a37e33c79d264131bf841d0c69f
+    configMapHash: 816ae3453beae8763ca449e85e4dc70529c781940ece181f93ff42376ff83d3e
   name: prometheus
   namespace: monitoring
 spec:
