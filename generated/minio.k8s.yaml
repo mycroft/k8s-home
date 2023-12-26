@@ -58,7 +58,17 @@ spec:
     - name: MINIO_BROWSER_REDIRECT_URL
       value: https://minio-storage-console.services.mkz.me
   pools:
-    - containerSecurityContext:
+    - affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: v1.min.io/tenant
+                    operator: In
+                    values:
+                      - minio-storage
+              topologyKey: kubernetes.io/hostname
+      containerSecurityContext:
         runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
