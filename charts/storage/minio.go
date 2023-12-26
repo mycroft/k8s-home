@@ -36,8 +36,28 @@ func NewMinio(scope constructs.Construct) cdk8s.Chart {
 				},
 				Pools: &[]*miniominio.TenantSpecPools{
 					{
-						Servers:          jsii.Number(2),
-						Name:             jsii.String("pool"),
+						Servers: jsii.Number(2),
+						Name:    jsii.String("pool"),
+						Affinity: &miniominio.TenantSpecPoolsAffinity{
+							PodAntiAffinity: &miniominio.TenantSpecPoolsAffinityPodAntiAffinity{
+								RequiredDuringSchedulingIgnoredDuringExecution: &[]*miniominio.TenantSpecPoolsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution{
+									{
+										TopologyKey: jsii.String("kubernetes.io/hostname"),
+										LabelSelector: &miniominio.TenantSpecPoolsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector{
+											MatchExpressions: &[]*miniominio.TenantSpecPoolsAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions{
+												{
+													Key:      jsii.String("v1.min.io/tenant"),
+													Operator: jsii.String("In"),
+													Values: &[]*string{
+														jsii.String("minio-storage"),
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
 						VolumesPerServer: jsii.Number(2),
 						VolumeClaimTemplate: &miniominio.TenantSpecPoolsVolumeClaimTemplate{
 							Metadata: &miniominio.TenantSpecPoolsVolumeClaimTemplateMetadata{
