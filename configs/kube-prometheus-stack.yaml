@@ -49,6 +49,26 @@ alertmanager:
     useExistingSecret: true
     configSecret: alertmanager-config
 
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+              - polygon-wave.mkz.me
+              - tokimeki.mkz.me
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+            - key: alertmanager
+              operator: In
+              values:
+              - prometheus-kube-prometheus-alertmanager
+          topologyKey: kubernetes.io/hostname
+
     storage:
       volumeClaimTemplate:
         spec:
