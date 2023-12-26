@@ -12,9 +12,10 @@ prometheus:
           nodeSelectorTerms:
           - matchExpressions:
             - key: kubernetes.io/hostname
-              operator: NotIn
+              operator: In
               values:
-              - star-train.mkz.me
+              - polygon-wave.mkz.me
+              - tokimeki.mkz.me
 
     storageSpec:
       volumeClaimTemplate:
