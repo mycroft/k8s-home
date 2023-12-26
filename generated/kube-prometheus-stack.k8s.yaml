@@ -141,9 +141,10 @@ data:
               nodeSelectorTerms:
               - matchExpressions:
                 - key: kubernetes.io/hostname
-                  operator: NotIn
+                  operator: In
                   values:
-                  - star-train.mkz.me
+                  - polygon-wave.mkz.me
+                  - tokimeki.mkz.me
 
         storageSpec:
           volumeClaimTemplate:
@@ -339,7 +340,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: b0ed1685319d5300da07dc62300548b51c4821aaeed542a65507f11fde62ff6c
+    configMapHash: 6f26b71cd199a7f9244fe740f76953d7fb591a37e33c79d264131bf841d0c69f
   name: prometheus
   namespace: monitoring
 spec:
