@@ -58,7 +58,7 @@ func main() {
 	// misc tooling
 	charts_infra.NewFluxCDChart(app)
 	charts_infra.NewKubernetesDashboardChart(app)
-	charts_infra.NewLinkerdChart(app)
+	// charts_infra.NewLinkerdChart(app)
 	// charts_infra.NewTektonChart(app)
 
 	// apps
