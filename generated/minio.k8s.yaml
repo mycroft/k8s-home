@@ -59,6 +59,15 @@ spec:
       value: https://minio-storage-console.services.mkz.me
   pools:
     - affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - polygon-wave.mkz.me
+                      - tokimeki.mkz.me
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
