@@ -57,6 +57,24 @@ func NewMinio(scope constructs.Construct) cdk8s.Chart {
 									},
 								},
 							},
+							NodeAffinity: &miniominio.TenantSpecPoolsAffinityNodeAffinity{
+								RequiredDuringSchedulingIgnoredDuringExecution: &miniominio.TenantSpecPoolsAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution{
+									NodeSelectorTerms: &[]*miniominio.TenantSpecPoolsAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms{
+										{
+											MatchExpressions: &[]*miniominio.TenantSpecPoolsAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions{
+												{
+													Key:      jsii.String("kubernetes.io/hostname"),
+													Operator: jsii.String("In"),
+													Values: &[]*string{
+														jsii.String("polygon-wave.mkz.me"),
+														jsii.String("tokimeki.mkz.me"),
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 						VolumesPerServer: jsii.Number(2),
 						VolumeClaimTemplate: &miniominio.TenantSpecPoolsVolumeClaimTemplate{
