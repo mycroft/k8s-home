@@ -15,14 +15,14 @@ helmcharts:
   linkerd/linkerd-control-plane: 1.16.8
   linkerd/linkerd-viz: 30.12.8
   longhorn/longhorn: 1.5.3
-  mariadb-operator/mariadb-operator: 0.23.1
+  mariadb-operator/mariadb-operator: 0.24.0
   minio/operator: 5.0.11
   nats/nats: 1.1.6
   opensearch/opensearch: 2.12.0
   opensearch/opensearch-dashboards: 2.10.0
   postgres-operator/postgres-operator: 1.10.1
-  prometheus-community/kube-prometheus-stack: 55.5.0
-  scylla/scylla-operator: v1.11.0
+  prometheus-community/kube-prometheus-stack: 55.5.1
+  scylla/scylla-operator: v1.11.1
   sealed-secrets/sealed-secrets: 2.14.1
   vmware-tanzu/velero: 5.2.0
 images:
@@ -33,10 +33,10 @@ images:
   excalidraw/excalidraw: latest
   freshrss/freshrss: 1.23.0
   jhaals/yopass: 11.15.1
-  linuxserver/bookstack: v23.10.4-ls120
+  linuxserver/bookstack: v23.12-ls122
   linuxserver/heimdall: v2.5.7-ls238
   paulbouwer/hello-kubernetes: 1.10.1
-  paperlessngx/paperless-ngx: 2.1.3
+  paperlessngx/paperless-ngx: 2.2.1
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: latest
   registry.gitlab.com/timvisee/send: latest
