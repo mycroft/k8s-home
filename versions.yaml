@@ -21,7 +21,7 @@ helmcharts:
   opensearch/opensearch: 2.12.0
   opensearch/opensearch-dashboards: 2.10.0
   postgres-operator/postgres-operator: 1.10.1
-  prometheus-community/kube-prometheus-stack: 55.5.1
+  prometheus-community/kube-prometheus-stack: 55.5.2
   scylla/scylla-operator: v1.11.1
   sealed-secrets/sealed-secrets: 2.14.1
   vmware-tanzu/velero: 5.2.0
@@ -45,4 +45,4 @@ images:
   sissbruecker/linkding: 1.23.1
   thomseddon/traefik-forward-auth: 2.2.0
   vaultwarden/server: 1.30.1
-  wallabag/wallabag: 2.6.7
+  wallabag/wallabag: 2.6.8
