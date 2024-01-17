@@ -21,10 +21,10 @@ helmcharts:
   opensearch/opensearch: 2.12.0
   opensearch/opensearch-dashboards: 2.10.0
   postgres-operator/postgres-operator: 1.10.1
-  prometheus-community/kube-prometheus-stack: 55.8.3
+  prometheus-community/kube-prometheus-stack: 55.11.0
   scylla/scylla-operator: v1.11.1
   sealed-secrets/sealed-secrets: 2.14.1
-  vmware-tanzu/velero: 5.2.1
+  vmware-tanzu/velero: 5.2.2
 images:
   corentinth/it-tools: 2023.12.21-5ed3693
   docker.l5d.io/buoyantio/emojivoto-emoji-svc: v12
