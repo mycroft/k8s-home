@@ -165,7 +165,7 @@ spec:
         kind: HelmRepository
         name: dex
         namespace: flux-system
-      version: 0.15.3
+      version: 0.16.0
   install:
     createNamespace: false
     skipCRDs: false
