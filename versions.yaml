@@ -31,7 +31,7 @@ images:
   docker.l5d.io/buoyantio/emojivoto-web: v12
   docker.l5d.io/buoyantio/emojivoto-voting-svc: v12
   excalidraw/excalidraw: latest
-  freshrss/freshrss: 1.24.0
+  freshrss/freshrss: 1.23.1
   jhaals/yopass: 11.15.1
   linuxserver/bookstack: v23.12.2-ls127
   linuxserver/heimdall: v2.5.7-ls238
@@ -42,7 +42,7 @@ images:
   registry.gitlab.com/timvisee/send: latest
   registry.mkz.me/mycroft/whatismyip: 5
   redis: 7.2.4
-  sissbruecker/linkding: 1.23.1
+  sissbruecker/linkding: 1.24.0
   thomseddon/traefik-forward-auth: 2.2.0
   vaultwarden/server: 1.30.1
   wallabag/wallabag: 2.6.8
