@@ -31,12 +31,12 @@ images:
   docker.l5d.io/buoyantio/emojivoto-web: v12
   docker.l5d.io/buoyantio/emojivoto-voting-svc: v12
   excalidraw/excalidraw: latest
-  freshrss/freshrss: 1.23.1
+  freshrss/freshrss: 1.24.0
   jhaals/yopass: 11.15.1
-  linuxserver/bookstack: v23.12.1-ls124
+  linuxserver/bookstack: v23.12.2-ls127
   linuxserver/heimdall: v2.5.7-ls238
   paulbouwer/hello-kubernetes: 1.10.1
-  paperlessngx/paperless-ngx: 2.4.0
+  paperlessngx/paperless-ngx: 2.4.2
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: latest
   registry.gitlab.com/timvisee/send: latest
