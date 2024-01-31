@@ -34,12 +34,12 @@ func NewAppService(
 	)
 }
 
-func NewAppIngress(
+func NewAppIngresses(
 	chart cdk8s.Chart,
 	labels map[string]*string,
 	namespace string,
 	appPort int,
-	ingressHost string,
+	ingressHosts []string,
 	customAnnotations map[string]string,
 ) {
 	annotations := map[string]*string{
@@ -61,6 +61,33 @@ func NewAppIngress(
 		uint(appPort),
 	)
 
+	rules := []*k8s.IngressRule{}
+	hosts := []*string{}
+
+	for _, ingressHost := range ingressHosts {
+		rules = append(rules, &k8s.IngressRule{
+			Host: jsii.String(ingressHost),
+			Http: &k8s.HttpIngressRuleValue{
+				Paths: &[]*k8s.HttpIngressPath{
+					{
+						Backend: &k8s.IngressBackend{
+							Service: &k8s.IngressServiceBackend{
+								Name: svc.Name(),
+								Port: &k8s.ServiceBackendPort{
+									Name: jsii.String(portName),
+								},
+							},
+						},
+						Path:     jsii.String("/"),
+						PathType: jsii.String("Prefix"),
+					},
+				},
+			},
+		})
+
+		hosts = append(hosts, jsii.String(ingressHost))
+	}
+
 	k8s.NewKubeIngress(
 		chart,
 		jsii.String("ingress"),
@@ -71,36 +98,34 @@ func NewAppIngress(
 			},
 			Spec: &k8s.IngressSpec{
 				IngressClassName: jsii.String("traefik"),
-				Rules: &[]*k8s.IngressRule{
-					{
-						Host: jsii.String(ingressHost),
-						Http: &k8s.HttpIngressRuleValue{
-							Paths: &[]*k8s.HttpIngressPath{
-								{
-									Backend: &k8s.IngressBackend{
-										Service: &k8s.IngressServiceBackend{
-											Name: svc.Name(),
-											Port: &k8s.ServiceBackendPort{
-												Name: jsii.String(portName),
-											},
-										},
-									},
-									Path:     jsii.String("/"),
-									PathType: jsii.String("Prefix"),
-								},
-							},
-						},
-					},
-				},
+				Rules:            &rules,
 				Tls: &[]*k8s.IngressTls{
 					{
-						Hosts: &[]*string{
-							jsii.String(ingressHost),
-						},
+						Hosts:      &hosts,
 						SecretName: jsii.String("secret-tls-www"),
 					},
 				},
 			},
 		},
+	)
+}
+
+func NewAppIngress(
+	chart cdk8s.Chart,
+	labels map[string]*string,
+	namespace string,
+	appPort int,
+	ingressHost string,
+	customAnnotations map[string]string,
+) {
+	NewAppIngresses(
+		chart,
+		labels,
+		namespace,
+		appPort,
+		[]string{
+			ingressHost,
+		},
+		customAnnotations,
 	)
 }

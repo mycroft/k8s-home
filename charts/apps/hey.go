@@ -19,7 +19,10 @@ func NewHeyChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "hey"
 	appName := namespace
 	appPort := 3000
-	ingressHost := fmt.Sprintf("%s.services.mkz.me", appName)
+	ingressHosts := []string{
+		fmt.Sprintf("%s.services.mkz.me", appName),
+		fmt.Sprintf("%s.mkz.cx", appName),
+	}
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -62,12 +65,12 @@ func NewHeyChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewAppIngress(
+	k8s_helpers.NewAppIngresses(
 		chart,
 		labels,
 		appName,
 		appPort,
-		ingressHost,
+		ingressHosts,
 		map[string]string{},
 	)
 
