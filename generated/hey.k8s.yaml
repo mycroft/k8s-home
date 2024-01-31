@@ -54,9 +54,20 @@ spec:
                   name: http
             path: /
             pathType: Prefix
+    - host: hey.mkz.cx
+      http:
+        paths:
+          - backend:
+              service:
+                name: hey-svc-c8e476b5
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
   tls:
     - hosts:
         - hey.services.mkz.me
+        - hey.mkz.cx
       secretName: secret-tls-www
 ---
 apiVersion: monitoring.coreos.com/v1
