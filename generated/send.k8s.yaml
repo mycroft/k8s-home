@@ -115,7 +115,7 @@ spec:
       containers:
         - env:
             - name: BASE_URL
-              value: send.services.mkz.me
+              value: https://send.services.mkz.me
             - name: REDIS_HOST
               value: send-redis-svc-c8e30a3c.send
             - name: S3_ENDPOINT
