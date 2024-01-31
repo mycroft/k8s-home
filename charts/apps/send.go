@@ -1,6 +1,8 @@
 package apps
 
 import (
+	"fmt"
+
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
@@ -55,7 +57,7 @@ func NewSendChart(scope constructs.Construct) cdk8s.Chart {
 	redisHost := "send-redis-svc-c8e30a3c.send"
 
 	env := []*k8s.EnvVar{
-		{Name: jsii.String("BASE_URL"), Value: jsii.String(ingressHost)},
+		{Name: jsii.String("BASE_URL"), Value: jsii.String(fmt.Sprintf("https://%s", ingressHost))},
 		{Name: jsii.String("REDIS_HOST"), Value: jsii.String(redisHost)},
 		{Name: jsii.String("S3_ENDPOINT"), Value: jsii.String("https://minio-storage.services.mkz.me")},
 		{Name: jsii.String("S3_BUCKET"), Value: jsii.String("send")},
