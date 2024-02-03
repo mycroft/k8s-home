@@ -6,7 +6,7 @@ helmcharts:
   grafana/promtail: 6.15.3
   hashicorp/vault: 0.27.0
   jaegertracing/jaeger: 0.71.2
-  jetstack/cert-manager: v1.13.3
+  jetstack/cert-manager: v1.14.1
   jitsi/jitsi-meet: v1.3.7
   kubernetes-dashboard/kubernetes-dashboard: 6.0.8
   kyverno/kyverno: v3.0.5
@@ -21,8 +21,8 @@ helmcharts:
   opensearch/opensearch: 2.12.0
   opensearch/opensearch-dashboards: 2.10.0
   postgres-operator/postgres-operator: 1.10.1
-  prometheus-community/kube-prometheus-stack: 56.4.0
-  scylla/scylla-operator: v1.11.1
+  prometheus-community/kube-prometheus-stack: 56.6.1
+  scylla/scylla-operator: v1.11.2
   sealed-secrets/sealed-secrets: 2.14.2
   vmware-tanzu/velero: 5.3.0
 images:
