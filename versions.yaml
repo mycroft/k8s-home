@@ -23,7 +23,7 @@ helmcharts:
   postgres-operator/postgres-operator: 1.10.1
   prometheus-community/kube-prometheus-stack: 56.6.1
   scylla/scylla-operator: v1.11.2
-  sealed-secrets/sealed-secrets: 2.14.2
+  sealed-secrets/sealed-secrets: 2.15.0
   vmware-tanzu/velero: 5.3.0
 images:
   corentinth/it-tools: 2023.12.21-5ed3693
