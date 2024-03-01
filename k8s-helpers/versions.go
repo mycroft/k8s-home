@@ -55,6 +55,7 @@ func GetHelmUpdates() (map[string]string, error) {
 	retVersions := map[string]string{}
 
 	for _, helmRelease := range helmChartVersions {
+		chartName := fmt.Sprintf("%s/%s", helmRelease.RepositoryName, helmRelease.ChartName)
 		if _, ok := helmRepositories[helmRelease.RepositoryName]; !ok {
 			panic(fmt.Sprintf("Unknown repo %s", helmRelease.RepositoryName))
 		}
@@ -111,7 +112,7 @@ func GetHelmUpdates() (map[string]string, error) {
 		}
 
 		if lastVersion != helmRelease.Version {
-			retVersions[helmRelease.ChartName] = fmt.Sprintf("%s => %s", helmRelease.Version, lastVersion)
+			retVersions[chartName] = fmt.Sprintf("%s;%s", helmRelease.Version, lastVersion)
 		}
 	}
 
@@ -125,13 +126,9 @@ func CheckVersions() {
 		panic(err)
 	}
 
-	fmt.Printf("Helm charts updates:\n")
 	for k, v := range helmVersions {
-		fmt.Printf("%s => %s\n", k, v)
+		fmt.Printf("%s;%s\n", k, v)
 	}
-
-	fmt.Println()
-	fmt.Printf("Docker images:\n")
 
 	for _, image := range dockerImages {
 		parts := strings.Split(image, ":")
@@ -139,7 +136,7 @@ func CheckVersions() {
 		versions := GetLastImageTag(parts[0], parts[1])
 
 		if len(versions) > 0 {
-			fmt.Printf("%s:%s => %s\n", parts[0], parts[1], versions[len(versions)-1])
+			fmt.Printf("%s;%s;%s\n", parts[0], parts[1], versions[len(versions)-1])
 		}
 
 	}
