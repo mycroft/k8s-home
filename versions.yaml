@@ -15,7 +15,7 @@ helmcharts:
   linkerd/linkerd-control-plane: 1.16.8
   linkerd/linkerd-viz: 30.12.8
   longhorn/longhorn: 1.6.0
-  mariadb-operator/mariadb-operator: 0.24.0
+  mariadb-operator/mariadb-operator: 0.25.0
   minio/operator: 5.0.12
   nats/nats: 1.1.9
   opensearch/opensearch: 2.12.0
