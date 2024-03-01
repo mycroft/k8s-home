@@ -1,0 +1,39 @@
+#!/bin/sh
+
+set -xe
+
+if test $# -ne 1
+then
+  echo "Usage: $0 <chart>;<oldver>;<newver>"
+  exit 1
+fi
+
+arg=$1
+
+chart=$(echo $arg | cut -d ';' -f1 | sed -e 's/\//\\\//g')
+target_update=$(echo $chart | tr -d '\\')
+oldver=$(echo $arg | cut -d ';' -f2)
+newver=$(echo $arg | cut -d ';' -f3)
+
+git checkout versions.yaml
+
+sed -e "s/  $chart: $oldver/  $chart: $newver/" -i versions.yaml
+
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+pr_branch_name=$(echo $chart:$oldver | tr -d '\\' | tr '/:' '_')
+
+git diff versions.yaml
+
+git checkout -b ${pr_branch_name}
+
+git commit -m "Updating ${target_update} from $oldver to $newver" versions.yaml
+git push --set-upstream origin ${pr_branch_name}
+
+tea pr --repo mycroft/k8s-home create \
+  --head ${pr_branch_name} \
+  --title "${target_update} update to ${newver}" \
+  --description "Update from ${oldver} to ${newver}"
+
+git checkout ${current_branch}
+git branch -D ${pr_branch_name}
+git checkout versions.yaml
