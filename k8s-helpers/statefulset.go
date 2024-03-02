@@ -66,7 +66,7 @@ func NewStatefulSet(
 					jsii.String("ReadWriteOnce"),
 				},
 				StorageClassName: jsii.String("longhorn-crypto-global"),
-				Resources: &k8s.ResourceRequirements{
+				Resources: &k8s.VolumeResourceRequirements{
 					Requests: &map[string]k8s.Quantity{
 						"storage": k8s.Quantity_FromString(jsii.String(storage.StorageSize)),
 					},
