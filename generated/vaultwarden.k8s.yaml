@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - env: []
-          image: vaultwarden/server:1.30.3
+          image: vaultwarden/server:1.30.5
           name: vaultwarden
           volumeMounts:
             - mountPath: /data
