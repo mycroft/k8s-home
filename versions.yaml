@@ -33,7 +33,7 @@ images:
   excalidraw/excalidraw: latest
   freshrss/freshrss: 1.23.1
   jhaals/yopass: 11.15.1
-  linuxserver/bookstack: v24.02-ls133
+  linuxserver/bookstack: v24.02-ls134
   linuxserver/heimdall: v2.5.7-ls238
   paulbouwer/hello-kubernetes: 1.10.1
   paperlessngx/paperless-ngx: 2.6.1
