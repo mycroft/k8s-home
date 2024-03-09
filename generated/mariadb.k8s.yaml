@@ -42,7 +42,7 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: mariadb.mmontes.io/v1alpha1
+apiVersion: k8s.mariadb.com/v1alpha1
 kind: MariaDB
 metadata:
   name: mariadb
@@ -56,15 +56,11 @@ spec:
   rootPasswordSecretKeyRef:
     key: root-password
     name: mariadb
-  volumeClaimTemplate:
-    accessModes:
-      - ReadWriteOnce
-    resources:
-      requests:
-        storage: 8Gi
+  storage:
+    size: 8Gi
     storageClassName: longhorn-crypto-global
 ---
-apiVersion: mariadb.mmontes.io/v1alpha1
+apiVersion: k8s.mariadb.com/v1alpha1
 kind: Database
 metadata:
   name: bookstack
@@ -98,7 +94,7 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: mariadb.mmontes.io/v1alpha1
+apiVersion: k8s.mariadb.com/v1alpha1
 kind: User
 metadata:
   name: bookstack
@@ -110,7 +106,7 @@ spec:
     key: password
     name: user-bookstack
 ---
-apiVersion: mariadb.mmontes.io/v1alpha1
+apiVersion: k8s.mariadb.com/v1alpha1
 kind: Grant
 metadata:
   name: bookstack
@@ -132,7 +128,7 @@ spec:
   table: "*"
   username: bookstack
 ---
-apiVersion: mariadb.mmontes.io/v1alpha1
+apiVersion: k8s.mariadb.com/v1alpha1
 kind: Database
 metadata:
   name: mariadb
@@ -166,7 +162,7 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: mariadb.mmontes.io/v1alpha1
+apiVersion: k8s.mariadb.com/v1alpha1
 kind: User
 metadata:
   name: mariadb
@@ -178,7 +174,7 @@ spec:
     key: password
     name: user-mariadb
 ---
-apiVersion: mariadb.mmontes.io/v1alpha1
+apiVersion: k8s.mariadb.com/v1alpha1
 kind: Grant
 metadata:
   name: mariadb
