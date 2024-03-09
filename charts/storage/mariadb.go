@@ -3,7 +3,7 @@ package storage
 import (
 	"fmt"
 
-	"git.mkz.me/mycroft/k8s-home/imports/mariadbmmontesio"
+	"git.mkz.me/mycroft/k8s-home/imports/k8smariadbcom"
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -25,37 +25,30 @@ func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
 
 	mariadbInstance := "mariadb"
 
-	mariadbmmontesio.NewMariaDb(
+	k8smariadbcom.NewMariaDb(
 		chart,
 		jsii.String("mariadb"),
-		&mariadbmmontesio.MariaDbProps{
+		&k8smariadbcom.MariaDbProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name:      jsii.String(mariadbInstance),
 				Namespace: jsii.String(namespace),
 			},
-			Spec: &mariadbmmontesio.MariaDbSpec{
-				Env: &[]*mariadbmmontesio.MariaDbSpecEnv{
+			Spec: &k8smariadbcom.MariaDbSpec{
+				Env: &[]*k8smariadbcom.MariaDbSpecEnv{
 					{
 						Name:  jsii.String("MARIADB_AUTO_UPGRADE"),
 						Value: jsii.String("1"),
 					},
 				},
-				RootPasswordSecretKeyRef: &mariadbmmontesio.MariaDbSpecRootPasswordSecretKeyRef{
+				RootPasswordSecretKeyRef: &k8smariadbcom.MariaDbSpecRootPasswordSecretKeyRef{
 					Name: jsii.String("mariadb"),
 					Key:  jsii.String("root-password"),
 				},
 				Image: jsii.String("mariadb:10.11"),
 				Port:  jsii.Number(3306),
-				VolumeClaimTemplate: &mariadbmmontesio.MariaDbSpecVolumeClaimTemplate{
-					Resources: &mariadbmmontesio.MariaDbSpecVolumeClaimTemplateResources{
-						Requests: &map[string]mariadbmmontesio.MariaDbSpecVolumeClaimTemplateResourcesRequests{
-							"storage": mariadbmmontesio.MariaDbSpecVolumeClaimTemplateResourcesRequests_FromString(jsii.String("8Gi")),
-						},
-					},
+				Storage: &k8smariadbcom.MariaDbSpecStorage{
 					StorageClassName: jsii.String("longhorn-crypto-global"),
-					AccessModes: &[]*string{
-						jsii.String("ReadWriteOnce"),
-					},
+					Size:             k8smariadbcom.MariaDbSpecStorageSize_FromString(jsii.String("8Gi")),
 				},
 			},
 		},
@@ -76,16 +69,16 @@ func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
 	}
 
 	for _, database := range databases {
-		mariadbmmontesio.NewDatabase(
+		k8smariadbcom.NewDatabase(
 			chart,
 			jsii.String(fmt.Sprintf("%s-database", database)),
-			&mariadbmmontesio.DatabaseProps{
+			&k8smariadbcom.DatabaseProps{
 				Metadata: &cdk8s.ApiObjectMetadata{
 					Namespace: jsii.String(namespace),
 					Name:      jsii.String(database),
 				},
-				Spec: &mariadbmmontesio.DatabaseSpec{
-					MariaDbRef: &mariadbmmontesio.DatabaseSpecMariaDbRef{
+				Spec: &k8smariadbcom.DatabaseSpec{
+					MariaDbRef: &k8smariadbcom.DatabaseSpecMariaDbRef{
 						Name: jsii.String(mariadbInstance),
 					},
 					CharacterSet: jsii.String("utf8"),
@@ -97,19 +90,19 @@ func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
 		// users names are the same than databases (for now).
 		for _, user := range users[database] {
 			k8s_helpers.CreateExternalSecret(chart, namespace, fmt.Sprintf("user-%s", user))
-			mariadbmmontesio.NewUser(
+			k8smariadbcom.NewUser(
 				chart,
 				jsii.String(fmt.Sprintf("%s-user-%s", database, user)),
-				&mariadbmmontesio.UserProps{
+				&k8smariadbcom.UserProps{
 					Metadata: &cdk8s.ApiObjectMetadata{
 						Namespace: jsii.String(namespace),
 						Name:      jsii.String(user),
 					},
-					Spec: &mariadbmmontesio.UserSpec{
-						MariaDbRef: &mariadbmmontesio.UserSpecMariaDbRef{
+					Spec: &k8smariadbcom.UserSpec{
+						MariaDbRef: &k8smariadbcom.UserSpecMariaDbRef{
 							Name: jsii.String(mariadbInstance),
 						},
-						PasswordSecretKeyRef: &mariadbmmontesio.UserSpecPasswordSecretKeyRef{
+						PasswordSecretKeyRef: &k8smariadbcom.UserSpecPasswordSecretKeyRef{
 							Name: jsii.String(fmt.Sprintf("user-%s", user)),
 							Key:  jsii.String("password"),
 						},
@@ -117,16 +110,16 @@ func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
 				},
 			)
 
-			mariadbmmontesio.NewGrant(
+			k8smariadbcom.NewGrant(
 				chart,
 				jsii.String(fmt.Sprintf("%s-grant-%s", database, user)),
-				&mariadbmmontesio.GrantProps{
+				&k8smariadbcom.GrantProps{
 					Metadata: &cdk8s.ApiObjectMetadata{
 						Namespace: jsii.String(namespace),
 						Name:      jsii.String(user),
 					},
-					Spec: &mariadbmmontesio.GrantSpec{
-						MariaDbRef: &mariadbmmontesio.GrantSpecMariaDbRef{
+					Spec: &k8smariadbcom.GrantSpec{
+						MariaDbRef: &k8smariadbcom.GrantSpecMariaDbRef{
 							Name: jsii.String(mariadbInstance),
 						},
 						Database: jsii.String(database),
