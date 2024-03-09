@@ -1,31 +1,29 @@
-# See https://github.com/kubernetes/dashboard/blob/master/charts/helm-chart/kubernetes-dashboard/values.yaml
+# See https://github.com/kubernetes/dashboard/blob/master/charts/kubernetes-dashboard/values.yaml
 
-extraArgs:
-  - --system-banner="Welcome to Kubernetes"
-  - --enable-skip-login
-  - --disable-settings-authorizer
-  - --enable-insecure-login
+app:
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      traefik.ingress.kubernetes.io/redirect-entry-point: https
+      traefik.ingress.kubernetes.io/redirect-permanent: "true"
+      traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
 
-ingress:
-  enabled: true
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    traefik.ingress.kubernetes.io/redirect-entry-point: https
-    traefik.ingress.kubernetes.io/redirect-permanent: "true"
-    traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+    hosts:
+      - kubernetes-dashboard.services.mkz.me
 
-  hosts:
-    - kubernetes-dashboard.services.mkz.me
+    ingressClassName: traefik
 
-  ingressClassName: traefik
+    tls:
+      - secretName: kubernetes-dashboard-tls
+        hosts:
+          - kubernetes-dashboard.services.mkz.me
 
-  tls:
-    - secretName: kubernetes-dashboard-tls
-      hosts:
-        - kubernetes-dashboard.services.mkz.me
+extras:
+  serviceMonitor: true
 
-serviceMonitor:
-  enabled: true
-
-metricsScraper:
-  enabled: true
+# extraArgs:
+#   - --system-banner="Welcome to Kubernetes"
+#   - --enable-skip-login
+#   - --disable-settings-authorizer
+#   - --enable-insecure-login
