@@ -19,43 +19,41 @@ metadata:
   namespace: kubernetes-dashboard
 data:
   values.yaml: |
-    # See https://github.com/kubernetes/dashboard/blob/master/charts/helm-chart/kubernetes-dashboard/values.yaml
+    # See https://github.com/kubernetes/dashboard/blob/master/charts/kubernetes-dashboard/values.yaml
 
-    extraArgs:
-      - --system-banner="Welcome to Kubernetes"
-      - --enable-skip-login
-      - --disable-settings-authorizer
-      - --enable-insecure-login
+    app:
+      ingress:
+        enabled: true
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          traefik.ingress.kubernetes.io/redirect-entry-point: https
+          traefik.ingress.kubernetes.io/redirect-permanent: "true"
+          traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
 
-    ingress:
-      enabled: true
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod
-        traefik.ingress.kubernetes.io/redirect-entry-point: https
-        traefik.ingress.kubernetes.io/redirect-permanent: "true"
-        traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+        hosts:
+          - kubernetes-dashboard.services.mkz.me
 
-      hosts:
-        - kubernetes-dashboard.services.mkz.me
+        ingressClassName: traefik
 
-      ingressClassName: traefik
+        tls:
+          - secretName: kubernetes-dashboard-tls
+            hosts:
+              - kubernetes-dashboard.services.mkz.me
 
-      tls:
-        - secretName: kubernetes-dashboard-tls
-          hosts:
-            - kubernetes-dashboard.services.mkz.me
+    extras:
+      serviceMonitor: true
 
-    serviceMonitor:
-      enabled: true
-
-    metricsScraper:
-      enabled: true
+    # extraArgs:
+    #   - --system-banner="Welcome to Kubernetes"
+    #   - --enable-skip-login
+    #   - --disable-settings-authorizer
+    #   - --enable-insecure-login
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 3b850eed534cc88d01cfc4683c090d940523937618891f9c4e27246e2a4d2235
+    configMapHash: 61f6df7a5f2ccbf45e5ca3713e652bfe770f5a79960aa52d1c562077275fc239
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 spec:
