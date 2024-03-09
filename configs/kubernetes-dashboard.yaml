@@ -15,12 +15,11 @@ app:
     ingressClassName: traefik
 
     tls:
-      - secretName: kubernetes-dashboard-tls
-        hosts:
-          - kubernetes-dashboard.services.mkz.me
+      secretName: kubernetes-dashboard-tls
 
 extras:
-  serviceMonitor: true
+  serviceMonitor:
+    enabled: true
 
 # extraArgs:
 #   - --system-banner="Welcome to Kubernetes"
