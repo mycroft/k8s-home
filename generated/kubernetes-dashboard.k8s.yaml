@@ -36,12 +36,11 @@ data:
         ingressClassName: traefik
 
         tls:
-          - secretName: kubernetes-dashboard-tls
-            hosts:
-              - kubernetes-dashboard.services.mkz.me
+          secretName: kubernetes-dashboard-tls
 
     extras:
-      serviceMonitor: true
+      serviceMonitor:
+        enabled: true
 
     # extraArgs:
     #   - --system-banner="Welcome to Kubernetes"
@@ -53,7 +52,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 61f6df7a5f2ccbf45e5ca3713e652bfe770f5a79960aa52d1c562077275fc239
+    configMapHash: 42a42764f589e7df29c08d845f22da33b21d8d7fd999ba52fc3c7a6467839abf
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 spec:
