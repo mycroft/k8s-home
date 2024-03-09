@@ -6,7 +6,7 @@ helmcharts:
   grafana/promtail: 6.15.3
   hashicorp/vault: 0.27.0
   jaegertracing/jaeger: 0.71.2
-  jetstack/cert-manager: v1.14.3
+  jetstack/cert-manager: v1.14.4
   jitsi/jitsi-meet: v1.3.7
   kubernetes-dashboard/kubernetes-dashboard: 7.1.1
   kyverno/kyverno: v3.0.5
