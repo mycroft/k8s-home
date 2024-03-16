@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: redmine
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: redmine
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: oci://registry-1.docker.io/bitnamicharts/redmine
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redmine-helm-val-redmine-c85ec338
+  namespace: redmine
+data:
+  values.yaml: |
+    # https://github.com/bitnami/charts/blob/main/bitnami/redmine/values.yaml
+
+    mariadb:
+      enabled: false
+
+    postgresql:
+      enabled: false
+
+    externalDatabase:
+      host: mariadb.mariadb
+      port: 3306
+      user: redmine
+      database: redmine
+      existingSecret: mariadb
+      existingSecretPasswordKey: password
+
+    persistence:
+      enabled: true
+      storageClass: longhorn-crypto-global
+      size: 16Gi
+
+    ingress:
+      enabled: true
+      hostname: redmine.services.mkz.me
+      tls: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: 2f6e46fe1e6de61f247474fd78cd1f17e81a9767d2c2b5d85f619db19489edb5
+  name: redmine
+  namespace: redmine
+spec:
+  chart:
+    spec:
+      chart: redmine
+      sourceRef:
+        kind: HelmRepository
+        name: redmine
+        namespace: flux-system
+      version: 5.1.2
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: redmine-helm-val-redmine-c85ec338
+      valuesKey: values.yaml
