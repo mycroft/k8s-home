@@ -1,0 +1,27 @@
+# https://github.com/bitnami/charts/blob/main/bitnami/redmine/values.yaml
+
+mariadb:
+  enabled: false
+
+postgresql:
+  enabled: false
+
+externalDatabase:
+  host: mariadb.mariadb
+  port: 3306
+  user: redmine
+  database: redmine
+  existingSecret: mariadb
+  existingSecretPasswordKey: password
+
+persistence:
+  enabled: true
+  storageClass: longhorn-crypto-global
+  size: 16Gi
+
+ingress:
+  enabled: true
+  hostname: redmine.services.mkz.me
+  tls: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod

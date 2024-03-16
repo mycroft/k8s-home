@@ -83,6 +83,7 @@ func main() {
 	charts_apps.NewExcalidrawChart(app)
 	// charts_apps.NewJitsiChart(app)
 	charts_apps.NewWikiJsChart(app)
+	charts_apps.NewRedmineChart(app)
 
 	if checkVersion {
 		k8s_helpers.CheckVersions()
