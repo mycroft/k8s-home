@@ -25,10 +25,12 @@ data:
       ingress:
         enabled: true
         annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-prod
           traefik.ingress.kubernetes.io/redirect-entry-point: https
           traefik.ingress.kubernetes.io/redirect-permanent: "true"
           traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+        issuer:
+          name: letsencrypt-prod
+          scope: cluster 
 
         hosts:
           - kubernetes-dashboard.services.mkz.me
@@ -52,7 +54,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 42a42764f589e7df29c08d845f22da33b21d8d7fd999ba52fc3c7a6467839abf
+    configMapHash: 7c78361b581b0639dd92107ff4fe67f6d4fe64d5f92817ab29be43adb29cc88d
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 spec:
