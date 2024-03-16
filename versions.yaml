@@ -22,6 +22,7 @@ helmcharts:
   opensearch/opensearch-dashboards: 2.10.0
   postgres-operator/postgres-operator: 1.10.1
   prometheus-community/kube-prometheus-stack: 56.21.4
+  redmine/redmine: 5.1.2
   requarks/wiki: 2.2.20
   scylla/scylla-operator: v1.11.2
   sealed-secrets/sealed-secrets: 2.15.0
