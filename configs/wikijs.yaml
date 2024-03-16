@@ -23,4 +23,5 @@ ingress:
 postgresql:
   enabled: false
   postgresqlHost: postgres-instance.postgres
-  existingSecretKey: postgresql
+  existingSecret: postgresql
+  existingSecretKey: password
