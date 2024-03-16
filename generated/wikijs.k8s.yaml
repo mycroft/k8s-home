@@ -82,7 +82,7 @@ data:
 
     postgresql:
       enabled: false
-      ssl: true
+      ssl: false
       postgresqlHost: postgres-instance.postgres
       postgresqlUser: wikijs
       postgresqlDatabase: wikijs
@@ -93,7 +93,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 912157a3e8ab5e626dfee59d0d2778715c13bedff13104b5ce8c621add80e38e
+    configMapHash: bbba45dba3845f66318ee9836e07a41fe06b8f852cdb0763d050b10a8f3c1ba5
   name: wiki
   namespace: wikijs
 spec:
