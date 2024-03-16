@@ -58,7 +58,7 @@ metadata:
   name: redmine-helm-val-redmine-c85ec338
   namespace: redmine
 data:
-  values.yaml: |
+  values.yaml: |-
     # https://github.com/bitnami/charts/blob/main/bitnami/redmine/values.yaml
 
     mariadb:
@@ -86,12 +86,20 @@ data:
       tls: true
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod
+
+    redmineUsername: redmine
+
+    image:
+      debug: true
+
+    service:
+      type: ClusterIP
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 2f6e46fe1e6de61f247474fd78cd1f17e81a9767d2c2b5d85f619db19489edb5
+    configMapHash: 678dc050b9737810f59e7b00ed813812a2298b4fba60e6efe2495d0445852f4e
   name: redmine
   namespace: redmine
 spec:
