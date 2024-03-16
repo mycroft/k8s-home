@@ -82,6 +82,7 @@ func main() {
 	charts_apps.NewSnippetBoxChart(app)
 	charts_apps.NewExcalidrawChart(app)
 	// charts_apps.NewJitsiChart(app)
+	charts_apps.NewWikiJsChart(app)
 
 	if checkVersion {
 		k8s_helpers.CheckVersions()
