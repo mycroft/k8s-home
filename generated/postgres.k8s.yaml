@@ -17,6 +17,8 @@ spec:
     testaroo: testaroo-admin
     wallabag: wallabag-admin
     wikijs: wikijs-admin
+  env:
+    - SSL_TEST_RELOAD=True
   numberOfInstances: 1
   postgresql:
     version: "15"
