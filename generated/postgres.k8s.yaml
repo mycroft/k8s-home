@@ -17,6 +17,9 @@ spec:
     testaroo: testaroo-admin
     wallabag: wallabag-admin
     wikijs: wikijs-admin
+  env:
+    - name: ALLOW_NOSSL
+      value: "1"
   numberOfInstances: 1
   postgresql:
     version: "15"
