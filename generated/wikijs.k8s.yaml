@@ -79,6 +79,11 @@ data:
           paths:
             - path: "/"
               pathType: Prefix
+      tls:
+        - hosts:
+          - wiki.services.mkz.me
+          - wiki.mkz.cx
+          secretName: secret-tls-www
 
     postgresql:
       enabled: false
@@ -93,7 +98,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: bbba45dba3845f66318ee9836e07a41fe06b8f852cdb0763d050b10a8f3c1ba5
+    configMapHash: 00e48627ebe2f45fdbe71fa9f37b71225780d26084db9e00303ff9334eeff98d
   name: wiki
   namespace: wikijs
 spec:
