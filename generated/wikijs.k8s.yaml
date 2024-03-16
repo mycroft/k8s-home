@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wikijs
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: wikijs-es-postgresql-c84d328c
+  namespace: wikijs
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/wikijs/postgresql
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: requarks
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://charts.js.wiki
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wikijs-helm-val-requarks-c8636f19
+  namespace: wikijs
+data:
+  values.yaml: |
+    # See
+    # https://docs.requarks.io/install/kubernetes#configuration
+    # https://github.com/Requarks/wiki/blob/main/dev/helm/values.yaml
+
+    ingress:
+      enabled: true
+      className: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        traefik.ingress.kubernetes.io/redirect-entry-point: https
+        traefik.ingress.kubernetes.io/redirect-permanent: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+      hosts:
+        - host: wiki.services.mkz.me
+          paths:
+            - path: "/"
+              pathType: Prefix
+        - host: wiki.mkz.cx
+          paths:
+            - path: "/"
+              pathType: Prefix
+
+    postgresql:
+      enabled: false
+      postgresqlHost: postgres-instance.postgres
+      existingSecretKey: postgresql
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: ab52bcb45630d7a5c2534974003bc2dd41945e357a2979d82dd55f61a9e73f05
+  name: wiki
+  namespace: wikijs
+spec:
+  chart:
+    spec:
+      chart: wiki
+      sourceRef:
+        kind: HelmRepository
+        name: requarks
+        namespace: flux-system
+      version: 2.2.20
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 1m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: wikijs-helm-val-requarks-c8636f19
+      valuesKey: values.yaml
