@@ -44,7 +44,7 @@ func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
 					Name: jsii.String("mariadb"),
 					Key:  jsii.String("root-password"),
 				},
-				Image: jsii.String("mariadb:10.11"),
+				Image: jsii.String("mariadb:11.3.2"),
 				Port:  jsii.Number(3306),
 				Storage: &k8smariadbcom.MariaDbSpecStorage{
 					StorageClassName: jsii.String("longhorn-crypto-global"),
