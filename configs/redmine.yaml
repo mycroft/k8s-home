@@ -25,3 +25,11 @@ ingress:
   tls: true
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
+
+redmineUsername: redmine
+
+image:
+  debug: true
+
+service:
+  type: ClusterIP
