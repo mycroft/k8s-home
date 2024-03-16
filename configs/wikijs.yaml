@@ -22,7 +22,7 @@ ingress:
 
 postgresql:
   enabled: false
-  ssl: true
+  ssl: false
   postgresqlHost: postgres-instance.postgres
   postgresqlUser: wikijs
   postgresqlDatabase: wikijs
