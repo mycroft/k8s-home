@@ -3,13 +3,14 @@ kind: Namespace
 metadata:
   name: redmine
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: redmine
   namespace: flux-system
 spec:
   interval: 1m0s
+  type: oci
   url: oci://registry-1.docker.io/bitnamicharts/redmine
 ---
 apiVersion: v1
