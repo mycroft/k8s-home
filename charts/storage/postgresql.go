@@ -42,6 +42,10 @@ func NewPostgres(scope constructs.Construct) cdk8s.Chart {
 		}
 	}
 
+	env := []interface{}{
+		"SSL_TEST_RELOAD=True",
+	}
+
 	// Spawn a PostgreSQL server for multiple databases.
 	// Don't forget that "users" do not have the right to change stuff in schemas.
 	// Therefore you might want to do the following:
@@ -66,6 +70,7 @@ func NewPostgres(scope constructs.Construct) cdk8s.Chart {
 				Postgresql: &acidzalando.PostgresqlSpecPostgresql{
 					Version: acidzalando.PostgresqlSpecPostgresqlVersion_VALUE_15,
 				},
+				Env: &env,
 			},
 		},
 	)
