@@ -83,13 +83,14 @@ data:
     postgresql:
       enabled: false
       postgresqlHost: postgres-instance.postgres
-      existingSecretKey: postgresql
+      existingSecret: postgresql
+      existingSecretKey: password
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: ab52bcb45630d7a5c2534974003bc2dd41945e357a2979d82dd55f61a9e73f05
+    configMapHash: 6287fd9ea0ab031cbe14f28161a0e0764aaab9803916c812c8377c04a941bad8
   name: wiki
   namespace: wikijs
 spec:
