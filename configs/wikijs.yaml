@@ -19,6 +19,11 @@ ingress:
       paths:
         - path: "/"
           pathType: Prefix
+  tls:
+    - hosts:
+      - wiki.services.mkz.me
+      - wiki.mkz.cx
+      secretName: secret-tls-www
 
 postgresql:
   enabled: false
