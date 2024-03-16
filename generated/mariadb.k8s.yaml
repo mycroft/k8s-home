@@ -51,7 +51,7 @@ spec:
   env:
     - name: MARIADB_AUTO_UPGRADE
       value: "1"
-  image: mariadb:10.11
+  image: mariadb:11.3.2
   port: 3306
   rootPasswordSecretKeyRef:
     key: root-password
