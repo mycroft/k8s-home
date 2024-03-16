@@ -62,6 +62,10 @@ func GetHelmUpdates() (map[string]string, error) {
 
 		repositoryUrl := helmRepositories[helmRelease.RepositoryName]
 
+		if strings.HasPrefix(repositoryUrl, "oci://") {
+			continue
+		}
+
 		body, err := GetRepoIndex(fmt.Sprintf("%s/index.yaml", repositoryUrl))
 		if err != nil {
 			panic(err)
