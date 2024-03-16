@@ -195,3 +195,71 @@ spec:
     - INDEX
   table: "*"
   username: mariadb
+---
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: Database
+metadata:
+  name: redmine
+  namespace: mariadb
+spec:
+  characterSet: utf8
+  collate: utf8_general_ci
+  mariaDbRef:
+    name: mariadb
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mariadb-es-user-redmine-c8bb6679
+  namespace: mariadb
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/mariadb/user-redmine
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: user-redmine
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: User
+metadata:
+  name: redmine
+  namespace: mariadb
+spec:
+  mariaDbRef:
+    name: mariadb
+  passwordSecretKeyRef:
+    key: password
+    name: user-redmine
+---
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: Grant
+metadata:
+  name: redmine
+  namespace: mariadb
+spec:
+  database: redmine
+  grantOption: true
+  mariaDbRef:
+    name: mariadb
+  privileges:
+    - SELECT
+    - INSERT
+    - UPDATE
+    - CREATE
+    - ALTER
+    - DELETE
+    - DROP
+    - INDEX
+  table: "*"
+  username: redmine
