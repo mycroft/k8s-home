@@ -23,5 +23,7 @@ ingress:
 postgresql:
   enabled: false
   postgresqlHost: postgres-instance.postgres
+  postgresqlUser: wikijs
+  postgresqlDatabase: wikijs
   existingSecret: postgresql
   existingSecretKey: password
