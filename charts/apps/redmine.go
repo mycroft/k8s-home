@@ -22,7 +22,7 @@ func NewRedmineChart(scope constructs.Construct) cdk8s.Chart {
 	k8s_helpers.CreateHelmRepository(
 		chart,
 		"redmine",
-		"oci://registry-1.docker.io/bitnamicharts/redmine",
+		"oci://registry-1.docker.io/bitnamicharts",
 	)
 
 	k8s_helpers.CreateHelmRelease(
