@@ -42,6 +42,13 @@ func NewPostgres(scope constructs.Construct) cdk8s.Chart {
 		}
 	}
 
+	env := []interface{}{
+		map[string]interface{}{
+			"name":  jsii.String("ALLOW_NOSSL"),
+			"value": jsii.String("1"),
+		},
+	}
+
 	// Spawn a PostgreSQL server for multiple databases.
 	// Don't forget that "users" do not have the right to change stuff in schemas.
 	// Therefore you might want to do the following:
@@ -60,6 +67,7 @@ func NewPostgres(scope constructs.Construct) cdk8s.Chart {
 					StorageClass: jsii.String("longhorn-crypto-global"),
 					Size:         jsii.String("64Gi"),
 				},
+				Env:               &env,
 				NumberOfInstances: jsii.Number(float64(1)),
 				Databases:         &databaseSpecs,
 				Users:             &databaseUsers,
