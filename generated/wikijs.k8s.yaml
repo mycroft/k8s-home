@@ -69,20 +69,19 @@ data:
         cert-manager.io/cluster-issuer: letsencrypt-prod
         traefik.ingress.kubernetes.io/redirect-entry-point: https
         traefik.ingress.kubernetes.io/redirect-permanent: "true"
-        traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
       hosts:
         - host: wiki.services.mkz.me
           paths:
             - path: "/"
               pathType: Prefix
-        - host: wiki.mkz.cx
+        - host: wiki.iop.cx
           paths:
             - path: "/"
               pathType: Prefix
       tls:
         - hosts:
           - wiki.services.mkz.me
-          - wiki.mkz.cx
+          - wiki.iop.cx
           secretName: secret-tls-www
 
     postgresql:
@@ -98,7 +97,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 00e48627ebe2f45fdbe71fa9f37b71225780d26084db9e00303ff9334eeff98d
+    configMapHash: d0bbf221a808857c3e9ca5815cc1a748c33d06390033cf63040582da0e86a10b
   name: wiki
   namespace: wikijs
 spec:
