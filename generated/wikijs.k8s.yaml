@@ -79,7 +79,7 @@ data:
         cert-manager.io/cluster-issuer: letsencrypt-prod
         traefik.ingress.kubernetes.io/redirect-entry-point: https
         traefik.ingress.kubernetes.io/redirect-permanent: "true"
-        traefik.ingress.kubernetes.io/router.middlewares: traefik-vhost-redirect-wikijs
+        traefik.ingress.kubernetes.io/router.middlewares: wikijs-traefik-vhost-redirect-wikijs@kubernetescrd
       hosts:
         - host: wiki.services.mkz.me
           paths:
@@ -108,7 +108,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: d227f189c7c2f9939416e23748f78a401c552a7701b74f9c7902c9fb2c135eac
+    configMapHash: c0b1bfbf46ab78d978fb33558c74e59f5f4e283439617907120565c9c60b90ec
   name: wiki
   namespace: wikijs
 spec:
