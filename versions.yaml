@@ -24,7 +24,7 @@ helmcharts:
   prometheus-community/kube-prometheus-stack: 56.21.4
   redmine/redmine: 27.1.0
   requarks/wiki: 2.2.20
-  scylla/scylla-operator: v1.11.2
+  scylla/scylla-operator: v1.12.0
   sealed-secrets/sealed-secrets: 2.15.2
   vmware-tanzu/velero: 6.0.0
 images:
