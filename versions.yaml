@@ -25,7 +25,7 @@ helmcharts:
   redmine/redmine: 27.1.0
   requarks/wiki: 2.2.20
   scylla/scylla-operator: v1.12.0
-  sealed-secrets/sealed-secrets: 2.15.2
+  sealed-secrets/sealed-secrets: 2.15.3
   vmware-tanzu/velero: 6.0.0
 images:
   corentinth/it-tools: 2023.12.21-5ed3693
