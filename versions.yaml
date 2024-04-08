@@ -38,7 +38,7 @@ images:
   linuxserver/bookstack: v24.02.2-ls135
   linuxserver/heimdall: v2.5.7-ls238
   paulbouwer/hello-kubernetes: 1.10.1
-  paperlessngx/paperless-ngx: 2.6.3
+  paperlessngx/paperless-ngx: 2.7.2
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: latest
   registry.gitlab.com/timvisee/send: latest
