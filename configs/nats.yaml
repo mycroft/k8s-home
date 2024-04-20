@@ -1,6 +1,6 @@
 # https://github.com/nats-io/k8s/blob/main/helm/charts/nats/values.yaml
 
-nats:
+config:
   jetstream:
     enabled: true
 
@@ -12,11 +12,6 @@ nats:
       enabled: true
       size: "10Gi"
       storageClassName: "longhorn-crypto-global"
-
-  # Enabling this requires to bump nats-boot-config to 0.9.3
-  # and to add to nodes the following label:
-  # nats.io/node-external-ip
-  externalAccess: false
 
 exporter:
   enabled: true
