@@ -8,7 +8,7 @@ helmcharts:
   jaegertracing/jaeger: 0.71.2
   jetstack/cert-manager: v1.14.4
   jitsi/jitsi-meet: v1.3.7
-  kubernetes-dashboard/kubernetes-dashboard: 7.3.1
+  kubernetes-dashboard/kubernetes-dashboard: 7.3.2
   kyverno/kyverno: v3.0.5
   kyverno/kyverno-policies: v3.0.4
   linkerd/linkerd-crds: 1.8.0
