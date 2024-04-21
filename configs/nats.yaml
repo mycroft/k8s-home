@@ -13,8 +13,31 @@ config:
       size: "10Gi"
       storageClassName: "longhorn-crypto-global"
 
-exporter:
+  monitor:
+    enabled: true
+    port: 8222
+
+promExporter:
   enabled: true
-  serviceMonitor:
+  podMonitor:
     enabled: true
 
+service:
+  enabled: true
+  ports:
+    nats:
+      enabled: true
+    leafnodes:
+      enabled: true
+    websocket:
+      enabled: true
+    mqtt:
+      enabled: true
+    cluster:
+      enabled: false
+    gateway:
+      enabled: false
+    monitor:
+      enabled: true
+    profiling:
+      enabled: false
