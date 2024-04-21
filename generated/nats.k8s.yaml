@@ -18,7 +18,7 @@ metadata:
   name: nats-helm-val-nats-c8e3a028
   namespace: nats
 data:
-  values.yaml: |+
+  values.yaml: |
     # https://github.com/nats-io/k8s/blob/main/helm/charts/nats/values.yaml
 
     config:
@@ -34,17 +34,40 @@ data:
           size: "10Gi"
           storageClassName: "longhorn-crypto-global"
 
-    exporter:
+      monitor:
+        enabled: true
+        port: 8222
+
+    promExporter:
       enabled: true
-      serviceMonitor:
+      podMonitor:
         enabled: true
 
+    service:
+      enabled: true
+      ports:
+        nats:
+          enabled: true
+        leafnodes:
+          enabled: true
+        websocket:
+          enabled: true
+        mqtt:
+          enabled: true
+        cluster:
+          enabled: false
+        gateway:
+          enabled: false
+        monitor:
+          enabled: true
+        profiling:
+          enabled: false
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 122cb0936ba3bc95b8db5b56a9e8b2357024c14df6f3739520da3a36d5518dab
+    configMapHash: 9fdf8508060d0f67f6ccc294341c87b8ad64a5072f1a3ee85fe9a7060c6f061e
   name: nats
   namespace: nats
 spec:
