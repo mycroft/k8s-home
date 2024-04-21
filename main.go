@@ -84,6 +84,7 @@ func main() {
 	// charts_apps.NewJitsiChart(app)
 	charts_apps.NewWikiJsChart(app)
 	charts_apps.NewRedmineChart(app)
+	charts_apps.NewMicrobinChart(app)
 
 	if checkVersion {
 		k8s_helpers.CheckVersions()
