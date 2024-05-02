@@ -69,7 +69,7 @@ spec:
   install:
     createNamespace: false
     skipCRDs: false
-  interval: 1m0s
+  interval: 2m0s
   values: {}
   valuesFrom:
     - kind: ConfigMap
