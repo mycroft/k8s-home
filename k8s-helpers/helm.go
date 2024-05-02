@@ -124,7 +124,7 @@ func CreateHelmRelease(
 						Version: jsii.String(cachedVersion),
 					},
 				},
-				Interval:   jsii.String("1m0s"),
+				Interval:   jsii.String("2m0s"),
 				Values:     values,
 				ValuesFrom: &valuesFrom,
 			},
