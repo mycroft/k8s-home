@@ -43,7 +43,8 @@ spec:
   install:
     createNamespace: false
     skipCRDs: false
-  interval: 2m0s
+  interval: 10m0s
+  timeout: 5m0s
   values: {}
   valuesFrom:
     - kind: ConfigMap
