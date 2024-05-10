@@ -79,12 +79,15 @@ data:
       defaultDataPath: /data/k3s-longhorn-storage/
       backupTarget: s3://k8s-backup@us-east-1/
       backupTargetCredentialSecret: nas0-minio
+
+    persistence:
+      defaultClass: false
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: fd51d2c99a0bb9fb4da6e5ece5516fcb3e2f3c46f3319e0e8556c00ee7e8efdb
+    configMapHash: 4f1f3b9c7e56416042b6f7ffc8ec4ecc41525570f81ce55be97f419ca81a8051
   name: longhorn
   namespace: longhorn-system
 spec:
