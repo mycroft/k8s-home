@@ -4,84 +4,21 @@ loki:
   commonConfig:
     replication_factor: 1
   storage:
-    bucketNames:
-      chunks: loki-chunks
-      ruler: loki-ruler
-      admin: loki-admin
     type: filesystem
-    s3:
-      s3: null
-      endpoint: https://minio-storage-hl.minio.svc.cluster.local:9000
-      region: null
-      secretAccessKey: ${MINIO_SECRET_ACCESS_KEY}
-      accessKeyId: ${MINIO_ACCESS_KEY_ID}
-      s3ForcePathStyle: true
-      insecure: false
-      http_config:
-        insecure_skip_verify: true
 
-write:
-  extraArgs:
-  - --config.expand-env=true
-
-  extraEnv:
-  - name: MINIO_ACCESS_KEY_ID
-    valueFrom:
-      secretKeyRef:
-        name: minio
-        key: access_key_id
-  - name: MINIO_SECRET_ACCESS_KEY
-    valueFrom:
-      secretKeyRef:
-        name: minio
-        key: secret_access_key
-
+singleBinary:
+  replicas: 1
   persistence:
     enableStatefulSetAutoDeletePVC: false
     size: 10Gi
     storageClass: local-path
 
 read:
-  extraArgs:
-  - --config.expand-env=true
-
-  extraEnv:
-  - name: MINIO_ACCESS_KEY_ID
-    valueFrom:
-      secretKeyRef:
-        name: minio
-        key: access_key_id
-  - name: MINIO_SECRET_ACCESS_KEY
-    valueFrom:
-      secretKeyRef:
-        name: minio
-        key: secret_access_key
-
-  persistence:
-    enableStatefulSetAutoDeletePVC: false
-    size: 10Gi
-    storageClass: local-path
-
+  replicas: 0
 backend:
-  extraArgs:
-  - --config.expand-env=true
-
-  extraEnv:
-  - name: MINIO_ACCESS_KEY_ID
-    valueFrom:
-      secretKeyRef:
-        name: minio
-        key: access_key_id
-  - name: MINIO_SECRET_ACCESS_KEY
-    valueFrom:
-      secretKeyRef:
-        name: minio
-        key: secret_access_key
-
-  persistence:
-    enableStatefulSetAutoDeletePVC: false
-    size: 10Gi
-    storageClass: local-path
+  replicas: 0
+write:
+  replicas: 0
 
 monitoring:
   lokiCanary:
