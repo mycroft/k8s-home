@@ -57,7 +57,7 @@ metadata:
   name: loki-helm-val-loki-c8d03bab
   namespace: loki
 data:
-  values.yaml: |
+  values.yaml: |+
     # https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
     loki:
       auth_enabled: false
@@ -91,18 +91,12 @@ data:
     write:
       replicas: 0
 
-    monitoring:
-      lokiCanary:
-        enabled: false
-
-    test:
-      enabled: false
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: c35bab3a9f8f9840c4d2e94c5b3dc722e4761135bded4731e4dd5f846519dceb
+    configMapHash: d6b06dec012f94bf4a477de2f3d006f38aea5a48663a2bebcf3d6c5d1d73c4e0
   name: loki
   namespace: loki
 spec:
