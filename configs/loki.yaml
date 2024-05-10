@@ -8,7 +8,7 @@ loki:
       chunks: loki-chunks
       ruler: loki-ruler
       admin: loki-admin
-    type: s3
+    type: filesystem
     s3:
       s3: null
       endpoint: https://minio-storage-hl.minio.svc.cluster.local:9000
@@ -39,7 +39,7 @@ write:
   persistence:
     enableStatefulSetAutoDeletePVC: false
     size: 10Gi
-    storageClass: longhorn-crypto-global
+    storageClass: local-path
 
 read:
   extraArgs:
@@ -60,7 +60,7 @@ read:
   persistence:
     enableStatefulSetAutoDeletePVC: false
     size: 10Gi
-    storageClass: longhorn-crypto-global
+    storageClass: local-path
 
 backend:
   extraArgs:
@@ -81,7 +81,7 @@ backend:
   persistence:
     enableStatefulSetAutoDeletePVC: false
     size: 10Gi
-    storageClass: longhorn-crypto-global
+    storageClass: local-path
 
 monitoring:
   lokiCanary:
