@@ -75,6 +75,8 @@ data:
       storage:
         type: filesystem
 
+    deploymentMode: SingleBinary
+
     singleBinary:
       replicas: 1
       persistence:
@@ -100,7 +102,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 9c9093808817030ba6b12da5622e42dc5c5491a54d0159ff50de62e23cb975b7
+    configMapHash: c35bab3a9f8f9840c4d2e94c5b3dc722e4761135bded4731e4dd5f846519dceb
   name: loki
   namespace: loki
 spec:
