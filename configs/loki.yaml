@@ -31,9 +31,3 @@ backend:
 write:
   replicas: 0
 
-monitoring:
-  lokiCanary:
-    enabled: false
-
-test:
-  enabled: false

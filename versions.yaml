@@ -3,7 +3,7 @@ helmcharts:
   dex/dex: 0.17.1
   external-secrets/external-secrets: 0.9.17
   grafana/loki: 6.5.2
-  grafana/promtail: 6.15.3
+  grafana/promtail: 6.15.5
   hashicorp/vault: 0.28.0
   jaegertracing/jaeger: 0.71.2
   jetstack/cert-manager: v1.14.5
