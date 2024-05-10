@@ -3,3 +3,6 @@ defaultSettings:
   defaultDataPath: /data/k3s-longhorn-storage/
   backupTarget: s3://k8s-backup@us-east-1/
   backupTargetCredentialSecret: nas0-minio
+
+persistence:
+  defaultClass: false
