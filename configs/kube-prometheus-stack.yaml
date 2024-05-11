@@ -20,7 +20,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: longhorn
+          storageClassName: longhorn-crypto-global
           accessModes:
             - ReadWriteOnce
           resources:
@@ -72,7 +72,7 @@ alertmanager:
     storage:
       volumeClaimTemplate:
         spec:
-          storageClassName: longhorn
+          storageClassName: longhorn-crypto-global
           accessModes:
             - ReadWriteOnce
           resources:
