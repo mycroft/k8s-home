@@ -4,14 +4,12 @@ config:
   jetstream:
     enabled: true
 
-    memStorage:
+    fileStore:
       enabled: true
-      size: "2Gi"
-
-    fileStorage:
-      enabled: true
-      size: "10Gi"
-      storageClassName: "longhorn-crypto-global"
+      pvc:
+        enabled: true
+        size: "32Gi"
+        storageClassName: "longhorn-crypto-global"
 
   monitor:
     enabled: true
