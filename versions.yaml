@@ -28,7 +28,7 @@ helmcharts:
   sealed-secrets/sealed-secrets: 2.15.3
   vmware-tanzu/velero: 6.1.0
 images:
-  corentinth/it-tools: 2024.5.10-33e5294
+  corentinth/it-tools: 2024.5.13-a0bc346
   danielszabo99/microbin: 2.0.4
   docker.l5d.io/buoyantio/emojivoto-emoji-svc: v12
   docker.l5d.io/buoyantio/emojivoto-web: v12
