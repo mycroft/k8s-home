@@ -39,7 +39,7 @@ func NewScyllaChart(scope constructs.Construct) cdk8s.Chart {
 					Racks: &[]*scyllascylladbcom.ScyllaClusterSpecDatacenterRacks{
 						{
 							Name:    jsii.String("eu-west-1a"),
-							Members: jsii.Number(4),
+							Members: jsii.Number(3),
 							Storage: &scyllascylladbcom.ScyllaClusterSpecDatacenterRacksStorage{
 								Capacity:         jsii.String("32Gi"),
 								StorageClassName: jsii.String("longhorn-crypto-global"),
