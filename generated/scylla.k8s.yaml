@@ -9,7 +9,7 @@ metadata:
   name: scylla-cluster
   namespace: scylla
 spec:
-  agentVersion: 3.0.1
+  agentVersion: 3.2.6
   datacenter:
     name: eu-west-1
     racks:
@@ -36,4 +36,4 @@ spec:
           storageClassName: longhorn-crypto-global
   developerMode: true
   repository: scylladb/scylla
-  version: "5.1"
+  version: 5.4.3
