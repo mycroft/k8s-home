@@ -15,6 +15,15 @@ spec:
     racks:
       - members: 2
         name: eu-west-1a
+        placement:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchLabels:
+                    scylla/cluster: scylla-cluster
+                namespaces:
+                  - scylla
+                topologyKey: kubernetes.io/hostname
         resources:
           limits:
             cpu: "1"
