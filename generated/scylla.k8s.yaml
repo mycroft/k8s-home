@@ -13,7 +13,7 @@ spec:
   datacenter:
     name: eu-west-1
     racks:
-      - members: 3
+      - members: 2
         name: eu-west-1a
         resources:
           limits:
