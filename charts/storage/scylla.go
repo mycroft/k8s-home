@@ -13,6 +13,24 @@ func NewScyllaChart(scope constructs.Construct) cdk8s.Chart {
 
 	members := 2
 
+	placement := scyllascylladbcom.ScyllaClusterSpecDatacenterRacksPlacement{
+		PodAntiAffinity: &scyllascylladbcom.ScyllaClusterSpecDatacenterRacksPlacementPodAntiAffinity{
+			RequiredDuringSchedulingIgnoredDuringExecution: &[]*scyllascylladbcom.ScyllaClusterSpecDatacenterRacksPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution{
+				{
+					TopologyKey: jsii.String("kubernetes.io/hostname"),
+					Namespaces: &[]*string{
+						jsii.String(namespace),
+					},
+					LabelSelector: &scyllascylladbcom.ScyllaClusterSpecDatacenterRacksPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector{
+						MatchLabels: &map[string]*string{
+							"scylla/cluster": jsii.String("scylla-cluster"),
+						},
+					},
+				},
+			},
+		},
+	}
+
 	chart := cdk8s.NewChart(
 		scope,
 		jsii.String(namespace),
@@ -56,6 +74,7 @@ func NewScyllaChart(scope constructs.Construct) cdk8s.Chart {
 									"memory": scyllascylladbcom.ScyllaClusterSpecDatacenterRacksResourcesLimits_FromString(jsii.String("4Gi")),
 								},
 							},
+							Placement: &placement,
 						},
 					},
 				},
