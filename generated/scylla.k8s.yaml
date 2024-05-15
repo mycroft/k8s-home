@@ -27,4 +27,4 @@ spec:
           storageClassName: longhorn-crypto-global
   developerMode: true
   repository: scylladb/scylla
-  version: 5.4.3
+  version: 5.4.4
