@@ -11,6 +11,8 @@ import (
 func NewScyllaChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "scylla"
 
+	members := 2
+
 	chart := cdk8s.NewChart(
 		scope,
 		jsii.String(namespace),
@@ -39,7 +41,7 @@ func NewScyllaChart(scope constructs.Construct) cdk8s.Chart {
 					Racks: &[]*scyllascylladbcom.ScyllaClusterSpecDatacenterRacks{
 						{
 							Name:    jsii.String("eu-west-1a"),
-							Members: jsii.Number(3),
+							Members: jsii.Number(members),
 							Storage: &scyllascylladbcom.ScyllaClusterSpecDatacenterRacksStorage{
 								Capacity:         jsii.String("32Gi"),
 								StorageClassName: jsii.String("longhorn-crypto-global"),
