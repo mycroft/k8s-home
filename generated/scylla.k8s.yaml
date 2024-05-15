@@ -13,7 +13,7 @@ spec:
   datacenter:
     name: eu-west-1
     racks:
-      - members: 4
+      - members: 3
         name: eu-west-1a
         placement:
           podAntiAffinity:
