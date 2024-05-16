@@ -26,7 +26,7 @@ helmcharts:
   requarks/wiki: 2.2.20
   scylla/scylla-operator: v1.12.1
   sealed-secrets/sealed-secrets: 2.15.3
-  vmware-tanzu/velero: 6.2.0
+  vmware-tanzu/velero: 6.3.0
 images:
   corentinth/it-tools: 2024.5.13-a0bc346
   danielszabo99/microbin: 2.0.4
