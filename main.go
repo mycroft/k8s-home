@@ -58,7 +58,7 @@ func main() {
 	// misc tooling
 	charts_infra.NewFluxCDChart(app)
 	charts_infra.NewKubernetesDashboardChart(app)
-	// charts_infra.NewLinkerdChart(app)
+	charts_infra.NewLinkerdChart(app)
 	// charts_infra.NewTektonChart(app)
 
 	// apps
@@ -74,7 +74,7 @@ func main() {
 	charts_apps.NewITToolsChart(app)
 	charts_apps.NewBookstackChart(app)
 	// charts_apps.NewHeimdallChart(app)
-	// charts_apps.NewEmojivotoChart(app)
+	charts_apps.NewEmojivotoChart(app)
 	charts_apps.NewVaultWardenChart(app)
 	charts_apps.NewSendChart(app)
 	charts_apps.NewHeyChart(app)

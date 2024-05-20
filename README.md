@@ -19,7 +19,7 @@ Most important apps installed on my cluster are:
 - [PostgreSQL](https://www.postgresql.org/), [Minio](https://min.io/), [ScyllaDB](https://www.scylladb.com/), [MariaDB](https://mariadb.org/) operators are installed to provide databases instances;
 - [kube-prometheus-stack](https://github.com/prometheus-operator/kube-prometheus), along with [grafana](https://grafana.com/grafana/), provides metrics monitoring;
 - Grafana's [loki](https://grafana.com/oss/loki/) with [promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) are setup to aggregate and store logs;
-- [Kyverno](https://kyverno.io/), [Tekton](https://tekton.dev/) are present in the charts for testing;
+- [linkerd](https://linkerd.io/), [Kyverno](https://kyverno.io/), [Tekton](https://tekton.dev/) are present in the charts for testing;
 - A bunch of end-users apps are installed, such as:
   - [wallabag](https://www.wallabag.it/), a visual to-read list;
   - [freshrss](https://freshrss.org/), a RSS aggregator;
