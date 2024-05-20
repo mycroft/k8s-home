@@ -59,7 +59,7 @@ func main() {
 	charts_infra.NewFluxCDChart(app)
 	charts_infra.NewKubernetesDashboardChart(app)
 	charts_infra.NewLinkerdChart(app)
-	// charts_infra.NewTektonChart(app)
+	charts_infra.NewTektonChart(app)
 
 	// apps
 	charts_apps.NewHelloKubernetesChart(app)
