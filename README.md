@@ -1,16 +1,45 @@
 # k8s-home
 
-This repository builds & stores k8s configuration.
+This repository contains source code for my own homelab's kubernetes instance. It is used to define & configure deployed apps, build charts that are then used by gitops mechanisms to deploy them on my cluster.
 
-Thanks to `cdk8s`, it builds kubernetes charts for all helm charts & apps prior to store them in the `generated` branch. This branch is then used by [Flux CD](https://fluxcd.io) to reconcile the k8s state with the built charts.
+Thanks to `cdk8s`, the project builds helm charts & apps charts using golang code and stores them in the `generated` branch. This branch is then used by [Flux CD](https://fluxcd.io) to reconcile the k8s state with the built charts.
+
+## Setup
+
+The kubernetes cluster is installed on multiple Mini PCs running Fedora, using [k3s](https://docs.k3s.io/).
+
+## Installed apps
+
+Most important apps installed on my cluster are:
+
+- [longhorn](https://longhorn.io/) is used to provide distributed physical volumes across the cluster;
+- [vault](https://www.vaultproject.io/) & [External Secrets Operator](https://external-secrets.io/latest/) are used for most secrets. A few secrets are deployed using [sealed-secrets](https://github.com/bitnami-labs/sealed-secrets), to unlock encrypted volumes;
+- [dex-idp](https://dexidp.io/) is linked with my personal [gitea](https://about.gitea.com/) instance to provide oauth based SSO to services supporting it;
+- [traefik-forward-auth](https://doc.traefik.io/traefik/middlewares/http/forwardauth/) protects a few services behind an oauth authn/authz firewall for apps not linked to dex-idp;
+- [PostgreSQL](https://www.postgresql.org/), [Minio](https://min.io/), [ScyllaDB](https://www.scylladb.com/), [MariaDB](https://mariadb.org/) operators are installed to provide databases instances;
+- [kube-prometheus-stack](https://github.com/prometheus-operator/kube-prometheus), along with [grafana](https://grafana.com/grafana/), provides metrics monitoring;
+- Grafana's [loki](https://grafana.com/oss/loki/) with [promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) are setup to aggregate and store logs;
+- [Kyverno](https://kyverno.io/), [Tekton](https://tekton.dev/) are present in the charts for testing;
+- A bunch of end-users apps are installed, such as:
+  - [wallabag](https://www.wallabag.it/), a visual to-read list;
+  - [freshrss](https://freshrss.org/), a RSS aggregator;
+  - [privatebin](https://privatebin.info/), a secure pastebin;
+  - [paperless-ngx](https://docs.paperless-ngx.com/) provides document management;
+  - [yopass](https://yopass.se/), to share secrets securely;
+  - [bookstack](https://www.bookstackapp.com/), a platform to organise and share information;
+  - [IT-Tools](https://it-tools.tech/), some handy tools for engineers;
+  - [vaultwarden](https://github.com/dani-garcia/vaultwarden), a bitwarden compatible password manager;
+  - [send](https://gitlab.com/timvisee/send), simple, private file sharing;
+  - [snippetbox](https://github.com/pawelmalak/snippet-box), a code snippet portal;
+  - [excalidraw](https://excalidraw.com/), virtual collaborative whiteboard;
+  - [wikijs](https://js.wiki/), wiki as stated in its name;
+  - [redmine](https://www.redmine.org/), because project management;
+  - [microbin](https://microbin.eu/) another pastebin kind of instance.
 
 
-## Contents
+## Maintenance notes
 
-I install and manage several apps for both infra and endusers. It includes secure encrypted storage with `longhorn`, secrets management, several databases, and some apps.
-
-
-## Initial installation with flux
+### Initial installation with flux
 
 Initial installation of `Flux CD` comes with the `flux` binary. The whole installation procedure is available on the [official website](https://fluxcd.io/flux/get-started/).
 
@@ -24,7 +53,6 @@ flux bootstrap git \
   --path=generated/
 ```
 
-
 ### Upgrading flux
 
 Dump key file:
@@ -36,15 +64,15 @@ k get secret -n flux-system -o yaml flux-system | yq .data.identity -r | base64 
 Then re-run the `bootstrap` command as seen in the `Installation` section.
 
 
-## Upgrade services
+### Upgrade services
 
-To check outdated Helm charts, use:
+To check outdated Helm charts & images, use:
 
 ```sh
 go build && ./k8s-home -check-version
 ```
 
-Services must be updated by modifying versions in source code.
+Services must be updated by modifying versions in source code. Note all containers are not checked in with this command.
 
 ## Security
 
@@ -91,7 +119,6 @@ Forwarding from 127.0.0.1:9000 -> 9000
 Forwarding from [::1]:9000 -> 9000
 ```
 
-
 ### Kubernetes-Dashboard
 
 Generate a login and use it on https://kubernetes-dashboard.services.mkz.me/
@@ -106,12 +133,6 @@ This is fully described on https://github.com/kubernetes/dashboard/blob/master/d
 
 See https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/README.md#login-view
 
-### Other services
-
-- Grafana
-- Vault
-
-
 ## Notes
 
 ### Force a HelmRelease reconcile after an undetected change
@@ -121,7 +142,6 @@ Add/edit the annotation:
 ```sh
 kubectl annotate --overwrite -n monitoring helmrelease/prometheus reconcile.fluxcd.io/requestedAt="$(date +%s)"
 ```
-
 
 ### On HelmRelease 'install retries exhausted' 
 
@@ -218,4 +238,4 @@ $ k get secret -n postgres dex-admin.postgres-instance.credentials.postgresql.ac
 
 - Create a record in `vault` (ie: `namespaces/<namespace>/postgresql`) and create an `username` and a `password` record with the values retrieved in the `Secret`.
 
-- In the target namespace, create an ExternalSecret
+- In the target namespace, create an ExternalSecretStore and an ExternalSecret. There is a lot of examples in the repository.
