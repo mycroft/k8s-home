@@ -3,7 +3,7 @@ kind: EventListener
 metadata:
   name: hello-listener
 spec:
-  serviceAccountName: tekton-robot
+  serviceAccountName: tekton-builds-robot
   triggers:
     - name: hello-trigger 
       bindings:
