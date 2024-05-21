@@ -70,3 +70,17 @@ spec:
         - hello
       taskRef:
         name: goodbye
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  labels:
+    build: k8s-home-tekton-cicd
+  name: hello-goodbye-run
+  namespace: tekton-builds
+spec:
+  params:
+    - name: username
+      value: Tekton
+  pipelineRef:
+    name: hello-goodbye
