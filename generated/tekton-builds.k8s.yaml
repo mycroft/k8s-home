@@ -28,3 +28,45 @@ metadata:
 spec:
   taskRef:
     name: hello
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  labels:
+    build: k8s-home-tekton-cicd
+  name: goodbye
+  namespace: tekton-builds
+spec:
+  params:
+    - name: username
+      type: string
+  steps:
+    - image: ubuntu
+      name: goodbye
+      script: |
+        #!/bin/bash
+        echo "Goodbye $(params.username)!"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  labels:
+    build: k8s-home-tekton-cicd
+  name: hello-goodbye
+  namespace: tekton-builds
+spec:
+  params:
+    - name: username
+      type: string
+  tasks:
+    - name: hello
+      taskRef:
+        name: hello
+    - name: goodbye
+      params:
+        - name: username
+          value: $(params.username)
+      runAfter:
+        - hello
+      taskRef:
+        name: goodbye
