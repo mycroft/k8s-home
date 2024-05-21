@@ -14,3 +14,7 @@ resources:
 - tasks/goodbye-task.yaml
 - pipelines/hello-world-pipeline.yaml
 - pipelines/hello-world-pipelinerun.yaml
+- triggers/hello-template.yaml
+- triggers/hello-binding.yaml
+- triggers/hello-listener.yaml
+- triggers/service-account.yaml
