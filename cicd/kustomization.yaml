@@ -13,3 +13,4 @@ resources:
 - tasks/hello-world-taskrun.yaml
 - tasks/goodbye-task.yaml
 - pipelines/hello-world-pipeline.yaml
+- pipelines/hello-world-pipelinerun.yaml
