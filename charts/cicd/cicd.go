@@ -11,11 +11,15 @@ import (
 )
 
 func NewCICDChart(scope constructs.Construct) cdk8s.Chart {
+	namespace := "tekton-builds"
+
 	chart := cdk8s.NewChart(
 		scope,
-		jsii.String("cicd"),
+		jsii.String(namespace),
 		&cdk8s.ChartProps{},
 	)
+
+	k8s_helpers.NewNamespace(chart, namespace)
 
 	// builds kustomizations
 	cicdYamlFile, err := k8s_helpers.BuildKustomize("./cicd")
@@ -25,7 +29,10 @@ func NewCICDChart(scope constructs.Construct) cdk8s.Chart {
 	}
 	defer os.Remove(cicdYamlFile)
 
-	cdk8s.NewInclude(chart, jsii.String("cicd"), &cdk8s.IncludeProps{
+	// TODO: find a way to ensure all resources in charts are correctly namespaced.
+
+	// namespace mentionned here is unused
+	cdk8s.NewInclude(chart, jsii.String(namespace), &cdk8s.IncludeProps{
 		Url: jsii.String(cicdYamlFile),
 	})
 
