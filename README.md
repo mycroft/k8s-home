@@ -16,10 +16,12 @@ Most important apps installed on my cluster are:
 - [vault](https://www.vaultproject.io/) & [External Secrets Operator](https://external-secrets.io/latest/) are used for most secrets. A few secrets are deployed using [sealed-secrets](https://github.com/bitnami-labs/sealed-secrets), to unlock encrypted volumes;
 - [dex-idp](https://dexidp.io/) is linked with my personal [gitea](https://about.gitea.com/) instance to provide oauth based SSO to services supporting it;
 - [traefik-forward-auth](https://doc.traefik.io/traefik/middlewares/http/forwardauth/) protects a few services behind an oauth authn/authz firewall for apps not linked to dex-idp;
+- [cert-manager](https://cert-manager.io/) generates TLS certificates for ingresses on demand;
 - [PostgreSQL](https://www.postgresql.org/), [Minio](https://min.io/), [ScyllaDB](https://www.scylladb.com/), [MariaDB](https://mariadb.org/) operators are installed to provide databases instances;
+- [NATS](https://nats.io/) handles message queues;
 - [kube-prometheus-stack](https://github.com/prometheus-operator/kube-prometheus), along with [grafana](https://grafana.com/grafana/), provides metrics monitoring;
 - Grafana's [loki](https://grafana.com/oss/loki/) with [promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) are setup to aggregate and store logs;
-- [linkerd](https://linkerd.io/), [Kyverno](https://kyverno.io/), [Tekton](https://tekton.dev/) are present in the charts for testing;
+- [linkerd](https://linkerd.io/), [Kyverno](https://kyverno.io/), [Tekton](https://tekton.dev/), [trivy](https://github.com/aquasecurity/trivy) are present in the charts for testing;
 - A bunch of end-users apps are installed, such as:
   - [wallabag](https://www.wallabag.it/), a visual to-read list;
   - [freshrss](https://freshrss.org/), a RSS aggregator;
