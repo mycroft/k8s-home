@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+- includeSelectors: true
+  pairs:
+    build: k8s-home-tekton-cicd
+
+resources:
+- tasks/hello-world-task.yaml
+- tasks/hello-world-taskrun.yaml

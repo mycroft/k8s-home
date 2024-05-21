@@ -8,6 +8,7 @@ import (
 	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
 
 	charts_apps "git.mkz.me/mycroft/k8s-home/charts/apps"
+	charts_cicd "git.mkz.me/mycroft/k8s-home/charts/cicd"
 	charts_infra "git.mkz.me/mycroft/k8s-home/charts/infra"
 	charts_observability "git.mkz.me/mycroft/k8s-home/charts/observability"
 	charts_security "git.mkz.me/mycroft/k8s-home/charts/security"
@@ -85,6 +86,9 @@ func main() {
 	charts_apps.NewWikiJsChart(app)
 	charts_apps.NewRedmineChart(app)
 	charts_apps.NewMicrobinChart(app)
+
+	// CI/CD
+	charts_cicd.NewCICDChart(app)
 
 	if checkVersion {
 		k8s_helpers.CheckVersions()
