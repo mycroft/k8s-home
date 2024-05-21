@@ -128,7 +128,7 @@ metadata:
   name: hello-listener
   namespace: tekton-builds
 spec:
-  serviceAccountName: tekton-robot
+  serviceAccountName: tekton-builds-robot
   triggers:
     - bindings:
         - ref: hello-binding
