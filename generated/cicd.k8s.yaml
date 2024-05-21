@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  labels:
+    build: k8s-home-tekton-cicd
+  name: hello
+  namespace: tekton-builds
+spec:
+  steps:
+    - image: alpine
+      name: echo
+      script: |
+        #!/bin/sh
+        echo "Hello World"
+---
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  labels:
+    build: k8s-home-tekton-cicd
+  name: hello-task-run
+  namespace: tekton-builds
+spec:
+  taskRef:
+    name: hello
