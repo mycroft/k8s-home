@@ -38,6 +38,9 @@ Most important apps installed on my cluster are:
   - [redmine](https://www.redmine.org/), because project management;
   - [microbin](https://microbin.eu/) another pastebin kind of instance.
 
+## Deployment
+
+When a PR is merged in `main`, a Drone CI-based pipeline is started to build cdk8s dependencies, then build charts, and finally push generated charts in the `generated` branch. This branch is pulled every 2 minutes by `flux`. See `.drone.yml`.
 
 ## Maintenance notes
 
