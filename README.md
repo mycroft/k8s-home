@@ -21,6 +21,7 @@ Most important apps installed on my cluster are:
 - [NATS](https://nats.io/) handles message queues;
 - [kube-prometheus-stack](https://github.com/prometheus-operator/kube-prometheus), along with [grafana](https://grafana.com/grafana/), provides metrics monitoring;
 - Grafana's [loki](https://grafana.com/oss/loki/) with [promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) are setup to aggregate and store logs;
+- [tempo](https://grafana.com/oss/tempo/) for traces processing;
 - [linkerd](https://linkerd.io/), [Kyverno](https://kyverno.io/), [Tekton](https://tekton.dev/), [trivy](https://github.com/aquasecurity/trivy) are present in the charts for testing;
 - A bunch of end-users apps are installed, such as:
   - [wallabag](https://www.wallabag.it/), a visual to-read list;
