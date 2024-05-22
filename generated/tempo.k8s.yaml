@@ -40,13 +40,13 @@ data:
             path: /var/tempo/wal
 
     tempoQuery:
-      enabled: false
+      enabled: true
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 9773ee688ac61393ef4fd60a9369b554f8f51531f16a536ec7b4b9f0e6cd5964
+    configMapHash: 931f5cbe57e5834bc1e3ba25b26ef89b6dd27429577c5319922e7589469674ae
   name: tempo
   namespace: tempo
 spec:
