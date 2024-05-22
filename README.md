@@ -138,6 +138,34 @@ This is fully described on https://github.com/kubernetes/dashboard/blob/master/d
 
 See https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/README.md#login-view
 
+
+### Vault & External-Secrets
+
+Vault was manually configured to allow kubernetes based authentication and linking a custom policy to allow External-Secrets queries.
+
+As we're using transient service account token, there is no longer need to have a service account secret and to maintain it. More about this part can be found in the [external-secrets](https://external-secrets.io/latest/provider/hashicorp-vault/) docs about hashicorp vault provider.
+
+Documentation about this can be found at https://developer.hashicorp.com/vault/docs/auth/kubernetes
+
+Most likely what to be done is:
+
+```sh
+$ vault auth enable kubernetes
+
+$ vault write auth/kubernetes/config \
+    kubernetes_host=https://10.43.0.1:443
+
+$ vault write external-secrets readwrite /path/to/external-secrets.vault.hcl
+
+$ vault write auth/kubernetes/role/external-secrets \
+    bound_service_account_names=external-secrets \
+    bound_service_account_namespaces=external-secrets \
+    policies=external-secrets \
+    ttl=24h
+```
+
+This should be sufficient to create valid secretstores & externalsecrets objects.
+
 ## Notes
 
 ### Force a HelmRelease reconcile after an undetected change
