@@ -19,15 +19,6 @@ spec:
       server: http://vault.vault:8200
       version: v2
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
-metadata:
-  name: grafana
-  namespace: flux-system
-spec:
-  interval: 1m0s
-  url: https://grafana.github.io/helm-charts
----
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:

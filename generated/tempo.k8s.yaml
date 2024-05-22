@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tempo
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: tempo
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tempo-helm-val-tempo-c8fe2297
+  namespace: tempo
+data:
+  values.yaml: |-
+    # https://github.com/grafana/helm-charts/blob/main/charts/tempo/values.yaml
+    tempo:
+      ~
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: ca436d8741e278d17e6b5b441c40e189523c71810b8c9a50ab2348bca435c8ec
+  name: tempo
+  namespace: tempo
+spec:
+  chart:
+    spec:
+      chart: tempo
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+      version: 1.7.3
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: tempo-helm-val-tempo-c8fe2297
+      valuesKey: values.yaml
