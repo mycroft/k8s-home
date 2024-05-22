@@ -7,11 +7,11 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewLokiChart(scope constructs.Construct) cdk8s.Chart {
-	namespace := "loki"
+func NewTempoChart(scope constructs.Construct) cdk8s.Chart {
+	namespace := "tempo"
 	repositoryName := "grafana"
-	chartName := "loki"
-	releaseName := "loki"
+	chartName := "tempo"
+	releaseName := "tempo"
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -21,8 +21,6 @@ func NewLokiChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s_helpers.NewNamespace(chart, namespace)
 	k8s_helpers.CreateSecretStore(chart, namespace)
-
-	k8s_helpers.CreateExternalSecret(chart, namespace, "minio")
 
 	k8s_helpers.CreateHelmRelease(
 		chart,
@@ -36,7 +34,7 @@ func NewLokiChart(scope constructs.Construct) cdk8s.Chart {
 				chart,
 				namespace,
 				releaseName,
-				"loki.yaml",
+				"tempo.yaml",
 			),
 		},
 		nil,

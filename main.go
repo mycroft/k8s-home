@@ -51,10 +51,12 @@ func main() {
 	charts_infra.NewVeleroChart(app)
 
 	// observability
+	charts_observability.NewGrafanaHelmRepositoryChart(app)
 	charts_observability.NewKubePrometheusStackChart(app)
 	charts_observability.NewLokiChart(app)
 	charts_observability.NewPromtailChart(app)
 	// charts_observability.NewJaegerChart(app)
+	charts_observability.NewTempoChart(app)
 
 	// misc tooling
 	charts_infra.NewFluxCDChart(app)
