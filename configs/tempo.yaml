@@ -1,3 +1,15 @@
 # https://github.com/grafana/helm-charts/blob/main/charts/tempo/values.yaml
+
+replicas: 1
+
 tempo:
-  ~
+  storage:
+    trace:
+      backend: local
+      local:
+        path: /var/tempo/traces
+      wal:
+        path: /var/tempo/wal
+
+tempoQuery:
+  enabled: false
