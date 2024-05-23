@@ -25,6 +25,7 @@ helmcharts:
   prometheus-community/kube-prometheus-stack: 58.6.1
   redmine/redmine: 27.1.0
   requarks/wiki: 2.2.20
+  temporal/temporal: 0.38.1
   scylla/scylla-operator: v1.12.2
   sealed-secrets/sealed-secrets: 2.15.4
   vmware-tanzu/velero: 6.4.0

@@ -1,0 +1,51 @@
+# https://github.com/temporalio/helm-charts/blob/master/charts/temporal/values.yaml
+
+server:
+  config:
+    persistence:
+      default:
+        driver: "sql"
+        sql:
+          driver: "postgres12"
+          host: postgres-instance.postgres
+          port: 5432
+          user: temporal
+          database: temporal
+          maxConns: 20
+          maxConnLifetime: "1h"
+          existingSecret: postgresql
+      visibility:
+        driver: "sql"
+        sql:
+          driver: "postgres12"
+          host: postgres-instance.postgres
+          port: 5432
+          user: temporal_visibility
+          database: temporal_visibility
+          maxConns: 20
+          maxConnLifetime: "1h"
+          existingSecret: postgresql-visibility
+
+cassandra:
+  enabled: false
+
+mysql:
+  enabled: false
+
+postgresql:
+  enabled: true
+
+prometheus:
+  enabled: false
+
+grafana:
+  enabled: false
+  
+elasticsearch:
+  enabled: false
+
+schema:
+  setup:
+    enabled: false
+  update:
+    enabled: false
