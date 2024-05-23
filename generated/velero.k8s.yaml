@@ -97,7 +97,7 @@ data:
         cpu: 100m
         memory: 1024Mi
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:

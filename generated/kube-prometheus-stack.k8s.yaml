@@ -356,7 +356,7 @@ data:
                 summary: "There are {{ $value }} active Vault instance(s)"
                 description: "The Vault instance at `{{$labels.instance}}` has been Standby for the last 10m"
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:

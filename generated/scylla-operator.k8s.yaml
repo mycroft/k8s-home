@@ -20,7 +20,7 @@ metadata:
 data:
   values.yaml: "# https://github.com/scylladb/scylla-operator/blob/master/helm/scylla-operator/values.yaml"
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:

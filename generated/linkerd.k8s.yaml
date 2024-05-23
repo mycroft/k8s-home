@@ -12,7 +12,7 @@ spec:
   interval: 1m0s
   url: https://helm.linkerd.io/stable
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: linkerd-crds
@@ -86,7 +86,7 @@ data:
             dr6Qg8shDhroF83ViguSe7DDpTyW4948Ng==
             -----END EC PRIVATE KEY-----
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
@@ -113,7 +113,7 @@ spec:
       name: linkerd-helm-val-linkerd-control-plane-c8340032
       valuesKey: values.yaml
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: linkerd-viz
