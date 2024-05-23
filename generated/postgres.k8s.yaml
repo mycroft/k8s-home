@@ -15,6 +15,7 @@ spec:
     grafana: grafana-admin
     paperlessngx: paperlessngx-admin
     temporal: temporal-admin
+    temporal_visibility: temporal_visibility-admin
     testaroo: testaroo-admin
     wallabag: wallabag-admin
     wikijs: wikijs-admin
@@ -44,6 +45,10 @@ spec:
       - createdb
     temporal: []
     temporal-admin:
+      - superuser
+      - createdb
+    temporal_visibility: []
+    temporal_visibility-admin:
       - superuser
       - createdb
     testaroo: []
