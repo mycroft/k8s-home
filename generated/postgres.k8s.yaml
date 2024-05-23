@@ -14,6 +14,7 @@ spec:
     freshrss: freshrss-admin
     grafana: grafana-admin
     paperlessngx: paperlessngx-admin
+    temporal: temporal-admin
     testaroo: testaroo-admin
     wallabag: wallabag-admin
     wikijs: wikijs-admin
@@ -39,6 +40,10 @@ spec:
       - createdb
     paperlessngx: []
     paperlessngx-admin:
+      - superuser
+      - createdb
+    temporal: []
+    temporal-admin:
       - superuser
       - createdb
     testaroo: []
