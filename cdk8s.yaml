@@ -4,9 +4,9 @@ language: go
 app: go run .
 imports:
   - k8s@1.29.0
-  - https://raw.githubusercontent.com/fluxcd/source-controller/v1.0.1/config/crd/bases/source.toolkit.fluxcd.io_helmcharts.yaml
-  - https://raw.githubusercontent.com/fluxcd/source-controller/v1.0.1/config/crd/bases/source.toolkit.fluxcd.io_helmrepositories.yaml
-  - https://github.com/fluxcd/helm-controller/releases/download/v0.35.0/helm-controller.crds.yaml
+  - https://raw.githubusercontent.com/fluxcd/source-controller/v1.3.0/config/crd/bases/source.toolkit.fluxcd.io_helmcharts.yaml
+  - https://raw.githubusercontent.com/fluxcd/source-controller/v1.3.0/config/crd/bases/source.toolkit.fluxcd.io_helmrepositories.yaml
+  - https://github.com/fluxcd/helm-controller/releases/download/v1.0.1/helm-controller.crds.yaml
   - https://raw.githubusercontent.com/cert-manager/cert-manager/master/deploy/crds/crd-clusterissuers.yaml
   - certificates:=https://raw.githubusercontent.com/cert-manager/cert-manager/master/deploy/crds/crd-certificates.yaml
   - https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.20.2/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
