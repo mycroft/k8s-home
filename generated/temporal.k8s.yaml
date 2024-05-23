@@ -1,0 +1,161 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: temporal
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: temporal
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: temporal-es-postgresql-c850b6a7
+  namespace: temporal
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/temporal/postgresql
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: temporal-es-postgresql-visibility-c8c7f640
+  namespace: temporal
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/temporal/postgresql-visibility
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql-visibility
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: temporal
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://go.temporal.io/helm-charts
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: temporal-helm-val-temporal-c860c230
+  namespace: temporal
+data:
+  values.yaml: |
+    # https://github.com/temporalio/helm-charts/blob/master/charts/temporal/values.yaml
+
+    server:
+      config:
+        persistence:
+          default:
+            driver: "sql"
+            sql:
+              driver: "postgres12"
+              host: postgres-instance.postgres
+              port: 5432
+              user: temporal
+              database: temporal
+              maxConns: 20
+              maxConnLifetime: "1h"
+              existingSecret: postgresql
+          visibility:
+            driver: "sql"
+            sql:
+              driver: "postgres12"
+              host: postgres-instance.postgres
+              port: 5432
+              user: temporal_visibility
+              database: temporal_visibility
+              maxConns: 20
+              maxConnLifetime: "1h"
+              existingSecret: postgresql-visibility
+
+    cassandra:
+      enabled: false
+
+    mysql:
+      enabled: false
+
+    postgresql:
+      enabled: true
+
+    prometheus:
+      enabled: false
+
+    grafana:
+      enabled: false
+      
+    elasticsearch:
+      enabled: false
+
+    schema:
+      setup:
+        enabled: false
+      update:
+        enabled: false
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: c62e841ba7dd0c3ff752d382d7c4b882bb0150ae2e69beee8f6416cf6f64e6a8
+  name: temporal
+  namespace: temporal
+spec:
+  chart:
+    spec:
+      chart: temporal
+      sourceRef:
+        kind: HelmRepository
+        name: temporal
+        namespace: flux-system
+      version: 0.38.1
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: temporal-helm-val-temporal-c860c230
+      valuesKey: values.yaml
