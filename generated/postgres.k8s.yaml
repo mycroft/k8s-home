@@ -10,6 +10,7 @@ metadata:
   namespace: postgres
 spec:
   databases:
+    backstage: backstage-admin
     dex: dex-admin
     freshrss: freshrss-admin
     grafana: grafana-admin
@@ -27,6 +28,10 @@ spec:
     version: "15"
   teamId: postgres
   users:
+    backstage: []
+    backstage-admin:
+      - superuser
+      - createdb
     dex: []
     dex-admin:
       - superuser
