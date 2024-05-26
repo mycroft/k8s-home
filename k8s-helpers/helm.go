@@ -27,22 +27,22 @@ var helmChartVersions = []HelmChartVersion{}
 // CreateHelmRepository creates a HelmRepository into the flux-system namespace
 // similar to:
 // - helm repo add jetstack https://charts.jetstack.io
-func CreateHelmRepository(chart constructs.Construct, name, url string) sourcetoolkitfluxcdio.HelmRepositoryV1Beta2 {
+func CreateHelmRepository(chart constructs.Construct, name, url string) sourcetoolkitfluxcdio.HelmRepository {
 	helmRepositories[name] = url
 
-	spec := sourcetoolkitfluxcdio.HelmRepositoryV1Beta2Spec{
+	spec := sourcetoolkitfluxcdio.HelmRepositorySpec{
 		Url:      jsii.String(url),
 		Interval: jsii.String("1m0s"),
 	}
 
 	if strings.HasPrefix(url, "oci://") {
-		spec.Type = sourcetoolkitfluxcdio.HelmRepositoryV1Beta2SpecType_OCI
+		spec.Type = sourcetoolkitfluxcdio.HelmRepositorySpecType_OCI
 	}
 
-	return sourcetoolkitfluxcdio.NewHelmRepositoryV1Beta2(
+	return sourcetoolkitfluxcdio.NewHelmRepository(
 		chart,
 		jsii.String(fmt.Sprintf("helm-repo-%s", name)),
-		&sourcetoolkitfluxcdio.HelmRepositoryV1Beta2Props{
+		&sourcetoolkitfluxcdio.HelmRepositoryProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name:      jsii.String(name),
 				Namespace: jsii.String("flux-system"),
