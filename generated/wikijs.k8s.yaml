@@ -52,7 +52,7 @@ spec:
     regex: https://wiki.iop.cx/(.*)
     replacement: https://wiki.services.mkz.me/${1}
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta2
+apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: requarks
