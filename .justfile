@@ -1,3 +1,6 @@
+import:
+    cdk8s import
+
 build:
     go build -o . ./...
 
