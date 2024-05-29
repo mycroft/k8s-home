@@ -4,3 +4,6 @@ replicas: 1
 
 serviceMonitor:
   enabled: true
+
+  selfMonitor:
+    enabled: true
