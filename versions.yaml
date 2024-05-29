@@ -2,7 +2,7 @@ helmcharts:
   aqua/trivy-operator: 0.18.4
   dex/dex: 0.17.1
   external-secrets/external-secrets: 0.9.18
-  grafana/loki: 6.6.1
+  grafana/loki: 6.6.2
   grafana/promtail: 6.15.5
   grafana/tempo: 1.8.0
   hashicorp/vault: 0.28.0
