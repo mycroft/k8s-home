@@ -11,5 +11,5 @@ serviceMonitor:
   targets:
   - name: hey
     url: https://hey.mkz.me/
-    interval: 10s
+    interval: 30s
     module: http_2xx
