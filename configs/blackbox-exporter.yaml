@@ -7,3 +7,9 @@ serviceMonitor:
 
   selfMonitor:
     enabled: true
+
+  targets:
+  - name: hey
+    url: https://hey.mkz.me/
+    interval: 10s
+    module: http_2xx
