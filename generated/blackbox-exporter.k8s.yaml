@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blackbox-exporter-helm-val-blackbox-exporter-c870357d
+  namespace: monitoring
+data:
+  values.yaml: |
+    # https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus-blackbox-exporter/values.yaml
+
+    replicas: 1
+
+    serviceMonitor:
+      enabled: true
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: dae3d49e04756ace6db9138a2ee09e2ddae9a3b0823d0c0b6f138960d591ab6f
+  name: blackbox-exporter
+  namespace: monitoring
+spec:
+  chart:
+    spec:
+      chart: prometheus-blackbox-exporter
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+      version: 8.17.0
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: blackbox-exporter-helm-val-blackbox-exporter-c870357d
+      valuesKey: values.yaml
