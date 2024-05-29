@@ -28,7 +28,7 @@ helmcharts:
   temporal/temporal: 0.38.1
   scylla/scylla-operator: v1.12.2
   sealed-secrets/sealed-secrets: 2.15.4
-  vmware-tanzu/velero: 6.4.0
+  vmware-tanzu/velero: 6.5.0
 images:
   corentinth/it-tools: 2024.5.13-a0bc346
   danielszabo99/microbin: 2.0.4
