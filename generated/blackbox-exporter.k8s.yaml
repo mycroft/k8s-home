@@ -14,12 +14,18 @@ data:
 
       selfMonitor:
         enabled: true
+
+      targets:
+      - name: hey
+        url: https://hey.mkz.me/
+        interval: 10s
+        module: http_2xx
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 68c762531a0fe33406ff893db6bbfa60fa5f7b6fd94467254262fef6b014c944
+    configMapHash: 5f3adbecf3e6c1655f58003588e489856c00aee6854c7f55222775e89449f992
   name: blackbox-exporter
   namespace: monitoring
 spec:
