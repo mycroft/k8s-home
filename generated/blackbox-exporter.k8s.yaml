@@ -11,12 +11,15 @@ data:
 
     serviceMonitor:
       enabled: true
+
+      selfMonitor:
+        enabled: true
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: dae3d49e04756ace6db9138a2ee09e2ddae9a3b0823d0c0b6f138960d591ab6f
+    configMapHash: 68c762531a0fe33406ff893db6bbfa60fa5f7b6fd94467254262fef6b014c944
   name: blackbox-exporter
   namespace: monitoring
 spec:
