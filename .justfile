@@ -9,4 +9,4 @@ generate: build
     ls -l dist/
 
 check-versions: build
-    ./k8s-home -check-version
+    ./k8s-home check-versions

@@ -35,6 +35,7 @@ var checkVersionCmd = &cobra.Command{
 	Use:   "check-versions",
 	Short: "check versions of declared helm charts & docker images",
 	Run: func(cmd *cobra.Command, args []string) {
+		_ = charts.HomelabBuildApp()
 		k8s_helpers.CheckVersions()
 	},
 }
