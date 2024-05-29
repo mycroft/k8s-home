@@ -1,0 +1,6 @@
+# https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus-blackbox-exporter/values.yaml
+
+replicas: 1
+
+serviceMonitor:
+  enabled: true

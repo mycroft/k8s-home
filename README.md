@@ -20,6 +20,7 @@ Most important apps installed on my cluster are:
 - [PostgreSQL](https://www.postgresql.org/), [Minio](https://min.io/), [ScyllaDB](https://www.scylladb.com/), [MariaDB](https://mariadb.org/) operators are installed to provide databases instances;
 - [NATS](https://nats.io/) handles message queues;
 - [kube-prometheus-stack](https://github.com/prometheus-operator/kube-prometheus), along with [grafana](https://grafana.com/grafana/), provides metrics monitoring;
+- [blackbox-exporter](https://github.com/prometheus/blackbox_exporter) is installed too;
 - Grafana's [loki](https://grafana.com/oss/loki/) with [promtail](https://grafana.com/docs/loki/latest/send-data/promtail/) are setup to aggregate and store logs;
 - [tempo](https://grafana.com/oss/tempo/) for traces processing;
 - [linkerd](https://linkerd.io/), [Kyverno](https://kyverno.io/), [Tekton](https://tekton.dev/), [trivy](https://github.com/aquasecurity/trivy) and [temporal](https://temporal.io/) are present in the charts for testing;

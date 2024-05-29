@@ -41,6 +41,7 @@ func HomelabBuildApp() cdk8s.App {
 	// observability
 	charts_observability.NewGrafanaHelmRepositoryChart(app)
 	charts_observability.NewKubePrometheusStackChart(app)
+	charts_observability.NewBlackboxExporterChart(app)
 	charts_observability.NewLokiChart(app)
 	charts_observability.NewPromtailChart(app)
 	// charts_observability.NewJaegerChart(app)
