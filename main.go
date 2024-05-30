@@ -19,7 +19,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "k8s-home",
 	Short: "k8s-home is the yaml charts generator for my homelab",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		GenerateYamlCharts()
 	},
 }
@@ -27,7 +27,7 @@ var rootCmd = &cobra.Command{
 var GenerateYamlChartsCmd = &cobra.Command{
 	Use:   "generate-yaml-charts",
 	Short: "generates Yaml charts",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		GenerateYamlCharts()
 	},
 }
@@ -35,7 +35,7 @@ var GenerateYamlChartsCmd = &cobra.Command{
 var checkVersionCmd = &cobra.Command{
 	Use:   "check-versions",
 	Short: "check versions of declared helm charts & docker images",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		if *debug {
 			log.Println("preparing charts...")
 		}

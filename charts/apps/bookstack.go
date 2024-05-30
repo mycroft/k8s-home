@@ -49,7 +49,7 @@ func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
 				},
 			},
 		},
-        {Name: jsii.String("SESSION_LIFETIME"), Value: jsii.String("1800")},
+		{Name: jsii.String("SESSION_LIFETIME"), Value: jsii.String("1800")},
 	}
 
 	kubehelpers.NewStatefulSet(

@@ -50,8 +50,8 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	// XXX fixt the service url here
-	redisUrl := "redis://yopass-redis-svc-c8a159bf:6379"
+	// TODO fix the service url here
+	redisURL := "redis://yopass-redis-svc-c8a159bf:6379"
 
 	yopassLabels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("yopass"),
@@ -65,7 +65,7 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 		yopassLabels,
 		[]*k8s.EnvVar{},
 		[]string{
-			fmt.Sprintf("/yopass-server --database redis --metrics-port 1338 --port 1337 --redis %s", redisUrl),
+			fmt.Sprintf("/yopass-server --database redis --metrics-port 1338 --port 1337 --redis %s", redisURL),
 		},
 		[]kubehelpers.ConfigMapMount{},
 	)

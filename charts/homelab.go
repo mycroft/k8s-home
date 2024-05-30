@@ -56,7 +56,7 @@ func HomelabBuildApp() cdk8s.App {
 
 	// apps
 	charts_apps.NewHelloKubernetesChart(app)
-	charts_apps.NewWhatIsMyIpChart(app)
+	charts_apps.NewWhatIsMyIPChart(app)
 	charts_apps.NewWallabagChart(app)
 	charts_apps.NewUrlsChart(app)
 	charts_apps.NewFreshRSS(app)

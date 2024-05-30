@@ -32,7 +32,7 @@ func GetRepoIndex(url string) ([]byte, error) {
 }
 
 type Index struct {
-	ApiVersion string              `yaml:"apiVersion"`
+	APIVersion string              `yaml:"apiVersion"`
 	Entries    map[string][]*Entry `yaml:"entries"`
 }
 
@@ -68,13 +68,13 @@ func GetHelmUpdates(debug bool, filter string) (map[string]string, error) {
 			continue
 		}
 
-		repositoryUrl := helmRepositories[helmRelease.RepositoryName]
+		repositoryURL := helmRepositories[helmRelease.RepositoryName]
 
-		if strings.HasPrefix(repositoryUrl, "oci://") {
+		if strings.HasPrefix(repositoryURL, "oci://") {
 			continue
 		}
 
-		body, err := GetRepoIndex(fmt.Sprintf("%s/index.yaml", repositoryUrl))
+		body, err := GetRepoIndex(fmt.Sprintf("%s/index.yaml", repositoryURL))
 		if err != nil {
 			panic(err)
 		}

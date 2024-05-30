@@ -15,7 +15,7 @@ const (
 	whatismyipImage = "registry.mkz.me/mycroft/whatismyip:5"
 )
 
-func NewWhatIsMyIpChart(scope constructs.Construct) cdk8s.Chart {
+func NewWhatIsMyIPChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "whatismyip"
 	ingressHost := fmt.Sprintf("%s.services.mkz.me", appName)
 
