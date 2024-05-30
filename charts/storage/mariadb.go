@@ -61,13 +61,13 @@ func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
 	}
 
 	users := map[string][]string{
-		"bookstack": []string{
+		"bookstack": {
 			"bookstack",
 		},
-		"mariadb": []string{
+		"mariadb": {
 			"mariadb",
 		},
-		"redmine": []string{
+		"redmine": {
 			"redmine",
 		},
 	}

@@ -5,6 +5,9 @@ run:
 linters:
   disable-all: true
   enable:
+  - errcheck
+  - gofmt
+  - gosec
   - revive
 
 linters-settings:
@@ -14,3 +17,5 @@ linters-settings:
 issues:
   exclude-dirs:
     - imports
+  exclude:
+    - G107
