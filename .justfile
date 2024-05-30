@@ -8,5 +8,5 @@ generate: build
     ./k8s-home
     ls -l dist/
 
-check-versions: build
-    ./k8s-home check-versions
+check-versions *ARGS: build
+    ./k8s-home check-versions {{ARGS}}

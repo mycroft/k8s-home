@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"sort"
@@ -51,13 +52,20 @@ func GetEntriesFromIndex(body []byte) (map[string][]*Entry, error) {
 	return index.Entries, nil
 }
 
-func GetHelmUpdates() (map[string]string, error) {
+func GetHelmUpdates(debug bool, filter string) (map[string]string, error) {
 	retVersions := map[string]string{}
 
 	for _, helmRelease := range helmChartVersions {
 		chartName := fmt.Sprintf("%s/%s", helmRelease.RepositoryName, helmRelease.ChartName)
 		if _, ok := helmRepositories[helmRelease.RepositoryName]; !ok {
 			panic(fmt.Sprintf("Unknown repo %s", helmRelease.RepositoryName))
+		}
+
+		if filter != "" && !strings.Contains(chartName, filter) {
+			if debug {
+				log.Printf("skipping helm chart check: %s", chartName)
+			}
+			continue
 		}
 
 		repositoryUrl := helmRepositories[helmRelease.RepositoryName]
@@ -124,8 +132,8 @@ func GetHelmUpdates() (map[string]string, error) {
 }
 
 // CheckVersions checks the installed releases for update
-func CheckVersions() {
-	helmVersions, err := GetHelmUpdates()
+func CheckVersions(debug bool, filter string) {
+	helmVersions, err := GetHelmUpdates(debug, filter)
 	if err != nil {
 		panic(err)
 	}
@@ -136,6 +144,13 @@ func CheckVersions() {
 
 	for _, image := range dockerImages {
 		parts := strings.Split(image, ":")
+
+		if filter != "" && !strings.Contains(image, filter) {
+			if debug {
+				log.Printf("skipping image check: %s...", image)
+			}
+			continue
+		}
 
 		versions := GetLastImageTag(parts[0], parts[1])
 

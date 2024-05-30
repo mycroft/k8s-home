@@ -12,7 +12,8 @@ import (
 )
 
 var (
-	debug *bool
+	debug  *bool
+	filter *string
 )
 
 var rootCmd = &cobra.Command{
@@ -35,8 +36,15 @@ var checkVersionCmd = &cobra.Command{
 	Use:   "check-versions",
 	Short: "check versions of declared helm charts & docker images",
 	Run: func(cmd *cobra.Command, args []string) {
+		if *debug {
+			log.Println("preparing charts...")
+		}
 		_ = charts.HomelabBuildApp()
-		k8s_helpers.CheckVersions()
+
+		if *debug {
+			log.Println("running check-versions...")
+		}
+		k8s_helpers.CheckVersions(*debug, *filter)
 	},
 }
 
@@ -59,6 +67,7 @@ func init() {
 	rootCmd.AddCommand(GenerateYamlChartsCmd)
 
 	debug = rootCmd.PersistentFlags().Bool("debug", false, "enable debug")
+	filter = checkVersionCmd.Flags().String("filter", "", "filter to apply when checking helm/container images")
 }
 
 func main() {
