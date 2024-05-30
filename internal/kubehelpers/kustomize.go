@@ -1,4 +1,4 @@
-package k8s_helpers
+package kubehelpers
 
 import (
 	"fmt"

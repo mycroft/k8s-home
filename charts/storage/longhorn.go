@@ -1,7 +1,7 @@
 package storage
 
 import (
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 
 	"git.mkz.me/mycroft/k8s-home/imports/bitnamicom"
 	"git.mkz.me/mycroft/k8s-home/imports/certificates_certmanagerio"
@@ -93,24 +93,24 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
-	k8s_helpers.CreateSecretStore(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
+	kubehelpers.CreateSecretStore(chart, namespace)
 
-	k8s_helpers.CreateHelmRepository(
+	kubehelpers.CreateHelmRepository(
 		chart,
 		repositoryName,
 		"https://charts.longhorn.io",
 	)
 
-	k8s_helpers.CreateHelmRelease(
+	kubehelpers.CreateHelmRelease(
 		chart,
 		namespace,
 		repositoryName,
 		chartName,
 		releaseName,
 		nil,
-		[]k8s_helpers.HelmReleaseConfigMap{
-			k8s_helpers.CreateHelmValuesConfig(
+		[]kubehelpers.HelmReleaseConfigMap{
+			kubehelpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
 				releaseName,
@@ -120,8 +120,8 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 		nil,
 	)
 
-	k8s_helpers.CreateExternalSecret(chart, namespace, "nas0-minio")
-	k8s_helpers.CreateExternalSecret(chart, namespace, "basic-auth-users")
+	kubehelpers.CreateExternalSecret(chart, namespace, "nas0-minio")
+	kubehelpers.CreateExternalSecret(chart, namespace, "basic-auth-users")
 
 	certificates_certmanagerio.NewCertificate(
 		chart,

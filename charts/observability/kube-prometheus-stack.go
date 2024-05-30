@@ -5,7 +5,7 @@ import (
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 )
 
 func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
@@ -22,30 +22,30 @@ func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
 
-	k8s_helpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateSecretStore(chart, namespace)
 
-	k8s_helpers.CreateHelmRepository(
+	kubehelpers.CreateHelmRepository(
 		chart,
 		repositoryName,
 		"https://prometheus-community.github.io/helm-charts",
 	)
 
-	k8s_helpers.CreateExternalSecret(chart, namespace, "grafana-secret")
-	k8s_helpers.CreateExternalSecret(chart, namespace, "grafana-oidc-client")
-	k8s_helpers.CreateExternalSecret(chart, namespace, "alertmanager-config")
-	k8s_helpers.CreateExternalSecret(chart, namespace, "grafana-postgres")
+	kubehelpers.CreateExternalSecret(chart, namespace, "grafana-secret")
+	kubehelpers.CreateExternalSecret(chart, namespace, "grafana-oidc-client")
+	kubehelpers.CreateExternalSecret(chart, namespace, "alertmanager-config")
+	kubehelpers.CreateExternalSecret(chart, namespace, "grafana-postgres")
 
-	k8s_helpers.CreateHelmRelease(
+	kubehelpers.CreateHelmRelease(
 		chart,
 		namespace,
 		repositoryName, // repoName; must be in flux-system
 		chartName,      // chart name
 		releaseName,    // release name
 		map[string]string{},
-		[]k8s_helpers.HelmReleaseConfigMap{
-			k8s_helpers.CreateHelmValuesConfig(
+		[]kubehelpers.HelmReleaseConfigMap{
+			kubehelpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
 				releaseName,

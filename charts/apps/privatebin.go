@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -16,7 +16,7 @@ func NewPrivatebinChart(scope constructs.Construct) cdk8s.Chart {
 	appName := namespace
 	appPort := 8080
 	appIngress := "privatebin.services.mkz.me"
-	privatebinImage := k8s_helpers.RegisterDockerImage("privatebin/nginx-fpm-alpine")
+	privatebinImage := kubehelpers.RegisterDockerImage("privatebin/nginx-fpm-alpine")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -24,10 +24,10 @@ func NewPrivatebinChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
-	k8s_helpers.CreateSecretStore(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
+	kubehelpers.CreateSecretStore(chart, namespace)
 
-	k8s_helpers.CreateExternalSecret(chart, namespace, "minio")
+	kubehelpers.CreateExternalSecret(chart, namespace, "minio")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -84,7 +84,7 @@ func NewPrivatebinChart(scope constructs.Construct) cdk8s.Chart {
 		"/etc/init.d/rc.local",
 	}
 
-	k8s_helpers.NewAppDeployment(
+	kubehelpers.NewAppDeployment(
 		chart,
 		namespace,
 		appName,
@@ -92,7 +92,7 @@ func NewPrivatebinChart(scope constructs.Construct) cdk8s.Chart {
 		labels,
 		env,
 		cmd,
-		[]k8s_helpers.ConfigMapMount{
+		[]kubehelpers.ConfigMapMount{
 			{
 				Name:      "config",
 				ConfigMap: configMap,
@@ -101,7 +101,7 @@ func NewPrivatebinChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		labels,
 		appName,

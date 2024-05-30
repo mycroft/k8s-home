@@ -5,7 +5,7 @@ import (
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/servicemonitor_monitoringcoreoscom"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -16,7 +16,7 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 	appIngress := "yopass.services.mkz.me"
 	appName := "yopass"
 	appPort := 1337
-	image := k8s_helpers.RegisterDockerImage("jhaals/yopass")
+	image := kubehelpers.RegisterDockerImage("jhaals/yopass")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -24,24 +24,24 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
 
 	redisLabels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("redis"),
 	}
 
-	k8s_helpers.NewStatefulSet(
+	kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		"redis",
-		k8s_helpers.RegisterDockerImage("redis"),
+		kubehelpers.RegisterDockerImage("redis"),
 		6379,
 		redisLabels,
 		[]*k8s.EnvVar{},
 		[]string{
 			"redis-server --save 60 1 --loglevel warning",
 		},
-		[]k8s_helpers.StatefulSetVolume{
+		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/data",
@@ -57,7 +57,7 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 		"app.kubernetes.io/component": jsii.String("yopass"),
 	}
 
-	k8s_helpers.NewAppDeployment(
+	kubehelpers.NewAppDeployment(
 		chart,
 		namespace,
 		appName,
@@ -67,10 +67,10 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 		[]string{
 			fmt.Sprintf("/yopass-server --database redis --metrics-port 1338 --port 1337 --redis %s", redisUrl),
 		},
-		[]k8s_helpers.ConfigMapMount{},
+		[]kubehelpers.ConfigMapMount{},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		yopassLabels,
 		appName,
@@ -79,7 +79,7 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 		map[string]string{},
 	)
 
-	k8s_helpers.NewAppService(
+	kubehelpers.NewAppService(
 		chart,
 		namespace,
 		"metrics",

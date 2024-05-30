@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -25,7 +25,7 @@ func NewUrlsChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -60,7 +60,7 @@ func NewUrlsChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		labels,
 		appName,

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -26,25 +26,25 @@ func NewHappyUrlsChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
 
 	redisLabels := map[string]*string{
 		"app.kubernetes.io/name":      jsii.String(appName),
 		"app.kubernetes.io/component": jsii.String("redis"),
 	}
 
-	_, svcName := k8s_helpers.NewStatefulSet(
+	_, svcName := kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		"redis",
-		k8s_helpers.RegisterDockerImage("redis"),
+		kubehelpers.RegisterDockerImage("redis"),
 		6379,
 		redisLabels,
 		[]*k8s.EnvVar{},
 		[]string{
 			"redis-server --save 60 1 --loglevel warning",
 		},
-		[]k8s_helpers.StatefulSetVolume{
+		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/data",
@@ -95,7 +95,7 @@ func NewHappyUrlsChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		labels,
 		appName,

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -13,7 +13,7 @@ import (
 func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "bookstack"
 	appName := namespace
-	appImage := k8s_helpers.RegisterDockerImage("linuxserver/bookstack")
+	appImage := kubehelpers.RegisterDockerImage("linuxserver/bookstack")
 	appPort := 80
 	appIngress := "bookstack.services.mkz.me"
 
@@ -23,9 +23,9 @@ func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
-	k8s_helpers.CreateSecretStore(chart, namespace)
-	k8s_helpers.CreateExternalSecret(chart, namespace, "mariadb")
+	kubehelpers.NewNamespace(chart, namespace)
+	kubehelpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateExternalSecret(chart, namespace, "mariadb")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -52,7 +52,7 @@ func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
         {Name: jsii.String("SESSION_LIFETIME"), Value: jsii.String("1800")},
 	}
 
-	k8s_helpers.NewStatefulSet(
+	kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -61,7 +61,7 @@ func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
 		labels,
 		env,
 		[]string{},
-		[]k8s_helpers.StatefulSetVolume{
+		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/config",
@@ -70,7 +70,7 @@ func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		labels,
 		appName,

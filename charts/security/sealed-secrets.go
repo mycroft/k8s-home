@@ -1,7 +1,7 @@
 package security
 
 import (
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -17,15 +17,15 @@ func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
 
-	k8s_helpers.CreateHelmRepository(
+	kubehelpers.CreateHelmRepository(
 		chart,
 		"sealed-secrets",
 		"https://bitnami-labs.github.io/sealed-secrets",
 	)
 
-	k8s_helpers.CreateHelmRelease(
+	kubehelpers.CreateHelmRelease(
 		chart,
 		namespace,        // namespace
 		"sealed-secrets", // repo name
@@ -34,8 +34,8 @@ func NewSealedSecretsChart(scope constructs.Construct) cdk8s.Chart {
 		map[string]string{
 			"fullnameOverride": "sealed-secrets-controller",
 		},
-		[]k8s_helpers.HelmReleaseConfigMap{
-			k8s_helpers.CreateHelmValuesConfig(
+		[]kubehelpers.HelmReleaseConfigMap{
+			kubehelpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
 				releaseName,

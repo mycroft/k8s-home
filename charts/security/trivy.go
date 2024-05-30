@@ -1,7 +1,7 @@
 package security
 
 import (
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -20,15 +20,15 @@ func NewTrivyChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
 
-	k8s_helpers.CreateHelmRepository(
+	kubehelpers.CreateHelmRepository(
 		chart,
 		repoName,
 		"https://aquasecurity.github.io/helm-charts/",
 	)
 
-	k8s_helpers.CreateHelmRelease(
+	kubehelpers.CreateHelmRelease(
 		chart,
 		namespace,
 		repoName,
@@ -37,8 +37,8 @@ func NewTrivyChart(scope constructs.Construct) cdk8s.Chart {
 		map[string]string{
 			"trivy.ignoreUnfixed": "true",
 		},
-		[]k8s_helpers.HelmReleaseConfigMap{
-			k8s_helpers.CreateHelmValuesConfig(
+		[]kubehelpers.HelmReleaseConfigMap{
+			kubehelpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
 				releaseName,

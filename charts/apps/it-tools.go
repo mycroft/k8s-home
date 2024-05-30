@@ -2,7 +2,7 @@ package apps
 
 import (
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -14,7 +14,7 @@ func NewITToolsChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "it-tools"
 	appPort := 80
 
-	image := k8s_helpers.RegisterDockerImage("corentinth/it-tools")
+	image := kubehelpers.RegisterDockerImage("corentinth/it-tools")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -22,13 +22,13 @@ func NewITToolsChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
 
 	appLabels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("it-tools"),
 	}
 
-	k8s_helpers.NewAppDeployment(
+	kubehelpers.NewAppDeployment(
 		chart,
 		namespace,
 		appName,
@@ -36,10 +36,10 @@ func NewITToolsChart(scope constructs.Construct) cdk8s.Chart {
 		appLabels,
 		[]*k8s.EnvVar{},
 		[]string{},
-		[]k8s_helpers.ConfigMapMount{},
+		[]kubehelpers.ConfigMapMount{},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		appLabels,
 		appName,

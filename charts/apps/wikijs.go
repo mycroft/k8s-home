@@ -2,7 +2,7 @@ package apps
 
 import (
 	"git.mkz.me/mycroft/k8s-home/imports/traefikcontainous"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -21,9 +21,9 @@ func NewWikiJsChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
-	k8s_helpers.CreateSecretStore(chart, namespace)
-	k8s_helpers.CreateExternalSecret(chart, namespace, "postgresql")
+	kubehelpers.NewNamespace(chart, namespace)
+	kubehelpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateExternalSecret(chart, namespace, "postgresql")
 
 	traefikcontainous.NewMiddleware(
 		chart,
@@ -42,21 +42,21 @@ func NewWikiJsChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.CreateHelmRepository(
+	kubehelpers.CreateHelmRepository(
 		chart,
 		repositoryName,
 		"https://charts.js.wiki",
 	)
 
-	k8s_helpers.CreateHelmRelease(
+	kubehelpers.CreateHelmRelease(
 		chart,
 		namespace,
 		repositoryName,
 		chartName,
 		releaseName,
 		map[string]string{},
-		[]k8s_helpers.HelmReleaseConfigMap{
-			k8s_helpers.CreateHelmValuesConfig(
+		[]kubehelpers.HelmReleaseConfigMap{
+			kubehelpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
 				repositoryName,

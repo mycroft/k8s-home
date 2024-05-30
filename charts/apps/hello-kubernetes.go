@@ -2,7 +2,7 @@ package apps
 
 import (
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -10,7 +10,7 @@ import (
 
 func NewHelloKubernetesChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "hello-kubernetes"
-	image := k8s_helpers.RegisterDockerImage("paulbouwer/hello-kubernetes")
+	image := kubehelpers.RegisterDockerImage("paulbouwer/hello-kubernetes")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -91,7 +91,7 @@ func NewHelloKubernetesChart(scope constructs.Construct) cdk8s.Chart {
 	// It is required to add the following annotation:
 	// traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		labels,
 		appName,

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -19,10 +19,10 @@ func NewCICDChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
 
 	// builds kustomizations
-	cicdYamlFile, err := k8s_helpers.BuildKustomize("./cicd")
+	cicdYamlFile, err := kubehelpers.BuildKustomize("./cicd")
 	if err != nil {
 		fmt.Printf("could not generate kustomization: %v\n", err)
 		os.Exit(1)

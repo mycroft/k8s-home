@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -25,9 +25,9 @@ func NewMicrobinChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
-	k8s_helpers.CreateSecretStore(chart, namespace)
-	k8s_helpers.CreateExternalSecret(chart, namespace, "admin")
+	kubehelpers.NewNamespace(chart, namespace)
+	kubehelpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateExternalSecret(chart, namespace, "admin")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -62,7 +62,7 @@ func NewMicrobinChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	}
 
-	k8s_helpers.NewStatefulSet(
+	kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -71,7 +71,7 @@ func NewMicrobinChart(scope constructs.Construct) cdk8s.Chart {
 		labels,
 		env,
 		[]string{},
-		[]k8s_helpers.StatefulSetVolume{
+		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "micro-bin",
 				MountPath:   "/app/microbin_data",
@@ -80,7 +80,7 @@ func NewMicrobinChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		labels,
 		appName,

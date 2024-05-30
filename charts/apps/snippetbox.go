@@ -2,7 +2,7 @@ package apps
 
 import (
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -14,7 +14,7 @@ func NewSnippetBoxChart(scope constructs.Construct) cdk8s.Chart {
 	appIngress := "snippetbox.services.mkz.me"
 	appName := "snippetbox"
 	appPort := 5000
-	image := k8s_helpers.RegisterDockerImage("pawelmalak/snippet-box")
+	image := kubehelpers.RegisterDockerImage("pawelmalak/snippet-box")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("snippetbox"),
@@ -26,9 +26,9 @@ func NewSnippetBoxChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
 
-	k8s_helpers.NewStatefulSet(
+	kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -37,7 +37,7 @@ func NewSnippetBoxChart(scope constructs.Construct) cdk8s.Chart {
 		labels,
 		[]*k8s.EnvVar{},
 		[]string{},
-		[]k8s_helpers.StatefulSetVolume{
+		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/app/data",
@@ -46,7 +46,7 @@ func NewSnippetBoxChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		labels,
 		appName,

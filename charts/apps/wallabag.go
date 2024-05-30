@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -13,7 +13,7 @@ import (
 func NewWallabagChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "wallabag"
 	appName := namespace
-	appImage := k8s_helpers.RegisterDockerImage("wallabag/wallabag")
+	appImage := kubehelpers.RegisterDockerImage("wallabag/wallabag")
 	appIngress := "wallabag.services.mkz.me"
 	appPort := 80
 
@@ -23,15 +23,15 @@ func NewWallabagChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
-	k8s_helpers.CreateSecretStore(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
+	kubehelpers.CreateSecretStore(chart, namespace)
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
 	}
 
-	k8s_helpers.CreateExternalSecret(chart, namespace, "postgresql")
-	k8s_helpers.CreateExternalSecret(chart, namespace, "mailrelay")
+	kubehelpers.CreateExternalSecret(chart, namespace, "postgresql")
+	kubehelpers.CreateExternalSecret(chart, namespace, "mailrelay")
 
 	env := []*k8s.EnvVar{
 		{Name: jsii.String("SYMFONY__ENV__DATABASE_DRIVER"), Value: jsii.String("pdo_pgsql")},
@@ -85,7 +85,7 @@ func NewWallabagChart(scope constructs.Construct) cdk8s.Chart {
 		{Name: jsii.String("SYMFONY__ENV__FOSUSER_REGISTRATION"), Value: jsii.String("false")},
 	}
 
-	k8s_helpers.NewAppDeployment(
+	kubehelpers.NewAppDeployment(
 		chart,
 		namespace,
 		appName,
@@ -93,10 +93,10 @@ func NewWallabagChart(scope constructs.Construct) cdk8s.Chart {
 		labels,
 		env,
 		[]string{},
-		[]k8s_helpers.ConfigMapMount{},
+		[]kubehelpers.ConfigMapMount{},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		labels,
 		appName,

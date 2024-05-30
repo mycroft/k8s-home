@@ -1,4 +1,4 @@
-package k8s_helpers
+package kubehelpers
 
 import (
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"

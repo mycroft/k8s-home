@@ -1,0 +1,16 @@
+run:
+  concurrency: 4
+  timeout: 5m
+
+linters:
+  disable-all: true
+  enable:
+  - revive
+
+linters-settings:
+  errcheck:
+    ignore: ''
+
+issues:
+  exclude-dirs:
+    - imports

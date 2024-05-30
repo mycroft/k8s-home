@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -13,9 +13,9 @@ import (
 func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "emojivoto"
 	ingressName := "emojivoto.services.mkz.me"
-	imageEmojiSvc := k8s_helpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-emoji-svc")
-	imageWeb := k8s_helpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-web")
-	imageVotingSvc := k8s_helpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-voting-svc")
+	imageEmojiSvc := kubehelpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-emoji-svc")
+	imageWeb := kubehelpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-web")
+	imageVotingSvc := kubehelpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-voting-svc")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -314,7 +314,7 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		map[string]*string{
 			"app": jsii.String("web-svc"),

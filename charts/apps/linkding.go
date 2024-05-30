@@ -2,7 +2,7 @@ package apps
 
 import (
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -13,7 +13,7 @@ func NewLinkdingChart(scope constructs.Construct) cdk8s.Chart {
 	appName := namespace
 	appPort := 9090
 	appIngress := "links.services.mkz.me"
-	linkdingImage := k8s_helpers.RegisterDockerImage("sissbruecker/linkding")
+	linkdingImage := kubehelpers.RegisterDockerImage("sissbruecker/linkding")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -21,14 +21,14 @@ func NewLinkdingChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
-	k8s_helpers.CreateSecretStore(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
+	kubehelpers.CreateSecretStore(chart, namespace)
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
 	}
 
-	k8s_helpers.NewStatefulSet(
+	kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -37,7 +37,7 @@ func NewLinkdingChart(scope constructs.Construct) cdk8s.Chart {
 		labels,
 		[]*k8s.EnvVar{},
 		[]string{},
-		[]k8s_helpers.StatefulSetVolume{
+		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/etc/linkding/data",
@@ -46,7 +46,7 @@ func NewLinkdingChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		labels,
 		appName,

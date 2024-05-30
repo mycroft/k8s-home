@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/certmanagerio"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -53,15 +53,15 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 	// create a namespace for cert-manager
 	// reason to create the namespace is that flux will append the release name using the targetNamespace used.
 	// therefore, the HelmRepository will lie in fluxcd, while HelmRelease will live in cert-manager.
-	k8s_helpers.NewNamespace(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
 
-	k8s_helpers.CreateHelmRepository(
+	kubehelpers.CreateHelmRepository(
 		chart,
 		"jetstack",
 		"https://charts.jetstack.io",
 	)
 
-	k8s_helpers.CreateHelmRelease(
+	kubehelpers.CreateHelmRelease(
 		chart,
 		namespace,
 		"jetstack", // repository name
@@ -70,8 +70,8 @@ func NewCertManagerChart(scope constructs.Construct) cdk8s.Chart {
 		map[string]string{
 			"installCRDs": "true",
 		},
-		[]k8s_helpers.HelmReleaseConfigMap{
-			k8s_helpers.CreateHelmValuesConfig(
+		[]kubehelpers.HelmReleaseConfigMap{
+			kubehelpers.CreateHelmValuesConfig(
 				chart,
 				namespace,
 				appName, // release name

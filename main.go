@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"git.mkz.me/mycroft/k8s-home/charts"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 )
 
 var (
@@ -44,7 +44,7 @@ var checkVersionCmd = &cobra.Command{
 		if *debug {
 			log.Println("running check-versions...")
 		}
-		k8s_helpers.CheckVersions(*debug, *filter)
+		kubehelpers.CheckVersions(*debug, *filter)
 	},
 }
 

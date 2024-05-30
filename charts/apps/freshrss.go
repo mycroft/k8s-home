@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -13,7 +13,7 @@ import (
 func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 	namespace := "freshrss"
 	appName := namespace
-	appImage := k8s_helpers.RegisterDockerImage("freshrss/freshrss")
+	appImage := kubehelpers.RegisterDockerImage("freshrss/freshrss")
 	appPort := 80
 	appIngress := "freshrss.services.mkz.me"
 
@@ -33,9 +33,9 @@ func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 		{Name: jsii.String("TZ"), Value: jsii.String("Etc/UTC")},
 	}
 
-	k8s_helpers.NewNamespace(chart, namespace)
+	kubehelpers.NewNamespace(chart, namespace)
 
-	stsName, _ := k8s_helpers.NewStatefulSet(
+	stsName, _ := kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -44,7 +44,7 @@ func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 		labels,
 		env,
 		[]string{},
-		[]k8s_helpers.StatefulSetVolume{
+		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/var/www/FreshRSS/data",
@@ -131,7 +131,7 @@ func NewFreshRSS(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		labels,
 		appName,

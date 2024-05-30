@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -15,7 +15,7 @@ func NewSendChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "send"
 	ingressHost := "send.services.mkz.me"
 	appPort := 1443
-	image := k8s_helpers.RegisterDockerImage("registry.gitlab.com/timvisee/send")
+	image := kubehelpers.RegisterDockerImage("registry.gitlab.com/timvisee/send")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -23,9 +23,9 @@ func NewSendChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
-	k8s_helpers.CreateSecretStore(chart, namespace)
-	k8s_helpers.CreateExternalSecret(chart, namespace, "minio")
+	kubehelpers.NewNamespace(chart, namespace)
+	kubehelpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateExternalSecret(chart, namespace, "minio")
 
 	redisLabels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("redis"),
@@ -34,18 +34,18 @@ func NewSendChart(scope constructs.Construct) cdk8s.Chart {
 		"app.kubernetes.io/component": jsii.String("send"),
 	}
 
-	k8s_helpers.NewStatefulSet(
+	kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		"redis",
-		k8s_helpers.RegisterDockerImage("redis"),
+		kubehelpers.RegisterDockerImage("redis"),
 		6379,
 		redisLabels,
 		[]*k8s.EnvVar{},
 		[]string{
 			"redis-server --save 60 1 --loglevel warning",
 		},
-		[]k8s_helpers.StatefulSetVolume{
+		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/data",
@@ -82,7 +82,7 @@ func NewSendChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	}
 
-	k8s_helpers.NewAppDeployment(
+	kubehelpers.NewAppDeployment(
 		chart,
 		namespace,
 		appName,
@@ -90,10 +90,10 @@ func NewSendChart(scope constructs.Construct) cdk8s.Chart {
 		sendLabels,
 		env,
 		[]string{},
-		[]k8s_helpers.ConfigMapMount{},
+		[]kubehelpers.ConfigMapMount{},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		sendLabels,
 		appName,

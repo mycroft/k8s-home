@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -14,8 +14,8 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "paperless-ngx"
 	appIngress := "paperless.services.mkz.me"
 
-	redisImage := k8s_helpers.RegisterDockerImage("redis")
-	paperlessNgxImage := k8s_helpers.RegisterDockerImage("paperlessngx/paperless-ngx")
+	redisImage := kubehelpers.RegisterDockerImage("redis")
+	paperlessNgxImage := kubehelpers.RegisterDockerImage("paperlessngx/paperless-ngx")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -23,15 +23,15 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 		&cdk8s.ChartProps{},
 	)
 
-	k8s_helpers.NewNamespace(chart, namespace)
-	k8s_helpers.CreateSecretStore(chart, namespace)
-	k8s_helpers.CreateExternalSecret(chart, namespace, "postgresql")
+	kubehelpers.NewNamespace(chart, namespace)
+	kubehelpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateExternalSecret(chart, namespace, "postgresql")
 
 	redisLabels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("redis"),
 	}
 
-	k8s_helpers.NewStatefulSet(
+	kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		"redis",
@@ -42,7 +42,7 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 		[]string{
 			"redis-server --save 60 1 --loglevel warning",
 		},
-		[]k8s_helpers.StatefulSetVolume{
+		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/data",
@@ -100,7 +100,7 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 	appName := "paperless-ngx"
 	appPort := 8000
 
-	k8s_helpers.NewStatefulSet(
+	kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -109,7 +109,7 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 		paperlessngxLabels,
 		env,
 		[]string{},
-		[]k8s_helpers.StatefulSetVolume{
+		[]kubehelpers.StatefulSetVolume{
 			{ // PAPERLESS_DATA_DIR
 				Name:        "data",
 				MountPath:   "/usr/src/paperless/data",
@@ -123,7 +123,7 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.NewAppIngress(
+	kubehelpers.NewAppIngress(
 		chart,
 		paperlessngxLabels,
 		appName,

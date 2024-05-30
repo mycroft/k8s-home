@@ -5,7 +5,7 @@ import (
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/traefikcontainous"
-	k8s_helpers "git.mkz.me/mycroft/k8s-home/k8s-helpers"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -14,7 +14,7 @@ import (
 func NewTraefikForwardAuth(scope constructs.Construct) cdk8s.Chart {
 	appName := "traefik-forward-auth"
 	namespace := appName
-	image := k8s_helpers.RegisterDockerImage("thomseddon/traefik-forward-auth")
+	image := kubehelpers.RegisterDockerImage("thomseddon/traefik-forward-auth")
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -32,7 +32,7 @@ func NewTraefikForwardAuth(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	k8s_helpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateSecretStore(chart, namespace)
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -93,9 +93,9 @@ func NewTraefikForwardAuth(scope constructs.Construct) cdk8s.Chart {
 	}
 
 	// External secret for client_id/client_secret/issuer_url
-	k8s_helpers.CreateExternalSecret(chart, namespace, "oidc")
+	kubehelpers.CreateExternalSecret(chart, namespace, "oidc")
 	// External secret for secret
-	k8s_helpers.CreateExternalSecret(chart, namespace, "secret")
+	kubehelpers.CreateExternalSecret(chart, namespace, "secret")
 
 	k8s.NewKubeDeployment(
 		chart,
