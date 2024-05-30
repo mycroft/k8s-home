@@ -1,8 +1,8 @@
 package apps
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
@@ -33,7 +33,7 @@ func NewPrivatebinChart(scope constructs.Construct) cdk8s.Chart {
 		"app.kubernetes.io/name": jsii.String(appName),
 	}
 
-	confPHP, err := ioutil.ReadFile("configs/privatebin/conf.php")
+	confPHP, err := os.ReadFile("configs/privatebin/conf.php")
 	if err != nil {
 		log.Fatalf("Could not read privatebin configuration file: %s", err.Error())
 	}

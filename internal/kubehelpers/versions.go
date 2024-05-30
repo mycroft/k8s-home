@@ -187,9 +187,7 @@ func GetLastImageTag(image, version string) []string {
 		panic(err)
 	}
 
-	ctx := context.Background()
-
-	tags, err := remote.ListWithContext(ctx, ref.Context())
+	tags, err := remote.List(ref.Context(), remote.WithContext(context.Background()))
 	if err != nil {
 		panic(err)
 	}
