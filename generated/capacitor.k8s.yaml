@@ -1,0 +1,113 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: onechart
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://chart.onechart.dev
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: capacitor-helm-val-onechart-c89db540
+  namespace: flux-system
+data:
+  values.yaml: |-
+    image:
+      repository: ghcr.io/gimlet-io/capacitor
+      tag: v0.4.2
+    containerPort: 9000
+    probe:
+      enabled: true
+      path: /
+    resources:
+      ignoreLimits: true
+    serviceAccount: capacitor
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: cd387dd09965162ee579053b891ad8ed206d94c1ff97c46ec09d4fb2e80abeb4
+  name: capacitor
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: onechart
+      sourceRef:
+        kind: HelmRepository
+        name: onechart
+        namespace: flux-system
+      version: 0.67.0
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: capacitor-helm-val-onechart-c89db540
+      valuesKey: values.yaml
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: capacitor
+  namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: capacitor
+  namespace: flux-system
+rules:
+  - apiGroups:
+      - networking.k8s.io
+      - apps
+      - ""
+    resources:
+      - pods
+      - pods/log
+      - ingresses
+      - deployments
+      - services
+      - secrets
+      - events
+      - configmaps
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - source.toolkit.fluxcd.io
+      - kustomize.toolkit.fluxcd.io
+      - helm.toolkit.fluxcd.io
+    resources:
+      - gitrepositories
+      - ocirepositories
+      - buckets
+      - helmrepositories
+      - helmcharts
+      - kustomizations
+      - helmreleases
+    verbs:
+      - get
+      - watch
+      - list
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: capacitor
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: capacitor
+subjects:
+  - kind: ServiceAccount
+    name: capacitor
+    namespace: flux-system
