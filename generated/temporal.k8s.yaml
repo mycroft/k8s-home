@@ -109,6 +109,22 @@ data:
               maxConnLifetime: "1h"
               existingSecret: postgresql-visibility
 
+    web:
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/redirect-entry-point: https
+          traefik.ingress.kubernetes.io/redirect-permanent: "true"
+          traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+        issuer:
+          name: letsencrypt-prod
+          scope: cluster
+        hosts:
+          - temporal.services.mkz.me
+        tls:
+          secretName: temporal-tls
+
     cassandra:
       enabled: false
 
@@ -137,7 +153,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: c62e841ba7dd0c3ff752d382d7c4b882bb0150ae2e69beee8f6416cf6f64e6a8
+    configMapHash: 85976cc17598e1252fff8966189e4caf8d5e8228054a602e1657c70f6dcac997
   name: temporal
   namespace: temporal
 spec:
