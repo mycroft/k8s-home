@@ -1,20 +1,7 @@
+# Using https://gist.github.com/maratori/47a4d00457a92aa426dbd48a18776322 as a sample
 run:
   concurrency: 4
   timeout: 5m
-
-#linters:
-#  disable-all: true
-#  enable:
-#  - errcheck
-#  - gocritic
-#  - gofmt
-#  - gosec
-#  - gosimple
-#  - govet
-#  - ineffassign
-#  - revive
-#  - staticcheck
-#  - typecheck
 
 linters:
   disable-all: true
