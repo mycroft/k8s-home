@@ -34,13 +34,13 @@ web:
       traefik.ingress.kubernetes.io/redirect-entry-point: https
       traefik.ingress.kubernetes.io/redirect-permanent: "true"
       traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
-    issuer:
-      name: letsencrypt-prod
-      scope: cluster
+      cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
       - temporal.services.mkz.me
     tls:
-      secretName: temporal-tls
+      - secretName: temporal-tls
+        hosts:
+          - temporal.services.mkz.me
 
 cassandra:
   enabled: false
