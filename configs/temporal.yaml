@@ -26,6 +26,22 @@ server:
           maxConnLifetime: "1h"
           existingSecret: postgresql-visibility
 
+web:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/redirect-entry-point: https
+      traefik.ingress.kubernetes.io/redirect-permanent: "true"
+      traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+    issuer:
+      name: letsencrypt-prod
+      scope: cluster
+    hosts:
+      - temporal.services.mkz.me
+    tls:
+      secretName: temporal-tls
+
 cassandra:
   enabled: false
 
