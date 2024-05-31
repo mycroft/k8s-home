@@ -49,6 +49,7 @@ func HomelabBuildApp() cdk8s.App {
 
 	// misc tooling
 	charts_infra.NewFluxCDChart(app)
+	charts_infra.NewCapacitorChart(app)
 	charts_infra.NewKubernetesDashboardChart(app)
 	charts_infra.NewLinkerdChart(app)
 	charts_infra.NewTektonChart(app)
