@@ -27,34 +27,13 @@ func NewSendChart(scope constructs.Construct) cdk8s.Chart {
 	kubehelpers.CreateSecretStore(chart, namespace)
 	kubehelpers.CreateExternalSecret(chart, namespace, "minio")
 
-	redisLabels := map[string]*string{
-		"app.kubernetes.io/component": jsii.String("redis"),
-	}
 	sendLabels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("send"),
 	}
 
-	kubehelpers.NewStatefulSet(
-		chart,
-		namespace,
-		"redis",
-		kubehelpers.RegisterDockerImage("redis"),
-		6379,
-		redisLabels,
-		[]*k8s.EnvVar{},
-		[]string{
-			"redis-server --save 60 1 --loglevel warning",
-		},
-		[]kubehelpers.StatefulSetVolume{
-			{
-				Name:        "data",
-				MountPath:   "/data",
-				StorageSize: "1Gi",
-			},
-		},
-	)
+	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart, namespace)
 
-	redisHost := "send-redis-svc-c8e30a3c.send"
+	redisHost := fmt.Sprintf("%s.%s", redisServiceName, namespace)
 
 	env := []*k8s.EnvVar{
 		{Name: jsii.String("BASE_URL"), Value: jsii.String(fmt.Sprintf("https://%s", ingressHost))},

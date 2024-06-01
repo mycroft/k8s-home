@@ -26,32 +26,8 @@ func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
 
 	kubehelpers.NewNamespace(chart, namespace)
 
-	redisLabels := map[string]*string{
-		"app.kubernetes.io/component": jsii.String("redis"),
-	}
-
-	kubehelpers.NewStatefulSet(
-		chart,
-		namespace,
-		"redis",
-		kubehelpers.RegisterDockerImage("redis"),
-		6379,
-		redisLabels,
-		[]*k8s.EnvVar{},
-		[]string{
-			"redis-server --save 60 1 --loglevel warning",
-		},
-		[]kubehelpers.StatefulSetVolume{
-			{
-				Name:        "data",
-				MountPath:   "/data",
-				StorageSize: "1Gi",
-			},
-		},
-	)
-
-	// TODO fix the service url here
-	redisURL := "redis://yopass-redis-svc-c8a159bf:6379"
+	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart, namespace)
+	redisURL := fmt.Sprintf("redis://%s:6379", redisServiceName)
 
 	yopassLabels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("yopass"),

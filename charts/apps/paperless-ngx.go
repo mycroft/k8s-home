@@ -14,7 +14,6 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 	namespace := "paperless-ngx"
 	appIngress := "paperless.services.mkz.me"
 
-	redisImage := kubehelpers.RegisterDockerImage("redis")
 	paperlessNgxImage := kubehelpers.RegisterDockerImage("paperlessngx/paperless-ngx")
 
 	chart := cdk8s.NewChart(
@@ -27,35 +26,13 @@ func NewPaperlessNGXChart(scope constructs.Construct) cdk8s.Chart {
 	kubehelpers.CreateSecretStore(chart, namespace)
 	kubehelpers.CreateExternalSecret(chart, namespace, "postgresql")
 
-	redisLabels := map[string]*string{
-		"app.kubernetes.io/component": jsii.String("redis"),
-	}
-
-	kubehelpers.NewStatefulSet(
-		chart,
-		namespace,
-		"redis",
-		redisImage,
-		6379,
-		redisLabels,
-		[]*k8s.EnvVar{},
-		[]string{
-			"redis-server --save 60 1 --loglevel warning",
-		},
-		[]kubehelpers.StatefulSetVolume{
-			{
-				Name:        "data",
-				MountPath:   "/data",
-				StorageSize: "1Gi",
-			},
-		},
-	)
+	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart, namespace)
 
 	env := []*k8s.EnvVar{
 		// XXX fix url here
 		{
 			Name:  jsii.String("PAPERLESS_REDIS"),
-			Value: jsii.String("redis://paperless-ngx-redis-svc-c86d771a:6379"),
+			Value: jsii.String(fmt.Sprintf("redis://%s:6379", redisServiceName)),
 		},
 		{Name: jsii.String("PAPERLESS_DBENGINE"), Value: jsii.String("postgresql")},
 		{Name: jsii.String("PAPERLESS_DBHOST"), Value: jsii.String("postgres-instance.postgres")},

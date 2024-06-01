@@ -15,7 +15,7 @@ type StatefulSetVolume struct {
 	StorageSize string
 }
 
-// NewStatefulSet creates a new statefulset and returns its name
+// NewStatefulSet creates a new statefulset and returns its name and its service name
 func NewStatefulSet(
 	chart cdk8s.Chart,
 	namespace, appName, appImage string,
