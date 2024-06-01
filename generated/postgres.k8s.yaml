@@ -10,6 +10,7 @@ metadata:
   namespace: postgres
 spec:
   databases:
+    authentik: authentik-admin
     backstage: backstage-admin
     dex: dex-admin
     freshrss: freshrss-admin
@@ -28,6 +29,10 @@ spec:
     version: "15"
   teamId: postgres
   users:
+    authentik: []
+    authentik-admin:
+      - superuser
+      - createdb
     backstage: []
     backstage-admin:
       - superuser
