@@ -14,7 +14,7 @@ imports:
   - externalsecrets:=https://raw.githubusercontent.com/external-secrets/external-secrets/v0.9.7/config/crds/bases/external-secrets.io_externalsecrets.yaml
   - podmonitor:=crds/crd-podmonitors.yaml
   - servicemonitor:=crds/crd-servicemonitors.yaml
-  - https://raw.githubusercontent.com/traefik/traefik/v2.9/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+  - https://raw.githubusercontent.com/traefik/traefik/v2.10.7/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
   - crds/postgresql.crd.yaml
   - https://raw.githubusercontent.com/minio/operator/master/bundles/community-operators/5.0.4/manifests/minio.min.io_tenants.yaml
   - https://raw.githubusercontent.com/scylladb/scylla-operator/master/pkg/api/scylla/v1/scylla.scylladb.com_scyllaclusters.yaml

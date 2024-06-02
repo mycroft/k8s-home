@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	"git.mkz.me/mycroft/k8s-home/imports/traefikcontainous"
+	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -145,16 +145,16 @@ func NewTraefikForwardAuth(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	traefikcontainous.NewMiddleware(
+	traefikio.NewMiddleware(
 		chart,
 		jsii.String("traefik-forward-auth-middleware"),
-		&traefikcontainous.MiddlewareProps{
+		&traefikio.MiddlewareProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name:      jsii.String("traefik-forward-auth"),
 				Namespace: jsii.String(namespace),
 			},
-			Spec: &traefikcontainous.MiddlewareSpec{
-				ForwardAuth: &traefikcontainous.MiddlewareSpecForwardAuth{
+			Spec: &traefikio.MiddlewareSpec{
+				ForwardAuth: &traefikio.MiddlewareSpecForwardAuth{
 					Address:            jsii.String(fmt.Sprintf("http://%s.%s:4181", *svc.Name(), namespace)),
 					TrustForwardHeader: jsii.Bool(true),
 					AuthRequestHeaders: &[]*string{

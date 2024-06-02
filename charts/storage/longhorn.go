@@ -8,7 +8,7 @@ import (
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/longhornio"
 	"git.mkz.me/mycroft/k8s-home/imports/servicemonitor_monitoringcoreoscom"
-	"git.mkz.me/mycroft/k8s-home/imports/traefikcontainous"
+	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
 
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -145,16 +145,16 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 	)
 
 	// The following is no longer useful.
-	traefikcontainous.NewMiddleware(
+	traefikio.NewMiddleware(
 		chart,
 		jsii.String("basic-auth"),
-		&traefikcontainous.MiddlewareProps{
+		&traefikio.MiddlewareProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name:      jsii.String("basic-auth"),
 				Namespace: jsii.String(namespace),
 			},
-			Spec: &traefikcontainous.MiddlewareSpec{
-				BasicAuth: &traefikcontainous.MiddlewareSpecBasicAuth{
+			Spec: &traefikio.MiddlewareSpec{
+				BasicAuth: &traefikio.MiddlewareSpecBasicAuth{
 					Realm:  jsii.String("Longhorn Authentication"),
 					Secret: jsii.String("basic-auth-users"),
 				},
@@ -162,23 +162,23 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	traefikcontainous.NewIngressRoute(
+	traefikio.NewIngressRoute(
 		chart,
 		jsii.String("ingress-route"),
-		&traefikcontainous.IngressRouteProps{
+		&traefikio.IngressRouteProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Namespace: jsii.String(namespace),
 			},
-			Spec: &traefikcontainous.IngressRouteSpec{
+			Spec: &traefikio.IngressRouteSpec{
 				EntryPoints: &[]*string{
 					// jsii.String("web"),
 					jsii.String("websecure"),
 				},
-				Routes: &[]*traefikcontainous.IngressRouteSpecRoutes{
+				Routes: &[]*traefikio.IngressRouteSpecRoutes{
 					{
-						Kind:  traefikcontainous.IngressRouteSpecRoutesKind_RULE,
+						Kind:  traefikio.IngressRouteSpecRoutesKind_RULE,
 						Match: jsii.String("Host(`longhorn.services.mkz.me`)"),
-						Middlewares: &[]*traefikcontainous.IngressRouteSpecRoutesMiddlewares{
+						Middlewares: &[]*traefikio.IngressRouteSpecRoutesMiddlewares{
 							// {
 							// 	Name:      jsii.String("basic-auth"),
 							// 	Namespace: jsii.String(namespace),
@@ -188,16 +188,16 @@ func NewLonghornChart(scope constructs.Construct) cdk8s.Chart {
 								Namespace: jsii.String("traefik-forward-auth"),
 							},
 						},
-						Services: &[]*traefikcontainous.IngressRouteSpecRoutesServices{
+						Services: &[]*traefikio.IngressRouteSpecRoutesServices{
 							{
-								Kind: traefikcontainous.IngressRouteSpecRoutesServicesKind_SERVICE,
+								Kind: traefikio.IngressRouteSpecRoutesServicesKind_SERVICE,
 								Name: jsii.String("longhorn-frontend"),
-								Port: traefikcontainous.IngressRouteSpecRoutesServicesPort_FromNumber(jsii.Number(80)),
+								Port: traefikio.IngressRouteSpecRoutesServicesPort_FromNumber(jsii.Number(80)),
 							},
 						},
 					},
 				},
-				Tls: &traefikcontainous.IngressRouteSpecTls{
+				Tls: &traefikio.IngressRouteSpecTls{
 					SecretName: jsii.String("secret-tls-www"),
 				},
 			},

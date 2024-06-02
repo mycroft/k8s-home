@@ -1,7 +1,7 @@
 package apps
 
 import (
-	"git.mkz.me/mycroft/k8s-home/imports/traefikcontainous"
+	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -25,16 +25,16 @@ func NewWikiJsChart(scope constructs.Construct) cdk8s.Chart {
 	kubehelpers.CreateSecretStore(chart, namespace)
 	kubehelpers.CreateExternalSecret(chart, namespace, "postgresql")
 
-	traefikcontainous.NewMiddleware(
+	traefikio.NewMiddleware(
 		chart,
 		jsii.String("traefik-vhost-redirect-wikijs"),
-		&traefikcontainous.MiddlewareProps{
+		&traefikio.MiddlewareProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name:      jsii.String("traefik-vhost-redirect-wikijs"),
 				Namespace: jsii.String(namespace),
 			},
-			Spec: &traefikcontainous.MiddlewareSpec{
-				RedirectRegex: &traefikcontainous.MiddlewareSpecRedirectRegex{
+			Spec: &traefikio.MiddlewareSpec{
+				RedirectRegex: &traefikio.MiddlewareSpecRedirectRegex{
 					Regex:       jsii.String("https://wiki.iop.cx/(.*)"),
 					Replacement: jsii.String("https://wiki.services.mkz.me/${1}"),
 				},
