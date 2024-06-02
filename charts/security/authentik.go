@@ -25,6 +25,7 @@ func NewAuthentikChart(scope constructs.Construct) cdk8s.Chart {
 	kubehelpers.CreateSecretStore(chart, namespace)
 	kubehelpers.CreateExternalSecret(chart, namespace, "postgresql")
 	kubehelpers.CreateExternalSecret(chart, namespace, "authentik-secret")
+	kubehelpers.CreateExternalSecret(chart, namespace, "mailrelay")
 
 	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart, namespace)
 	_ = fmt.Sprintf("redis://%s:6379", redisServiceName)
