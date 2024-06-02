@@ -3,7 +3,9 @@ package apps
 import (
 	"fmt"
 
+	"git.mkz.me/mycroft/k8s-home/imports/certificates_certmanagerio"
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
+	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -16,6 +18,8 @@ func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
 	appImage := kubehelpers.RegisterDockerImage("linuxserver/bookstack")
 	appPort := 80
 	appIngress := "bookstack.services.mkz.me"
+
+	useLegacyIngress := true
 
 	chart := cdk8s.NewChart(
 		scope,
@@ -52,7 +56,7 @@ func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
 		{Name: jsii.String("SESSION_LIFETIME"), Value: jsii.String("1800")},
 	}
 
-	kubehelpers.NewStatefulSet(
+	_, serviceName := kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -70,14 +74,75 @@ func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	kubehelpers.NewAppIngress(
-		chart,
-		labels,
-		appName,
-		appPort,
-		appIngress,
-		map[string]string{},
-	)
+	if useLegacyIngress {
+		kubehelpers.NewAppIngress(
+			chart,
+			labels,
+			appName,
+			appPort,
+			appIngress,
+			map[string]string{},
+		)
+
+	} else {
+		certificates_certmanagerio.NewCertificate(
+			chart,
+			jsii.String("certificate"),
+			&certificates_certmanagerio.CertificateProps{
+				Metadata: &cdk8s.ApiObjectMetadata{
+					Name:      jsii.String("ingress-tls-secret"),
+					Namespace: jsii.String("bookstack"),
+				},
+				Spec: &certificates_certmanagerio.CertificateSpec{
+					DnsNames: jsii.Strings("bookstack.services.mkz.me"),
+					IssuerRef: &certificates_certmanagerio.CertificateSpecIssuerRef{
+						Group: jsii.String("cert-manager.io"),
+						Kind:  jsii.String("ClusterIssuer"),
+						Name:  jsii.String("letsencrypt-prod"),
+					},
+					SecretName: jsii.String("ingress-tls-secret"),
+					Usages: &[]certificates_certmanagerio.CertificateSpecUsages{
+						certificates_certmanagerio.CertificateSpecUsages_DIGITAL_SIGNATURE,
+						certificates_certmanagerio.CertificateSpecUsages_KEY_ENCIPHERMENT,
+					},
+				},
+			},
+		)
+
+		traefikio.NewIngressRoute(
+			chart,
+			jsii.Sprintf("ingress-route"),
+			&traefikio.IngressRouteProps{
+				Metadata: &cdk8s.ApiObjectMetadata{
+					Name:      jsii.String("bookstack"),
+					Namespace: jsii.String("bookstack"),
+				},
+				Spec: &traefikio.IngressRouteSpec{
+					Routes: &[]*traefikio.IngressRouteSpecRoutes{
+						{
+							Kind:  traefikio.IngressRouteSpecRoutesKind_RULE,
+							Match: jsii.String("Host(`bookstack.services.mkz.me`)"),
+							Middlewares: &[]*traefikio.IngressRouteSpecRoutesMiddlewares{
+								{
+									Name:      jsii.String("ak-outpost-authentik-embedded-outpost"),
+									Namespace: jsii.String("authentik"),
+								},
+							},
+							Services: &[]*traefikio.IngressRouteSpecRoutesServices{
+								{
+									Name: jsii.String(serviceName),
+									Port: traefikio.IngressRouteSpecRoutesServicesPort_FromString(jsii.String("http")),
+								},
+							},
+						},
+					},
+					Tls: &traefikio.IngressRouteSpecTls{
+						SecretName: jsii.String("ingress-tls-secret"),
+					},
+				},
+			},
+		)
+	}
 
 	return chart
 }
