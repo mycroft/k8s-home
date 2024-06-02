@@ -78,6 +78,7 @@ func NewSendChart(scope constructs.Construct) cdk8s.Chart {
 		appName,
 		appPort,
 		ingressHost,
+		"",
 		map[string]string{},
 	)
 

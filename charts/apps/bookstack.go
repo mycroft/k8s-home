@@ -81,6 +81,7 @@ func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
 			appName,
 			appPort,
 			appIngress,
+			serviceName,
 			map[string]string{},
 		)
 

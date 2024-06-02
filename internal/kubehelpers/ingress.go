@@ -40,6 +40,7 @@ func NewAppIngresses(
 	namespace string,
 	appPort int,
 	ingressHosts []string,
+	serviceName string,
 	customAnnotations map[string]string,
 ) {
 	annotations := map[string]*string{
@@ -52,14 +53,18 @@ func NewAppIngresses(
 
 	portName := "http"
 
-	svc := NewAppService(
-		chart,
-		namespace,
-		"svc",
-		labels,
-		portName,
-		uint(appPort),
-	)
+	if serviceName == "" {
+		svc := NewAppService(
+			chart,
+			namespace,
+			"svc",
+			labels,
+			portName,
+			uint(appPort),
+		)
+
+		serviceName = *svc.Name()
+	}
 
 	rules := []*k8s.IngressRule{}
 	hosts := []*string{}
@@ -72,7 +77,7 @@ func NewAppIngresses(
 					{
 						Backend: &k8s.IngressBackend{
 							Service: &k8s.IngressServiceBackend{
-								Name: svc.Name(),
+								Name: jsii.String(serviceName),
 								Port: &k8s.ServiceBackendPort{
 									Name: jsii.String(portName),
 								},
@@ -116,6 +121,7 @@ func NewAppIngress(
 	namespace string,
 	appPort int,
 	ingressHost string,
+	serviceName string,
 	customAnnotations map[string]string,
 ) {
 	NewAppIngresses(
@@ -126,6 +132,7 @@ func NewAppIngress(
 		[]string{
 			ingressHost,
 		},
+		serviceName,
 		customAnnotations,
 	)
 }

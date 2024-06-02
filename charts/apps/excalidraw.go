@@ -59,6 +59,7 @@ func NewExcalidrawChart(scope constructs.Construct) cdk8s.Chart {
 		appName,
 		80,
 		ingressHost,
+		"",
 		map[string]string{},
 	)
 

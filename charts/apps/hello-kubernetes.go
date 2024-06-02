@@ -97,6 +97,7 @@ func NewHelloKubernetesChart(scope constructs.Construct) cdk8s.Chart {
 		appName,
 		8080,
 		"hello-kubernetes.services.mkz.me",
+		"",
 		map[string]string{
 			"traefik.ingress.kubernetes.io/router.middlewares": "traefik-forward-auth-traefik-forward-auth@kubernetescrd",
 		},

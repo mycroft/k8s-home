@@ -322,6 +322,7 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 		namespace,
 		8080,
 		ingressName,
+		"",
 		map[string]string{},
 	)
 

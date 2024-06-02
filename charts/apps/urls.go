@@ -66,6 +66,7 @@ func NewUrlsChart(scope constructs.Construct) cdk8s.Chart {
 		appName,
 		3000,
 		ingressHost,
+		"",
 		map[string]string{},
 	)
 

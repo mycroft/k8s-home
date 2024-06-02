@@ -86,6 +86,7 @@ func NewMicrobinChart(scope constructs.Construct) cdk8s.Chart {
 		appName,
 		appPort,
 		appIngress,
+		"",
 		map[string]string{},
 	)
 

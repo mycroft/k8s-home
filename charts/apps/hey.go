@@ -71,6 +71,7 @@ func NewHeyChart(scope constructs.Construct) cdk8s.Chart {
 		appName,
 		appPort,
 		ingressHosts,
+		"",
 		map[string]string{},
 	)
 
