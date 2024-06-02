@@ -214,6 +214,10 @@ data:
         - name: mailrelay
           mounthPath: /mailrelay
           readOnly: true
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
 
     worker:
       volumes:
@@ -236,12 +240,16 @@ data:
         - name: mailrelay
           mounthPath: /mailrelay
           readOnly: true
+
+    prometheus:
+      rules:
+        enabled: true
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: cf8d767ac3180fb89b5020edcff4fb807bf8047a09482ec6a2f1f758c7503ab0
+    configMapHash: 7cdc42008bc0719cc7516eb11f39b984fc3838a147d12d6e4e0d91d17cbdb1de
   name: authentik
   namespace: authentik
 spec:
