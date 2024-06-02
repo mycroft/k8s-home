@@ -54,6 +54,8 @@ func NewAuthentikChart(scope constructs.Construct) cdk8s.Chart {
 		nil,
 	)
 
+	embeddedOutpostUrl := "http://ak-outpost-authentik-embedded-outpost.authentik:9000/outpost.goauthentik.io/auth/traefik"
+
 	traefikcontainous.NewMiddleware(
 		chart,
 		jsii.String("authentik-forward-auth-middleware"),
@@ -64,7 +66,7 @@ func NewAuthentikChart(scope constructs.Construct) cdk8s.Chart {
 			},
 			Spec: &traefikcontainous.MiddlewareSpec{
 				ForwardAuth: &traefikcontainous.MiddlewareSpecForwardAuth{
-					Address:            jsii.String("https://auth.services.mkz.me/outpost.goauthentik.io/auth/traefik"),
+					Address:            jsii.String(embeddedOutpostUrl),
 					TrustForwardHeader: jsii.Bool(true),
 					AuthRequestHeaders: &[]*string{
 						jsii.String("X-authentik-username"),
