@@ -114,18 +114,6 @@ spec:
             storage: 1Gi
         storageClassName: longhorn-crypto-global
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: bookstack-svc-c8e87854
-  namespace: bookstack
-spec:
-  ports:
-    - name: http
-      port: 80
-  selector:
-    app.kubernetes.io/name: bookstack
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -141,7 +129,7 @@ spec:
         paths:
           - backend:
               service:
-                name: bookstack-svc-c8e87854
+                name: bookstack-bookstack-svc-c872573f
                 port:
                   name: http
             path: /
