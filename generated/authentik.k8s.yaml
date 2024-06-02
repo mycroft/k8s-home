@@ -1,0 +1,243 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: authentik
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: authentik
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: authentik-es-postgresql-c80ebbaa
+  namespace: authentik
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/authentik/postgresql
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: authentik-es-authentik-secret-c8ea8f42
+  namespace: authentik
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/authentik/authentik-secret
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: authentik-secret
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: redis
+  name: authentik-redis-svc-c850dde6
+  namespace: authentik
+spec:
+  ports:
+    - name: http
+      port: 6379
+  selector:
+    app.kubernetes.io/component: redis
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: authentik-redis-sts-c8340281
+  namespace: authentik
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: redis
+  serviceName: authentik-redis-svc-c850dde6
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: redis
+    spec:
+      containers:
+        - command:
+            - redis-server
+            - --save
+            - "60"
+            - "1"
+            - --loglevel
+            - warning
+          env: []
+          image: redis:7.2.5
+          name: redis
+          volumeMounts:
+            - mountPath: /data
+              name: data
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/component: redis
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: authentik
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://charts.goauthentik.io
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authentik-helm-val-authentik-c839b94a
+  namespace: authentik
+data:
+  values.yaml: |
+    # https://github.com/goauthentik/helm/blob/main/charts/authentik/values.yaml
+    authentik:
+      log_level: trace
+      postgresql:
+        host: postgres-instance.postgres
+        user: file:///postgres-creds/username
+        password: file:///postgres-creds/password
+      redis:
+        host: authentik-redis-svc-c850dde6.authentik
+      secret_key: file:///authentik-secret/secret_key
+
+    server:
+      ingress:
+        enabled: true
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-prod"
+          traefik.ingress.kubernetes.io/redirect-entry-point: "https"
+          traefik.ingress.kubernetes.io/redirect-permanent: "true"
+        ingressClassName: traefik
+        hosts:
+          - auth.services.mkz.me
+        tls:
+          - hosts:
+            - auth.services.mkz.me
+            secretName: auth-cert-tls  
+      volumes:
+        - name: postgres-creds
+          secret:
+            secretName: postgresql
+        - name: authentik-secret
+          secret:
+            secretName: authentik-secret
+      volumeMounts:
+        - name: postgres-creds
+          mountPath: /postgres-creds
+          readOnly: true
+        - name: authentik-secret
+          mountPath: /authentik-secret
+          readOnly: true
+
+    worker:
+      volumes:
+        - name: postgres-creds
+          secret:
+            secretName: postgresql
+        - name: authentik-secret
+          secret:
+            secretName: authentik-secret
+      volumeMounts:
+        - name: postgres-creds
+          mountPath: /postgres-creds
+          readOnly: true
+        - name: authentik-secret
+          mountPath: /authentik-secret
+          readOnly: true
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: f0825aeadbc4cec8f94937ac1fe6f56460ef10b52c788ae08e0778961a8a804c
+  name: authentik
+  namespace: authentik
+spec:
+  chart:
+    spec:
+      chart: authentik
+      sourceRef:
+        kind: HelmRepository
+        name: authentik
+        namespace: flux-system
+      version: 2024.4.2
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: authentik-helm-val-authentik-c839b94a
+      valuesKey: values.yaml
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: authentik
+  namespace: authentik
+spec:
+  forwardAuth:
+    address: https://auth.services.mkz.me/outpost.goauthentik.io/auth/traefik
+    authRequestHeaders:
+      - X-authentik-username
+      - X-authentik-groups
+      - X-authentik-email
+      - X-authentik-name
+      - X-authentik-uid
+      - X-authentik-jwt
+      - X-authentik-meta-jwks
+      - X-authentik-meta-outpost
+      - X-authentik-meta-provider
+      - X-authentik-meta-app
+      - X-authentik-meta-version
+    trustForwardHeader: true
