@@ -262,7 +262,7 @@ kube-state-metrics:
           - kustomize.toolkit.fluxcd.io
           - helm.toolkit.fluxcd.io
           - notification.toolkit.fluxcd.io
-          - image.toolkit.fluxcd.io
+          # - image.toolkit.fluxcd.io
         resources:
           - gitrepositories
           - buckets
@@ -274,9 +274,9 @@ kube-state-metrics:
           - alerts
           - providers
           - receivers
-          - imagerepositories
-          - imagepolicies
-          - imageupdateautomations
+          # - imagerepositories
+          # - imagepolicies
+          # - imageupdateautomations
         verbs: [ "list", "watch" ]
   customResourceState:
     enabled: true
