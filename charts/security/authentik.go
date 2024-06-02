@@ -3,7 +3,6 @@ package security
 import (
 	"fmt"
 
-	"git.mkz.me/mycroft/k8s-home/imports/traefikcontainous"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -52,38 +51,6 @@ func NewAuthentikChart(scope constructs.Construct) cdk8s.Chart {
 			),
 		},
 		nil,
-	)
-
-	embeddedOutpostUrl := "http://ak-outpost-authentik-embedded-outpost.authentik:9000/outpost.goauthentik.io/auth/traefik"
-
-	traefikcontainous.NewMiddleware(
-		chart,
-		jsii.String("authentik-forward-auth-middleware"),
-		&traefikcontainous.MiddlewareProps{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Name:      jsii.String("authentik"),
-				Namespace: jsii.String(namespace),
-			},
-			Spec: &traefikcontainous.MiddlewareSpec{
-				ForwardAuth: &traefikcontainous.MiddlewareSpecForwardAuth{
-					Address:            jsii.String(embeddedOutpostUrl),
-					TrustForwardHeader: jsii.Bool(true),
-					AuthRequestHeaders: &[]*string{
-						jsii.String("X-authentik-username"),
-						jsii.String("X-authentik-groups"),
-						jsii.String("X-authentik-email"),
-						jsii.String("X-authentik-name"),
-						jsii.String("X-authentik-uid"),
-						jsii.String("X-authentik-jwt"),
-						jsii.String("X-authentik-meta-jwks"),
-						jsii.String("X-authentik-meta-outpost"),
-						jsii.String("X-authentik-meta-provider"),
-						jsii.String("X-authentik-meta-app"),
-						jsii.String("X-authentik-meta-version"),
-					},
-				},
-			},
-		},
 	)
 
 	return chart
