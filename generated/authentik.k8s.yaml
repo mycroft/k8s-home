@@ -212,7 +212,7 @@ data:
           mountPath: /authentik-secret
           readOnly: true
         - name: mailrelay
-          mounthPath: /mailrelay
+          mountPath: /mailrelay
           readOnly: true
       metrics:
         enabled: true
@@ -238,7 +238,7 @@ data:
           mountPath: /authentik-secret
           readOnly: true
         - name: mailrelay
-          mounthPath: /mailrelay
+          mountPath: /mailrelay
           readOnly: true
 
     prometheus:
@@ -249,7 +249,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 7cdc42008bc0719cc7516eb11f39b984fc3838a147d12d6e4e0d91d17cbdb1de
+    configMapHash: 08cb8602b8dfe3589e661ac985e10bbc95f7a0c483cd6f9922bdb10b3a8300c8
   name: authentik
   namespace: authentik
 spec:
