@@ -219,25 +219,3 @@ spec:
     - kind: ConfigMap
       name: authentik-helm-val-authentik-c839b94a
       valuesKey: values.yaml
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: authentik
-  namespace: authentik
-spec:
-  forwardAuth:
-    address: http://ak-outpost-authentik-embedded-outpost.authentik:9000/outpost.goauthentik.io/auth/traefik
-    authRequestHeaders:
-      - X-authentik-username
-      - X-authentik-groups
-      - X-authentik-email
-      - X-authentik-name
-      - X-authentik-uid
-      - X-authentik-jwt
-      - X-authentik-meta-jwks
-      - X-authentik-meta-outpost
-      - X-authentik-meta-provider
-      - X-authentik-meta-app
-      - X-authentik-meta-version
-    trustForwardHeader: true
