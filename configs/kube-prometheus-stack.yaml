@@ -205,6 +205,15 @@ additionalPrometheusRulesMap:
           annotations:
             summary: "Flux resource `{{$labels.kind}}/{{$labels.name}}` is failing"
             description: "Reconciliation could not succeed. This requires investigation"
+        - alert: FailingHelmReleaseReconcile
+          expr: gotk_resource_info{customresource_kind="HelmRelease", ready="False"} == 1
+          for: 10m
+          labels:
+            service: flux
+            severity: critical
+          annotations:
+            summary: "Flux resource `{{$labels.customresource_kind}}/{{$labels.chart_name}}` is failing"
+            description: "Reconciliation in namespace `{{$labels.exported_namespace}}` could not succeed. This requires investigation"
 
   vault-alerts:
     groups:
