@@ -56,7 +56,7 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 	}
 
 	deploymentLabels := map[string]*string{
-		"app":     jsii.String("emoji-svc"),
+		"app":     jsii.String("emoji"),
 		"version": jsii.String("v11"),
 	}
 	k8s.NewKubeDeployment(
@@ -93,7 +93,7 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 									{Name: jsii.String("PROM_PORT"), Value: jsii.String("8081")},
 								},
 								Image: jsii.String(imageEmojiSvc),
-								Name:  jsii.String("emoji-svc"),
+								Name:  jsii.String("emoji"),
 								Ports: &[]*k8s.ContainerPort{
 									{ContainerPort: jsii.Number(8080), Name: jsii.String("grpc")},
 									{ContainerPort: jsii.Number(8081), Name: jsii.String("prom")},
@@ -143,7 +143,7 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 								},
 								Name: jsii.String("vote-bot"),
 								Env: &[]*k8s.EnvVar{
-									{Name: jsii.String("WEB_HOST"), Value: jsii.String("web-svc.emojivoto:80")},
+									{Name: jsii.String("WEB_HOST"), Value: jsii.String("web.emojivoto:80")},
 								},
 								Image: jsii.String(imageWeb),
 								Ports: &[]*k8s.ContainerPort{
@@ -159,12 +159,12 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 	)
 
 	deploymentLabels = map[string]*string{
-		"app":     jsii.String("voting-svc"),
+		"app":     jsii.String("voting"),
 		"version": jsii.String("v11"),
 	}
 	k8s.NewKubeDeployment(
 		chart,
-		jsii.String("voting-svc-deploy"),
+		jsii.String("voting-deploy"),
 		&k8s.KubeDeploymentProps{
 			Metadata: &k8s.ObjectMeta{
 				Annotations: &map[string]*string{
@@ -195,7 +195,7 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 									{Name: jsii.String("PROM_PORT"), Value: jsii.String("8081")},
 								},
 								Image: jsii.String(imageVotingSvc),
-								Name:  jsii.String("voting-svc"),
+								Name:  jsii.String("voting"),
 								Ports: &[]*k8s.ContainerPort{
 									{ContainerPort: jsii.Number(8080), Name: jsii.String("grpc")},
 									{ContainerPort: jsii.Number(8081), Name: jsii.String("prom")},
@@ -210,7 +210,7 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 	)
 
 	deploymentLabels = map[string]*string{
-		"app":     jsii.String("web-svc"),
+		"app":     jsii.String("web"),
 		"version": jsii.String("v11"),
 	}
 	k8s.NewKubeDeployment(
@@ -243,12 +243,12 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 							{
 								Env: &[]*k8s.EnvVar{
 									{Name: jsii.String("WEB_PORT"), Value: jsii.String("8080")},
-									{Name: jsii.String("EMOJISVC_HOST"), Value: jsii.String("emoji-svc.emojivoto:8080")},
-									{Name: jsii.String("VOTINGSVC_HOST"), Value: jsii.String("voting-svc.emojivoto:8080")},
+									{Name: jsii.String("EMOJISVC_HOST"), Value: jsii.String("emoji.emojivoto:8080")},
+									{Name: jsii.String("VOTINGSVC_HOST"), Value: jsii.String("voting.emojivoto:8080")},
 									{Name: jsii.String("INDEX_BUNDLE"), Value: jsii.String("dist/index_bundle.js")},
 								},
 								Image: jsii.String(imageWeb),
-								Name:  jsii.String("web-svc"),
+								Name:  jsii.String("web"),
 								Ports: &[]*k8s.ContainerPort{
 									{ContainerPort: jsii.Number(8080), Name: jsii.String("http")},
 								},
@@ -263,10 +263,10 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 
 	k8s.NewKubeService(
 		chart,
-		jsii.String("emoji-svc"),
+		jsii.String("emoji"),
 		&k8s.KubeServiceProps{
 			Metadata: &k8s.ObjectMeta{
-				Name:      jsii.String("emoji-svc"),
+				Name:      jsii.String("emoji"),
 				Namespace: jsii.String(namespace),
 			},
 			Spec: &k8s.ServiceSpec{
@@ -274,17 +274,17 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 					{Name: jsii.String("grpc"), Port: jsii.Number(8080), TargetPort: k8s.IntOrString_FromNumber(jsii.Number(8080))},
 					{Name: jsii.String("prom"), Port: jsii.Number(8081), TargetPort: k8s.IntOrString_FromNumber(jsii.Number(8081))},
 				},
-				Selector: &map[string]*string{"app": jsii.String("emoji-svc")},
+				Selector: &map[string]*string{"app": jsii.String("emoji")},
 			},
 		},
 	)
 
 	k8s.NewKubeService(
 		chart,
-		jsii.String("voting-svc"),
+		jsii.String("voting"),
 		&k8s.KubeServiceProps{
 			Metadata: &k8s.ObjectMeta{
-				Name:      jsii.String("voting-svc"),
+				Name:      jsii.String("voting"),
 				Namespace: jsii.String(namespace),
 			},
 			Spec: &k8s.ServiceSpec{
@@ -292,24 +292,24 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 					{Name: jsii.String("grpc"), Port: jsii.Number(8080), TargetPort: k8s.IntOrString_FromNumber(jsii.Number(8080))},
 					{Name: jsii.String("prom"), Port: jsii.Number(8081), TargetPort: k8s.IntOrString_FromNumber(jsii.Number(8081))},
 				},
-				Selector: &map[string]*string{"app": jsii.String("voting-svc")},
+				Selector: &map[string]*string{"app": jsii.String("voting")},
 			},
 		},
 	)
 
-	k8s.NewKubeService(
+	svc := k8s.NewKubeService(
 		chart,
-		jsii.String("web-svc"),
+		jsii.String("web"),
 		&k8s.KubeServiceProps{
 			Metadata: &k8s.ObjectMeta{
-				Name:      jsii.String("web-svc"),
+				Name:      jsii.String("web"),
 				Namespace: jsii.String(namespace),
 			},
 			Spec: &k8s.ServiceSpec{
 				Ports: &[]*k8s.ServicePort{
 					{Name: jsii.String("http"), Port: jsii.Number(80), TargetPort: k8s.IntOrString_FromNumber(jsii.Number(8080))},
 				},
-				Selector: &map[string]*string{"app": jsii.String("web-svc")},
+				Selector: &map[string]*string{"app": jsii.String("web")},
 			},
 		},
 	)
@@ -317,12 +317,12 @@ func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
 	kubehelpers.NewAppIngress(
 		chart,
 		map[string]*string{
-			"app": jsii.String("web-svc"),
+			"app": jsii.String("web"),
 		},
 		namespace,
 		8080,
 		ingressName,
-		"",
+		*svc.Name(),
 		map[string]string{},
 	)
 
