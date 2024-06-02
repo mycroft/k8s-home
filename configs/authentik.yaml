@@ -52,6 +52,10 @@ server:
     - name: mailrelay
       mounthPath: /mailrelay
       readOnly: true
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
 
 worker:
   volumes:
@@ -74,3 +78,7 @@ worker:
     - name: mailrelay
       mounthPath: /mailrelay
       readOnly: true
+
+prometheus:
+  rules:
+    enabled: true
