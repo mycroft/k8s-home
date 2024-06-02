@@ -65,6 +65,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: authentik-es-mailrelay-c8e73b63
+  namespace: authentik
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/authentik/mailrelay
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: mailrelay
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -139,7 +162,16 @@ data:
   values.yaml: |
     # https://github.com/goauthentik/helm/blob/main/charts/authentik/values.yaml
     authentik:
-      log_level: trace
+      log_level: info
+      email:
+        host: mail.mkz.me
+        port: 587
+        username: file:///mailrelay/username
+        password: file:///mailrelay/password
+        use_tls: true
+        use_ssl: false
+        timeout: 30
+        from: "Homelab's Authentik <authentik@mkz.me>"
       postgresql:
         host: postgres-instance.postgres
         user: file:///postgres-creds/username
@@ -169,12 +201,18 @@ data:
         - name: authentik-secret
           secret:
             secretName: authentik-secret
+        - name: mailrelay
+          secret:
+            secretName: mailrelay
       volumeMounts:
         - name: postgres-creds
           mountPath: /postgres-creds
           readOnly: true
         - name: authentik-secret
           mountPath: /authentik-secret
+          readOnly: true
+        - name: mailrelay
+          mounthPath: /mailrelay
           readOnly: true
 
     worker:
@@ -185,6 +223,9 @@ data:
         - name: authentik-secret
           secret:
             secretName: authentik-secret
+        - name: mailrelay
+          secret:
+            secretName: mailrelay
       volumeMounts:
         - name: postgres-creds
           mountPath: /postgres-creds
@@ -192,12 +233,15 @@ data:
         - name: authentik-secret
           mountPath: /authentik-secret
           readOnly: true
+        - name: mailrelay
+          mounthPath: /mailrelay
+          readOnly: true
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: f0825aeadbc4cec8f94937ac1fe6f56460ef10b52c788ae08e0778961a8a804c
+    configMapHash: cf8d767ac3180fb89b5020edcff4fb807bf8047a09482ec6a2f1f758c7503ab0
   name: authentik
   namespace: authentik
 spec:
