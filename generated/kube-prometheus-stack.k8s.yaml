@@ -391,7 +391,7 @@ data:
               - kustomize.toolkit.fluxcd.io
               - helm.toolkit.fluxcd.io
               - notification.toolkit.fluxcd.io
-              - image.toolkit.fluxcd.io
+              # - image.toolkit.fluxcd.io
             resources:
               - gitrepositories
               - buckets
@@ -403,9 +403,9 @@ data:
               - alerts
               - providers
               - receivers
-              - imagerepositories
-              - imagepolicies
-              - imageupdateautomations
+              # - imagerepositories
+              # - imagepolicies
+              # - imageupdateautomations
             verbs: [ "list", "watch" ]
       customResourceState:
         enabled: true
@@ -659,7 +659,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: faf55c7d70f9a9e77476db3631d59fdbe7948c2f5b9ff162e8f1b90943c9e9c6
+    configMapHash: 82f456d98effa019a50d6f412eba53e92a12811ea6b6dea9846e1378bdd6e9df
   name: prometheus
   namespace: monitoring
 spec:
