@@ -183,6 +183,29 @@ kubeProxy:
 
 
 additionalPrometheusRulesMap:
+  flux-alerts:
+    groups:
+    - name: flux
+      rules:
+        - alert: SuspendedResource
+          expr: gotk_suspend_status == 1
+          for: 10m
+          labels:
+            service: flux
+            severity: warning
+          annotations:
+            summary: "Flux resource `{{$labels.kind}}/{{$labels.name}}` is suspended"
+            description: "The resource was manually suspended. You should resume it"
+        - alert: FailingReconcile
+          expr: gotk_reconcile_condition{status="False"} == 1
+          for: 10m
+          labels:
+            service: flux
+            severity: critical
+          annotations:
+            summary: "Flux resource `{{$labels.kind}}/{{$labels.name}}` is failing"
+            description: "Reconciliation could not succeed. This requires investigation"
+
   vault-alerts:
     groups:
     - name: vault
