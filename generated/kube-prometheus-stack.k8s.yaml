@@ -126,7 +126,7 @@ metadata:
   name: kube-prometheus-stack-helm-val-prometheus-c840a4c5
   namespace: monitoring
 data:
-  values.yaml: |-
+  values.yaml: |
     # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
 
     prometheus:
@@ -391,7 +391,7 @@ data:
               - kustomize.toolkit.fluxcd.io
               - helm.toolkit.fluxcd.io
               - notification.toolkit.fluxcd.io
-              # - image.toolkit.fluxcd.io
+              - image.toolkit.fluxcd.io
             resources:
               - gitrepositories
               - buckets
@@ -403,9 +403,9 @@ data:
               - alerts
               - providers
               - receivers
-              # - imagerepositories
-              # - imagepolicies
-              # - imageupdateautomations
+              - imagerepositories
+              - imagepolicies
+              - imageupdateautomations
             verbs: [ "list", "watch" ]
       customResourceState:
         enabled: true
@@ -600,66 +600,12 @@ data:
                       ready: [ status, conditions, "[type=Ready]", status ]
                       suspended: [ spec, suspend ]
                       webhook_path: [ status, webhookPath ]
-              - groupVersionKind:
-                  group: image.toolkit.fluxcd.io
-                  version: v1beta2
-                  kind: ImageRepository
-                metricNamePrefix: gotk
-                metrics:
-                  - name: "resource_info"
-                    help: "The current state of a Flux ImageRepository resource."
-                    each:
-                      type: Info
-                      info:
-                        labelsFromPath:
-                          name: [ metadata, name ]
-                    labelsFromPath:
-                      exported_namespace: [ metadata, namespace ]
-                      ready: [ status, conditions, "[type=Ready]", status ]
-                      suspended: [ spec, suspend ]
-                      image: [ spec, image ]
-              - groupVersionKind:
-                  group: image.toolkit.fluxcd.io
-                  version: v1beta2
-                  kind: ImagePolicy
-                metricNamePrefix: gotk
-                metrics:
-                  - name: "resource_info"
-                    help: "The current state of a Flux ImagePolicy resource."
-                    each:
-                      type: Info
-                      info:
-                        labelsFromPath:
-                          name: [ metadata, name ]
-                    labelsFromPath:
-                      exported_namespace: [ metadata, namespace ]
-                      ready: [ status, conditions, "[type=Ready]", status ]
-                      suspended: [ spec, suspend ]
-                      source_name: [ spec, imageRepositoryRef, name ]
-              - groupVersionKind:
-                  group: image.toolkit.fluxcd.io
-                  version: v1beta2
-                  kind: ImageUpdateAutomation
-                metricNamePrefix: gotk
-                metrics:
-                  - name: "resource_info"
-                    help: "The current state of a Flux ImageUpdateAutomation resource."
-                    each:
-                      type: Info
-                      info:
-                        labelsFromPath:
-                          name: [ metadata, name ]
-                    labelsFromPath:
-                      exported_namespace: [ metadata, namespace ]
-                      ready: [ status, conditions, "[type=Ready]", status ]
-                      suspended: [ spec, suspend ]
-                      source_name: [ spec, sourceRef, name ]
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 82f456d98effa019a50d6f412eba53e92a12811ea6b6dea9846e1378bdd6e9df
+    configMapHash: 9793eb03c7b65101718dd866e403dcf2917e5d6e9686727d78b769a31df09676
   name: prometheus
   namespace: monitoring
 spec:
