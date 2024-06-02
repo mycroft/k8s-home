@@ -358,9 +358,9 @@ data:
 
     # https://github.com/fluxcd/flux2-monitoring-example/blob/main/monitoring/controllers/kube-prometheus-stack/kube-state-metrics-config.yaml
     kube-state-metrics:
-      collectors: [ ]
-      extraArgs:
-        - --custom-resource-state-only=true
+      # collectors: [ ]
+      # extraArgs:
+      #   - --custom-resource-state-only=true
       rbac:
         extraRules:
           - apiGroups:
@@ -636,7 +636,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 3921c97c6ecc115c01cd6cce9f1fe061060bc0bb95f0932ba71bc9945a4d74c7
+    configMapHash: ea1fecb29d8c0cb2100c781f02f41bdf239376895413a1003fdb158a064029ba
   name: prometheus
   namespace: monitoring
 spec:
