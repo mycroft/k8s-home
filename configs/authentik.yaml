@@ -50,7 +50,7 @@ server:
       mountPath: /authentik-secret
       readOnly: true
     - name: mailrelay
-      mounthPath: /mailrelay
+      mountPath: /mailrelay
       readOnly: true
   metrics:
     enabled: true
@@ -76,7 +76,7 @@ worker:
       mountPath: /authentik-secret
       readOnly: true
     - name: mailrelay
-      mounthPath: /mailrelay
+      mountPath: /mailrelay
       readOnly: true
 
 prometheus:
