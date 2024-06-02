@@ -227,7 +227,7 @@ metadata:
   namespace: authentik
 spec:
   forwardAuth:
-    address: https://auth.services.mkz.me/outpost.goauthentik.io/auth/traefik
+    address: http://ak-outpost-authentik-embedded-outpost.authentik:9000/outpost.goauthentik.io/auth/traefik
     authRequestHeaders:
       - X-authentik-username
       - X-authentik-groups
