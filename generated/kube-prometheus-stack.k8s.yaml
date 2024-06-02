@@ -334,6 +334,15 @@ data:
               annotations:
                 summary: "Flux resource `{{$labels.kind}}/{{$labels.name}}` is failing"
                 description: "Reconciliation could not succeed. This requires investigation"
+            - alert: FailingHelmReleaseReconcile
+              expr: gotk_resource_info{customresource_kind="HelmRelease", ready="False"} == 1
+              for: 10m
+              labels:
+                service: flux
+                severity: critical
+              annotations:
+                summary: "Flux resource `{{$labels.customresource_kind}}/{{$labels.chart_name}}` is failing"
+                description: "Reconciliation in namespace `{{$labels.exported_namespace}}` could not succeed. This requires investigation"
 
       vault-alerts:
         groups:
@@ -605,7 +614,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 9793eb03c7b65101718dd866e403dcf2917e5d6e9686727d78b769a31df09676
+    configMapHash: 9dda6076da8c32521f91c40969068c68fb9fd36499858aaccc700f914e7b2f9d
   name: prometheus
   namespace: monitoring
 spec:
