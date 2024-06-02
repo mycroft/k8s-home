@@ -312,6 +312,29 @@ data:
 
 
     additionalPrometheusRulesMap:
+      flux-alerts:
+        groups:
+        - name: flux
+          rules:
+            - alert: SuspendedResource
+              expr: gotk_suspend_status == 1
+              for: 10m
+              labels:
+                service: flux
+                severity: warning
+              annotations:
+                summary: "Flux resource `{{$labels.kind}}/{{$labels.name}}` is suspended"
+                description: "The resource was manually suspended. You should resume it"
+            - alert: FailingReconcile
+              expr: gotk_reconcile_condition{status="False"} == 1
+              for: 10m
+              labels:
+                service: flux
+                severity: critical
+              annotations:
+                summary: "Flux resource `{{$labels.kind}}/{{$labels.name}}` is failing"
+                description: "Reconciliation could not succeed. This requires investigation"
+
       vault-alerts:
         groups:
         - name: vault
@@ -636,7 +659,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: ea1fecb29d8c0cb2100c781f02f41bdf239376895413a1003fdb158a064029ba
+    configMapHash: faf55c7d70f9a9e77476db3631d59fdbe7948c2f5b9ff162e8f1b90943c9e9c6
   name: prometheus
   namespace: monitoring
 spec:
