@@ -23,6 +23,7 @@ func HomelabBuildApp() cdk8s.App {
 	charts_security.NewDexIdpChart(app)
 	charts_security.NewTraefikForwardAuth(app)
 	// charts_security.NewKyvernoChart(app)
+	charts_security.NewAuthentikChart(app)
 
 	// storage
 	charts_storage.NewLonghornChart(app)

@@ -1,0 +1,55 @@
+# https://github.com/goauthentik/helm/blob/main/charts/authentik/values.yaml
+authentik:
+  log_level: trace
+  postgresql:
+    host: postgres-instance.postgres
+    user: file:///postgres-creds/username
+    password: file:///postgres-creds/password
+  redis:
+    host: authentik-redis-svc-c850dde6.authentik
+  secret_key: file:///authentik-secret/secret_key
+
+server:
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      traefik.ingress.kubernetes.io/redirect-entry-point: "https"
+      traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    ingressClassName: traefik
+    hosts:
+      - auth.services.mkz.me
+    tls:
+      - hosts:
+        - auth.services.mkz.me
+        secretName: auth-cert-tls  
+  volumes:
+    - name: postgres-creds
+      secret:
+        secretName: postgresql
+    - name: authentik-secret
+      secret:
+        secretName: authentik-secret
+  volumeMounts:
+    - name: postgres-creds
+      mountPath: /postgres-creds
+      readOnly: true
+    - name: authentik-secret
+      mountPath: /authentik-secret
+      readOnly: true
+
+worker:
+  volumes:
+    - name: postgres-creds
+      secret:
+        secretName: postgresql
+    - name: authentik-secret
+      secret:
+        secretName: authentik-secret
+  volumeMounts:
+    - name: postgres-creds
+      mountPath: /postgres-creds
+      readOnly: true
+    - name: authentik-secret
+      mountPath: /authentik-secret
+      readOnly: true
