@@ -186,18 +186,6 @@ spec:
             storage: 32Gi
         storageClassName: longhorn-crypto-global
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: paperless-ngx-svc-c81b4690
-  namespace: paperless-ngx
-spec:
-  ports:
-    - name: http
-      port: 8000
-  selector:
-    app.kubernetes.io/component: paperless-ngx
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -213,7 +201,7 @@ spec:
         paths:
           - backend:
               service:
-                name: paperless-ngx-svc-c81b4690
+                name: paperless-ngx-paperless-ngx-svc-c8f47743
                 port:
                   name: http
             path: /
