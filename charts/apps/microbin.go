@@ -63,7 +63,7 @@ func NewMicrobinChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 		},
 	}
 
-	kubehelpers.NewStatefulSet(
+	_, svcName := kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -88,7 +88,7 @@ func NewMicrobinChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 		appName,
 		appPort,
 		appIngress,
-		"",
+		svcName,
 		map[string]string{},
 	)
 
