@@ -29,7 +29,7 @@ func NewVaultWardenChart(ctx context.Context, scope constructs.Construct) cdk8s.
 
 	kubehelpers.NewNamespace(chart, namespace)
 
-	kubehelpers.NewStatefulSet(
+	_, svcName := kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -54,7 +54,7 @@ func NewVaultWardenChart(ctx context.Context, scope constructs.Construct) cdk8s.
 		appName,
 		appPort,
 		appIngress,
-		"",
+		svcName,
 		map[string]string{},
 	)
 
