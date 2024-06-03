@@ -103,7 +103,7 @@ func NewHappyUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 		appName,
 		appPort,
 		ingressHost,
-		"",
+		svcName,
 		map[string]string{},
 	)
 
