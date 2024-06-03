@@ -36,7 +36,7 @@ func NewFreshRSS(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 
 	kubehelpers.NewNamespace(chart, namespace)
 
-	stsName, _ := kubehelpers.NewStatefulSet(
+	stsName, svcName := kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -139,7 +139,7 @@ func NewFreshRSS(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 		appName,
 		appPort,
 		appIngress,
-		"",
+		svcName,
 		map[string]string{},
 	)
 
