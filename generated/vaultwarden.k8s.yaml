@@ -52,18 +52,6 @@ spec:
             storage: 10Gi
         storageClassName: longhorn-crypto-global
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: vaultwarden-svc-c80e18c0
-  namespace: vaultwarden
-spec:
-  ports:
-    - name: http
-      port: 80
-  selector:
-    app.kubernetes.io/name: vaultwarden
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -79,7 +67,7 @@ spec:
         paths:
           - backend:
               service:
-                name: vaultwarden-svc-c80e18c0
+                name: vaultwarden-vaultwarden-svc-c829752e
                 port:
                   name: http
             path: /
