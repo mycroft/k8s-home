@@ -68,18 +68,6 @@ spec:
             storage: 1Gi
         storageClassName: longhorn-crypto-global
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: linkding-svc-c803f321
-  namespace: linkding
-spec:
-  ports:
-    - name: http
-      port: 9090
-  selector:
-    app.kubernetes.io/name: linkding
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -95,7 +83,7 @@ spec:
         paths:
           - backend:
               service:
-                name: linkding-svc-c803f321
+                name: linkding-linkding-svc-c8a6d246
                 port:
                   name: http
             path: /
