@@ -30,7 +30,7 @@ func NewSnippetBoxChart(ctx context.Context, scope constructs.Construct) cdk8s.C
 
 	kubehelpers.NewNamespace(chart, namespace)
 
-	kubehelpers.NewStatefulSet(
+	_, svcName := kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -55,7 +55,7 @@ func NewSnippetBoxChart(ctx context.Context, scope constructs.Construct) cdk8s.C
 		appName,
 		appPort,
 		appIngress,
-		"",
+		svcName,
 		map[string]string{},
 	)
 
