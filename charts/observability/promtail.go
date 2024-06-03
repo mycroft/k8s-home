@@ -1,13 +1,15 @@
 package observability
 
 import (
+	"context"
+
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewPromtailChart(scope constructs.Construct) cdk8s.Chart {
+func NewPromtailChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "promtail"
 	repositoryName := "grafana"
 	chartName := "promtail"

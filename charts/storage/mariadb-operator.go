@@ -1,13 +1,15 @@
 package storage
 
 import (
+	"context"
+
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewMariaDBOperator(scope constructs.Construct) cdk8s.Chart {
+func NewMariaDBOperator(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "mariadb-operator"
 	releaseName := "mariadb-operator"
 

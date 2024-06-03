@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8smariadbcom"
@@ -10,7 +11,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewMariaDBChart(scope constructs.Construct) cdk8s.Chart {
+func NewMariaDBChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "mariadb"
 
 	chart := cdk8s.NewChart(

@@ -1,6 +1,8 @@
 package charts
 
 import (
+	"context"
+
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 
 	charts_apps "git.mkz.me/mycroft/k8s-home/charts/apps"
@@ -11,78 +13,78 @@ import (
 	charts_storage "git.mkz.me/mycroft/k8s-home/charts/storage"
 )
 
-func HomelabBuildApp() cdk8s.App {
+func HomelabBuildApp(ctx context.Context) cdk8s.App {
 	app := cdk8s.NewApp(nil)
 
 	// security
-	charts_security.NewCertManagerChart(app)
-	charts_security.NewSealedSecretsChart(app)
-	charts_security.NewVaultChart(app)
-	charts_security.NewExternalSecretsChart(app)
-	// charts_security.NewTrivyChart(app)
-	charts_security.NewDexIdpChart(app)
-	charts_security.NewTraefikForwardAuth(app)
-	// charts_security.NewKyvernoChart(app)
-	charts_security.NewAuthentikChart(app)
+	charts_security.NewCertManagerChart(ctx, app)
+	charts_security.NewSealedSecretsChart(ctx, app)
+	charts_security.NewVaultChart(ctx, app)
+	charts_security.NewExternalSecretsChart(ctx, app)
+	// charts_security.NewTrivyChart(ctx, app)
+	charts_security.NewDexIdpChart(ctx, app)
+	charts_security.NewTraefikForwardAuth(ctx, app)
+	// charts_security.NewKyvernoChart(ctx, app)
+	charts_security.NewAuthentikChart(ctx, app)
 
 	// storage
-	charts_storage.NewLonghornChart(app)
-	charts_storage.NewPostgresOperator(app)
-	charts_storage.NewPostgres(app)
-	charts_storage.NewMinioOperator(app)
-	charts_storage.NewMinio(app)
-	charts_storage.NewScyllaOperatorChart(app)
-	charts_storage.NewScyllaChart(app)
-	charts_storage.NewNATSChart(app)
-	// apps.NewOpenSearchChart(app)
-	charts_storage.NewMariaDBOperator(app)
-	charts_storage.NewMariaDBChart(app)
-	charts_infra.NewVeleroChart(app)
+	charts_storage.NewLonghornChart(ctx, app)
+	charts_storage.NewPostgresOperator(ctx, app)
+	charts_storage.NewPostgres(ctx, app)
+	charts_storage.NewMinioOperator(ctx, app)
+	charts_storage.NewMinio(ctx, app)
+	charts_storage.NewScyllaOperatorChart(ctx, app)
+	charts_storage.NewScyllaChart(ctx, app)
+	charts_storage.NewNATSChart(ctx, app)
+	// apps.NewOpenSearchChart(ctx, app)
+	charts_storage.NewMariaDBOperator(ctx, app)
+	charts_storage.NewMariaDBChart(ctx, app)
+	charts_infra.NewVeleroChart(ctx, app)
 
 	// observability
-	charts_observability.NewGrafanaHelmRepositoryChart(app)
-	charts_observability.NewKubePrometheusStackChart(app)
-	charts_observability.NewBlackboxExporterChart(app)
-	charts_observability.NewLokiChart(app)
-	charts_observability.NewPromtailChart(app)
-	// charts_observability.NewJaegerChart(app)
-	charts_observability.NewTempoChart(app)
+	charts_observability.NewGrafanaHelmRepositoryChart(ctx, app)
+	charts_observability.NewKubePrometheusStackChart(ctx, app)
+	charts_observability.NewBlackboxExporterChart(ctx, app)
+	charts_observability.NewLokiChart(ctx, app)
+	charts_observability.NewPromtailChart(ctx, app)
+	// charts_observability.NewJaegerChart(ctx, app)
+	charts_observability.NewTempoChart(ctx, app)
 
 	// misc tooling
-	charts_infra.NewFluxCDChart(app)
-	charts_infra.NewCapacitorChart(app)
-	charts_infra.NewKubernetesDashboardChart(app)
-	charts_infra.NewLinkerdChart(app)
-	charts_infra.NewTektonChart(app)
-	charts_infra.NewTemporalChart(app)
+	charts_infra.NewFluxCDChart(ctx, app)
+	charts_infra.NewCapacitorChart(ctx, app)
+	charts_infra.NewKubernetesDashboardChart(ctx, app)
+	charts_infra.NewLinkerdChart(ctx, app)
+	charts_infra.NewTektonChart(ctx, app)
+	charts_infra.NewTemporalChart(ctx, app)
 
 	// apps
-	charts_apps.NewHelloKubernetesChart(app)
-	charts_apps.NewWhatIsMyIPChart(app)
-	charts_apps.NewWallabagChart(app)
-	charts_apps.NewUrlsChart(app)
-	charts_apps.NewFreshRSS(app)
-	charts_apps.NewLinkdingChart(app)
-	charts_apps.NewPrivatebinChart(app)
-	charts_apps.NewPaperlessNGXChart(app)
-	charts_apps.NewYopassChart(app)
-	charts_apps.NewITToolsChart(app)
-	charts_apps.NewBookstackChart(app)
-	// charts_apps.NewHeimdallChart(app)
-	charts_apps.NewEmojivotoChart(app)
-	charts_apps.NewVaultWardenChart(app)
-	charts_apps.NewSendChart(app)
-	charts_apps.NewHeyChart(app)
-	charts_apps.NewHappyUrlsChart(app)
-	charts_apps.NewSnippetBoxChart(app)
-	charts_apps.NewExcalidrawChart(app)
-	// charts_apps.NewJitsiChart(app)
-	charts_apps.NewWikiJsChart(app)
-	charts_apps.NewRedmineChart(app)
-	charts_apps.NewMicrobinChart(app)
+	charts_apps.NewHelloKubernetesChart(ctx, app)
+	charts_apps.NewWhatIsMyIPChart(ctx, app)
+	charts_apps.NewWallabagChart(ctx, app)
+	charts_apps.NewUrlsChart(ctx, app)
+	charts_apps.NewFreshRSS(ctx, app)
+	charts_apps.NewLinkdingChart(ctx, app)
+	charts_apps.NewPrivatebinChart(ctx, app)
+	charts_apps.NewPaperlessNGXChart(ctx, app)
+	charts_apps.NewYopassChart(ctx, app)
+	charts_apps.NewITToolsChart(ctx, app)
+	charts_apps.NewBookstackChart(ctx, app)
+	// charts_apps.NewHeimdallChart(ctx, app)
+	charts_apps.NewEmojivotoChart(ctx, app)
+	charts_apps.NewVaultWardenChart(ctx, app)
+	charts_apps.NewSendChart(ctx, app)
+	charts_apps.NewHeyChart(ctx, app)
+	charts_apps.NewHappyUrlsChart(ctx, app)
+	charts_apps.NewSnippetBoxChart(ctx, app)
+	charts_apps.NewExcalidrawChart(ctx, app)
+	// charts_apps.NewJitsiChart(ctx, app)
+	charts_apps.NewWikiJsChart(ctx, app)
+	charts_apps.NewRedmineChart(ctx, app)
+	charts_apps.NewMicrobinChart(ctx, app)
 
 	// CI/CD
-	charts_cicd.NewCICDChart(app)
+	charts_cicd.NewCICDChart(ctx, app)
 
 	return app
 }

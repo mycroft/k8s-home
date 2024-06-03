@@ -1,6 +1,7 @@
 package infra
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewCICDChart(scope constructs.Construct) cdk8s.Chart {
+func NewCICDChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "tekton-builds"
 
 	chart := cdk8s.NewChart(

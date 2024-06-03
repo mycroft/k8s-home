@@ -1,6 +1,8 @@
 package observability
 
 import (
+	"context"
+
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -8,7 +10,7 @@ import (
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 )
 
-func NewKubePrometheusStackChart(scope constructs.Construct) cdk8s.Chart {
+func NewKubePrometheusStackChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	appName := "kube-prometheus-stack"
 	namespace := "monitoring"
 

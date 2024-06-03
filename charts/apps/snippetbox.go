@@ -1,6 +1,8 @@
 package apps
 
 import (
+	"context"
+
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 
@@ -9,7 +11,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewSnippetBoxChart(scope constructs.Construct) cdk8s.Chart {
+func NewSnippetBoxChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "snippetbox"
 	appIngress := "snippetbox.services.mkz.me"
 	appName := "snippetbox"

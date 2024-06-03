@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/certificates_certmanagerio"
@@ -12,7 +13,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewBookstackChart(scope constructs.Construct) cdk8s.Chart {
+func NewBookstackChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "bookstack"
 	appName := namespace
 	appImage := kubehelpers.RegisterDockerImage("linuxserver/bookstack")

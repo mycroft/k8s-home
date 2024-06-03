@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -14,7 +15,7 @@ const (
 	happyUrlsImage = "git.mkz.me/mycroft/happy-urls:latest"
 )
 
-func NewHappyUrlsChart(scope constructs.Construct) cdk8s.Chart {
+func NewHappyUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "happy-urls"
 	appName := namespace
 	appPort := 3000

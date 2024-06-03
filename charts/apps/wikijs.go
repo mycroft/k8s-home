@@ -1,6 +1,8 @@
 package apps
 
 import (
+	"context"
+
 	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
@@ -8,7 +10,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewWikiJsChart(scope constructs.Construct) cdk8s.Chart {
+func NewWikiJsChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "wikijs"
 
 	chartName := "wiki"

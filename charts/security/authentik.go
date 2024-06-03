@@ -1,6 +1,7 @@
 package security
 
 import (
+	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
@@ -9,7 +10,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewAuthentikChart(scope constructs.Construct) cdk8s.Chart {
+func NewAuthentikChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "authentik"
 	repositoryName := "authentik"
 	releaseName := "authentik"

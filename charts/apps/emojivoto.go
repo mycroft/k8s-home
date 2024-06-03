@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -10,7 +11,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewEmojivotoChart(scope constructs.Construct) cdk8s.Chart {
+func NewEmojivotoChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "emojivoto"
 	ingressName := "emojivoto.services.mkz.me"
 	imageEmojiSvc := kubehelpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-emoji-svc")

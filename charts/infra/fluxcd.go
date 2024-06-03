@@ -1,13 +1,15 @@
 package infra
 
 import (
+	"context"
+
 	podmonitor "git.mkz.me/mycroft/k8s-home/imports/podmonitor_monitoringcoreoscom"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewFluxCDChart(scope constructs.Construct) cdk8s.Chart {
+func NewFluxCDChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "flux-system"
 
 	chart := cdk8s.NewChart(

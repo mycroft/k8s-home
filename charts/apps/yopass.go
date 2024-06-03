@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -11,7 +12,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewYopassChart(scope constructs.Construct) cdk8s.Chart {
+func NewYopassChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "yopass"
 	appIngress := "yopass.services.mkz.me"
 	appName := "yopass"

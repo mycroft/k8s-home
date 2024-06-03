@@ -1,6 +1,7 @@
 package security
 
 import (
+	"context"
 	"log"
 	"os"
 
@@ -11,7 +12,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewDexIdpChart(scope constructs.Construct) cdk8s.Chart {
+func NewDexIdpChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "dex-idp"
 	repositoryName := "dex"
 	chartName := "dex"

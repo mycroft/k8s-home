@@ -1,6 +1,7 @@
 package infra
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/aws/constructs-go/constructs/v10"
@@ -8,7 +9,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewTektonChart(scope constructs.Construct) cdk8s.Chart {
+func NewTektonChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	chart := cdk8s.NewChart(
 		scope,
 		jsii.String("tekton"),

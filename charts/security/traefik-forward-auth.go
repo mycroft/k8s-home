@@ -1,6 +1,7 @@
 package security
 
 import (
+	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -11,7 +12,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewTraefikForwardAuth(scope constructs.Construct) cdk8s.Chart {
+func NewTraefikForwardAuth(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	appName := "traefik-forward-auth"
 	namespace := appName
 	image := kubehelpers.RegisterDockerImage("thomseddon/traefik-forward-auth")

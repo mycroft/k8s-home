@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -14,7 +15,7 @@ const (
 	urlsImage = "git.mkz.me/mycroft/urls:latest"
 )
 
-func NewUrlsChart(scope constructs.Construct) cdk8s.Chart {
+func NewUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "urls"
 	appName := namespace
 	ingressHost := fmt.Sprintf("%s.services.mkz.me", appName)

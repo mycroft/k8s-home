@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -39,7 +40,7 @@ var checkVersionCmd = &cobra.Command{
 		if *debug {
 			log.Println("preparing charts...")
 		}
-		_ = charts.HomelabBuildApp()
+		_ = charts.HomelabBuildApp(context.TODO())
 
 		if *debug {
 			log.Println("running check-versions...")
@@ -53,7 +54,7 @@ func GenerateYamlCharts() {
 		log.Println("preparing charts...")
 	}
 
-	app := charts.HomelabBuildApp()
+	app := charts.HomelabBuildApp(context.TODO())
 
 	if *debug {
 		log.Println("syntheizing yamls...")

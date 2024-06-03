@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -15,7 +16,7 @@ const (
 	heyImage = "git.mkz.me/mycroft/hey:latest"
 )
 
-func NewHeyChart(scope constructs.Construct) cdk8s.Chart {
+func NewHeyChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "hey"
 	appName := namespace
 	appPort := 3000

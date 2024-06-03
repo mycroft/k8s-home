@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -10,7 +11,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewWallabagChart(scope constructs.Construct) cdk8s.Chart {
+func NewWallabagChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "wallabag"
 	appName := namespace
 	appImage := kubehelpers.RegisterDockerImage("wallabag/wallabag")

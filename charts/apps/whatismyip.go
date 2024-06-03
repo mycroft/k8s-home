@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -15,7 +16,7 @@ const (
 	whatismyipImage = "registry.mkz.me/mycroft/whatismyip:5"
 )
 
-func NewWhatIsMyIPChart(scope constructs.Construct) cdk8s.Chart {
+func NewWhatIsMyIPChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	appName := "whatismyip"
 	ingressHost := fmt.Sprintf("%s.services.mkz.me", appName)
 

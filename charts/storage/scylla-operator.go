@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"context"
+
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -16,7 +18,7 @@ import (
 //
 // TODO: Automatize CRDs checks/updates
 
-func NewScyllaOperatorChart(scope constructs.Construct) cdk8s.Chart {
+func NewScyllaOperatorChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "scylla-operator"
 
 	repoName := "scylla"

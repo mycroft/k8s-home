@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"context"
 	"log"
 	"os"
 
@@ -11,7 +12,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewPrivatebinChart(scope constructs.Construct) cdk8s.Chart {
+func NewPrivatebinChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	namespace := "privatebin"
 	appName := namespace
 	appPort := 8080
