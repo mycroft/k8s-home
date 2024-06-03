@@ -52,18 +52,6 @@ spec:
             storage: 1Gi
         storageClassName: longhorn-crypto-global
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: snippetbox-svc-c824f9c2
-  namespace: snippetbox
-spec:
-  ports:
-    - name: http
-      port: 5000
-  selector:
-    app.kubernetes.io/component: snippetbox
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -79,7 +67,7 @@ spec:
         paths:
           - backend:
               service:
-                name: snippetbox-svc-c824f9c2
+                name: snippetbox-snippetbox-svc-c8f31305
                 port:
                   name: http
             path: /
