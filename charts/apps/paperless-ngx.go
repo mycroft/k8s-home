@@ -78,7 +78,7 @@ func NewPaperlessNGXChart(ctx context.Context, scope constructs.Construct) cdk8s
 	appName := "paperless-ngx"
 	appPort := 8000
 
-	kubehelpers.NewStatefulSet(
+	_, svcName := kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -108,7 +108,7 @@ func NewPaperlessNGXChart(ctx context.Context, scope constructs.Construct) cdk8s
 		appName,
 		appPort,
 		appIngress,
-		"",
+		svcName,
 		map[string]string{},
 	)
 
