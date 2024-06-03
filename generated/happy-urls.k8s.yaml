@@ -88,19 +88,6 @@ spec:
           imagePullPolicy: Always
           name: happy-urls
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: happy-urls-svc-c8e83750
-  namespace: happy-urls
-spec:
-  ports:
-    - name: http
-      port: 3000
-  selector:
-    app.kubernetes.io/component: happy-urls
-    app.kubernetes.io/name: happy-urls
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -116,7 +103,7 @@ spec:
         paths:
           - backend:
               service:
-                name: happy-urls-svc-c8e83750
+                name: happy-urls-redis-svc-c8857158
                 port:
                   name: http
             path: /
