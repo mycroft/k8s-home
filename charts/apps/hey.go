@@ -67,6 +67,7 @@ func NewHeyChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	)
 
 	kubehelpers.NewAppIngresses(
+		ctx,
 		chart,
 		labels,
 		appName,

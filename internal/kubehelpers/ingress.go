@@ -1,6 +1,10 @@
 package kubehelpers
 
 import (
+	"context"
+	"fmt"
+	"strings"
+
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
@@ -35,6 +39,7 @@ func NewAppService(
 }
 
 func NewAppIngresses(
+	ctx context.Context,
 	chart cdk8s.Chart,
 	labels map[string]*string,
 	namespace string,
@@ -54,6 +59,10 @@ func NewAppIngresses(
 	portName := "http"
 
 	if serviceName == "" {
+		if ContextGetDebug(ctx) {
+			fmt.Printf("creating a service for %s' Ingress (%s)\n", *chart.ToString(), strings.Join(ingressHosts, ", "))
+		}
+
 		svc := NewAppService(
 			chart,
 			namespace,
@@ -116,6 +125,7 @@ func NewAppIngresses(
 }
 
 func NewAppIngress(
+	ctx context.Context,
 	chart cdk8s.Chart,
 	labels map[string]*string,
 	namespace string,
@@ -125,6 +135,7 @@ func NewAppIngress(
 	customAnnotations map[string]string,
 ) {
 	NewAppIngresses(
+		ctx,
 		chart,
 		labels,
 		namespace,

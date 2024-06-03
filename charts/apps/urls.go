@@ -62,6 +62,7 @@ func NewUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	)
 
 	kubehelpers.NewAppIngress(
+		ctx,
 		chart,
 		labels,
 		appName,

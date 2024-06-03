@@ -7,8 +7,8 @@ build:
 diff: generate
     sh contrib/diff.sh
 
-generate: build
-    ./k8s-home
+generate *ARGS: build
+    ./k8s-home {{ARGS}}
     ls -l dist/
 
 lint:

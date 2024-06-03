@@ -74,6 +74,7 @@ func NewSendChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	)
 
 	kubehelpers.NewAppIngress(
+		ctx,
 		chart,
 		sendLabels,
 		appName,

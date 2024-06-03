@@ -316,6 +316,7 @@ func NewEmojivotoChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	kubehelpers.NewAppIngress(
+		ctx,
 		chart,
 		map[string]*string{
 			"app": jsii.String("web"),

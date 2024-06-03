@@ -97,6 +97,7 @@ func NewHappyUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	kubehelpers.NewAppIngress(
+		ctx,
 		chart,
 		labels,
 		appName,

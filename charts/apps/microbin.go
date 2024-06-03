@@ -82,6 +82,7 @@ func NewMicrobinChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 	)
 
 	kubehelpers.NewAppIngress(
+		ctx,
 		chart,
 		labels,
 		appName,

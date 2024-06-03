@@ -48,6 +48,7 @@ func NewYopassChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 	)
 
 	kubehelpers.NewAppIngress(
+		ctx,
 		chart,
 		yopassLabels,
 		appName,

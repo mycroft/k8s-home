@@ -77,6 +77,7 @@ func NewBookstackChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 
 	if useLegacyIngress {
 		kubehelpers.NewAppIngress(
+			ctx,
 			chart,
 			labels,
 			appName,

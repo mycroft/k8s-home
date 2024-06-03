@@ -94,6 +94,7 @@ func NewHelloKubernetesChart(ctx context.Context, scope constructs.Construct) cd
 	// traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
 
 	kubehelpers.NewAppIngress(
+		ctx,
 		chart,
 		labels,
 		appName,

@@ -42,6 +42,7 @@ func NewITToolsChart(ctx context.Context, scope constructs.Construct) cdk8s.Char
 	)
 
 	kubehelpers.NewAppIngress(
+		ctx,
 		chart,
 		appLabels,
 		appName,

@@ -102,6 +102,7 @@ func NewPaperlessNGXChart(ctx context.Context, scope constructs.Construct) cdk8s
 	)
 
 	kubehelpers.NewAppIngress(
+		ctx,
 		chart,
 		paperlessngxLabels,
 		appName,

@@ -61,6 +61,7 @@ func NewWhatIsMyIPChart(ctx context.Context, scope constructs.Construct) cdk8s.C
 	)
 
 	kubehelpers.NewAppIngress(
+		ctx,
 		chart,
 		labels,
 		appName,
