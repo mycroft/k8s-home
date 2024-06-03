@@ -117,18 +117,6 @@ spec:
             storage: 4Gi
         storageClassName: longhorn-crypto-global
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: microbin-svc-c8601725
-  namespace: microbin
-spec:
-  ports:
-    - name: http
-      port: 8080
-  selector:
-    app.kubernetes.io/name: microbin
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -144,7 +132,7 @@ spec:
         paths:
           - backend:
               service:
-                name: microbin-svc-c8601725
+                name: microbin-microbin-svc-c887b9e1
                 port:
                   name: http
             path: /
