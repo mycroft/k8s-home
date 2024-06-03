@@ -30,7 +30,7 @@ func NewLinkdingChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 		"app.kubernetes.io/name": jsii.String(appName),
 	}
 
-	kubehelpers.NewStatefulSet(
+	_, svcName := kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		appName,
@@ -55,7 +55,7 @@ func NewLinkdingChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 		appName,
 		appPort,
 		appIngress,
-		"",
+		svcName,
 		map[string]string{},
 	)
 
