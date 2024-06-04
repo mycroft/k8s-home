@@ -111,3 +111,74 @@ subjects:
   - kind: ServiceAccount
     name: capacitor
     namespace: flux-system
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: capacitor
+  namespace: flux-system
+spec:
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+      ports:
+        - port: 9000
+          protocol: TCP
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: capacitor
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: acme-capacitor
+  namespace: flux-system
+spec:
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+  podSelector:
+    matchLabels:
+      acme.cert-manager.io/http01-solver: "true"
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+  name: capacitor-ingress-c89b6ddf
+  namespace: flux-system
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: capacitor.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: capacitor
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - capacitor.services.mkz.me
+      secretName: secret-tls-www
