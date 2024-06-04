@@ -134,5 +134,111 @@ func NewCapacitorChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 		},
 	)
 
+	labels := map[string]*string{
+		"app.kubernetes.io/component": jsii.String("capacitor"),
+	}
+
+	annotations := map[string]string{
+		"traefik.ingress.kubernetes.io/redirect-entry-point": "https",
+		"traefik.ingress.kubernetes.io/redirect-permanent":   "true",
+		"traefik.ingress.kubernetes.io/router.middlewares":   "traefik-forward-auth-traefik-forward-auth@kubernetescrd",
+	}
+
+	podPort := 9000.
+	k8s.NewKubeNetworkPolicy(
+		chart,
+		jsii.String("capacitor"),
+		&k8s.KubeNetworkPolicyProps{
+			Metadata: &k8s.ObjectMeta{
+				Name:      jsii.String("capacitor"),
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &k8s.NetworkPolicySpec{
+				PodSelector: &k8s.LabelSelector{
+					MatchLabels: &map[string]*string{
+						"app.kubernetes.io/instance": jsii.String("capacitor"),
+					},
+				},
+				PolicyTypes: &[]*string{
+					jsii.String("Ingress"),
+				},
+				Ingress: &[]*k8s.NetworkPolicyIngressRule{
+					{
+						From: &[]*k8s.NetworkPolicyPeer{
+							{
+								NamespaceSelector: &k8s.LabelSelector{
+									MatchLabels: &map[string]*string{
+										"kubernetes.io/metadata.name": jsii.String("kube-system"),
+									},
+								},
+								PodSelector: &k8s.LabelSelector{
+									MatchLabels: &map[string]*string{
+										"app.kubernetes.io/name": jsii.String("traefik"),
+									},
+								},
+							},
+						},
+						Ports: &[]*k8s.NetworkPolicyPort{
+							{
+								Port:     k8s.IntOrString_FromNumber(&podPort),
+								Protocol: jsii.String("TCP"),
+							},
+						},
+					},
+				},
+			},
+		},
+	)
+
+	k8s.NewKubeNetworkPolicy(
+		chart,
+		jsii.String("acme-capacitor"),
+		&k8s.KubeNetworkPolicyProps{
+			Metadata: &k8s.ObjectMeta{
+				Name:      jsii.String("acme-capacitor"),
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &k8s.NetworkPolicySpec{
+				PodSelector: &k8s.LabelSelector{
+					MatchLabels: &map[string]*string{
+						"acme.cert-manager.io/http01-solver": jsii.String("true"),
+					},
+				},
+				PolicyTypes: &[]*string{
+					jsii.String("Ingress"),
+				},
+				Ingress: &[]*k8s.NetworkPolicyIngressRule{
+					{
+						From: &[]*k8s.NetworkPolicyPeer{
+							{
+								NamespaceSelector: &k8s.LabelSelector{
+									MatchLabels: &map[string]*string{
+										"kubernetes.io/metadata.name": jsii.String("kube-system"),
+									},
+								},
+								PodSelector: &k8s.LabelSelector{
+									MatchLabels: &map[string]*string{
+										"app.kubernetes.io/name": jsii.String("traefik"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	)
+
+	kubehelpers.NewAppIngress(
+		ctx,
+		chart,
+		labels,
+		namespace,
+		9000,
+		"capacitor.services.mkz.me", // fqdn
+		"capacitor",                 // service name, created by the helm chart
+		annotations,
+	)
+
 	return chart
 }
