@@ -9,6 +9,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/Masterminds/semver"
 	"github.com/google/go-containerregistry/pkg/name"
@@ -152,10 +153,22 @@ func CheckVersions(debug bool, filter string) {
 			continue
 		}
 
+		if debug {
+			log.Printf("checking %s...", image)
+		}
+
+		start_ts := time.Now()
+
 		versions := GetLastImageTag(parts[0], parts[1])
 
 		if len(versions) > 0 {
 			fmt.Printf("%s;%s;%s\n", parts[0], parts[1], versions[len(versions)-1])
+		}
+
+		done_ts := time.Now()
+
+		if debug {
+			log.Printf("done checking after %d msec", done_ts.UnixMilli()-start_ts.UnixMilli())
 		}
 
 	}
@@ -177,9 +190,7 @@ func RegisterDockerImage(image string) string {
 
 func GetLastImageTag(image, version string) []string {
 	retVersions := []string{}
-	// Set the image name and registry URL
 	imageName := image
-	// registryURL := "https://registry-1.docker.io"
 
 	// Create a new registry client
 	ref, err := name.ParseReference(fmt.Sprintf("%s:%s", imageName, "latest"))
