@@ -80,7 +80,7 @@ metadata:
   name: temporal-helm-val-temporal-c860c230
   namespace: temporal
 data:
-  values.yaml: |
+  values.yaml: |-
     # https://github.com/temporalio/helm-charts/blob/master/charts/temporal/values.yaml
 
     server:
@@ -148,12 +148,19 @@ data:
         enabled: false
       update:
         enabled: false
+
+    admintools:
+      enabled: true
+      image:
+        repository: temporalio/admin-tools
+        tag: 1.24.1-tctl-1.18.1-cli-0.12.0
+        pullPolicy: IfNotPresent
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: ecd1655ed74e378eb7bd8f999312f8b9ce7a692470e606420d33dcda1875ed2b
+    configMapHash: 5da8fa3a82be66d17ca99f227cac7dd7a8ca71ca5f9dde0a82715db28646ae39
   name: temporal
   namespace: temporal
 spec:
