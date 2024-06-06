@@ -65,3 +65,10 @@ schema:
     enabled: false
   update:
     enabled: false
+
+admintools:
+  enabled: true
+  image:
+    repository: temporalio/admin-tools
+    tag: 1.24.1-tctl-1.18.1-cli-0.12.0
+    pullPolicy: IfNotPresent
