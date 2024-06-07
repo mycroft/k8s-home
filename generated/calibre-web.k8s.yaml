@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: calibre-web
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: calibre-web
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  type: oci
+  url: oci://tccr.io/truecharts
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: calibre-web-helm-val-calibre-web-c8a0bd39
+  namespace: calibre-web
+data:
+  values.yaml: |-
+    # https://github.com/truecharts/charts/blob/master/charts/stable/calibre-web/values.yaml
+
+    persistence:
+      config:
+        enabled: true
+        size: 1Gi
+        storageClass: longhorn-crypto-global
+        mountPath: /config
+      books:
+        enabled: true
+        size: 64Gi
+        storageClass: longhorn-crypto-global
+        mountPath: /books
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: traefik
+        hosts:
+          - host: books.services.mkz.me
+        tls:
+          - hosts:
+            - books.services.mkz.me
+            secretName: tls-books-crt
+
+        integrations:
+          certManager:
+            enabled: true
+            certificateIssuer: "letsencrypt-prod"
+          traefik:
+            enabled: true
+            entrypoints:
+              - websecure
+            enableFixedMiddlewares: false
+            forceTLS: true
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: 3940a6c666cd27301f87dda6b2880da73d9fc3062660395b54a70f6b8c2d2f35
+  name: calibre-web
+  namespace: calibre-web
+spec:
+  chart:
+    spec:
+      chart: calibre-web
+      sourceRef:
+        kind: HelmRepository
+        name: calibre-web
+        namespace: flux-system
+      version: 19.0.13
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: calibre-web-helm-val-calibre-web-c8a0bd39
+      valuesKey: values.yaml
