@@ -3,7 +3,7 @@ helmcharts:
   authentik/authentik: 2024.4.2
   dex/dex: 0.18.0
   external-secrets/external-secrets: 0.9.19
-  grafana/loki: 6.6.2
+  grafana/loki: 6.6.3
   grafana/promtail: 6.15.5
   grafana/tempo: 1.9.0
   hashicorp/vault: 0.28.0
