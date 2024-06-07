@@ -1,0 +1,72 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: wiremind
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://wiremind.github.io/wiremind-helm-charts
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: karma-helm-val-karma-c88a1da8
+  namespace: monitoring
+data:
+  values.yaml: |
+    # https://github.com/wiremind/wiremind-helm-charts/blob/main/charts/karma/values.yaml
+
+    configMap:
+      enabled: true
+
+      rawConfig:
+        alertmanager:
+          interval: 30s
+          servers:
+          - name: default
+            uri: http://alertmanager-operated:9093
+            timeout: 10s
+
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt-prod"
+        traefik.ingress.kubernetes.io/redirect-entry-point: "https"
+        traefik.ingress.kubernetes.io/redirect-permanent: "true"
+        traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+      hosts:
+        - karma.services.mkz.me
+      ingressClassName: "traefik"
+      path: /
+      pathType: ImplementationSpecific
+      tls:
+        - hosts:
+          - karma.services.mkz.me
+          secretName: tls-karma-cert
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: e99cf2768a8b3c135097a6fe253956e220fa631e03b02dc66b0b833762d67a7f
+  name: karma
+  namespace: monitoring
+spec:
+  chart:
+    spec:
+      chart: karma
+      sourceRef:
+        kind: HelmRepository
+        name: wiremind
+        namespace: flux-system
+      version: 2.5.3
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: karma-helm-val-karma-c88a1da8
+      valuesKey: values.yaml
