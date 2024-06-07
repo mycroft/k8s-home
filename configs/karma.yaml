@@ -1,0 +1,29 @@
+# https://github.com/wiremind/wiremind-helm-charts/blob/main/charts/karma/values.yaml
+
+configMap:
+  enabled: true
+
+  rawConfig:
+    alertmanager:
+      interval: 30s
+      servers:
+      - name: default
+        uri: http://alertmanager-operated:9093
+        timeout: 10s
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    traefik.ingress.kubernetes.io/redirect-entry-point: "https"
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+  hosts:
+    - karma.services.mkz.me
+  ingressClassName: "traefik"
+  path: /
+  pathType: ImplementationSpecific
+  tls:
+    - hosts:
+      - karma.services.mkz.me
+      secretName: tls-karma-cert
