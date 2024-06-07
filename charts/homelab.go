@@ -83,6 +83,7 @@ func HomelabBuildApp(ctx context.Context) cdk8s.App {
 	charts_apps.NewWikiJsChart(ctx, app)
 	charts_apps.NewRedmineChart(ctx, app)
 	charts_apps.NewMicrobinChart(ctx, app)
+	charts_apps.NewCalibreWebChart(ctx, app)
 
 	// CI/CD
 	charts_cicd.NewCICDChart(ctx, app)

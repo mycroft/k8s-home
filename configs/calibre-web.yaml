@@ -1,0 +1,35 @@
+# https://github.com/truecharts/charts/blob/master/charts/stable/calibre-web/values.yaml
+
+persistence:
+  config:
+    enabled: true
+    size: 1Gi
+    storageClass: longhorn-crypto-global
+    mountPath: /config
+  books:
+    enabled: true
+    size: 64Gi
+    storageClass: longhorn-crypto-global
+    mountPath: /books
+
+ingress:
+  main:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - host: books.services.mkz.me
+    tls:
+      - hosts:
+        - books.services.mkz.me
+        secretName: tls-books-crt
+
+    integrations:
+      certManager:
+        enabled: true
+        certificateIssuer: "letsencrypt-prod"
+      traefik:
+        enabled: true
+        entrypoints:
+          - websecure
+        enableFixedMiddlewares: false
+        forceTLS: true
