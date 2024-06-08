@@ -34,7 +34,7 @@ data:
 
     service:
       enabled: false
-      label:
+      labels:
         dummy-label: due-to-broken-chart
 
     serviceMonitor:
@@ -44,7 +44,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 1f57e927592cc503363c149f604f76366fcd74ca8b24e14e9d103a2bbc107368
+    configMapHash: b7783ebd2fc6dc1c6e17394e01f84ac25fbd747b9c4b37c271d796bc3f3e17f4
   name: promtail
   namespace: promtail
 spec:
