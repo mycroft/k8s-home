@@ -6,7 +6,8 @@ config:
 
 service:
   enabled: false
-  annotations: {}
+  label:
+    dummy-label: due-to-broken-chart
 
 serviceMonitor:
-  enabled: false
+  enabled: true
