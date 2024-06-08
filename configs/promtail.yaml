@@ -4,5 +4,9 @@ config:
   clients:
     - url: http://loki-gateway.loki/loki/api/v1/push
 
+service:
+  enabled: false
+  annotations: {}
+
 serviceMonitor:
-  enabled: true
+  enabled: false
