@@ -6,7 +6,7 @@ config:
 
 service:
   enabled: false
-  label:
+  labels:
     dummy-label: due-to-broken-chart
 
 serviceMonitor:
