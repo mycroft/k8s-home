@@ -32,14 +32,18 @@ data:
       clients:
         - url: http://loki-gateway.loki/loki/api/v1/push
 
+    service:
+      enabled: false
+      annotations: {}
+
     serviceMonitor:
-      enabled: true
+      enabled: false
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: a1c6a8dfe32630336e9f04699bc3f6e455b81a2ca15fb1d91c879bae5fef80f0
+    configMapHash: 6b002fd8dd46c07553df98d697336baec57d3ab78ba59b38fcbc2bbbbe125a28
   name: promtail
   namespace: promtail
 spec:
