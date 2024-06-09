@@ -18,9 +18,11 @@ ingress:
     ingressClassName: traefik
     hosts:
       - host: books.services.mkz.me
+      - host: lib.iop.cx
     tls:
       - hosts:
         - books.services.mkz.me
+        - lib.iop.cx
         secretName: tls-books-crt
 
     integrations:
