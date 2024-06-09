@@ -40,9 +40,11 @@ data:
         ingressClassName: traefik
         hosts:
           - host: books.services.mkz.me
+          - host: lib.iop.cx
         tls:
           - hosts:
             - books.services.mkz.me
+            - lib.iop.cx
             secretName: tls-books-crt
 
         integrations:
@@ -60,7 +62,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 3940a6c666cd27301f87dda6b2880da73d9fc3062660395b54a70f6b8c2d2f35
+    configMapHash: a9400d096875d189d1e555c37e20e6d4d66721f70706aac4a55245d85deb0ff1
   name: calibre-web
   namespace: calibre-web
 spec:
