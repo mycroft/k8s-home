@@ -72,6 +72,9 @@ func GetHelmUpdates(debug bool, filter string) (map[string]string, error) {
 		repositoryURL := helmRepositories[helmRelease.RepositoryName]
 
 		if strings.HasPrefix(repositoryURL, "oci://") {
+			if debug {
+				log.Printf("skipped %s as oci:// is not supported", repositoryURL)
+			}
 			continue
 		}
 
