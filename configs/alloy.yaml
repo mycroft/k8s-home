@@ -14,6 +14,10 @@ alloy:
         role = "pod"
       }
 
+      loki.source.kubernetes_events "events" {
+        forward_to = [loki.echo.echo.receiver]
+      }
+
       loki.source.kubernetes "pods" {
         targets    = discovery.kubernetes.pods.targets
         forward_to = [loki.write.default.receiver]
