@@ -48,7 +48,7 @@ metadata:
   name: loki-helm-val-loki-c8d03bab
   namespace: loki
 data:
-  values.yaml: |-
+  values.yaml: |
     # https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
     loki:
       auth_enabled: false
@@ -82,14 +82,19 @@ data:
     write:
       replicas: 0
 
-    serviceMonitor:
-      enabled: true
+    monitoring:
+      dashboards:
+        enabled: true
+      serviceMonitor:
+        enabled: true
+        metricsInstance:
+          enabled: false
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 7f680e4597bb85569d0aa83a5fada1db9cde8bf35d53a3b99c5b5a80a3f61494
+    configMapHash: 0b4bb419610b9ef4b637b0ad1aa7699bd2f811be4fba3f5692da2aff7189fc7e
   name: loki
   namespace: loki
 spec:
