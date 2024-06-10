@@ -68,6 +68,14 @@ data:
               target_label = "container_image"
               // ex: docker.l5d.io/buoyantio/emojivoto-voting-svc:v12
             }
+
+            rule {
+              source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_container_name"]
+              separator = "/"
+              action = "replace"
+              replacement = "$1"
+              target_label = "job"
+            }
           }
 
           loki.source.kubernetes "pods" {
@@ -102,7 +110,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 412532b2537a2a0cea24e74eba2267cc103801749bfa11051464af3563908d2d
+    configMapHash: f19ed9ab9cdc3bc410a5cc0e0435dab53eac33821b04e4697aeaf6e72f744ba1
   name: alloy
   namespace: alloy
 spec:
