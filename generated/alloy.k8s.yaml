@@ -33,7 +33,7 @@ data:
             external_labels = {}
           }
 
-          local.echo "echo" {}
+          loki.echo "echo" {}
 
       extraEnv:
         - name: LOKI_URL
@@ -46,7 +46,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: d3cfdc0ff6e1bcdfdc4c91ae0c718d98f40c227f76b61ac5512973439da03313
+    configMapHash: 2a80e9801673a1f526fee862a2595171386b512436104c9d0539d921736ca76f
   name: alloy
   namespace: alloy
 spec:
