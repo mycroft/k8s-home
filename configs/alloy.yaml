@@ -11,14 +11,17 @@ alloy:
       loki.source.kubernetes "pods" {
         targets    = discovery.kubernetes.pods.targets
         forward_to = [loki.write.cluster.receiver]
+        labels     = { "source" = "alloy-pods" }
       }
 
       loki.write "cluster" {
         endpoint {
           url = env("LOKI_URL")
         }
+        external_labels = {}
       }
 
+      local.echo "echo" {}
 
   extraEnv:
     - name: LOKI_URL
