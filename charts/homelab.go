@@ -46,7 +46,7 @@ func HomelabBuildApp(ctx context.Context) cdk8s.App {
 	charts_observability.NewKubePrometheusStackChart(ctx, app)
 	charts_observability.NewBlackboxExporterChart(ctx, app)
 	charts_observability.NewLokiChart(ctx, app)
-	charts_observability.NewPromtailChart(ctx, app)
+	// charts_observability.NewPromtailChart(ctx, app)
 	// charts_observability.NewJaegerChart(ctx, app)
 	charts_observability.NewTempoChart(ctx, app)
 	charts_observability.NewKarmaChart(ctx, app)
