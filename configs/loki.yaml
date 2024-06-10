@@ -31,3 +31,5 @@ backend:
 write:
   replicas: 0
 
+serviceMonitor:
+  enabled: true
