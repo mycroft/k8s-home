@@ -26,6 +26,10 @@ data:
             role = "pod"
           }
 
+          loki.source.kubernetes_events "events" {
+            forward_to = [loki.echo.echo.receiver]
+          }
+
           loki.source.kubernetes "pods" {
             targets    = discovery.kubernetes.pods.targets
             forward_to = [loki.write.default.receiver]
@@ -51,7 +55,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: d9fbca54b6d157f25f2d0e659da5c18707d5633853ed5de16fa3700d1fb18ec7
+    configMapHash: 531227e57983344c734e3c0704ece1bfce6932a1bcd1888d4b2570e165da2db2
   name: alloy
   namespace: alloy
 spec:
