@@ -16,16 +16,22 @@ data:
       configMap:
         create: true
         content: |
+          // Generated from configs/alloy.yaml
+          logging {
+            level = "info"
+            format = "logfmt"
+          }
+
           discovery.kubernetes "pods" {
             role = "pod"
           }
 
           loki.source.kubernetes "pods" {
             targets    = discovery.kubernetes.pods.targets
-            forward_to = [loki.write.cluster.receiver]
+            forward_to = [loki.write.default.receiver]
           }
 
-          loki.write "cluster" {
+          loki.write "default" {
             endpoint {
               url = env("LOKI_URL")
             }
@@ -45,7 +51,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: cb3ef5d80cb8892cbac1d33a4ae2926c52d5ea602f3c23344f92fd846949c32a
+    configMapHash: d9fbca54b6d157f25f2d0e659da5c18707d5633853ed5de16fa3700d1fb18ec7
   name: alloy
   namespace: alloy
 spec:
