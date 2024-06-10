@@ -21,7 +21,7 @@ alloy:
         external_labels = {}
       }
 
-      local.echo "echo" {}
+      loki.echo "echo" {}
 
   extraEnv:
     - name: LOKI_URL
