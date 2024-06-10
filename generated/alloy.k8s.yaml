@@ -24,7 +24,6 @@ data:
 
           discovery.kubernetes "pods" {
             role = "pod"
-            namespaces = ["default", "emojivoto"]
           }
 
           discovery.relabel "pods" {
@@ -37,7 +36,7 @@ data:
           }
 
           loki.source.kubernetes "pods" {
-            targets    = discovery.relabel.pods.targets
+            targets    = discovery.relabel.pods.output
             forward_to = [loki.process.kubernetes_logs.receiver]
           }
 
@@ -68,7 +67,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: a787e6d6850f6b3e34e6c37f2476a1fe94cbb4e1d8afe34561603a689bf45a23
+    configMapHash: 7e724cafb5413fda6d3893b3bd0d4ef9fc46b6b89a57ad818fe2b35ec0796bad
   name: alloy
   namespace: alloy
 spec:
