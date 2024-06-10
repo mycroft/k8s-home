@@ -12,7 +12,6 @@ alloy:
 
       discovery.kubernetes "pods" {
         role = "pod"
-        namespaces = ["default", "emojivoto"]
       }
 
       discovery.relabel "pods" {
@@ -25,7 +24,7 @@ alloy:
       }
 
       loki.source.kubernetes "pods" {
-        targets    = discovery.relabel.pods.targets
+        targets    = discovery.relabel.pods.output
         forward_to = [loki.process.kubernetes_logs.receiver]
       }
 
