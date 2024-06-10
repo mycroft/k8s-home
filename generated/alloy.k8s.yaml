@@ -30,8 +30,43 @@ data:
             targets = discovery.kubernetes.pods.targets
 
             rule {
-              action = "labelmap"
-              regex = "__meta_kubernetes_(namespace|(pod_(node_name|name|container_name|container_image)))"
+              source_labels = ["__meta_kubernetes_namespace"]
+              action = "replace"
+              target_label = "namespace"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_name"]
+              action = "replace"
+              target_label = "pod"
+              // ex: voting-558584fb85-9qrxt
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_ip"]
+              action = "replace"
+              target_label = "pod_ip"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_node_name"]
+              action = "replace"
+              target_label = "node_name"
+              // ex: polygon-wave.mkz.me
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_container_name"]
+              action = "replace"
+              target_label = "container_name"
+              // ex: voting
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_container_image"]
+              action = "replace"
+              target_label = "container_image"
+              // ex: docker.l5d.io/buoyantio/emojivoto-voting-svc:v12
             }
           }
 
@@ -67,7 +102,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 7e724cafb5413fda6d3893b3bd0d4ef9fc46b6b89a57ad818fe2b35ec0796bad
+    configMapHash: 412532b2537a2a0cea24e74eba2267cc103801749bfa11051464af3563908d2d
   name: alloy
   namespace: alloy
 spec:
