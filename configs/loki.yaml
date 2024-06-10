@@ -31,5 +31,10 @@ backend:
 write:
   replicas: 0
 
-serviceMonitor:
-  enabled: true
+monitoring:
+  dashboards:
+    enabled: true
+  serviceMonitor:
+    enabled: true
+    metricsInstance:
+      enabled: false
