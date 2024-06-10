@@ -23,7 +23,6 @@ data:
           loki.source.kubernetes "pods" {
             targets    = discovery.kubernetes.pods.targets
             forward_to = [loki.write.cluster.receiver]
-            labels     = { "source" = "alloy-pods" }
           }
 
           loki.write "cluster" {
@@ -46,7 +45,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 2a80e9801673a1f526fee862a2595171386b512436104c9d0539d921736ca76f
+    configMapHash: cb3ef5d80cb8892cbac1d33a4ae2926c52d5ea602f3c23344f92fd846949c32a
   name: alloy
   namespace: alloy
 spec:
