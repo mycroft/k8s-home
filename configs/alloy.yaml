@@ -1,0 +1,28 @@
+# https://github.com/grafana/alloy/blob/main/operations/helm/charts/alloy/values.yaml
+
+alloy:
+  configMap:
+    create: true
+    content: |
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      loki.source.kubernetes "pods" {
+        targets    = discovery.kubernetes.pods.targets
+        forward_to = [loki.write.cluster.receiver]
+      }
+
+      loki.write "cluster" {
+        endpoint {
+          url = env("LOKI_URL")
+        }
+      }
+
+
+  extraEnv:
+    - name: LOKI_URL
+      value: "http://loki-gateway.loki/loki/api/v1/push"
+
+serviceMonitor:
+  enabled: true

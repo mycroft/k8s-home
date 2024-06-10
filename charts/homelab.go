@@ -50,6 +50,7 @@ func HomelabBuildApp(ctx context.Context) cdk8s.App {
 	// charts_observability.NewJaegerChart(ctx, app)
 	charts_observability.NewTempoChart(ctx, app)
 	charts_observability.NewKarmaChart(ctx, app)
+	charts_observability.NewAlloyChart(ctx, app)
 
 	// misc tooling
 	charts_infra.NewFluxCDChart(ctx, app)
