@@ -89,12 +89,17 @@ data:
         enabled: true
         metricsInstance:
           enabled: false
+
+    gateway:
+      service:
+        labels:
+          prometheus.io/service-monitor: "false"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 0b4bb419610b9ef4b637b0ad1aa7699bd2f811be4fba3f5692da2aff7189fc7e
+    configMapHash: 2dd84f828ebc151aa8370d6df9aa4f8d73508ff96c02336e37d507c63e927bbe
   name: loki
   namespace: loki
 spec:
