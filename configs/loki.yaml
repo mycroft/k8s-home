@@ -38,3 +38,8 @@ monitoring:
     enabled: true
     metricsInstance:
       enabled: false
+
+gateway:
+  service:
+    labels:
+      prometheus.io/service-monitor: "false"
