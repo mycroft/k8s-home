@@ -126,7 +126,7 @@ spec:
             - --loglevel
             - warning
           env: []
-          image: redis:7.4.0
+          image: redis:7.2.5
           name: redis
           volumeMounts:
             - mountPath: /data
