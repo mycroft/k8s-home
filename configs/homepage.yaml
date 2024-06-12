@@ -62,12 +62,6 @@ config:
 
   services:
     - System:
-      - Grafana:
-          href: https://grafana.services.mkz.me/
-      - Karma:
-          href: https://karma.services.mkz.me/
-      - Prometheus:
-          href: https://prometheus.services.mkz.me/
       - Pi-Hole/DNS:
           href: http://10.0.0.254/admin/
       - Capacitor:
@@ -76,10 +70,20 @@ config:
       - Kubernetes-dashboard:
           href: https://kubernetes-dashboard.services.mkz.me/
           description: Kubernetes admin
-      - Alertmanager:
-          href: https://alertmanager.services.mkz.me/
       - Authentik:
           href: https://auth.services.mkz.me/
+      - Grafana:
+          href: https://grafana.services.mkz.me/
+      - Karma:
+          href: https://karma.services.mkz.me/
+      - Prometheus:
+          href: https://prometheus.services.mkz.me/
+      - Alertmanager:
+          href: https://alertmanager.services.mkz.me/
+      - Longhorn:
+          href: https://longhorn.services.mkz.me/
+      - Vault:
+          href: https://vault.services.mkz.me/
 
     - Web Services:
       - Gitea:
@@ -88,21 +92,19 @@ config:
       - Harbor:
           href: https://harbor.mkz.me/
           description: OCI/Container images repository
-      - Calibre-Web:
-          href: https://books.services.mkz.me/
-          description: Library powered by Calibre-Web
       - Drone CI:
           href: https://ci.mkz.me/
           description: Drone CI/CD
       - Minio:
           href: https://minio-storage-console.services.mkz.me/
           description: Minio console for 'storage' instance
-      - Vault:
-          href: https://vault.services.mkz.me/
       - Temporal:
           href: https://temporal.services.mkz.me/
 
     - Web Apps:
+      - Calibre-Web:
+          href: https://books.services.mkz.me/
+          description: Library powered by Calibre-Web
       - Freshrss:
           href: https://freshrss.services.mkz.me/
           description: RSS reader
@@ -140,6 +142,9 @@ config:
           href: https://emojivoto.services.mkz.me/
       - Microbin:
           href: https://bin.iop.cx/
+      - Cyberchef:
+          href: https://cyberchef.services.mkz.me/
+          description: The Cyber Swiss Army Knife - a web app for encryption, encoding, compression and data analysis.
 
   widgets:
     # show the kubernetes widget, with the cluster summary and individual nodes
