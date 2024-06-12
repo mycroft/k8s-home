@@ -44,6 +44,7 @@ images:
   docker.l5d.io/buoyantio/emojivoto-voting-svc: v12
   excalidraw/excalidraw: latest
   freshrss/freshrss: 1.24.1
+  ghcr.io/gchq/cyberchef: 10.18.8
   jhaals/yopass: 11.16.0
   linuxserver/bookstack: v24.05.1-ls149
   linuxserver/heimdall: v2.5.7-ls238
