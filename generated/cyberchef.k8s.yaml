@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cyberchef
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cyberchef-deploy-c88c69b3
+  namespace: cyberchef
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cyberchef
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cyberchef
+    spec:
+      containers:
+        - env: []
+          image: ghcr.io/gchq/cyberchef:10.18.8
+          name: cyberchef
+          volumeMounts: []
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cyberchef-svc-c8decb58
+  namespace: cyberchef
+spec:
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app.kubernetes.io/name: cyberchef
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: cyberchef-ingress-c8bac761
+  namespace: cyberchef
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: cyberchef.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: cyberchef-svc-c8decb58
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - cyberchef.services.mkz.me
+      secretName: secret-tls-www
