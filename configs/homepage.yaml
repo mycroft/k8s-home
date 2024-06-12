@@ -179,6 +179,7 @@ ingress:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
       traefik.ingress.kubernetes.io/redirect-entry-point: "https"
       traefik.ingress.kubernetes.io/redirect-permanent: "true"
+      traefik.ingress.kubernetes.io/router.middlewares: "traefik-forward-auth-traefik-forward-auth@kubernetescrd"
     ingressClassName: traefik
     hosts:
       - host: home.iop.cx
