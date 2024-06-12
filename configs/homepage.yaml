@@ -16,8 +16,8 @@ config:
     title: Myc's homelab
     background: https://images.unsplash.com/photo-1502790671504-542ad42d5189?auto=format&fit=crop&w=2560&q=80
     providers:
-      openweathermap: openweathermapapikey
-      weatherapi: weatherapiapikey
+      longhorn:
+        url: http://longhorn-frontend.longhorn-system
     quicklaunch:
       searchDescriptions: true
       hideInternetSearch: true
@@ -160,14 +160,27 @@ config:
           cpu: true
           memory: true
           showLabel: true
+    - longhorn:
+        expanded: true
+        total: true
+        labels: true
+        nodes: true
     - search:
-        provider: duckduckgo
+        provider: google
         target: _blank
     - datetime:
         text_size: xl
         format:
           timeStyle: short
-
+    - openmeteo:
+        label: Paris
+        latitude: 48.8575
+        longitude: 2.3514
+        timezone: Europe/Paris
+        units: metric
+        cache: 5
+        format:
+          maximumFractionDigits: 1
   kubernetes:
     mode: cluster
 
