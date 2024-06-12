@@ -34,7 +34,7 @@ func NewHappyUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 		"app.kubernetes.io/component": jsii.String("redis"),
 	}
 
-	_, svcName := kubehelpers.NewStatefulSet(
+	_, redisSvcName := kubehelpers.NewStatefulSet(
 		chart,
 		namespace,
 		"redis",
@@ -62,7 +62,7 @@ func NewHappyUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	envVars := []*k8s.EnvVar{
 		{
 			Name:  jsii.String("REDIS_URL"),
-			Value: jsii.String(fmt.Sprintf("redis://%s:6379", svcName)),
+			Value: jsii.String(fmt.Sprintf("redis://%s:6379", redisSvcName)),
 		},
 	}
 
@@ -103,7 +103,7 @@ func NewHappyUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 		appName,
 		appPort,
 		ingressHost,
-		svcName,
+		"",
 		map[string]string{},
 	)
 
