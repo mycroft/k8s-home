@@ -1,0 +1,191 @@
+image:
+  repository: ghcr.io/gethomepage/homepage
+  tag: v0.9.2
+
+configMaps:
+  config:
+    enabled: true
+    data:
+      config.yaml: |
+        # This CM is not used at all. It is only be maintained to force deployment restart after configuration change.
+        version: "12"
+
+config:
+  settings:
+    headerStyle: boxed
+    title: Myc's homelab
+    background: https://images.unsplash.com/photo-1502790671504-542ad42d5189?auto=format&fit=crop&w=2560&q=80
+    providers:
+      openweathermap: openweathermapapikey
+      weatherapi: weatherapiapikey
+
+    layout:
+      - System:
+          header: false
+          style: row
+          columns: 4
+      - Web Services:
+          header: true
+          style: row
+          columns: 5
+      - Web Apps:
+          header: true
+          style: row
+          columns: 5
+
+
+  bookmarks:
+    - Code:
+      - Github:
+        - abbr: GH
+          href: https://github.com/mycroft
+
+    - Social:
+      - Reddit:
+        - abbr: RD
+          href: https://old.reddit.com/
+      - Mastodon:
+        - abbr: MS
+          href: https://mamot.fr/home
+
+    - News:
+      - Lobsters:
+        - abbr: LB
+          href: https://lobste.rs/
+
+  services:
+    - System:
+      - Grafana:
+          href: https://grafana.services.mkz.me/
+      - Karma:
+          href: https://karma.services.mkz.me/
+      - Prometheus:
+          href: https://prometheus.services.mkz.me/
+      - Pi-Hole/DNS:
+          href: http://10.0.0.254/admin/
+      - Capacitor:
+          href: https://capacitor.services.mkz.me/
+          description: FluxCD Web UI
+      - Kubernetes-dashboard:
+          href: https://kubernetes-dashboard.services.mkz.me/
+          description: Kubernetes admin
+      - Alertmanager:
+          href: https://alertmanager.services.mkz.me/
+      - Authentik:
+          href: https://auth.services.mkz.me/
+
+    - Web Services:
+      - Gitea:
+          href: https://git.mkz.me/
+          description: Source code repository
+      - Harbor:
+          href: https://harbor.mkz.me/
+          description: OCI/Container images repository
+      - Calibre-Web:
+          href: https://books.services.mkz.me/
+          description: Library powered by Calibre-Web
+      - Drone CI:
+          href: https://ci.mkz.me/
+          description: Drone CI/CD
+      - Minio:
+          href: https://minio-storage-console.services.mkz.me/
+          description: Minio console for 'storage' instance
+      - Vault:
+          href: https://vault.services.mkz.me/
+      - Temporal:
+          href: https://temporal.services.mkz.me/
+
+    - Web Apps:
+      - Freshrss:
+          href: https://freshrss.services.mkz.me/
+          description: RSS reader
+      - Wallabag:
+          href: https://wallabag.services.mkz.me/
+          description: Saved web pages to read
+      - Bookstack:
+          href: https://bookstack.services.mkz.me/
+          description: Bookstack instance
+      - Linkding:
+          href: https://links.services.mkz.me/
+          description: Bookmarks
+      - WikiJS:
+          href: https://wiki.services.mkz.me/
+          description: Personal Wiki Instance
+      - IT-Tools:
+          href: https://it-tools.services.mkz.me/
+      - Send:
+          href: https://send.services.mkz.me/
+      - Yopass:
+          href: https://yopass.services.mkz.me/
+      - Excalidraw:
+          href: https://excalidraw.services.mkz.me/
+      - Redmine:
+          href: https://redmine.services.mkz.me/
+      - Privatebin:
+          href: https://privatebin.services.mkz.me/
+      - Vaultwarden:
+          href: https://vaultwarden.services.mkz.me/
+      - Snippetbox:
+          href: https://snippetbox.services.mkz.me/
+      - Paperless-NGX:
+          href: https://paperless.services.mkz.me/
+      - Emojivoto:
+          href: https://emojivoto.services.mkz.me/
+      - Microbin:
+          href: https://bin.iop.cx/
+
+  widgets:
+    # show the kubernetes widget, with the cluster summary and individual nodes
+    - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "cluster"
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+    - search:
+        provider: duckduckgo
+        target: _blank
+    - datetime:
+        text_size: xl
+        format:
+          timeStyle: short
+
+  kubernetes:
+    mode: cluster
+
+# The service account is necessary to allow discovery of other services
+serviceAccount:
+  create: true
+  name: homepage
+
+# This enables the service account to access the necessary resources
+enableRbac: true
+
+ingress:
+  main:
+    enabled: true
+    annotations:
+      gethomepage.dev/enabled: "false"
+      gethomepage.dev/name: "Homepage"
+      gethomepage.dev/description: "Dynamically Detected Homepage"
+      gethomepage.dev/group: "Dynamic"
+      gethomepage.dev/icon: "homepage.png"
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      traefik.ingress.kubernetes.io/redirect-entry-point: "https"
+      traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    ingressClassName: traefik
+    hosts:
+      - host: home.iop.cx
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - hosts:
+        - home.iop.cx
+        secretName: homepage-cert-tls
