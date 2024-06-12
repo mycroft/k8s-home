@@ -200,6 +200,7 @@ data:
           cert-manager.io/cluster-issuer: "letsencrypt-prod"
           traefik.ingress.kubernetes.io/redirect-entry-point: "https"
           traefik.ingress.kubernetes.io/redirect-permanent: "true"
+          traefik.ingress.kubernetes.io/router.middlewares: "traefik-forward-auth-traefik-forward-auth@kubernetescrd"
         ingressClassName: traefik
         hosts:
           - host: home.iop.cx
@@ -215,7 +216,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: bfbca0feebec0a734db1ab749149e2ecc6e4b46547d022b19e041cb135c6a84e
+    configMapHash: ba1d8709437345befeb5200e6765fc30f2b7d5790c01bf94bde05101093dcdac
   name: homepage
   namespace: homepage
 spec:
