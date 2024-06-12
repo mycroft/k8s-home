@@ -37,8 +37,8 @@ data:
         title: Myc's homelab
         background: https://images.unsplash.com/photo-1502790671504-542ad42d5189?auto=format&fit=crop&w=2560&q=80
         providers:
-          openweathermap: openweathermapapikey
-          weatherapi: weatherapiapikey
+          longhorn:
+            url: http://longhorn-frontend.longhorn-system
         quicklaunch:
           searchDescriptions: true
           hideInternetSearch: true
@@ -83,12 +83,6 @@ data:
 
       services:
         - System:
-          - Grafana:
-              href: https://grafana.services.mkz.me/
-          - Karma:
-              href: https://karma.services.mkz.me/
-          - Prometheus:
-              href: https://prometheus.services.mkz.me/
           - Pi-Hole/DNS:
               href: http://10.0.0.254/admin/
           - Capacitor:
@@ -97,10 +91,20 @@ data:
           - Kubernetes-dashboard:
               href: https://kubernetes-dashboard.services.mkz.me/
               description: Kubernetes admin
-          - Alertmanager:
-              href: https://alertmanager.services.mkz.me/
           - Authentik:
               href: https://auth.services.mkz.me/
+          - Grafana:
+              href: https://grafana.services.mkz.me/
+          - Karma:
+              href: https://karma.services.mkz.me/
+          - Prometheus:
+              href: https://prometheus.services.mkz.me/
+          - Alertmanager:
+              href: https://alertmanager.services.mkz.me/
+          - Longhorn:
+              href: https://longhorn.services.mkz.me/
+          - Vault:
+              href: https://vault.services.mkz.me/
 
         - Web Services:
           - Gitea:
@@ -109,21 +113,19 @@ data:
           - Harbor:
               href: https://harbor.mkz.me/
               description: OCI/Container images repository
-          - Calibre-Web:
-              href: https://books.services.mkz.me/
-              description: Library powered by Calibre-Web
           - Drone CI:
               href: https://ci.mkz.me/
               description: Drone CI/CD
           - Minio:
               href: https://minio-storage-console.services.mkz.me/
               description: Minio console for 'storage' instance
-          - Vault:
-              href: https://vault.services.mkz.me/
           - Temporal:
               href: https://temporal.services.mkz.me/
 
         - Web Apps:
+          - Calibre-Web:
+              href: https://books.services.mkz.me/
+              description: Library powered by Calibre-Web
           - Freshrss:
               href: https://freshrss.services.mkz.me/
               description: RSS reader
@@ -161,6 +163,9 @@ data:
               href: https://emojivoto.services.mkz.me/
           - Microbin:
               href: https://bin.iop.cx/
+          - Cyberchef:
+              href: https://cyberchef.services.mkz.me/
+              description: The Cyber Swiss Army Knife - a web app for encryption, encoding, compression and data analysis.
 
       widgets:
         # show the kubernetes widget, with the cluster summary and individual nodes
@@ -176,14 +181,27 @@ data:
               cpu: true
               memory: true
               showLabel: true
+        - longhorn:
+            expanded: true
+            total: true
+            labels: true
+            nodes: true
         - search:
-            provider: duckduckgo
+            provider: google
             target: _blank
         - datetime:
             text_size: xl
             format:
               timeStyle: short
-
+        - openmeteo:
+            label: Paris
+            latitude: 48.8575
+            longitude: 2.3514
+            timezone: Europe/Paris
+            units: metric
+            cache: 5
+            format:
+              maximumFractionDigits: 1
       kubernetes:
         mode: cluster
 
@@ -223,7 +241,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: cb2b65dfe0020521b4f105f09980235907f7c8124a5eee55580e8ef8a89b6f78
+    configMapHash: fb112d87053d0d9755c3699ed6a666aa84eb4953ecba1fe43067927d04657aba
   name: homepage
   namespace: homepage
 spec:
