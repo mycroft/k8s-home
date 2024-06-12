@@ -33,7 +33,7 @@ data:
 
     config:
       settings:
-        headerStyle: boxed
+        headerStyle: boxedWidgets
         title: Myc's homelab
         background: https://images.unsplash.com/photo-1502790671504-542ad42d5189?auto=format&fit=crop&w=2560&q=80
         providers:
@@ -192,7 +192,9 @@ data:
         - datetime:
             text_size: xl
             format:
+              dateStyle: short
               timeStyle: short
+              hour12: false
         - openmeteo:
             label: Paris
             latitude: 48.8575
@@ -241,7 +243,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: fb112d87053d0d9755c3699ed6a666aa84eb4953ecba1fe43067927d04657aba
+    configMapHash: a51248a22beb0bf8675dd3ca826934a0ade366449fa0172ff3bafcae9a001631
   name: homepage
   namespace: homepage
 spec:
