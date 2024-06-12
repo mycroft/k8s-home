@@ -8,7 +8,7 @@ configMaps:
     data:
       config.yaml: |
         # This CM is not used at all. It is only be maintained to force deployment restart after configuration change.
-        version: "12"
+        version: "{{.Hash}}"
 
 config:
   settings:

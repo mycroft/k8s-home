@@ -38,11 +38,12 @@ func NewHomepageChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 		releaseName,
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
+			kubehelpers.CreateHelmValuesTemplatedConfig(
 				chart,
 				namespace,
 				releaseName,
 				"homepage.yaml",
+				true,
 			),
 		},
 		nil,

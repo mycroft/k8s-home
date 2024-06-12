@@ -1,11 +1,14 @@
 package kubehelpers
 
 import (
+	"bytes"
+	"crypto/sha256"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"git.mkz.me/mycroft/k8s-home/imports/helmtoolkitfluxcdio"
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -19,6 +22,10 @@ type HelmChartVersion struct {
 	RepositoryName string
 	ChartName      string
 	Version        string
+}
+
+type TemplateValues struct {
+	Hash string
 }
 
 var helmRepositories = map[string]string{}
@@ -133,10 +140,13 @@ func CreateHelmRelease(
 	)
 }
 
-func CreateHelmValuesConfig(
+func CreateHelmValuesTemplatedConfig(
 	chart constructs.Construct,
 	namespace, releaseName, filename string,
+	useCustomTemplate bool,
 ) HelmReleaseConfigMap {
+	var doc bytes.Buffer
+
 	filepath := filepath.Join("configs", filename)
 	contents, err := os.ReadFile(filepath)
 	if err != nil {
@@ -150,6 +160,30 @@ func CreateHelmValuesConfig(
 		log.Printf("WARNING: HelmValues in ns:%s is still using legacy name", namespace)
 	}
 
+	renderedContents := string(contents)
+
+	if useCustomTemplate {
+		// Apply custom templating, starting with sha256 of config file
+		h := sha256.New()
+		h.Write([]byte(renderedContents))
+
+		values := TemplateValues{
+			Hash: fmt.Sprintf("%x", h.Sum(nil)),
+		}
+
+		tmpl, err := template.New("config").Parse(renderedContents)
+		if err != nil {
+			panic(err)
+		}
+
+		err = tmpl.Execute(&doc, values)
+		if err != nil {
+			panic(err)
+		}
+
+		renderedContents = doc.String()
+	}
+
 	cm := k8s.NewKubeConfigMap(
 		chart,
 		jsii.String(constructName),
@@ -158,7 +192,7 @@ func CreateHelmValuesConfig(
 				Namespace: jsii.String(namespace),
 			},
 			Data: &map[string]*string{
-				"values.yaml": jsii.String(string(contents)),
+				"values.yaml": jsii.String(renderedContents),
 			},
 		},
 	)
@@ -168,4 +202,17 @@ func CreateHelmValuesConfig(
 		KeyName:       "values.yaml",
 		ConfigMapHash: ComputeConfigMapHash(cm),
 	}
+}
+
+func CreateHelmValuesConfig(
+	chart constructs.Construct,
+	namespace, releaseName, filename string,
+) HelmReleaseConfigMap {
+	return CreateHelmValuesTemplatedConfig(
+		chart,
+		namespace,
+		releaseName,
+		filename,
+		false,
+	)
 }
