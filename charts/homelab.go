@@ -59,6 +59,7 @@ func HomelabBuildApp(ctx context.Context) cdk8s.App {
 	charts_infra.NewLinkerdChart(ctx, app)
 	charts_infra.NewTektonChart(ctx, app)
 	charts_infra.NewTemporalChart(ctx, app)
+	charts_infra.NewTraefikChart(ctx, app)
 
 	// apps
 	charts_apps.NewHelloKubernetesChart(ctx, app)
