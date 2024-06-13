@@ -64,14 +64,16 @@ config:
     - System:
       - Pi-Hole/DNS:
           href: http://10.0.0.254/admin/
+          description: Linux network-level advertisement and Internet tracker blocking application
       - Capacitor:
           href: https://capacitor.services.mkz.me/
-          description: FluxCD Web UI
+          description: General purpose UI for Flux
       - Kubernetes-dashboard:
           href: https://kubernetes-dashboard.services.mkz.me/
-          description: Kubernetes admin
+          description: Web-based Kubernetes user interface
       - Authentik:
           href: https://auth.services.mkz.me/
+          description: Identity Provider
       - Grafana:
           href: https://grafana.services.mkz.me/
       - Karma:
@@ -80,6 +82,8 @@ config:
           href: https://prometheus.services.mkz.me/
       - Alertmanager:
           href: https://alertmanager.services.mkz.me/
+      - Traefik:
+          href: https://traefik.services.mkz.me/dashboard/
       - Longhorn:
           href: https://longhorn.services.mkz.me/
       - Vault:
