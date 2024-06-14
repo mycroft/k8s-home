@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -93,20 +94,20 @@ func GetHelmUpdates(debug bool, filter string) (map[string]string, error) {
 			panic(fmt.Sprintf("No chart for name %s", helmRelease.ChartName))
 		}
 
-		versions := []string{}
+		foundVersions := []string{}
 		for _, chartVersion := range entries[helmRelease.ChartName] {
 			if _, ok := chartVersion.Annotations["artifacthub.io/prerelease"]; ok {
 				if chartVersion.Annotations["artifacthub.io/prerelease"] == "true" {
 					continue
 				}
 			}
-			versions = append(versions, chartVersion.Version)
+			foundVersions = append(foundVersions, chartVersion.Version)
 		}
 
 		hasVPrefix := false
 
-		semvers := make([]*semver.Version, len(versions))
-		for i, version := range versions {
+		semvers := make([]*semver.Version, len(foundVersions))
+		for i, version := range foundVersions {
 			if version[0] == 'v' {
 				version = version[1:]
 				hasVPrefix = true
@@ -170,10 +171,15 @@ func CheckVersions(debug bool, filter string) {
 
 		start_ts := time.Now()
 
-		versions := GetLastImageTag(parts[0], parts[1])
+		pattern := ".+"
+		if _, ok := versions.Patterns.Images[parts[0]]; ok {
+			pattern = versions.Patterns.Images[parts[0]]
+		}
 
-		if len(versions) > 0 {
-			fmt.Printf("%s;%s;%s\n", parts[0], parts[1], versions[len(versions)-1])
+		foundVersions := GetLastImageTag(debug, parts[0], parts[1], pattern)
+
+		if len(foundVersions) > 0 {
+			fmt.Printf("%s;%s;%s\n", parts[0], parts[1], foundVersions[len(foundVersions)-1])
 		}
 
 		done_ts := time.Now()
@@ -199,7 +205,7 @@ func RegisterDockerImage(image string) string {
 	return image
 }
 
-func GetLastImageTag(image, version string) []string {
+func GetLastImageTag(debug bool, image, version, pattern string) []string {
 	retVersions := []string{}
 	imageName := image
 
@@ -228,6 +234,18 @@ func GetLastImageTag(image, version string) []string {
 			continue
 		}
 
+		matched, err := regexp.MatchString(pattern, tag)
+		if err != nil {
+			panic(err)
+		}
+
+		if !matched {
+			if debug {
+				log.Printf("tag %s was skipped as it does not match pattern %s", tag, pattern)
+			}
+			continue
+		}
+
 		v2, err := semver.NewVersion(tag)
 		if err != nil {
 			continue
@@ -245,9 +263,15 @@ func GetLastImageTag(image, version string) []string {
 	return retVersions
 }
 
+type Patterns struct {
+	HelmCharts map[string]string `yaml:"helmcharts"`
+	Images     map[string]string `yaml:"images"`
+}
+
 type Versions struct {
 	HelmCharts map[string]string `yaml:"helmcharts"`
 	Images     map[string]string `yaml:"images"`
+	Patterns   Patterns          `yaml:"patterns"`
 }
 
 var versions = Versions{}
@@ -266,4 +290,5 @@ func ReadVersions() {
 	if err != nil {
 		panic(fmt.Sprintf("Could not unmarshal versions.yaml: %s", err.Error()))
 	}
+
 }
