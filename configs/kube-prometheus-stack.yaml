@@ -124,10 +124,20 @@ grafana:
     GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
     GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
     GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email"
-    GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://dex.services.mkz.me/auth"
-    GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://dex.services.mkz.me/token"
-    GF_AUTH_GENERIC_OAUTH_API_URL: "https://dex.services.mkz.me/userinfo"
-    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "'Admin'"
+    # GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://dex.services.mkz.me/auth"
+    # GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://dex.services.mkz.me/token"
+    # GF_AUTH_GENERIC_OAUTH_API_URL: "https://dex.services.mkz.me/userinfo"
+    # GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "'Admin'"
+    GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email"
+    GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://auth.services.mkz.me/application/o/authorize/"
+    GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://auth.services.mkz.me/application/o/token/"
+    GF_AUTH_GENERIC_OAUTH_API_URL: "https://auth.services.mkz.me/application/o/userinfo/"
+    GF_AUTH_SIGNOUT_REDIRECT_URL: "https://auth.services.mkz.me/application/o/grafana/end-session/"
+    GF_AUTH_SIGNOUT_REDIRECT_URL: "https://auth.services.mkz.me/application/o/grafana/end-session/"
+    # Optionally enable auto-login (bypasses Grafana login screen)
+    GF_AUTH_OAUTH_AUTO_LOGIN: "true"
+    # Optionally map user groups to Grafana roles
+    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'"
 
   envValueFrom:
     GF_DATABASE_USER:
@@ -138,13 +148,21 @@ grafana:
       secretKeyRef:
         name: grafana-postgres
         key: password
+    # GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+    #   secretKeyRef:
+    #     name: grafana-oidc-client
+    #     key: client_id
+    # GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+    #   secretKeyRef:
+    #     name: grafana-oidc-client
+    #     key: client_secret
     GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
       secretKeyRef:
-        name: grafana-oidc-client
+        name: grafana-authentik-oidc-client
         key: client_id
     GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
-      secretKeyRef:
-        name: grafana-oidc-client
+     secretKeyRef:
+        name: grafana-authentik-oidc-client
         key: client_secret
 
 kubeApiServer:
