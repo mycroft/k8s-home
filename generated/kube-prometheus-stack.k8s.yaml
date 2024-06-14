@@ -77,6 +77,29 @@ spec:
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
+  name: kube-prometheus-stack-es-grafana-authentik-oidc-client-c839b666
+  namespace: monitoring
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/monitoring/grafana-authentik-oidc-client
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: grafana-authentik-oidc-client
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
   name: kube-prometheus-stack-es-alertmanager-config-c84a2f77
   namespace: monitoring
 spec:
@@ -253,10 +276,20 @@ data:
         GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
         GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
         GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email"
-        GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://dex.services.mkz.me/auth"
-        GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://dex.services.mkz.me/token"
-        GF_AUTH_GENERIC_OAUTH_API_URL: "https://dex.services.mkz.me/userinfo"
-        GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "'Admin'"
+        # GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://dex.services.mkz.me/auth"
+        # GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://dex.services.mkz.me/token"
+        # GF_AUTH_GENERIC_OAUTH_API_URL: "https://dex.services.mkz.me/userinfo"
+        # GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "'Admin'"
+        GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email"
+        GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://auth.services.mkz.me/application/o/authorize/"
+        GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://auth.services.mkz.me/application/o/token/"
+        GF_AUTH_GENERIC_OAUTH_API_URL: "https://auth.services.mkz.me/application/o/userinfo/"
+        GF_AUTH_SIGNOUT_REDIRECT_URL: "https://auth.services.mkz.me/application/o/grafana/end-session/"
+        GF_AUTH_SIGNOUT_REDIRECT_URL: "https://auth.services.mkz.me/application/o/grafana/end-session/"
+        # Optionally enable auto-login (bypasses Grafana login screen)
+        GF_AUTH_OAUTH_AUTO_LOGIN: "true"
+        # Optionally map user groups to Grafana roles
+        GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'"
 
       envValueFrom:
         GF_DATABASE_USER:
@@ -267,13 +300,21 @@ data:
           secretKeyRef:
             name: grafana-postgres
             key: password
+        # GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+        #   secretKeyRef:
+        #     name: grafana-oidc-client
+        #     key: client_id
+        # GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+        #   secretKeyRef:
+        #     name: grafana-oidc-client
+        #     key: client_secret
         GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
           secretKeyRef:
-            name: grafana-oidc-client
+            name: grafana-authentik-oidc-client
             key: client_id
         GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
-          secretKeyRef:
-            name: grafana-oidc-client
+         secretKeyRef:
+            name: grafana-authentik-oidc-client
             key: client_secret
 
     kubeApiServer:
@@ -614,7 +655,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 9dda6076da8c32521f91c40969068c68fb9fd36499858aaccc700f914e7b2f9d
+    configMapHash: 5b76a12cf22c2bd48c7f2f12558565f0908430ddd4e9cdb52698888edc0aa8dd
   name: prometheus
   namespace: monitoring
 spec:
