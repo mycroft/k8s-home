@@ -137,6 +137,8 @@ func GetHelmUpdates(debug bool, filter string) (map[string]string, error) {
 
 // CheckVersions checks the installed releases for update
 func CheckVersions(debug bool, filter string) {
+	searched := make(map[string]bool)
+
 	helmVersions, err := GetHelmUpdates(debug, filter)
 	if err != nil {
 		panic(err)
@@ -148,6 +150,12 @@ func CheckVersions(debug bool, filter string) {
 
 	for _, image := range dockerImages {
 		parts := strings.Split(image, ":")
+
+		if _, ok := searched[parts[0]]; ok {
+			continue
+		}
+
+		searched[parts[0]] = true
 
 		if filter != "" && !strings.Contains(image, filter) {
 			if debug {
