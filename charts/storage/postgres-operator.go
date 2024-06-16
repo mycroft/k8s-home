@@ -1,33 +1,24 @@
 package storage
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
-	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewPostgresOperator(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewPostgresOperator(builder *kubehelpers.Builder) cdk8s.Chart {
 	namespace := "postgres-operator"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
-
-	kubehelpers.NewNamespace(chart, namespace)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		"postgres-operator",
 		"https://opensource.zalando.com/postgres-operator/charts/postgres-operator",
 	)
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		"postgres-operator",
 		"postgres-operator",
@@ -37,5 +28,5 @@ func NewPostgresOperator(ctx context.Context, scope constructs.Construct) cdk8s.
 		nil,
 	)
 
-	return chart
+	return chart.Cdk8sChart
 }

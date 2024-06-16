@@ -1,40 +1,34 @@
 package security
 
 import (
-	"context"
 	"log"
 	"os"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewDexIdpChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewDexIdpChart(builder *kubehelpers.Builder) cdk8s.Chart {
 	namespace := "dex-idp"
 	repositoryName := "dex"
 	chartName := "dex"
 	releaseName := "dex"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		"dex",
 		"https://charts.dexidp.io",
 	)
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repositoryName, // repo name
 		chartName,      // chart name
@@ -42,7 +36,7 @@ func NewDexIdpChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"dex-idp.yaml",
@@ -58,7 +52,7 @@ func NewDexIdpChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 		log.Fatalf("Could not read config file for dex-idp: %v", err)
 	}
 	k8s.NewKubeSecret(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("dex-config"),
 		&k8s.KubeSecretProps{
 			Metadata: &k8s.ObjectMeta{
@@ -73,11 +67,11 @@ func NewDexIdpChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 	)
 
 	// Create ExternalSecrets
-	kubehelpers.CreateExternalSecret(chart, namespace, "static-admin")
-	kubehelpers.CreateExternalSecret(chart, namespace, "gitea")
-	kubehelpers.CreateExternalSecret(chart, namespace, "grafana-oidc-client")
-	kubehelpers.CreateExternalSecret(chart, namespace, "traefik-forward-auth-oidc")
-	kubehelpers.CreateExternalSecret(chart, namespace, "postgresql")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "static-admin")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "gitea")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "grafana-oidc-client")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "traefik-forward-auth-oidc")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
 
-	return chart
+	return chart.Cdk8sChart
 }

@@ -1,39 +1,24 @@
 package security
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewTraefikForwardAuth(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewTraefikForwardAuth(builder *kubehelpers.Builder) cdk8s.Chart {
 	appName := "traefik-forward-auth"
 	namespace := appName
 	image := kubehelpers.RegisterDockerImage("thomseddon/traefik-forward-auth")
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(appName),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	k8s.NewKubeNamespace(
-		chart,
-		jsii.String("ns"),
-		&k8s.KubeNamespaceProps{
-			Metadata: &k8s.ObjectMeta{
-				Name: jsii.String(namespace),
-			},
-		},
-	)
-
-	kubehelpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -94,12 +79,12 @@ func NewTraefikForwardAuth(ctx context.Context, scope constructs.Construct) cdk8
 	}
 
 	// External secret for client_id/client_secret/issuer_url
-	kubehelpers.CreateExternalSecret(chart, namespace, "oidc")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "oidc")
 	// External secret for secret
-	kubehelpers.CreateExternalSecret(chart, namespace, "secret")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "secret")
 
 	k8s.NewKubeDeployment(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("deploy"),
 		&k8s.KubeDeploymentProps{
 			Metadata: &k8s.ObjectMeta{
@@ -128,7 +113,7 @@ func NewTraefikForwardAuth(ctx context.Context, scope constructs.Construct) cdk8
 	)
 
 	svc := k8s.NewKubeService(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("svc"),
 		&k8s.KubeServiceProps{
 			Metadata: &k8s.ObjectMeta{
@@ -147,7 +132,7 @@ func NewTraefikForwardAuth(ctx context.Context, scope constructs.Construct) cdk8
 	)
 
 	traefikio.NewMiddleware(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("traefik-forward-auth-middleware"),
 		&traefikio.MiddlewareProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -176,7 +161,7 @@ func NewTraefikForwardAuth(ctx context.Context, scope constructs.Construct) cdk8
 	}
 
 	k8s.NewKubeIngress(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("ingress"),
 		&k8s.KubeIngressProps{
 			Metadata: &k8s.ObjectMeta{
@@ -218,7 +203,7 @@ func NewTraefikForwardAuth(ctx context.Context, scope constructs.Construct) cdk8
 		},
 	)
 
-	return chart
+	return chart.Cdk8sChart
 }
 
 //

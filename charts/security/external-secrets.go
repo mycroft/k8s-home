@@ -1,37 +1,29 @@
 package security
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
-	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewExternalSecretsChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewExternalSecretsChart(builder *kubehelpers.Builder) cdk8s.Chart {
 	namespace := "external-secrets"
 
 	repositoryName := "external-secrets"
 	chartName := "external-secrets"
 	releaseName := "external-secrets"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
+	chart.NewNamespace(namespace)
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		repositoryName,
 		"https://charts.external-secrets.io",
 	)
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repositoryName, // repo name
 		chartName,      // chart name
@@ -39,7 +31,7 @@ func NewExternalSecretsChart(ctx context.Context, scope constructs.Construct) cd
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"external-secrets.yaml",
@@ -48,8 +40,8 @@ func NewExternalSecretsChart(ctx context.Context, scope constructs.Construct) cd
 		nil,
 	)
 
-	kubehelpers.CreateSecretStore(chart, namespace)
-	kubehelpers.CreateExternalSecret(chart, namespace, "testaroo")
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "testaroo")
 
-	return chart
+	return chart.Cdk8sChart
 }

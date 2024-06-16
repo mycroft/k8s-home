@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 
 	"git.mkz.me/mycroft/k8s-home/imports/bitnamicom"
@@ -12,7 +10,6 @@ import (
 	"git.mkz.me/mycroft/k8s-home/imports/servicemonitor_monitoringcoreoscom"
 	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
 
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
@@ -26,21 +23,17 @@ const (
 	cryptoPBKDFValue      = "AgDKQtI+u+mVmrhK6vZi8PLd/g0hwu6n6132NRDN0pjf1TIjonIxvY7w/VDcYGdkz/a7FGQrs9sc8gNN59gJrEAuXNiYU1fxICdcrrvZIqrNvJKgOnWNbBxTe7vV2E7goYc238YHdJudIYHeas+9KB5AGHj5YyRfrjE8jMMG03PNykhIaG8ZE/x9lxs694gQNHSCmaquvRkDjtVbRQ5J08nAiUobLkNHprR+Qzz5lifPw6SpY3pUvljFxYmmpOL18t9F981bBC9T7B1Xt4+YL4oBCq8u7gWeWuPzEr1sCgrte9lBNmprEf+Wady+nV3wC+YQtAi3gjcWC1ygTlnrBU3rtosf6frouQbJ7Y7cIdKDpv1iQIFS2YTPJaUixCsNhxmhi6IrMrczwDOBunGA9ZIuj9oL2g0ObhRePixqNGtOvDvQeZ/BvoH35GjQNnSVhUiyKqdlQ0JgD7iFonTIa3IS9sTd26WS+ah31Aq66hXIC05QbPMpaOMEjx9nktMblKDF1hNC97d46vEShai5Qlbg1BAORZ2Otzb4wpFsKmP+ZlPtWiKSn1ypTnQmIgvnrM9/SkrhJkxt+SD6UpSe+19CbgzonC+CaU2fylOzk3Qr3bvY6Gc6ALaYvxI5QhlaNuVsrWW6IbTGIMH2ckkb3vBZ9kM03b1/UD/uMcHIw8K5G/KyLbDLX580Au8kmk7/IVyDUdPWpeKy"
 )
 
-func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewLonghornChart(builder *kubehelpers.Builder) cdk8s.Chart {
 	namespace := "longhorn-system"
 	repositoryName := "longhorn"
 	chartName := "longhorn"
 	releaseName := "longhorn"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
 
 	// longhorn-crypto
 	bitnamicom.NewSealedSecret(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("longhorn-crypto-sealed-secret"),
 		&bitnamicom.SealedSecretProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -68,7 +61,7 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 
 	// storage class
 	k8s.NewKubeStorageClass(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("longhorn-crypto-global"),
 		&k8s.KubeStorageClassProps{
 			Metadata: &k8s.ObjectMeta{
@@ -95,17 +88,17 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 		},
 	)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
+	chart.NewNamespace(namespace)
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		repositoryName,
 		"https://charts.longhorn.io",
 	)
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repositoryName,
 		chartName,
@@ -113,7 +106,7 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 		nil,
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"longhorn.yaml",
@@ -122,11 +115,11 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 		nil,
 	)
 
-	kubehelpers.CreateExternalSecret(chart, namespace, "nas0-minio")
-	kubehelpers.CreateExternalSecret(chart, namespace, "basic-auth-users")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "nas0-minio")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "basic-auth-users")
 
 	certificates_certmanagerio.NewCertificate(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("certificate"),
 		&certificates_certmanagerio.CertificateProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -148,7 +141,7 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 
 	// The following is no longer useful.
 	traefikio.NewMiddleware(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("basic-auth"),
 		&traefikio.MiddlewareProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -165,7 +158,7 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 	)
 
 	traefikio.NewIngressRoute(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("ingress-route"),
 		&traefikio.IngressRouteProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -208,7 +201,7 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 
 	// PV backups
 	longhornio.NewRecurringJob(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("longhorn-backups"),
 		&longhornio.RecurringJobProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -231,7 +224,7 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 	)
 
 	longhornio.NewRecurringJob(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("longhorn-backups-disabled"),
 		&longhornio.RecurringJobProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -254,7 +247,7 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 	)
 
 	longhornio.NewRecurringJob(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("longhorn-snapshots"),
 		&longhornio.RecurringJobProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -277,7 +270,7 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 	)
 
 	longhornio.NewRecurringJob(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("longhorn-snapshots-disabled"),
 		&longhornio.RecurringJobProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -300,7 +293,7 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 	)
 
 	longhornio.NewRecurringJob(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("longhorn-snapshots-daily"),
 		&longhornio.RecurringJobProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -324,7 +317,7 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 
 	// Adding service monitor
 	servicemonitor_monitoringcoreoscom.NewServiceMonitor(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("sm"),
 		&servicemonitor_monitoringcoreoscom.ServiceMonitorProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -353,5 +346,5 @@ func NewLonghornChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 		},
 	)
 
-	return chart
+	return chart.Cdk8sChart
 }
