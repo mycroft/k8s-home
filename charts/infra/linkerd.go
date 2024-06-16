@@ -13,30 +13,25 @@ func NewLinkerdChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		repositoryName,
 		"https://helm.linkerd.io/stable",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName, // repo name
 		"linkerd-crds", // chart name
 		"linkerd-crds", // release name
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{},
 		nil,
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName, // repo name
 		chartName,      // chart name
 		releaseName,    // release name
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
 				chart.Cdk8sChart,
@@ -48,13 +43,11 @@ func NewLinkerdChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		nil,
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName, // repo name
 		"linkerd-viz",  // chart name
 		"linkerd-viz",  // release name
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{},
 		nil,
 	)

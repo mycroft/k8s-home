@@ -30,7 +30,7 @@ func NewHappyUrlsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		chart.Cdk8sChart,
 		namespace,
 		"redis",
-		kubehelpers.RegisterDockerImage("redis"),
+		builder.RegisterContainerImage("redis"),
 		6379,
 		redisLabels,
 		[]*k8s.EnvVar{},

@@ -12,7 +12,7 @@ func NewITToolsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "it-tools"
 	appPort := 80
 
-	image := kubehelpers.RegisterDockerImage("corentinth/it-tools")
+	image := builder.RegisterContainerImage("corentinth/it-tools")
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)

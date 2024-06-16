@@ -14,7 +14,7 @@ import (
 func NewBookstackChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "bookstack"
 	appName := namespace
-	appImage := kubehelpers.RegisterDockerImage("linuxserver/bookstack")
+	appImage := builder.RegisterContainerImage("linuxserver/bookstack")
 	appPort := 80
 	appIngress := "bookstack.services.mkz.me"
 

@@ -12,19 +12,16 @@ func NewCapacitorChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	chart := builder.NewChart("capacitor")
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		repositoryName,
 		"https://chart.onechart.dev",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		"onechart",
 		"capacitor",
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
 				chart.Cdk8sChart,

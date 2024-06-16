@@ -1,44 +1,32 @@
 package observability
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
-	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewJaegerChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewJaegerChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "jaeger"
 	repositoryName := "jaegertracing"
 	chartName := "jaeger"
 	releaseName := chartName
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
-	kubehelpers.CreateHelmRepository(
-		chart,
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	chart.CreateHelmRepository(
 		repositoryName,
 		"https://jaegertracing.github.io/helm-charts",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		chartName,
 		releaseName,
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"jaeger.yaml",

@@ -37,19 +37,16 @@ func NewWikiJsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	)
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		repositoryName,
 		"https://charts.js.wiki",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		chartName,
 		releaseName,
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
 				chart.Cdk8sChart,

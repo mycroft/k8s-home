@@ -8,7 +8,7 @@ import (
 
 func NewHelloKubernetesChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "hello-kubernetes"
-	image := kubehelpers.RegisterDockerImage("paulbouwer/hello-kubernetes")
+	image := builder.RegisterContainerImage("paulbouwer/hello-kubernetes")
 
 	chart := builder.NewChart(appName)
 	chart.NewNamespace(appName)

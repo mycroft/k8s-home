@@ -13,19 +13,16 @@ func NewKarmaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	chart := builder.NewChart(appName)
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		repositoryName,
 		"https://wiremind.github.io/wiremind-helm-charts",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName, // repoName; must be in flux-system
 		chartName,      // chart name
 		releaseName,    // release name
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
 				chart.Cdk8sChart,

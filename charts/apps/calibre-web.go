@@ -18,19 +18,16 @@ func NewCalibreWebChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart := builder.NewChart(appName)
 	chart.NewNamespace(namespace)
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		repositoryName,
 		"oci://tccr.io/truecharts",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		chartName,
 		releaseName,
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
 				chart.Cdk8sChart,

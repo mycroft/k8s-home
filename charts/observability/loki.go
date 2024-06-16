@@ -17,13 +17,11 @@ func NewLokiChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "minio")
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		chartName,
 		releaseName,
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
 				chart.Cdk8sChart,

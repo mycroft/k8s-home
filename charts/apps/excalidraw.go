@@ -8,7 +8,7 @@ import (
 
 func NewExcalidrawChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "excalidraw"
-	image := kubehelpers.RegisterDockerImage("excalidraw/excalidraw")
+	image := builder.RegisterContainerImage("excalidraw/excalidraw")
 	ingressHost := "excalidraw.services.mkz.me"
 
 	chart := builder.NewChart(appName)

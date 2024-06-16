@@ -1,45 +1,32 @@
 package security
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
-	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewKyvernoChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewKyvernoChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "kyverno"
 
 	repositoryName := "kyverno"
 	chartName := "kyverno"
 	releaseName := "kyverno"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-
-	kubehelpers.CreateHelmRepository(
-		chart,
+	chart.CreateHelmRepository(
 		repositoryName,
 		"https://kyverno.github.io/kyverno/",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName, // repo name
 		chartName,      // chart name
 		releaseName,    // release name
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"kyverno.yaml",
@@ -48,16 +35,14 @@ func NewKyvernoChart(ctx context.Context, scope constructs.Construct) cdk8s.Char
 		nil,
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		"kyverno-policies",
 		"kyverno-policies",
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				"kyverno-policies",
 				"kyverno-policies.yaml",

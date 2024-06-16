@@ -1,42 +1,29 @@
 package storage
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
-	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewOpenSearchChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewOpenSearchChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "opensearch"
 	namespace := "opensearch"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(appName),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(appName)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-
-	kubehelpers.CreateHelmRepository(
-		chart,
+	chart.CreateHelmRepository(
 		"opensearch",
 		"https://opensearch-project.github.io/helm-charts",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart,
+	chart.CreateHelmRelease(
 		namespace,
 		"opensearch", // repoName; must be in flux-system
 		"opensearch", // chart name
 		"opensearch", // release name
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				"opensearch", // release name
 				"opensearch.yaml",
@@ -45,16 +32,14 @@ func NewOpenSearchChart(ctx context.Context, scope constructs.Construct) cdk8s.C
 		nil,
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart,
+	chart.CreateHelmRelease(
 		namespace,
 		"opensearch",            // repoName; must be in flux-system
 		"opensearch-dashboards", // chart name
 		"opensearch-dashboards", // release name
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				"opensearch-dashboards", // release name
 				"opensearch-dashboards.yaml",

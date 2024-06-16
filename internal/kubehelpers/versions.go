@@ -18,6 +18,30 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+type Index struct {
+	APIVersion string              `yaml:"apiVersion"`
+	Entries    map[string][]*Entry `yaml:"entries"`
+}
+
+type Entry struct {
+	Name        string            `yaml:"name"`
+	Version     string            `yaml:"version"`
+	Annotations map[string]string `yaml:"annotations"`
+}
+
+// Patterns is part of versions.yaml configuration file structure
+type Patterns struct {
+	HelmCharts map[string]string `yaml:"helmcharts"`
+	Images     map[string]string `yaml:"images"`
+}
+
+// Versions is part of versions.yaml configuration file structure
+type Versions struct {
+	HelmCharts map[string]string `yaml:"helmcharts"`
+	Images     map[string]string `yaml:"images"`
+	Patterns   Patterns          `yaml:"patterns"`
+}
+
 func GetRepoIndex(url string) ([]byte, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -31,17 +55,6 @@ func GetRepoIndex(url string) ([]byte, error) {
 	}
 
 	return body, nil
-}
-
-type Index struct {
-	APIVersion string              `yaml:"apiVersion"`
-	Entries    map[string][]*Entry `yaml:"entries"`
-}
-
-type Entry struct {
-	Name        string            `yaml:"name"`
-	Version     string            `yaml:"version"`
-	Annotations map[string]string `yaml:"annotations"`
 }
 
 func GetEntriesFromIndex(body []byte) (map[string][]*Entry, error) {
@@ -137,8 +150,13 @@ func GetHelmUpdates(debug bool, filter string) (map[string]string, error) {
 }
 
 // CheckVersions checks the installed releases for update
-func CheckVersions(debug bool, filter string) {
+func (builder *Builder) CheckVersions(debug bool, filter string) {
 	searched := make(map[string]bool)
+
+	versions, err := ReadVersions()
+	if err != nil {
+		panic(err)
+	}
 
 	helmVersions, err := GetHelmUpdates(debug, filter)
 	if err != nil {
@@ -149,7 +167,7 @@ func CheckVersions(debug bool, filter string) {
 		fmt.Printf("%s;%s\n", k, v)
 	}
 
-	for _, image := range dockerImages {
+	for _, image := range builder.DockerImages {
 		parts := strings.Split(image, ":")
 
 		if _, ok := searched[parts[0]]; ok {
@@ -189,20 +207,6 @@ func CheckVersions(debug bool, filter string) {
 		}
 
 	}
-}
-
-var dockerImages = []string{}
-
-func RegisterDockerImage(image string) string {
-	ReadVersions()
-
-	if val, exists := versions.Images[image]; exists {
-		image = fmt.Sprintf("%s:%s", image, val)
-	}
-
-	dockerImages = append(dockerImages, image)
-
-	return image
 }
 
 func GetLastImageTag(debug bool, image, version, pattern string) []string {
@@ -263,32 +267,23 @@ func GetLastImageTag(debug bool, image, version, pattern string) []string {
 	return retVersions
 }
 
-type Patterns struct {
-	HelmCharts map[string]string `yaml:"helmcharts"`
-	Images     map[string]string `yaml:"images"`
-}
+// ReadVersions reads versions.yaml, parses it and return its configuration in a Version instance
+func ReadVersions() (Versions, error) {
+	var versions Versions
 
-type Versions struct {
-	HelmCharts map[string]string `yaml:"helmcharts"`
-	Images     map[string]string `yaml:"images"`
-	Patterns   Patterns          `yaml:"patterns"`
-}
-
-var versions = Versions{}
-
-func ReadVersions() {
 	if len(versions.Images) != 0 || len(versions.HelmCharts) != 0 {
-		return
+		return Versions{}, nil
 	}
 
 	body, err := os.ReadFile("versions.yaml")
 	if err != nil {
-		panic(fmt.Sprintf("Could not open versions.yaml: %s", err.Error()))
+		return Versions{}, fmt.Errorf("could not open versions.yaml: %s", err.Error())
 	}
 
 	err = yaml.Unmarshal(body, &versions)
 	if err != nil {
-		panic(fmt.Sprintf("Could not unmarshal versions.yaml: %s", err.Error()))
+		return Versions{}, fmt.Errorf("could not unmarshal versions.yaml: %s", err.Error())
 	}
 
+	return versions, nil
 }

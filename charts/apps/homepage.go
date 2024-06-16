@@ -14,19 +14,16 @@ func NewHomepageChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart := builder.NewChart(appName)
 	chart.NewNamespace(namespace)
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		repositoryName,
 		"https://jameswynn.github.io/helm-charts",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		chartName,
 		releaseName,
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesTemplatedConfig(
 				chart.Cdk8sChart,

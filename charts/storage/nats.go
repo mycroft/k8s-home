@@ -13,19 +13,16 @@ func NewNATSChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		repositoryName,
 		"https://nats-io.github.io/k8s/helm/charts/",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		chartName,
 		releaseName,
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
 				chart.Cdk8sChart,

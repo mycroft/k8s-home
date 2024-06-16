@@ -17,8 +17,7 @@ func NewKubePrometheusStackChart(builder *kubehelpers.Builder) *kubehelpers.Char
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		repositoryName,
 		"https://prometheus-community.github.io/helm-charts",
 	)
@@ -29,13 +28,11 @@ func NewKubePrometheusStackChart(builder *kubehelpers.Builder) *kubehelpers.Char
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "alertmanager-config")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "grafana-postgres")
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName, // repoName; must be in flux-system
 		chartName,      // chart name
 		releaseName,    // release name
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
 				chart.Cdk8sChart,

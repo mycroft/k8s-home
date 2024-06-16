@@ -15,12 +15,12 @@ func NewYopassChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appIngress := "yopass.services.mkz.me"
 	appName := "yopass"
 	appPort := 1337
-	image := kubehelpers.RegisterDockerImage("jhaals/yopass")
+	image := builder.RegisterContainerImage("jhaals/yopass")
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
 
-	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart.Cdk8sChart, namespace)
+	_, redisServiceName := chart.NewRedisStatefulset(namespace)
 	redisURL := fmt.Sprintf("redis://%s:6379", redisServiceName)
 
 	yopassLabels := map[string]*string{

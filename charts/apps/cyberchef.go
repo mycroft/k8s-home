@@ -9,7 +9,7 @@ import (
 func NewCyberchefChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "cyberchef"
 	namespace := appName
-	appImage := kubehelpers.RegisterDockerImage("ghcr.io/gchq/cyberchef")
+	appImage := builder.RegisterContainerImage("ghcr.io/gchq/cyberchef")
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
 	}

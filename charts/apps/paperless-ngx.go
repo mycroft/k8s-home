@@ -12,7 +12,7 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "paperless-ngx"
 	appIngress := "paperless.services.mkz.me"
 
-	paperlessNgxImage := kubehelpers.RegisterDockerImage("paperlessngx/paperless-ngx")
+	paperlessNgxImage := builder.RegisterContainerImage("paperlessngx/paperless-ngx")
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
@@ -20,7 +20,7 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
 
-	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart.Cdk8sChart, namespace)
+	_, redisServiceName := chart.NewRedisStatefulset(namespace)
 
 	env := []*k8s.EnvVar{
 		// XXX fix url here

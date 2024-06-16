@@ -16,13 +16,11 @@ func NewBlackboxExporterChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	// TODO: Namespace is created in NewKubePrometheusStackChart, as well as HelmRepository
 	// This should be refactored
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		chartName,
 		releaseName,
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
 				chart.Cdk8sChart,

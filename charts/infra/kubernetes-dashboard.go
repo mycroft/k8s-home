@@ -15,19 +15,16 @@ func NewKubernetesDashboardChart(builder *kubehelpers.Builder) *kubehelpers.Char
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		repositoryName,
 		"https://kubernetes.github.io/dashboard/",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		chartName,
 		releaseName,
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
 				chart.Cdk8sChart,

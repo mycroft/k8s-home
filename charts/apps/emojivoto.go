@@ -11,9 +11,9 @@ import (
 func NewEmojivotoChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "emojivoto"
 	ingressName := "emojivoto.services.mkz.me"
-	imageEmojiSvc := kubehelpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-emoji-svc")
-	imageWeb := kubehelpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-web")
-	imageVotingSvc := kubehelpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-voting-svc")
+	imageEmojiSvc := builder.RegisterContainerImage("docker.l5d.io/buoyantio/emojivoto-emoji-svc")
+	imageWeb := builder.RegisterContainerImage("docker.l5d.io/buoyantio/emojivoto-web")
+	imageVotingSvc := builder.RegisterContainerImage("docker.l5d.io/buoyantio/emojivoto-voting-svc")
 
 	chart := builder.NewChart(namespace)
 

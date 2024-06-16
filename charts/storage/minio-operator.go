@@ -17,21 +17,18 @@ func NewMinioOperator(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		repoName,
 		"https://operator.min.io/",
 	)
 
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "root")
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,   // namespace
 		repoName,    // repository name, same as above
 		"operator",  // the chart name
 		releaseName, // the release name
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
 				chart.Cdk8sChart,

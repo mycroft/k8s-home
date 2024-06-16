@@ -14,7 +14,7 @@ func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := namespace
 	appPort := 8080
 	appIngress := "privatebin.services.mkz.me"
-	privatebinImage := kubehelpers.RegisterDockerImage("privatebin/nginx-fpm-alpine")
+	privatebinImage := builder.RegisterContainerImage("privatebin/nginx-fpm-alpine")
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)

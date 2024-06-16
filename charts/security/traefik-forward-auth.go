@@ -13,7 +13,7 @@ import (
 func NewTraefikForwardAuth(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "traefik-forward-auth"
 	namespace := appName
-	image := kubehelpers.RegisterDockerImage("thomseddon/traefik-forward-auth")
+	image := builder.RegisterContainerImage("thomseddon/traefik-forward-auth")
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)

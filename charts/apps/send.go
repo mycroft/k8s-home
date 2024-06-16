@@ -13,7 +13,7 @@ func NewSendChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "send"
 	ingressHost := "send.services.mkz.me"
 	appPort := 1443
-	image := kubehelpers.RegisterDockerImage("registry.gitlab.com/timvisee/send")
+	image := builder.RegisterContainerImage("registry.gitlab.com/timvisee/send")
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
@@ -25,7 +25,7 @@ func NewSendChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"app.kubernetes.io/component": jsii.String("send"),
 	}
 
-	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart.Cdk8sChart, namespace)
+	_, redisServiceName := chart.NewRedisStatefulset(namespace)
 
 	redisHost := fmt.Sprintf("%s.%s", redisServiceName, namespace)
 

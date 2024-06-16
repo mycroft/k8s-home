@@ -3,8 +3,6 @@ package charts
 import (
 	"context"
 
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
-
 	charts_apps "git.mkz.me/mycroft/k8s-home/charts/apps"
 	charts_cicd "git.mkz.me/mycroft/k8s-home/charts/cicd"
 	charts_infra "git.mkz.me/mycroft/k8s-home/charts/infra"
@@ -14,7 +12,7 @@ import (
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 )
 
-func HomelabBuildApp(ctx context.Context) cdk8s.App {
+func HomelabBuildApp(ctx context.Context) *kubehelpers.Builder {
 	builder := kubehelpers.NewBuilder(ctx)
 
 	charts := [](func(*kubehelpers.Builder) *kubehelpers.Chart){
@@ -99,5 +97,5 @@ func HomelabBuildApp(ctx context.Context) cdk8s.App {
 		builder.BuildChart(chartCallback)
 	}
 
-	return builder.App
+	return builder
 }

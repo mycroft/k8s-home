@@ -10,19 +10,16 @@ func NewPostgresOperator(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		"postgres-operator",
 		"https://opensource.zalando.com/postgres-operator/charts/postgres-operator",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		"postgres-operator",
 		"postgres-operator",
 		"postgres-operator",
-		map[string]string{},
 		nil,
 		nil,
 	)

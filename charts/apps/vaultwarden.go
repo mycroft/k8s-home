@@ -9,7 +9,7 @@ import (
 func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "vaultwarden"
 	appName := namespace
-	appImage := kubehelpers.RegisterDockerImage("vaultwarden/server")
+	appImage := builder.RegisterContainerImage("vaultwarden/server")
 	appPort := 80
 	appIngress := "vaultwarden.services.mkz.me"
 

@@ -20,22 +20,19 @@ func NewAuthentikChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "authentik-secret")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "mailrelay")
 
-	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart.Cdk8sChart, namespace)
+	_, redisServiceName := chart.NewRedisStatefulset(namespace)
 	_ = fmt.Sprintf("redis://%s:6379", redisServiceName)
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		repositoryName,
 		"https://charts.goauthentik.io",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		chartName,
 		releaseName,
-		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
 				chart.Cdk8sChart,

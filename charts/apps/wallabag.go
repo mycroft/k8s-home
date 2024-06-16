@@ -11,7 +11,7 @@ import (
 func NewWallabagChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "wallabag"
 	appName := namespace
-	appImage := kubehelpers.RegisterDockerImage("wallabag/wallabag")
+	appImage := builder.RegisterContainerImage("wallabag/wallabag")
 	appIngress := "wallabag.services.mkz.me"
 	appPort := 80
 

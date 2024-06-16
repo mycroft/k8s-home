@@ -50,31 +50,24 @@ func NewCertManagerChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	// reason to create the namespace is that flux will append the release name using the targetNamespace used.
 	// therefore, the HelmRepository will lie in fluxcd, while HelmRelease will live in cert-manager.
 	chart.NewNamespace(namespace)
-
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		"jetstack",
 		"https://charts.jetstack.io",
 	)
 
-	kubehelpers.CreateHelmRelease(
-		chart.Cdk8sChart,
+	chart.CreateHelmRelease(
 		namespace,
 		"jetstack", // repository name
 		appName,    // chart name
 		appName,    // release name
-		map[string]string{
-			"installCRDs": "true",
-		},
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				appName, // release name
-				"cert-manager.yaml",
-			),
-		},
-		nil,
+		nil,        // values
+		nil,        // configmaps
+		kubehelpers.WithValues(
+			map[string]*string{
+				"installCRDs": jsii.String("true"),
+			},
+		),
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	// flux does not like having those here with the helm creation just before

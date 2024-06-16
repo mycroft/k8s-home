@@ -11,7 +11,7 @@ func NewLinkdingChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := namespace
 	appPort := 9090
 	appIngress := "links.services.mkz.me"
-	linkdingImage := kubehelpers.RegisterDockerImage("sissbruecker/linkding")
+	linkdingImage := builder.RegisterContainerImage("sissbruecker/linkding")
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)

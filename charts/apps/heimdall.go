@@ -1,29 +1,20 @@
 package apps
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewHeimdallChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewHeimdallChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "heimdall"
 	appName := "heimdall"
-	appImage := kubehelpers.RegisterDockerImage("linuxserver/heimdall")
+	appImage := builder.RegisterContainerImage("linuxserver/heimdall")
 	appPort := 80
 	appIngress := "heimdall.services.mkz.me"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(appName),
-		&cdk8s.ChartProps{},
-	)
-
-	kubehelpers.NewNamespace(chart, namespace)
+	chart := builder.NewChart(appName)
+	chart.NewNamespace(namespace)
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -36,7 +27,7 @@ func NewHeimdallChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 	}
 
 	kubehelpers.NewStatefulSet(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		appName,
 		appImage,
@@ -59,8 +50,8 @@ func NewHeimdallChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		labels,
 		appName,
 		appPort,

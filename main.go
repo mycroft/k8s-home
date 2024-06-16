@@ -41,14 +41,14 @@ var checkVersionCmd = &cobra.Command{
 			log.Println("preparing charts...")
 		}
 
-		_ = charts.HomelabBuildApp(context.WithValue(context.TODO(), "values", kubehelpers.ContextValues{
+		builder := charts.HomelabBuildApp(context.WithValue(context.TODO(), "values", kubehelpers.ContextValues{
 			Debug: *debug,
 		}))
 
 		if *debug {
 			log.Println("running check-versions...")
 		}
-		kubehelpers.CheckVersions(*debug, *filter)
+		builder.CheckVersions(*debug, *filter)
 	},
 }
 
@@ -57,7 +57,7 @@ func GenerateYamlCharts() {
 		log.Println("preparing charts...")
 	}
 
-	app := charts.HomelabBuildApp(context.WithValue(context.TODO(), "values", kubehelpers.ContextValues{
+	builder := charts.HomelabBuildApp(context.WithValue(context.TODO(), "values", kubehelpers.ContextValues{
 		Debug: *debug,
 	}))
 
@@ -65,7 +65,7 @@ func GenerateYamlCharts() {
 		log.Println("syntheizing yamls...")
 	}
 
-	app.Synth()
+	builder.App.Synth()
 }
 
 func init() {

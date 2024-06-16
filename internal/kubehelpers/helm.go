@@ -59,10 +59,40 @@ func CreateHelmRepository(chart constructs.Construct, name, url string) sourceto
 	)
 }
 
+func (chart *Chart) CreateHelmRepository(name, url string) sourcetoolkitfluxcdio.HelmRepository {
+	return CreateHelmRepository(chart.Cdk8sChart, name, url)
+}
+
 type HelmReleaseConfigMap struct {
 	Name          string // ConfigMap name
 	KeyName       string // key name
 	ConfigMapHash string // The Hash of the configmap content
+}
+
+type helmReleaseOption struct {
+	UseSameNameConfigFile bool
+	Values                map[string]*string
+	Versions              *Versions
+}
+
+type HelmReleaseOption func(*helmReleaseOption)
+
+func WithVersions(versions *Versions) HelmReleaseOption {
+	return func(opts *helmReleaseOption) {
+		opts.Versions = versions
+	}
+}
+
+func WithDefaultConfigFile() HelmReleaseOption {
+	return func(opts *helmReleaseOption) {
+		opts.UseSameNameConfigFile = true
+	}
+}
+
+func WithValues(values map[string]*string) HelmReleaseOption {
+	return func(opts *helmReleaseOption) {
+		opts.Values = values
+	}
 }
 
 // CreateHelmRelease creates a helm release in the given namespace for the given repo/name and version
@@ -72,15 +102,43 @@ type HelmReleaseConfigMap struct {
 func CreateHelmRelease(
 	chart constructs.Construct,
 	namespace, repoName, chartName, releaseName string,
-	values map[string]string,
 	configMaps []HelmReleaseConfigMap,
 	annotations map[string]*string,
+	opts ...HelmReleaseOption,
 ) helmtoolkitfluxcdio.HelmRelease {
+	var helmReleaseOptions helmReleaseOption
+	var values map[string]*string
+
 	cachedVersion := ""
 
-	ReadVersions()
+	for _, opt := range opts {
+		opt(&helmReleaseOptions)
+	}
 
-	if version, exists := versions.HelmCharts[fmt.Sprintf("%s/%s", repoName, chartName)]; exists {
+	if helmReleaseOptions.Versions == nil {
+		versions, err := ReadVersions()
+		if err != nil {
+			panic(err)
+		}
+		helmReleaseOptions.Versions = &versions
+	}
+
+	if helmReleaseOptions.UseSameNameConfigFile {
+		configMaps = append(configMaps,
+			CreateHelmValuesConfig(
+				chart,
+				namespace,
+				releaseName,
+				fmt.Sprintf("%s.yaml", releaseName),
+			),
+		)
+	}
+
+	if len(helmReleaseOptions.Values) > 0 {
+		values = helmReleaseOptions.Values
+	}
+
+	if version, exists := helmReleaseOptions.Versions.HelmCharts[fmt.Sprintf("%s/%s", repoName, chartName)]; exists {
 		cachedVersion = version
 	} else {
 		panic(fmt.Sprintf("Could not find version for HelmRelease %s/%s", repoName, chartName))
@@ -137,6 +195,24 @@ func CreateHelmRelease(
 				ValuesFrom: &valuesFrom,
 			},
 		},
+	)
+}
+
+// CreateHelmRelease creates an Helm Release into the chart
+func (chart *Chart) CreateHelmRelease(
+	namespace, repoName, chartName, releaseName string,
+	configMaps []HelmReleaseConfigMap,
+	annotations map[string]*string,
+	opts ...HelmReleaseOption,
+) helmtoolkitfluxcdio.HelmRelease {
+	opts = append(opts, WithVersions(&chart.Builder.Versions))
+
+	return CreateHelmRelease(
+		chart.Cdk8sChart,
+		namespace, repoName, chartName, releaseName,
+		configMaps,
+		annotations,
+		opts...,
 	)
 }
 

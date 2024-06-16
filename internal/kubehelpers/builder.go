@@ -2,6 +2,8 @@ package kubehelpers
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -9,17 +11,23 @@ import (
 )
 
 type Builder struct {
-	App      cdk8s.App
-	Context  context.Context
-	Versions Versions
+	App          cdk8s.App
+	Context      context.Context
+	Versions     Versions
+	DockerImages []string
 }
 
 type Chart struct {
 	Cdk8sChart cdk8s.Chart
+	Builder    *Builder
 }
 
 // NewBuilder creates a Builder context with cdk8s app, context & read versions file
 func NewBuilder(ctx context.Context) *Builder {
+	versions, err := ReadVersions()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	return &Builder{
 		App:      cdk8s.NewApp(nil),
@@ -36,6 +44,7 @@ func (builder *Builder) NewChart(namespace string) *Chart {
 			jsii.String(namespace),
 			&cdk8s.ChartProps{},
 		),
+		Builder: builder,
 	}
 }
 
@@ -47,4 +56,15 @@ func (builder *Builder) BuildChart(callback func(*Builder) *Chart) *Chart {
 // BuildChartLegacy calls the passed callback with the current Builder context (legacy version)
 func (builder *Builder) BuildChartLegacy(callback func(context.Context, constructs.Construct) cdk8s.Chart) cdk8s.Chart {
 	return callback(builder.Context, builder.App)
+}
+
+// RegisterContainerImage marks container images used for version checking
+func (builder *Builder) RegisterContainerImage(image string) string {
+	if val, exists := builder.Versions.Images[image]; exists {
+		image = fmt.Sprintf("%s:%s", image, val)
+	}
+
+	builder.DockerImages = append(builder.DockerImages, image)
+
+	return image
 }
