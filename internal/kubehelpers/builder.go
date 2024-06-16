@@ -2,6 +2,7 @@ package kubehelpers
 
 import (
 	"context"
+	"log"
 
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
@@ -12,6 +13,10 @@ type Builder struct {
 	App      cdk8s.App
 	Context  context.Context
 	Versions Versions
+}
+
+type Chart struct {
+	Cdk8sChart cdk8s.Chart
 }
 
 // NewBuilder creates a Builder context with cdk8s app, context & read versions file
@@ -25,17 +30,21 @@ func NewBuilder(ctx context.Context) *Builder {
 }
 
 // NewChart builds a cdk8s.Chart instance and returns it
-func (builder *Builder) NewChart(namespace string) cdk8s.Chart {
-	return cdk8s.NewChart(
-		builder.App,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+func (builder *Builder) NewChart(namespace string) *Chart {
+	return &Chart{
+		Cdk8sChart: cdk8s.NewChart(
+			builder.App,
+			jsii.String(namespace),
+			&cdk8s.ChartProps{},
+		),
+	}
 }
 
 // BuildChart calls the passed callback with the current Builder context
-func (builder *Builder) BuildChart(callback func(*Builder) cdk8s.Chart) cdk8s.Chart {
-	return callback(builder)
+func (builder *Builder) BuildChart(callback func(*Builder) cdk8s.Chart) Chart {
+	return Chart{
+		Cdk8sChart: callback(builder),
+	}
 }
 
 // BuildChartLegacy calls the passed callback with the current Builder context (legacy version)

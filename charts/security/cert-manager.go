@@ -49,16 +49,16 @@ func NewCertManagerChart(builder *kubehelpers.Builder) cdk8s.Chart {
 	// create a namespace for cert-manager
 	// reason to create the namespace is that flux will append the release name using the targetNamespace used.
 	// therefore, the HelmRepository will lie in fluxcd, while HelmRelease will live in cert-manager.
-	kubehelpers.NewNamespace(chart, namespace)
+	chart.NewNamespace(namespace)
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		"jetstack",
 		"https://charts.jetstack.io",
 	)
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		"jetstack", // repository name
 		appName,    // chart name
@@ -68,7 +68,7 @@ func NewCertManagerChart(builder *kubehelpers.Builder) cdk8s.Chart {
 		},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				appName, // release name
 				"cert-manager.yaml",
@@ -79,8 +79,8 @@ func NewCertManagerChart(builder *kubehelpers.Builder) cdk8s.Chart {
 
 	// flux does not like having those here with the helm creation just before
 	// This should be moved in their own chart
-	createClusterIssueur(chart, "letsencrypt-staging", "https://acme-staging-v02.api.letsencrypt.org/directory")
-	createClusterIssueur(chart, "letsencrypt-prod", "https://acme-v02.api.letsencrypt.org/directory")
+	createClusterIssueur(chart.Cdk8sChart, "letsencrypt-staging", "https://acme-staging-v02.api.letsencrypt.org/directory")
+	createClusterIssueur(chart.Cdk8sChart, "letsencrypt-prod", "https://acme-v02.api.letsencrypt.org/directory")
 
-	return chart
+	return chart.Cdk8sChart
 }

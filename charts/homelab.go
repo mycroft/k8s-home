@@ -19,7 +19,7 @@ func HomelabBuildApp(ctx context.Context) cdk8s.App {
 
 	// security
 	builder.BuildChart(charts_security.NewCertManagerChart)
-	builder.BuildChartLegacy(charts_security.NewSealedSecretsChart)
+	builder.BuildChart(charts_security.NewSealedSecretsChart)
 	builder.BuildChartLegacy(charts_security.NewVaultChart)
 	builder.BuildChartLegacy(charts_security.NewExternalSecretsChart)
 	// charts_security.NewTrivyChart)
