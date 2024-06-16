@@ -40,10 +40,8 @@ func (builder *Builder) NewChart(namespace string) *Chart {
 }
 
 // BuildChart calls the passed callback with the current Builder context
-func (builder *Builder) BuildChart(callback func(*Builder) cdk8s.Chart) Chart {
-	return Chart{
-		Cdk8sChart: callback(builder),
-	}
+func (builder *Builder) BuildChart(callback func(*Builder) *Chart) *Chart {
+	return callback(builder)
 }
 
 // BuildChartLegacy calls the passed callback with the current Builder context (legacy version)

@@ -8,7 +8,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewMinio(builder *kubehelpers.Builder) cdk8s.Chart {
+func NewMinio(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "minio"
 
 	chart := builder.NewChart(namespace)
@@ -188,5 +188,5 @@ func NewMinio(builder *kubehelpers.Builder) cdk8s.Chart {
 		},
 	)
 
-	return chart.Cdk8sChart
+	return chart
 }

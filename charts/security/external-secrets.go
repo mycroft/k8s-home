@@ -2,10 +2,9 @@ package security
 
 import (
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewExternalSecretsChart(builder *kubehelpers.Builder) cdk8s.Chart {
+func NewExternalSecretsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "external-secrets"
 
 	repositoryName := "external-secrets"
@@ -43,5 +42,5 @@ func NewExternalSecretsChart(builder *kubehelpers.Builder) cdk8s.Chart {
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "testaroo")
 
-	return chart.Cdk8sChart
+	return chart
 }

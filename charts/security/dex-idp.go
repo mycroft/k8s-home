@@ -7,10 +7,9 @@ import (
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewDexIdpChart(builder *kubehelpers.Builder) cdk8s.Chart {
+func NewDexIdpChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "dex-idp"
 	repositoryName := "dex"
 	chartName := "dex"
@@ -73,5 +72,5 @@ func NewDexIdpChart(builder *kubehelpers.Builder) cdk8s.Chart {
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "traefik-forward-auth-oidc")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
 
-	return chart.Cdk8sChart
+	return chart
 }

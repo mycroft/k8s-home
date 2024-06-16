@@ -2,10 +2,9 @@ package security
 
 import (
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewSealedSecretsChart(builder *kubehelpers.Builder) cdk8s.Chart {
+func NewSealedSecretsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "sealed-secrets"
 	releaseName := namespace
 
@@ -38,5 +37,5 @@ func NewSealedSecretsChart(builder *kubehelpers.Builder) cdk8s.Chart {
 		nil,
 	)
 
-	return chart.Cdk8sChart
+	return chart
 }

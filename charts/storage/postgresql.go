@@ -9,7 +9,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewPostgres(builder *kubehelpers.Builder) cdk8s.Chart {
+func NewPostgres(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "postgres"
 
 	chart := builder.NewChart(namespace)
@@ -76,5 +76,5 @@ func NewPostgres(builder *kubehelpers.Builder) cdk8s.Chart {
 		},
 	)
 
-	return chart.Cdk8sChart
+	return chart
 }

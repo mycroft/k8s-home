@@ -2,7 +2,6 @@ package storage
 
 import (
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
 // CRDs are:
@@ -14,7 +13,7 @@ import (
 //
 // TODO: Automatize CRDs checks/updates
 
-func NewScyllaOperatorChart(builder *kubehelpers.Builder) cdk8s.Chart {
+func NewScyllaOperatorChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "scylla-operator"
 
 	repoName := "scylla"
@@ -47,5 +46,5 @@ func NewScyllaOperatorChart(builder *kubehelpers.Builder) cdk8s.Chart {
 		nil,
 	)
 
-	return chart.Cdk8sChart
+	return chart
 }

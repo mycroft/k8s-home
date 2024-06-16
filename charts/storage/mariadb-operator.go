@@ -2,10 +2,9 @@ package storage
 
 import (
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewMariaDBOperator(builder *kubehelpers.Builder) cdk8s.Chart {
+func NewMariaDBOperator(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "mariadb-operator"
 	releaseName := "mariadb-operator"
 
@@ -36,5 +35,5 @@ func NewMariaDBOperator(builder *kubehelpers.Builder) cdk8s.Chart {
 		nil,
 	)
 
-	return chart.Cdk8sChart
+	return chart
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewVeleroChart(builder *kubehelpers.Builder) cdk8s.Chart {
+func NewVeleroChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "velero"
 	repositoryName := "vmware-tanzu"
 	chartName := "velero"
@@ -61,5 +61,5 @@ func NewVeleroChart(builder *kubehelpers.Builder) cdk8s.Chart {
 		},
 	)
 
-	return chart.Cdk8sChart
+	return chart
 }

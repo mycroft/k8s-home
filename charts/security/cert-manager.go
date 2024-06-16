@@ -40,7 +40,7 @@ func createClusterIssueur(chart constructs.Construct, name, server string) certm
 	)
 }
 
-func NewCertManagerChart(builder *kubehelpers.Builder) cdk8s.Chart {
+func NewCertManagerChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "cert-manager"
 	appName := "cert-manager"
 
@@ -82,5 +82,5 @@ func NewCertManagerChart(builder *kubehelpers.Builder) cdk8s.Chart {
 	createClusterIssueur(chart.Cdk8sChart, "letsencrypt-staging", "https://acme-staging-v02.api.letsencrypt.org/directory")
 	createClusterIssueur(chart.Cdk8sChart, "letsencrypt-prod", "https://acme-v02.api.letsencrypt.org/directory")
 
-	return chart.Cdk8sChart
+	return chart
 }

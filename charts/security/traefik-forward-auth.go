@@ -10,7 +10,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewTraefikForwardAuth(builder *kubehelpers.Builder) cdk8s.Chart {
+func NewTraefikForwardAuth(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "traefik-forward-auth"
 	namespace := appName
 	image := kubehelpers.RegisterDockerImage("thomseddon/traefik-forward-auth")
@@ -203,7 +203,7 @@ func NewTraefikForwardAuth(builder *kubehelpers.Builder) cdk8s.Chart {
 		},
 	)
 
-	return chart.Cdk8sChart
+	return chart
 }
 
 //

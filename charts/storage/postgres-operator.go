@@ -2,10 +2,9 @@ package storage
 
 import (
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewPostgresOperator(builder *kubehelpers.Builder) cdk8s.Chart {
+func NewPostgresOperator(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "postgres-operator"
 
 	chart := builder.NewChart(namespace)
@@ -28,5 +27,5 @@ func NewPostgresOperator(builder *kubehelpers.Builder) cdk8s.Chart {
 		nil,
 	)
 
-	return chart.Cdk8sChart
+	return chart
 }

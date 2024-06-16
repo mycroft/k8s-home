@@ -7,7 +7,7 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewScyllaChart(builder *kubehelpers.Builder) cdk8s.Chart {
+func NewScyllaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "scylla"
 
 	members := 2
@@ -76,5 +76,5 @@ func NewScyllaChart(builder *kubehelpers.Builder) cdk8s.Chart {
 		},
 	)
 
-	return chart.Cdk8sChart
+	return chart
 }
