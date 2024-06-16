@@ -1,31 +1,24 @@
 package storage
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/miniominio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewMinio(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewMinio(builder *kubehelpers.Builder) cdk8s.Chart {
 	namespace := "minio"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
-	kubehelpers.CreateExternalSecret(chart, namespace, "storage-configuration")
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "storage-configuration")
 
 	miniominio.NewTenant(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("minio-storage"),
 		&miniominio.TenantProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -133,7 +126,7 @@ func NewMinio(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	consoleIngress := "minio-storage-console.services.mkz.me"
 
 	k8s.NewKubeIngress(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("minio-storage-ingress"),
 		&k8s.KubeIngressProps{
 			Metadata: &k8s.ObjectMeta{
@@ -195,5 +188,5 @@ func NewMinio(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	return chart
+	return chart.Cdk8sChart
 }

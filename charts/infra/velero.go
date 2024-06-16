@@ -1,39 +1,32 @@
 package infra
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/veleroio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewVeleroChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewVeleroChart(builder *kubehelpers.Builder) cdk8s.Chart {
 	namespace := "velero"
 	repositoryName := "vmware-tanzu"
 	chartName := "velero"
 	releaseName := "velero"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
-	kubehelpers.CreateExternalSecret(chart, namespace, "nas0-minio")
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "nas0-minio")
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		repositoryName,
 		"https://vmware-tanzu.github.io/helm-charts",
 	)
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repositoryName,
 		chartName,
@@ -41,7 +34,7 @@ func NewVeleroChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"velero.yaml",
@@ -52,7 +45,7 @@ func NewVeleroChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 
 	// Create a default backup
 	veleroio.NewSchedule(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("backup-schedule"),
 		&veleroio.ScheduleProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -68,5 +61,5 @@ func NewVeleroChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 		},
 	)
 
-	return chart
+	return chart.Cdk8sChart
 }

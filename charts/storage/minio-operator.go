@@ -1,40 +1,33 @@
 package storage
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewMinioOperator(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewMinioOperator(builder *kubehelpers.Builder) cdk8s.Chart {
 	namespace := "minio-operator"
 
 	repoName := "minio"
 	releaseName := "operator"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		repoName,
 		"https://operator.min.io/",
 	)
 
-	kubehelpers.CreateExternalSecret(chart, namespace, "root")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "root")
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,   // namespace
 		repoName,    // repository name, same as above
 		"operator",  // the chart name
@@ -42,7 +35,7 @@ func NewMinioOperator(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"minio-operator.yaml",
@@ -52,7 +45,7 @@ func NewMinioOperator(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 	)
 
 	k8s.NewKubeSecret(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("console-sa-secret"),
 		&k8s.KubeSecretProps{
 			Metadata: &k8s.ObjectMeta{
@@ -66,5 +59,5 @@ func NewMinioOperator(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 		},
 	)
 
-	return chart
+	return chart.Cdk8sChart
 }

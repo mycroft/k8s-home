@@ -1,11 +1,7 @@
 package storage
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
-	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
@@ -18,28 +14,23 @@ import (
 //
 // TODO: Automatize CRDs checks/updates
 
-func NewScyllaOperatorChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewScyllaOperatorChart(builder *kubehelpers.Builder) cdk8s.Chart {
 	namespace := "scylla-operator"
 
 	repoName := "scylla"
 	releaseName := "scylla-operator"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
-
-	kubehelpers.NewNamespace(chart, namespace)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		repoName,
 		"https://scylla-operator-charts.storage.googleapis.com/stable",
 	)
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repoName,
 		"scylla-operator",
@@ -47,7 +38,7 @@ func NewScyllaOperatorChart(ctx context.Context, scope constructs.Construct) cdk
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"scylla-operator.yaml",
@@ -56,5 +47,5 @@ func NewScyllaOperatorChart(ctx context.Context, scope constructs.Construct) cdk
 		nil,
 	)
 
-	return chart
+	return chart.Cdk8sChart
 }

@@ -1,33 +1,27 @@
 package storage
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8smariadbcom"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewMariaDBChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewMariaDBChart(builder *kubehelpers.Builder) cdk8s.Chart {
 	namespace := "mariadb"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
-	kubehelpers.CreateExternalSecret(chart, namespace, "mariadb")
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "mariadb")
 
 	mariadbInstance := "mariadb"
 
 	k8smariadbcom.NewMariaDb(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("mariadb"),
 		&k8smariadbcom.MariaDbProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -75,7 +69,7 @@ func NewMariaDBChart(ctx context.Context, scope constructs.Construct) cdk8s.Char
 
 	for _, database := range databases {
 		k8smariadbcom.NewDatabase(
-			chart,
+			chart.Cdk8sChart,
 			jsii.String(fmt.Sprintf("%s-database", database)),
 			&k8smariadbcom.DatabaseProps{
 				Metadata: &cdk8s.ApiObjectMetadata{
@@ -94,9 +88,9 @@ func NewMariaDBChart(ctx context.Context, scope constructs.Construct) cdk8s.Char
 
 		// users names are the same than databases (for now).
 		for _, user := range users[database] {
-			kubehelpers.CreateExternalSecret(chart, namespace, fmt.Sprintf("user-%s", user))
+			kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, fmt.Sprintf("user-%s", user))
 			k8smariadbcom.NewUser(
-				chart,
+				chart.Cdk8sChart,
 				jsii.String(fmt.Sprintf("%s-user-%s", database, user)),
 				&k8smariadbcom.UserProps{
 					Metadata: &cdk8s.ApiObjectMetadata{
@@ -116,7 +110,7 @@ func NewMariaDBChart(ctx context.Context, scope constructs.Construct) cdk8s.Char
 			)
 
 			k8smariadbcom.NewGrant(
-				chart,
+				chart.Cdk8sChart,
 				jsii.String(fmt.Sprintf("%s-grant-%s", database, user)),
 				&k8smariadbcom.GrantProps{
 					Metadata: &cdk8s.ApiObjectMetadata{
@@ -147,5 +141,5 @@ func NewMariaDBChart(ctx context.Context, scope constructs.Construct) cdk8s.Char
 		}
 	}
 
-	return chart
+	return chart.Cdk8sChart
 }

@@ -1,26 +1,19 @@
 package storage
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/acidzalando"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewPostgres(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewPostgres(builder *kubehelpers.Builder) cdk8s.Chart {
 	namespace := "postgres"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
-
-	kubehelpers.NewNamespace(chart, namespace)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
 	databases := []string{
 		"grafana",
@@ -59,7 +52,7 @@ func NewPostgres(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	// Therefore you might want to do the following:
 	// GRANT CREATE ON SCHEMA public TO PUBLIC;
 	acidzalando.NewPostgresql(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String(fmt.Sprintf("%s-instance", namespace)),
 		&acidzalando.PostgresqlProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -83,5 +76,5 @@ func NewPostgres(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 		},
 	)
 
-	return chart
+	return chart.Cdk8sChart
 }

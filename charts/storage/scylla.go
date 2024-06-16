@@ -1,16 +1,13 @@
 package storage
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/scyllascylladbcom"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewScyllaChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewScyllaChart(builder *kubehelpers.Builder) cdk8s.Chart {
 	namespace := "scylla"
 
 	members := 2
@@ -33,18 +30,13 @@ func NewScyllaChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 		},
 	}
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
-
-	kubehelpers.NewNamespace(chart, namespace)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
 	// See https://operator.docs.scylladb.com/stable/scylla_cluster_crd.html
 	// Sample https://github.com/scylladb/scylla-operator/blob/master/examples/generic/cluster.yaml
 	scyllascylladbcom.NewScyllaCluster(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("scylla-cluster"),
 		&scyllascylladbcom.ScyllaClusterProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -84,5 +76,5 @@ func NewScyllaChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 		},
 	)
 
-	return chart
+	return chart.Cdk8sChart
 }
