@@ -24,20 +24,21 @@ func NewMinioOperator(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "root")
 
+	configMaps := []kubehelpers.HelmReleaseConfigMap{
+		kubehelpers.CreateHelmValuesConfig(
+			chart.Cdk8sChart,
+			namespace,
+			releaseName,
+			"minio-operator.yaml",
+		),
+	}
+
 	chart.CreateHelmRelease(
 		namespace,   // namespace
 		repoName,    // repository name, same as above
 		"operator",  // the chart name
 		releaseName, // the release name
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"minio-operator.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithConfigMaps(configMaps),
 	)
 
 	k8s.NewKubeSecret(

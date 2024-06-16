@@ -25,15 +25,7 @@ func NewExternalSecretsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName, // repo name
 		chartName,      // chart name
 		releaseName,    // release name
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"external-secrets.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)

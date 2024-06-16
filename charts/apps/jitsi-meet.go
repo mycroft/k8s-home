@@ -23,15 +23,7 @@ func NewJitsiChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName,
 		chartName,
 		releaseName,
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				repositoryName,
-				"jitsi-meet.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

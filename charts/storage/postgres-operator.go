@@ -20,8 +20,6 @@ func NewPostgresOperator(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"postgres-operator",
 		"postgres-operator",
 		"postgres-operator",
-		nil,
-		nil,
 	)
 
 	return chart

@@ -30,15 +30,7 @@ func NewDexIdpChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName, // repo name
 		chartName,      // chart name
 		releaseName,    // release name
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"dex-idp.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	// Create configuration

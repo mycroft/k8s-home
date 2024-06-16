@@ -42,20 +42,21 @@ func NewWikiJsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"https://charts.js.wiki",
 	)
 
+	configMaps := []kubehelpers.HelmReleaseConfigMap{
+		kubehelpers.CreateHelmValuesConfig(
+			chart.Cdk8sChart,
+			namespace,
+			repositoryName,
+			"wikijs.yaml",
+		),
+	}
+
 	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		chartName,
 		releaseName,
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				repositoryName,
-				"wikijs.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithConfigMaps(configMaps),
 	)
 
 	return chart

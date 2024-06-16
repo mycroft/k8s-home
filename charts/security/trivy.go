@@ -29,16 +29,8 @@ func NewTrivyChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repoName,
 		"trivy-operator",
 		releaseName,
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"trivy.yaml",
-			),
-		},
-		nil,
-		kubehelpers.WithValues(values),
+		kubehelpers.WithDefaultConfigFile(),
+		kubehelpers.WithHelmValues(values),
 	)
 
 	return chart

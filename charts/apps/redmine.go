@@ -24,15 +24,7 @@ func NewRedmineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"redmine",   // repo name
 		"redmine",   // chart name
 		releaseName, // release name
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"redmine.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

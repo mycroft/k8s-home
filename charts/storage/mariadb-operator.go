@@ -21,15 +21,7 @@ func NewMariaDBOperator(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"mariadb-operator", // repository name, same as above
 		"mariadb-operator", // the chart name
 		releaseName,
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"mariadb-operator.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

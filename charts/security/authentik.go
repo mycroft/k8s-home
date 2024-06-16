@@ -33,15 +33,7 @@ func NewAuthentikChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName,
 		chartName,
 		releaseName,
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"authentik.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

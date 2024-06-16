@@ -24,15 +24,7 @@ func NewKyvernoChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName, // repo name
 		chartName,      // chart name
 		releaseName,    // release name
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"kyverno.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	chart.CreateHelmRelease(
@@ -40,15 +32,7 @@ func NewKyvernoChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName,
 		"kyverno-policies",
 		"kyverno-policies",
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				"kyverno-policies",
-				"kyverno-policies.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

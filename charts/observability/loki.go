@@ -22,15 +22,7 @@ func NewLokiChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName,
 		chartName,
 		releaseName,
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"loki.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

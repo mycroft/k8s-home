@@ -17,16 +17,8 @@ func NewAlloyChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		namespace,
 		repositoryName,
 		chartName,
-		chartName,
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"alloy.yaml",
-			),
-		},
-		nil,
+		releaseName,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

@@ -19,16 +19,8 @@ func NewPromtailChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		namespace,
 		repositoryName, // repo name; was installed in Loki
 		chartName,      // chart name
-		chartName,      // release name
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName, // release name to be modified
-				"promtail.yaml",
-			),
-		},
-		nil,
+		releaseName,    // release name
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

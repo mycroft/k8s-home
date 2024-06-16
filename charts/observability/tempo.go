@@ -20,15 +20,7 @@ func NewTempoChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName,
 		chartName,
 		releaseName,
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"tempo.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

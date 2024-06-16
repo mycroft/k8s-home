@@ -24,16 +24,17 @@ func NewHomepageChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName,
 		chartName,
 		releaseName,
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesTemplatedConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"homepage.yaml",
-				true,
-			),
-		},
-		nil,
+		kubehelpers.WithConfigMaps(
+			[]kubehelpers.HelmReleaseConfigMap{
+				kubehelpers.CreateHelmValuesTemplatedConfig(
+					chart.Cdk8sChart,
+					namespace,
+					releaseName,
+					"homepage.yaml",
+					true,
+				),
+			},
+		),
 	)
 
 	return chart

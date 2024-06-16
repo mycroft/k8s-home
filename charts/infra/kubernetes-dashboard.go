@@ -25,15 +25,7 @@ func NewKubernetesDashboardChart(builder *kubehelpers.Builder) *kubehelpers.Char
 		repositoryName,
 		chartName,
 		releaseName,
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				repositoryName,
-				"kubernetes-dashboard.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	// Create a Service Account & ClusterRoleBinding

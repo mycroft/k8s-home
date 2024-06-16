@@ -22,15 +22,7 @@ func NewVaultChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repoName,
 		"vault",     // chart name
 		releaseName, // release name
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName, // release name to be modified
-				"vault.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

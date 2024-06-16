@@ -71,7 +71,9 @@ type HelmReleaseConfigMap struct {
 
 type helmReleaseOption struct {
 	UseSameNameConfigFile bool
-	Values                map[string]*string
+	HelmValues            map[string]*string
+	Annotations           map[string]*string
+	ConfigMaps            []HelmReleaseConfigMap
 	Versions              *Versions
 }
 
@@ -89,9 +91,21 @@ func WithDefaultConfigFile() HelmReleaseOption {
 	}
 }
 
-func WithValues(values map[string]*string) HelmReleaseOption {
+func WithHelmValues(values map[string]*string) HelmReleaseOption {
 	return func(opts *helmReleaseOption) {
-		opts.Values = values
+		opts.HelmValues = values
+	}
+}
+
+func WithAnnotations(annotations map[string]*string) HelmReleaseOption {
+	return func(opts *helmReleaseOption) {
+		opts.Annotations = annotations
+	}
+}
+
+func WithConfigMaps(configMaps []HelmReleaseConfigMap) HelmReleaseOption {
+	return func(opts *helmReleaseOption) {
+		opts.ConfigMaps = configMaps
 	}
 }
 
@@ -102,17 +116,20 @@ func WithValues(values map[string]*string) HelmReleaseOption {
 func CreateHelmRelease(
 	chart constructs.Construct,
 	namespace, repoName, chartName, releaseName string,
-	configMaps []HelmReleaseConfigMap,
-	annotations map[string]*string,
 	opts ...HelmReleaseOption,
 ) helmtoolkitfluxcdio.HelmRelease {
 	var helmReleaseOptions helmReleaseOption
-	var values map[string]*string
+	var helmValues map[string]*string
+	var configMaps []HelmReleaseConfigMap
 
 	cachedVersion := ""
 
 	for _, opt := range opts {
 		opt(&helmReleaseOptions)
+	}
+
+	if helmReleaseOptions.ConfigMaps != nil {
+		configMaps = helmReleaseOptions.ConfigMaps
 	}
 
 	if helmReleaseOptions.Versions == nil {
@@ -134,8 +151,13 @@ func CreateHelmRelease(
 		)
 	}
 
-	if len(helmReleaseOptions.Values) > 0 {
-		values = helmReleaseOptions.Values
+	if len(helmReleaseOptions.HelmValues) > 0 {
+		helmValues = helmReleaseOptions.HelmValues
+	}
+
+	annotations := helmReleaseOptions.Annotations
+	if annotations == nil {
+		annotations = map[string]*string{}
 	}
 
 	if version, exists := helmReleaseOptions.Versions.HelmCharts[fmt.Sprintf("%s/%s", repoName, chartName)]; exists {
@@ -158,9 +180,6 @@ func CreateHelmRelease(
 			Name:      jsii.String(configMap.Name),
 			ValuesKey: jsii.String(configMap.KeyName),
 		})
-		if annotations == nil {
-			annotations = map[string]*string{}
-		}
 		annotations["configMapHash"] = jsii.String(configMap.ConfigMapHash)
 	}
 
@@ -191,7 +210,7 @@ func CreateHelmRelease(
 				},
 				Interval:   jsii.String("10m0s"),
 				Timeout:    jsii.String("5m0s"),
-				Values:     values,
+				Values:     helmValues,
 				ValuesFrom: &valuesFrom,
 			},
 		},
@@ -201,8 +220,6 @@ func CreateHelmRelease(
 // CreateHelmRelease creates an Helm Release into the chart
 func (chart *Chart) CreateHelmRelease(
 	namespace, repoName, chartName, releaseName string,
-	configMaps []HelmReleaseConfigMap,
-	annotations map[string]*string,
 	opts ...HelmReleaseOption,
 ) helmtoolkitfluxcdio.HelmRelease {
 	opts = append(opts, WithVersions(&chart.Builder.Versions))
@@ -210,8 +227,6 @@ func (chart *Chart) CreateHelmRelease(
 	return CreateHelmRelease(
 		chart.Cdk8sChart,
 		namespace, repoName, chartName, releaseName,
-		configMaps,
-		annotations,
 		opts...,
 	)
 }

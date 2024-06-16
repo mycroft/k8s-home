@@ -23,8 +23,6 @@ func NewLinkerdChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName, // repo name
 		"linkerd-crds", // chart name
 		"linkerd-crds", // release name
-		[]kubehelpers.HelmReleaseConfigMap{},
-		nil,
 	)
 
 	chart.CreateHelmRelease(
@@ -32,15 +30,7 @@ func NewLinkerdChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName, // repo name
 		chartName,      // chart name
 		releaseName,    // release name
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"linkerd-control-plane.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	chart.CreateHelmRelease(
@@ -48,8 +38,6 @@ func NewLinkerdChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName, // repo name
 		"linkerd-viz",  // chart name
 		"linkerd-viz",  // release name
-		[]kubehelpers.HelmReleaseConfigMap{},
-		nil,
 	)
 
 	return chart

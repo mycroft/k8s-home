@@ -32,15 +32,7 @@ func NewScyllaOperatorChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repoName,
 		"scylla-operator",
 		releaseName,
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"scylla-operator.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

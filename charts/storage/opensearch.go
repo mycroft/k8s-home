@@ -21,15 +21,7 @@ func NewOpenSearchChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"opensearch", // repoName; must be in flux-system
 		"opensearch", // chart name
 		"opensearch", // release name
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				"opensearch", // release name
-				"opensearch.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	chart.CreateHelmRelease(
@@ -37,15 +29,7 @@ func NewOpenSearchChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"opensearch",            // repoName; must be in flux-system
 		"opensearch-dashboards", // chart name
 		"opensearch-dashboards", // release name
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				"opensearch-dashboards", // release name
-				"opensearch-dashboards.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

@@ -23,15 +23,7 @@ func NewKarmaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName, // repoName; must be in flux-system
 		chartName,      // chart name
 		releaseName,    // release name
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"karma.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	return chart

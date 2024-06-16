@@ -26,16 +26,9 @@ func NewSealedSecretsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"sealed-secrets", // repo name
 		"sealed-secrets", // chart name
 		releaseName,      // release name
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				releaseName,
-				"sealed-secrets.yaml",
-			),
-		},
-		nil,
-		kubehelpers.WithValues(values),
+		kubehelpers.WithDefaultConfigFile(),
+
+		kubehelpers.WithHelmValues(values),
 	)
 
 	return chart

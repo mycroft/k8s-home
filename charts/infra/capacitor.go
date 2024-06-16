@@ -17,20 +17,21 @@ func NewCapacitorChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"https://chart.onechart.dev",
 	)
 
+	configMaps := []kubehelpers.HelmReleaseConfigMap{
+		kubehelpers.CreateHelmValuesConfig(
+			chart.Cdk8sChart,
+			namespace,
+			repositoryName,
+			"capacitor.yaml",
+		),
+	}
+
 	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
 		"onechart",
 		"capacitor",
-		[]kubehelpers.HelmReleaseConfigMap{
-			kubehelpers.CreateHelmValuesConfig(
-				chart.Cdk8sChart,
-				namespace,
-				repositoryName,
-				"capacitor.yaml",
-			),
-		},
-		nil,
+		kubehelpers.WithConfigMaps(configMaps),
 	)
 
 	k8s.NewKubeServiceAccount(
