@@ -2,7 +2,6 @@ package kubehelpers
 
 import (
 	"context"
-	"log"
 
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
