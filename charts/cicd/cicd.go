@@ -1,26 +1,19 @@
 package infra
 
 import (
-	"context"
 	"fmt"
 	"os"
 
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewCICDChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewCICDChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "tekton-builds"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
-
-	kubehelpers.NewNamespace(chart, namespace)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
 	// builds kustomizations
 	cicdYamlFile, err := kubehelpers.BuildKustomize("./cicd")
@@ -33,7 +26,7 @@ func NewCICDChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	// TODO: find a way to ensure all resources in charts are correctly namespaced.
 
 	// namespace mentionned here is unused
-	cdk8s.NewInclude(chart, jsii.String(namespace), &cdk8s.IncludeProps{
+	cdk8s.NewInclude(chart.Cdk8sChart, jsii.String(namespace), &cdk8s.IncludeProps{
 		Url: jsii.String(cicdYamlFile),
 	})
 

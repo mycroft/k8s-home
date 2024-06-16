@@ -1,34 +1,27 @@
 package apps
 
 import (
-	"context"
 	"log"
 	"os"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewPrivatebinChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "privatebin"
 	appName := namespace
 	appPort := 8080
 	appIngress := "privatebin.services.mkz.me"
 	privatebinImage := kubehelpers.RegisterDockerImage("privatebin/nginx-fpm-alpine")
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 
-	kubehelpers.CreateExternalSecret(chart, namespace, "minio")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "minio")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -40,7 +33,7 @@ func NewPrivatebinChart(ctx context.Context, scope constructs.Construct) cdk8s.C
 	}
 
 	configMap := k8s.NewKubeConfigMap(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("config"),
 		&k8s.KubeConfigMapProps{
 			Metadata: &k8s.ObjectMeta{
@@ -86,7 +79,7 @@ func NewPrivatebinChart(ctx context.Context, scope constructs.Construct) cdk8s.C
 	}
 
 	kubehelpers.NewAppDeployment(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		appName,
 		privatebinImage,
@@ -103,8 +96,8 @@ func NewPrivatebinChart(ctx context.Context, scope constructs.Construct) cdk8s.C
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		labels,
 		appName,
 		appPort,

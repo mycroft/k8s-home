@@ -1,33 +1,26 @@
 package apps
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/servicemonitor_monitoringcoreoscom"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewYopassChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewYopassChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "yopass"
 	appIngress := "yopass.services.mkz.me"
 	appName := "yopass"
 	appPort := 1337
 	image := kubehelpers.RegisterDockerImage("jhaals/yopass")
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-
-	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart, namespace)
+	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart.Cdk8sChart, namespace)
 	redisURL := fmt.Sprintf("redis://%s:6379", redisServiceName)
 
 	yopassLabels := map[string]*string{
@@ -35,7 +28,7 @@ func NewYopassChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 	}
 
 	kubehelpers.NewAppDeployment(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		appName,
 		image,
@@ -48,8 +41,8 @@ func NewYopassChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		yopassLabels,
 		appName,
 		appPort,
@@ -59,7 +52,7 @@ func NewYopassChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 	)
 
 	kubehelpers.NewAppService(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		"metrics",
 		yopassLabels,
@@ -68,7 +61,7 @@ func NewYopassChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 	)
 
 	servicemonitor_monitoringcoreoscom.NewServiceMonitor(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("sm"),
 		&servicemonitor_monitoringcoreoscom.ServiceMonitorProps{
 			Metadata: &cdk8s.ApiObjectMetadata{

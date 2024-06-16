@@ -70,39 +70,34 @@ func HomelabBuildApp(ctx context.Context) cdk8s.App {
 		charts_apps.NewEmojivotoChart,
 		charts_apps.NewExcalidrawChart,
 		charts_apps.NewFreshRSS,
-
+		charts_apps.NewHappyUrlsChart,
+		charts_apps.NewHelloKubernetesChart,
+		charts_apps.NewHeyChart,
+		charts_apps.NewHomepageChart,
+		charts_apps.NewITToolsChart,
+		charts_apps.NewLinkdingChart,
+		charts_apps.NewMicrobinChart,
+		charts_apps.NewPaperlessNGXChart,
+		charts_apps.NewPrivatebinChart,
+		charts_apps.NewRedmineChart,
+		charts_apps.NewSendChart,
+		charts_apps.NewSnippetBoxChart,
+		charts_apps.NewUrlsChart,
+		charts_apps.NewVaultWardenChart,
+		charts_apps.NewWallabagChart,
+		charts_apps.NewWhatIsMyIPChart,
+		charts_apps.NewWikiJsChart,
+		charts_apps.NewYopassChart,
 		// charts_apps.NewHeimdallChart)
 		// charts_apps.NewJitsiChart)
+
+		// misc: testing CI/CD
+		charts_cicd.NewCICDChart,
 	}
 
 	for _, chartCallback := range charts {
 		builder.BuildChart(chartCallback)
 	}
-
-	// Charts below this line requires to be migrated
-
-	// apps
-	builder.BuildChartLegacy(charts_apps.NewHelloKubernetesChart)
-	builder.BuildChartLegacy(charts_apps.NewWhatIsMyIPChart)
-	builder.BuildChartLegacy(charts_apps.NewWallabagChart)
-	builder.BuildChartLegacy(charts_apps.NewUrlsChart)
-	builder.BuildChartLegacy(charts_apps.NewLinkdingChart)
-	builder.BuildChartLegacy(charts_apps.NewPrivatebinChart)
-	builder.BuildChartLegacy(charts_apps.NewPaperlessNGXChart)
-	builder.BuildChartLegacy(charts_apps.NewYopassChart)
-	builder.BuildChartLegacy(charts_apps.NewITToolsChart)
-	builder.BuildChartLegacy(charts_apps.NewVaultWardenChart)
-	builder.BuildChartLegacy(charts_apps.NewSendChart)
-	builder.BuildChartLegacy(charts_apps.NewHeyChart)
-	builder.BuildChartLegacy(charts_apps.NewHappyUrlsChart)
-	builder.BuildChartLegacy(charts_apps.NewSnippetBoxChart)
-	builder.BuildChartLegacy(charts_apps.NewWikiJsChart)
-	builder.BuildChartLegacy(charts_apps.NewRedmineChart)
-	builder.BuildChartLegacy(charts_apps.NewMicrobinChart)
-	builder.BuildChartLegacy(charts_apps.NewHomepageChart)
-
-	// CI/CD
-	builder.BuildChartLegacy(charts_cicd.NewCICDChart)
 
 	return builder.App
 }

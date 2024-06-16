@@ -1,38 +1,31 @@
 package apps
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewSendChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewSendChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "send"
 	appName := "send"
 	ingressHost := "send.services.mkz.me"
 	appPort := 1443
 	image := kubehelpers.RegisterDockerImage("registry.gitlab.com/timvisee/send")
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
-	kubehelpers.CreateExternalSecret(chart, namespace, "minio")
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "minio")
 
 	sendLabels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("send"),
 	}
 
-	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart, namespace)
+	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart.Cdk8sChart, namespace)
 
 	redisHost := fmt.Sprintf("%s.%s", redisServiceName, namespace)
 
@@ -63,7 +56,7 @@ func NewSendChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	}
 
 	kubehelpers.NewAppDeployment(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		appName,
 		image,
@@ -74,8 +67,8 @@ func NewSendChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		sendLabels,
 		appName,
 		appPort,

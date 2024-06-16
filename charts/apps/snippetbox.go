@@ -1,17 +1,13 @@
 package apps
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewSnippetBoxChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewSnippetBoxChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "snippetbox"
 	appIngress := "snippetbox.services.mkz.me"
 	appName := "snippetbox"
@@ -22,16 +18,11 @@ func NewSnippetBoxChart(ctx context.Context, scope constructs.Construct) cdk8s.C
 		"app.kubernetes.io/component": jsii.String("snippetbox"),
 	}
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
-
-	kubehelpers.NewNamespace(chart, namespace)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
 	_, svcName := kubehelpers.NewStatefulSet(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		appName,
 		image,
@@ -49,8 +40,8 @@ func NewSnippetBoxChart(ctx context.Context, scope constructs.Construct) cdk8s.C
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		labels,
 		appName,
 		appPort,

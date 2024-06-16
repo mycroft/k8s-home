@@ -1,33 +1,25 @@
 package apps
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
 const (
 	happyUrlsImage = "git.mkz.me/mycroft/happy-urls:latest"
 )
 
-func NewHappyUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewHappyUrlsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "happy-urls"
 	appName := namespace
 	appPort := 3000
 	ingressHost := fmt.Sprintf("%s.services.mkz.me", appName)
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
-
-	kubehelpers.NewNamespace(chart, namespace)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
 	redisLabels := map[string]*string{
 		"app.kubernetes.io/name":      jsii.String(appName),
@@ -35,7 +27,7 @@ func NewHappyUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	}
 
 	_, redisSvcName := kubehelpers.NewStatefulSet(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		"redis",
 		kubehelpers.RegisterDockerImage("redis"),
@@ -67,7 +59,7 @@ func NewHappyUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	}
 
 	k8s.NewKubeDeployment(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("deploy"),
 		&k8s.KubeDeploymentProps{
 			Metadata: &k8s.ObjectMeta{
@@ -97,8 +89,8 @@ func NewHappyUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		labels,
 		appName,
 		appPort,

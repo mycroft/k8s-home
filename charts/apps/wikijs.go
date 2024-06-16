@@ -1,34 +1,27 @@
 package apps
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewWikiJsChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewWikiJsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "wikijs"
 
 	chartName := "wiki"
 	releaseName := chartName
 	repositoryName := "requarks"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
-	kubehelpers.CreateExternalSecret(chart, namespace, "postgresql")
+	kubehelpers.NewNamespace(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
 
 	traefikio.NewMiddleware(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("traefik-vhost-redirect-wikijs"),
 		&traefikio.MiddlewareProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -45,13 +38,13 @@ func NewWikiJsChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 	)
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		repositoryName,
 		"https://charts.js.wiki",
 	)
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repositoryName,
 		chartName,
@@ -59,7 +52,7 @@ func NewWikiJsChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				repositoryName,
 				"wikijs.yaml",

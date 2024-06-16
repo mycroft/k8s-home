@@ -1,39 +1,31 @@
 package apps
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
 const (
 	urlsImage = "git.mkz.me/mycroft/urls:latest"
 )
 
-func NewUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewUrlsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "urls"
 	appName := namespace
 	ingressHost := fmt.Sprintf("%s.services.mkz.me", appName)
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
-
-	kubehelpers.NewNamespace(chart, namespace)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
 	}
 
 	k8s.NewKubeDeployment(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("deploy"),
 		&k8s.KubeDeploymentProps{
 			Metadata: &k8s.ObjectMeta{
@@ -62,8 +54,8 @@ func NewUrlsChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		labels,
 		appName,
 		3000,

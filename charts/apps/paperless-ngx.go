@@ -1,33 +1,26 @@
 package apps
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewPaperlessNGXChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "paperless-ngx"
 	appIngress := "paperless.services.mkz.me"
 
 	paperlessNgxImage := kubehelpers.RegisterDockerImage("paperlessngx/paperless-ngx")
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
-	kubehelpers.CreateExternalSecret(chart, namespace, "postgresql")
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
 
-	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart, namespace)
+	_, redisServiceName := kubehelpers.NewRedisStatefulset(chart.Cdk8sChart, namespace)
 
 	env := []*k8s.EnvVar{
 		// XXX fix url here
@@ -79,7 +72,7 @@ func NewPaperlessNGXChart(ctx context.Context, scope constructs.Construct) cdk8s
 	appPort := 8000
 
 	_, svcName := kubehelpers.NewStatefulSet(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		appName,
 		paperlessNgxImage,
@@ -102,8 +95,8 @@ func NewPaperlessNGXChart(ctx context.Context, scope constructs.Construct) cdk8s
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		paperlessngxLabels,
 		appName,
 		appPort,

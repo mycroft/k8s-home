@@ -1,36 +1,27 @@
 package apps
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewVaultWardenChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "vaultwarden"
 	appName := namespace
 	appImage := kubehelpers.RegisterDockerImage("vaultwarden/server")
 	appPort := 80
 	appIngress := "vaultwarden.services.mkz.me"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
 	}
 
-	kubehelpers.NewNamespace(chart, namespace)
-
 	_, svcName := kubehelpers.NewStatefulSet(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		appName,
 		appImage,
@@ -48,8 +39,8 @@ func NewVaultWardenChart(ctx context.Context, scope constructs.Construct) cdk8s.
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		labels,
 		appName,
 		appPort,

@@ -1,34 +1,17 @@
 package apps
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewHelloKubernetesChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewHelloKubernetesChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "hello-kubernetes"
 	image := kubehelpers.RegisterDockerImage("paulbouwer/hello-kubernetes")
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(appName),
-		&cdk8s.ChartProps{},
-	)
-
-	k8s.NewKubeNamespace(
-		chart,
-		jsii.String("ns"),
-		&k8s.KubeNamespaceProps{
-			Metadata: &k8s.ObjectMeta{
-				Name: jsii.String(appName),
-			},
-		},
-	)
+	chart := builder.NewChart(appName)
+	chart.NewNamespace(appName)
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -62,7 +45,7 @@ func NewHelloKubernetesChart(ctx context.Context, scope constructs.Construct) cd
 	}
 
 	k8s.NewKubeDeployment(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("deploy"),
 		&k8s.KubeDeploymentProps{
 			Metadata: &k8s.ObjectMeta{
@@ -94,8 +77,8 @@ func NewHelloKubernetesChart(ctx context.Context, scope constructs.Construct) cd
 	// traefik.ingress.kubernetes.io/router.middlewares: traefik-forward-auth-traefik-forward-auth@kubernetescrd
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		labels,
 		appName,
 		8080,

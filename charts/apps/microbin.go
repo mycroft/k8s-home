@@ -1,17 +1,14 @@
 package apps
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewMicrobinChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewMicrobinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "microbin"
 	namespace := appName
 	appIngress := "bin.iop.cx"
@@ -20,15 +17,11 @@ func NewMicrobinChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 	appImage := "ghcr.io/zhaobenny/microbin:latest"
 	appPort := 8080
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(appName),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(appName)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
-	kubehelpers.CreateExternalSecret(chart, namespace, "admin")
+	kubehelpers.NewNamespace(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "admin")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -64,7 +57,7 @@ func NewMicrobinChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 	}
 
 	_, svcName := kubehelpers.NewStatefulSet(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		appName,
 		appImage,
@@ -82,8 +75,8 @@ func NewMicrobinChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		labels,
 		appName,
 		appPort,
