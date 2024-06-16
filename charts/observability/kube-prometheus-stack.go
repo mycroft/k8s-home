@@ -1,16 +1,10 @@
 package observability
 
 import (
-	"context"
-
-	"github.com/aws/constructs-go/constructs/v10"
-	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 )
 
-func NewKubePrometheusStackChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewKubePrometheusStackChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "kube-prometheus-stack"
 	namespace := "monitoring"
 
@@ -18,30 +12,25 @@ func NewKubePrometheusStackChart(ctx context.Context, scope constructs.Construct
 	chartName := "kube-prometheus-stack"
 	releaseName := "prometheus"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(appName),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(appName)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-
-	kubehelpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		repositoryName,
 		"https://prometheus-community.github.io/helm-charts",
 	)
 
-	kubehelpers.CreateExternalSecret(chart, namespace, "grafana-secret")
-	kubehelpers.CreateExternalSecret(chart, namespace, "grafana-oidc-client")
-	kubehelpers.CreateExternalSecret(chart, namespace, "grafana-authentik-oidc-client")
-	kubehelpers.CreateExternalSecret(chart, namespace, "alertmanager-config")
-	kubehelpers.CreateExternalSecret(chart, namespace, "grafana-postgres")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "grafana-secret")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "grafana-oidc-client")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "grafana-authentik-oidc-client")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "alertmanager-config")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "grafana-postgres")
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repositoryName, // repoName; must be in flux-system
 		chartName,      // chart name
@@ -49,7 +38,7 @@ func NewKubePrometheusStackChart(ctx context.Context, scope constructs.Construct
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"kube-prometheus-stack.yaml",

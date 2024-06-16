@@ -1,25 +1,19 @@
 package infra
 
 import (
-	"context"
-
 	podmonitor "git.mkz.me/mycroft/k8s-home/imports/podmonitor_monitoringcoreoscom"
-	"github.com/aws/constructs-go/constructs/v10"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewFluxCDChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewFluxCDChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "flux-system"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String("fluxcd"),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart("fluxcd")
 
 	podmonitor.NewPodMonitor(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("podmonitor-flux"),
 		&podmonitor.PodMonitorProps{
 			Metadata: &cdk8s.ApiObjectMetadata{

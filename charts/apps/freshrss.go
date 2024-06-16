@@ -1,28 +1,22 @@
 package apps
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewFreshRSS(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewFreshRSS(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "freshrss"
 	appName := namespace
 	appImage := kubehelpers.RegisterDockerImage("freshrss/freshrss")
 	appPort := 80
 	appIngress := "freshrss.services.mkz.me"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -34,10 +28,8 @@ func NewFreshRSS(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 		{Name: jsii.String("TZ"), Value: jsii.String("Etc/UTC")},
 	}
 
-	kubehelpers.NewNamespace(chart, namespace)
-
 	stsName, svcName := kubehelpers.NewStatefulSet(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		appName,
 		appImage,
@@ -81,7 +73,7 @@ func NewFreshRSS(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	}
 
 	k8s.NewKubeCronJob(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("cronjob"),
 		&k8s.KubeCronJobProps{
 			Metadata: &k8s.ObjectMeta{
@@ -133,8 +125,8 @@ func NewFreshRSS(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		labels,
 		appName,
 		appPort,

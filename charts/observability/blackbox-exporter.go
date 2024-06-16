@@ -1,32 +1,23 @@
 package observability
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
-	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewBlackboxExporterChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewBlackboxExporterChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "blackbox-exporter"
 	namespace := "monitoring"
 	repositoryName := "prometheus-community"
 	chartName := "prometheus-blackbox-exporter"
 	releaseName := appName
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(appName),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(appName)
 
 	// TODO: Namespace is created in NewKubePrometheusStackChart, as well as HelmRepository
 	// This should be refactored
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repositoryName,
 		chartName,
@@ -34,7 +25,7 @@ func NewBlackboxExporterChart(ctx context.Context, scope constructs.Construct) c
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"blackbox-exporter.yaml",

@@ -17,78 +17,89 @@ import (
 func HomelabBuildApp(ctx context.Context) cdk8s.App {
 	builder := kubehelpers.NewBuilder(ctx)
 
-	// security
-	builder.BuildChart(charts_security.NewCertManagerChart)
-	builder.BuildChart(charts_security.NewSealedSecretsChart)
-	builder.BuildChart(charts_security.NewVaultChart)
-	builder.BuildChart(charts_security.NewExternalSecretsChart)
-	// charts_security.NewTrivyChart)
-	builder.BuildChart(charts_security.NewDexIdpChart)
-	builder.BuildChart(charts_security.NewTraefikForwardAuth)
-	// charts_security.NewKyvernoChart)
-	builder.BuildChart(charts_security.NewAuthentikChart)
+	charts := [](func(*kubehelpers.Builder) *kubehelpers.Chart){
+		// security charts
+		charts_security.NewCertManagerChart,
+		charts_security.NewSealedSecretsChart,
+		charts_security.NewVaultChart,
+		charts_security.NewExternalSecretsChart,
+		charts_security.NewDexIdpChart,
+		charts_security.NewTraefikForwardAuth,
+		charts_security.NewAuthentikChart,
+		// charts_security.NewTrivyChart
+		// charts_security.NewKyvernoChart
 
-	// storage
-	builder.BuildChart(charts_storage.NewLonghornChart)
-	builder.BuildChart(charts_storage.NewPostgresOperator)
-	builder.BuildChart(charts_storage.NewPostgres)
-	builder.BuildChart(charts_storage.NewMinioOperator)
-	builder.BuildChart(charts_storage.NewMinio)
-	builder.BuildChart(charts_storage.NewScyllaOperatorChart)
-	builder.BuildChart(charts_storage.NewScyllaChart)
-	builder.BuildChart(charts_storage.NewNATSChart)
-	// apps.NewOpenSearchChart)
-	builder.BuildChart(charts_storage.NewMariaDBOperator)
-	builder.BuildChart(charts_storage.NewMariaDBChart)
-	builder.BuildChart(charts_infra.NewVeleroChart)
+		// storage charts
+		charts_storage.NewLonghornChart,
+		charts_storage.NewPostgresOperator,
+		charts_storage.NewPostgres,
+		charts_storage.NewMinioOperator,
+		charts_storage.NewMinio,
+		charts_storage.NewScyllaOperatorChart,
+		charts_storage.NewScyllaChart,
+		charts_storage.NewNATSChart,
+		charts_storage.NewMariaDBOperator,
+		charts_storage.NewMariaDBChart,
+		// charts_storage.NewOpenSearchChart,
 
-	// observability
-	builder.BuildChartLegacy(charts_observability.NewGrafanaHelmRepositoryChart)
-	builder.BuildChartLegacy(charts_observability.NewKubePrometheusStackChart)
-	builder.BuildChartLegacy(charts_observability.NewBlackboxExporterChart)
-	builder.BuildChartLegacy(charts_observability.NewLokiChart)
-	// charts_observability.NewPromtailChart)
-	// charts_observability.NewJaegerChart)
-	builder.BuildChartLegacy(charts_observability.NewTempoChart)
-	builder.BuildChartLegacy(charts_observability.NewKarmaChart)
-	builder.BuildChartLegacy(charts_observability.NewAlloyChart)
+		// misc infra charts
+		charts_infra.NewFluxCDChart,
+		charts_infra.NewCapacitorChart,
+		charts_infra.NewVeleroChart,
+		charts_infra.NewKubernetesDashboardChart,
+		charts_infra.NewLinkerdChart,
+		charts_infra.NewTektonChart,
+		charts_infra.NewTemporalChart,
+		charts_infra.NewTraefikChart,
 
-	// misc tooling
-	builder.BuildChartLegacy(charts_infra.NewFluxCDChart)
-	builder.BuildChartLegacy(charts_infra.NewCapacitorChart)
-	builder.BuildChartLegacy(charts_infra.NewKubernetesDashboardChart)
-	builder.BuildChartLegacy(charts_infra.NewLinkerdChart)
-	builder.BuildChartLegacy(charts_infra.NewTektonChart)
-	builder.BuildChartLegacy(charts_infra.NewTemporalChart)
-	builder.BuildChartLegacy(charts_infra.NewTraefikChart)
+		// observability
+		charts_observability.NewGrafanaHelmRepositoryChart,
+		charts_observability.NewKubePrometheusStackChart,
+		charts_observability.NewBlackboxExporterChart,
+		charts_observability.NewLokiChart,
+		charts_observability.NewTempoChart,
+		charts_observability.NewKarmaChart,
+		charts_observability.NewAlloyChart,
+		// charts_observability.NewPromtailChart
+		// charts_observability.NewJaegerChart
+
+		// apps
+		charts_apps.NewBookstackChart,
+		charts_apps.NewCalibreWebChart,
+		charts_apps.NewCyberchefChart,
+		charts_apps.NewEmojivotoChart,
+		charts_apps.NewExcalidrawChart,
+		charts_apps.NewFreshRSS,
+
+		// charts_apps.NewHeimdallChart)
+		// charts_apps.NewJitsiChart)
+	}
+
+	for _, chartCallback := range charts {
+		builder.BuildChart(chartCallback)
+	}
+
+	// Charts below this line requires to be migrated
 
 	// apps
 	builder.BuildChartLegacy(charts_apps.NewHelloKubernetesChart)
 	builder.BuildChartLegacy(charts_apps.NewWhatIsMyIPChart)
 	builder.BuildChartLegacy(charts_apps.NewWallabagChart)
 	builder.BuildChartLegacy(charts_apps.NewUrlsChart)
-	builder.BuildChartLegacy(charts_apps.NewFreshRSS)
 	builder.BuildChartLegacy(charts_apps.NewLinkdingChart)
 	builder.BuildChartLegacy(charts_apps.NewPrivatebinChart)
 	builder.BuildChartLegacy(charts_apps.NewPaperlessNGXChart)
 	builder.BuildChartLegacy(charts_apps.NewYopassChart)
 	builder.BuildChartLegacy(charts_apps.NewITToolsChart)
-	builder.BuildChartLegacy(charts_apps.NewBookstackChart)
-	// charts_apps.NewHeimdallChart)
-	builder.BuildChartLegacy(charts_apps.NewEmojivotoChart)
 	builder.BuildChartLegacy(charts_apps.NewVaultWardenChart)
 	builder.BuildChartLegacy(charts_apps.NewSendChart)
 	builder.BuildChartLegacy(charts_apps.NewHeyChart)
 	builder.BuildChartLegacy(charts_apps.NewHappyUrlsChart)
 	builder.BuildChartLegacy(charts_apps.NewSnippetBoxChart)
-	builder.BuildChartLegacy(charts_apps.NewExcalidrawChart)
-	// charts_apps.NewJitsiChart)
 	builder.BuildChartLegacy(charts_apps.NewWikiJsChart)
 	builder.BuildChartLegacy(charts_apps.NewRedmineChart)
 	builder.BuildChartLegacy(charts_apps.NewMicrobinChart)
-	builder.BuildChartLegacy(charts_apps.NewCalibreWebChart)
 	builder.BuildChartLegacy(charts_apps.NewHomepageChart)
-	builder.BuildChartLegacy(charts_apps.NewCyberchefChart)
 
 	// CI/CD
 	builder.BuildChartLegacy(charts_cicd.NewCICDChart)

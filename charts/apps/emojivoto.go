@@ -1,31 +1,24 @@
 package apps
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewEmojivotoChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewEmojivotoChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "emojivoto"
 	ingressName := "emojivoto.services.mkz.me"
 	imageEmojiSvc := kubehelpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-emoji-svc")
 	imageWeb := kubehelpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-web")
 	imageVotingSvc := kubehelpers.RegisterDockerImage("docker.l5d.io/buoyantio/emojivoto-voting-svc")
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
 
 	k8s.NewKubeNamespace(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String(fmt.Sprintf("ns-%s", namespace)),
 		&k8s.KubeNamespaceProps{
 			Metadata: &k8s.ObjectMeta{
@@ -45,7 +38,7 @@ func NewEmojivotoChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 
 	for _, saName := range sa {
 		k8s.NewKubeServiceAccount(
-			chart,
+			chart.Cdk8sChart,
 			jsii.String(fmt.Sprintf("%s-sa", saName)),
 			&k8s.KubeServiceAccountProps{
 				Metadata: &k8s.ObjectMeta{
@@ -61,7 +54,7 @@ func NewEmojivotoChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 		"version": jsii.String("v11"),
 	}
 	k8s.NewKubeDeployment(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("emoji-deploy"),
 		&k8s.KubeDeploymentProps{
 			Metadata: &k8s.ObjectMeta{
@@ -112,7 +105,7 @@ func NewEmojivotoChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 		"version": jsii.String("v11"),
 	}
 	k8s.NewKubeDeployment(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("vote-bot-deploy"),
 		&k8s.KubeDeploymentProps{
 			Metadata: &k8s.ObjectMeta{
@@ -164,7 +157,7 @@ func NewEmojivotoChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 		"version": jsii.String("v11"),
 	}
 	k8s.NewKubeDeployment(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("voting-deploy"),
 		&k8s.KubeDeploymentProps{
 			Metadata: &k8s.ObjectMeta{
@@ -215,7 +208,7 @@ func NewEmojivotoChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 		"version": jsii.String("v11"),
 	}
 	k8s.NewKubeDeployment(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("web-deploy"),
 		&k8s.KubeDeploymentProps{
 			Metadata: &k8s.ObjectMeta{
@@ -263,7 +256,7 @@ func NewEmojivotoChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	k8s.NewKubeService(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("emoji"),
 		&k8s.KubeServiceProps{
 			Metadata: &k8s.ObjectMeta{
@@ -281,7 +274,7 @@ func NewEmojivotoChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	k8s.NewKubeService(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("voting"),
 		&k8s.KubeServiceProps{
 			Metadata: &k8s.ObjectMeta{
@@ -299,7 +292,7 @@ func NewEmojivotoChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	svc := k8s.NewKubeService(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("web"),
 		&k8s.KubeServiceProps{
 			Metadata: &k8s.ObjectMeta{
@@ -316,8 +309,8 @@ func NewEmojivotoChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		map[string]*string{
 			"app": jsii.String("web"),
 		},

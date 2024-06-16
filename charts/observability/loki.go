@@ -1,33 +1,24 @@
 package observability
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
-	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewLokiChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewLokiChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "loki"
 	repositoryName := "grafana"
 	chartName := "loki"
 	releaseName := "loki"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 
-	kubehelpers.CreateExternalSecret(chart, namespace, "minio")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "minio")
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repositoryName,
 		chartName,
@@ -35,7 +26,7 @@ func NewLokiChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"loki.yaml",

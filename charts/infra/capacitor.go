@@ -1,33 +1,25 @@
 package infra
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewCapacitorChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewCapacitorChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "flux-system"
 	repositoryName := "onechart"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String("capacitor"),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart("capacitor")
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		repositoryName,
 		"https://chart.onechart.dev",
 	)
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repositoryName,
 		"onechart",
@@ -35,7 +27,7 @@ func NewCapacitorChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				repositoryName,
 				"capacitor.yaml",
@@ -45,7 +37,7 @@ func NewCapacitorChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	k8s.NewKubeServiceAccount(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("sa"),
 		&k8s.KubeServiceAccountProps{
 			Metadata: &k8s.ObjectMeta{
@@ -56,7 +48,7 @@ func NewCapacitorChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	k8s.NewKubeClusterRole(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("clusterrole"),
 		&k8s.KubeClusterRoleProps{
 			Metadata: &k8s.ObjectMeta{
@@ -113,7 +105,7 @@ func NewCapacitorChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	k8s.NewKubeClusterRoleBinding(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("clusterrolebinding"),
 		&k8s.KubeClusterRoleBindingProps{
 			Metadata: &k8s.ObjectMeta{
@@ -146,7 +138,7 @@ func NewCapacitorChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 
 	podPort := 9000.
 	k8s.NewKubeNetworkPolicy(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("capacitor"),
 		&k8s.KubeNetworkPolicyProps{
 			Metadata: &k8s.ObjectMeta{
@@ -191,7 +183,7 @@ func NewCapacitorChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	k8s.NewKubeNetworkPolicy(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("acme-capacitor"),
 		&k8s.KubeNetworkPolicyProps{
 			Metadata: &k8s.ObjectMeta{
@@ -230,8 +222,8 @@ func NewCapacitorChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		labels,
 		namespace,
 		9000,

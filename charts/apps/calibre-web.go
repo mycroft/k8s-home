@@ -5,37 +5,27 @@ package apps
 // $ curl -LO https://github.com/janeczku/calibre-web/raw/master/library/metadata.db
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
-	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewCalibreWebChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewCalibreWebChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "calibre-web"
 	namespace := "calibre-web"
 	repositoryName := "calibre-web"
 	chartName := "calibre-web"
 	releaseName := "calibre-web"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(appName),
-		&cdk8s.ChartProps{},
-	)
-
-	kubehelpers.NewNamespace(chart, namespace)
+	chart := builder.NewChart(appName)
+	chart.NewNamespace(namespace)
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		repositoryName,
 		"oci://tccr.io/truecharts",
 	)
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repositoryName,
 		chartName,
@@ -43,7 +33,7 @@ func NewCalibreWebChart(ctx context.Context, scope constructs.Construct) cdk8s.C
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"calibre-web.yaml",

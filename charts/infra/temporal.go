@@ -1,40 +1,30 @@
 package infra
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
-	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewTemporalChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewTemporalChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "temporal"
 	repositoryName := "temporal"
 	chartName := "temporal"
 	releaseName := "temporal"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-
-	kubehelpers.CreateSecretStore(chart, namespace)
-	kubehelpers.CreateExternalSecret(chart, namespace, "postgresql")
-	kubehelpers.CreateExternalSecret(chart, namespace, "postgresql-visibility")
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-visibility")
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		repositoryName,
 		"https://go.temporal.io/helm-charts",
 	)
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repositoryName, // repo name
 		chartName,      // chart name
@@ -42,7 +32,7 @@ func NewTemporalChart(ctx context.Context, scope constructs.Construct) cdk8s.Cha
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				releaseName,
 				"temporal.yaml",

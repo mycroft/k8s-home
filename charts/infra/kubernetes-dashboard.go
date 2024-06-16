@@ -1,37 +1,28 @@
 package infra
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewKubernetesDashboardChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewKubernetesDashboardChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "kubernetes-dashboard"
 	repositoryName := "kubernetes-dashboard"
 	chartName := "kubernetes-dashboard"
 	releaseName := "kubernetes-dashboard"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
-
-	kubehelpers.NewNamespace(chart, namespace)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
 	kubehelpers.CreateHelmRepository(
-		chart,
+		chart.Cdk8sChart,
 		repositoryName,
 		"https://kubernetes.github.io/dashboard/",
 	)
 
 	kubehelpers.CreateHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		repositoryName,
 		chartName,
@@ -39,7 +30,7 @@ func NewKubernetesDashboardChart(ctx context.Context, scope constructs.Construct
 		map[string]string{},
 		[]kubehelpers.HelmReleaseConfigMap{
 			kubehelpers.CreateHelmValuesConfig(
-				chart,
+				chart.Cdk8sChart,
 				namespace,
 				repositoryName,
 				"kubernetes-dashboard.yaml",
@@ -51,7 +42,7 @@ func NewKubernetesDashboardChart(ctx context.Context, scope constructs.Construct
 	// Create a Service Account & ClusterRoleBinding
 	// https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
 	k8s.NewKubeServiceAccount(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("sa"),
 		&k8s.KubeServiceAccountProps{
 			Metadata: &k8s.ObjectMeta{
@@ -62,7 +53,7 @@ func NewKubernetesDashboardChart(ctx context.Context, scope constructs.Construct
 	)
 
 	k8s.NewKubeClusterRoleBinding(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("cluster-role-binding-admin"),
 		&k8s.KubeClusterRoleBindingProps{
 			Metadata: &k8s.ObjectMeta{
@@ -86,7 +77,7 @@ func NewKubernetesDashboardChart(ctx context.Context, scope constructs.Construct
 	// https://kubernetes.io/docs/concepts/configuration/secret/#service-account-token-secrets
 	// The token will be automatically filled in this secret:
 	k8s.NewKubeSecret(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("sa-secret"),
 		&k8s.KubeSecretProps{
 			Metadata: &k8s.ObjectMeta{
@@ -101,7 +92,7 @@ func NewKubernetesDashboardChart(ctx context.Context, scope constructs.Construct
 	)
 
 	k8s.NewKubeClusterRole(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("cluster-role-read-only"),
 		&k8s.KubeClusterRoleProps{
 			Metadata: &k8s.ObjectMeta{
@@ -150,7 +141,7 @@ func NewKubernetesDashboardChart(ctx context.Context, scope constructs.Construct
 	)
 
 	k8s.NewKubeClusterRoleBinding(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("cluster-role-binding-kubernetes-dashboard"),
 		&k8s.KubeClusterRoleBindingProps{
 			Metadata: &k8s.ObjectMeta{

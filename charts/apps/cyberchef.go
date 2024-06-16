@@ -1,16 +1,12 @@
 package apps
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewCyberchefChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewCyberchefChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "cyberchef"
 	namespace := appName
 	appImage := kubehelpers.RegisterDockerImage("ghcr.io/gchq/cyberchef")
@@ -22,16 +18,11 @@ func NewCyberchefChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	appPort := 80
 	appIngress := "cyberchef.services.mkz.me"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
-
-	kubehelpers.NewNamespace(chart, namespace)
+	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
 	kubehelpers.NewAppDeployment(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		appName,
 		appImage,
@@ -42,8 +33,8 @@ func NewCyberchefChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	)
 
 	kubehelpers.NewAppIngress(
-		ctx,
-		chart,
+		builder.Context,
+		chart.Cdk8sChart,
 		labels,
 		appName,
 		appPort,

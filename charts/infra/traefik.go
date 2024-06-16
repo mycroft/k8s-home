@@ -1,16 +1,12 @@
 package infra
 
 import (
-	"context"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewTraefikChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewTraefikChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "kube-system"
 	ingressHost := "traefik.services.mkz.me"
 	portName := "web"
@@ -24,11 +20,7 @@ func NewTraefikChart(ctx context.Context, scope constructs.Construct) cdk8s.Char
 		"traefik.ingress.kubernetes.io/app-root":             jsii.String("/dashboard/"),
 	}
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String("traefik"),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart("traefik")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/instance": jsii.String("traefik-kube-system"),
@@ -36,7 +28,7 @@ func NewTraefikChart(ctx context.Context, scope constructs.Construct) cdk8s.Char
 	}
 
 	svc := kubehelpers.NewAppService(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		"svc",
 		labels,
@@ -68,7 +60,7 @@ func NewTraefikChart(ctx context.Context, scope constructs.Construct) cdk8s.Char
 	})
 
 	k8s.NewKubeIngress(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String("ingress"),
 		&k8s.KubeIngressProps{
 			Metadata: &k8s.ObjectMeta{

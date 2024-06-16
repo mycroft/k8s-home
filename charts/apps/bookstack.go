@@ -1,19 +1,17 @@
 package apps
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/certificates_certmanagerio"
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
-func NewBookstackChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewBookstackChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "bookstack"
 	appName := namespace
 	appImage := kubehelpers.RegisterDockerImage("linuxserver/bookstack")
@@ -22,15 +20,11 @@ func NewBookstackChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 
 	useLegacyIngress := true
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
 
-	kubehelpers.NewNamespace(chart, namespace)
-	kubehelpers.CreateSecretStore(chart, namespace)
-	kubehelpers.CreateExternalSecret(chart, namespace, "mariadb")
+	kubehelpers.NewNamespace(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "mariadb")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -58,7 +52,7 @@ func NewBookstackChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 	}
 
 	_, serviceName := kubehelpers.NewStatefulSet(
-		chart,
+		chart.Cdk8sChart,
 		namespace,
 		appName,
 		appImage,
@@ -77,8 +71,8 @@ func NewBookstackChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 
 	if useLegacyIngress {
 		kubehelpers.NewAppIngress(
-			ctx,
-			chart,
+			builder.Context,
+			chart.Cdk8sChart,
 			labels,
 			appName,
 			appPort,
@@ -89,7 +83,7 @@ func NewBookstackChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 
 	} else {
 		certificates_certmanagerio.NewCertificate(
-			chart,
+			chart.Cdk8sChart,
 			jsii.String("certificate"),
 			&certificates_certmanagerio.CertificateProps{
 				Metadata: &cdk8s.ApiObjectMetadata{
@@ -113,7 +107,7 @@ func NewBookstackChart(ctx context.Context, scope constructs.Construct) cdk8s.Ch
 		)
 
 		traefikio.NewIngressRoute(
-			chart,
+			chart.Cdk8sChart,
 			jsii.Sprintf("ingress-route"),
 			&traefikio.IngressRouteProps{
 				Metadata: &cdk8s.ApiObjectMetadata{
