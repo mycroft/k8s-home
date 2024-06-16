@@ -1,7 +1,6 @@
 package security
 
 import (
-	"context"
 	"fmt"
 
 	"git.mkz.me/mycroft/k8s-home/imports/certmanagerio"
@@ -41,15 +40,11 @@ func createClusterIssueur(chart constructs.Construct, name, server string) certm
 	)
 }
 
-func NewCertManagerChart(ctx context.Context, scope constructs.Construct) cdk8s.Chart {
+func NewCertManagerChart(builder *kubehelpers.Builder) cdk8s.Chart {
 	namespace := "cert-manager"
 	appName := "cert-manager"
 
-	chart := cdk8s.NewChart(
-		scope,
-		jsii.String(namespace),
-		&cdk8s.ChartProps{},
-	)
+	chart := builder.NewChart(namespace)
 
 	// create a namespace for cert-manager
 	// reason to create the namespace is that flux will append the release name using the targetNamespace used.
