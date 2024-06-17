@@ -11,10 +11,11 @@ import (
 )
 
 type Builder struct {
-	App          cdk8s.App
-	Context      context.Context
-	Versions     Versions
-	DockerImages []string
+	App              cdk8s.App
+	Context          context.Context
+	Versions         Versions
+	DockerImages     []string
+	HelmRepositories map[string]string
 }
 
 type Chart struct {
@@ -30,9 +31,10 @@ func NewBuilder(ctx context.Context) *Builder {
 	}
 
 	return &Builder{
-		App:      cdk8s.NewApp(nil),
-		Context:  ctx,
-		Versions: versions,
+		App:              cdk8s.NewApp(nil),
+		Context:          ctx,
+		Versions:         versions,
+		HelmRepositories: make(map[string]string),
 	}
 }
 

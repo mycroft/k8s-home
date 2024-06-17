@@ -28,15 +28,12 @@ type TemplateValues struct {
 	Hash string
 }
 
-var helmRepositories = map[string]string{}
 var helmChartVersions = []HelmChartVersion{}
 
 // CreateHelmRepository creates a HelmRepository into the flux-system namespace
 // similar to:
 // - helm repo add jetstack https://charts.jetstack.io
 func CreateHelmRepository(chart constructs.Construct, name, url string) sourcetoolkitfluxcdio.HelmRepository {
-	helmRepositories[name] = url
-
 	spec := sourcetoolkitfluxcdio.HelmRepositorySpec{
 		Url:      jsii.String(url),
 		Interval: jsii.String("1m0s"),
@@ -60,6 +57,7 @@ func CreateHelmRepository(chart constructs.Construct, name, url string) sourceto
 }
 
 func (chart *Chart) CreateHelmRepository(name, url string) sourcetoolkitfluxcdio.HelmRepository {
+	chart.Builder.HelmRepositories[name] = url
 	return CreateHelmRepository(chart.Cdk8sChart, name, url)
 }
 

@@ -67,12 +67,12 @@ func GetEntriesFromIndex(body []byte) (map[string][]*Entry, error) {
 	return index.Entries, nil
 }
 
-func GetHelmUpdates(debug bool, filter string) (map[string]string, error) {
+func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]string, error) {
 	retVersions := map[string]string{}
 
 	for _, helmRelease := range helmChartVersions {
 		chartName := fmt.Sprintf("%s/%s", helmRelease.RepositoryName, helmRelease.ChartName)
-		if _, ok := helmRepositories[helmRelease.RepositoryName]; !ok {
+		if _, ok := builder.HelmRepositories[helmRelease.RepositoryName]; !ok {
 			panic(fmt.Sprintf("Unknown repo %s", helmRelease.RepositoryName))
 		}
 
@@ -83,7 +83,7 @@ func GetHelmUpdates(debug bool, filter string) (map[string]string, error) {
 			continue
 		}
 
-		repositoryURL := helmRepositories[helmRelease.RepositoryName]
+		repositoryURL := builder.HelmRepositories[helmRelease.RepositoryName]
 
 		if strings.HasPrefix(repositoryURL, "oci://") {
 			if debug {
@@ -158,7 +158,7 @@ func (builder *Builder) CheckVersions(debug bool, filter string) {
 		panic(err)
 	}
 
-	helmVersions, err := GetHelmUpdates(debug, filter)
+	helmVersions, err := builder.GetHelmUpdates(debug, filter)
 	if err != nil {
 		panic(err)
 	}
