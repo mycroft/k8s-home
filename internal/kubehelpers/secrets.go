@@ -38,6 +38,10 @@ func CreateSecretStore(chart constructs.Construct, namespace string) {
 	)
 }
 
+func (chart *Chart) CreateSecretStore(namespace string) {
+	CreateSecretStore(chart.Cdk8sChart, namespace)
+}
+
 func CreateExternalSecret(chart constructs.Construct, namespace, name string) {
 	externalsecrets_externalsecretsio.NewExternalSecretV1Beta1(
 		chart,
@@ -73,4 +77,8 @@ func CreateExternalSecret(chart constructs.Construct, namespace, name string) {
 			},
 		},
 	)
+}
+
+func (chart *Chart) CreateExternalSecret(namespace, name string) {
+	CreateExternalSecret(chart.Cdk8sChart, namespace, name)
 }

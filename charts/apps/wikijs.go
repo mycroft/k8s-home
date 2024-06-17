@@ -15,10 +15,10 @@ func NewWikiJsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	repositoryName := "requarks"
 
 	chart := builder.NewChart(namespace)
+	chart.NewNamespace(namespace)
 
-	kubehelpers.NewNamespace(chart.Cdk8sChart, namespace)
-	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
+	chart.CreateSecretStore(namespace)
+	chart.CreateExternalSecret(namespace, "postgresql")
 
 	traefikio.NewMiddleware(
 		chart.Cdk8sChart,
