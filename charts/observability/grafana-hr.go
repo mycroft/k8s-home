@@ -9,8 +9,7 @@ func NewGrafanaHelmRepositoryChart(builder *kubehelpers.Builder) *kubehelpers.Ch
 
 	chart := builder.NewChart("grafana-helm-repository")
 
-	kubehelpers.CreateHelmRepository(
-		chart.Cdk8sChart,
+	chart.CreateHelmRepository(
 		repositoryName,
 		"https://grafana.github.io/helm-charts",
 	)
