@@ -89,6 +89,9 @@ func HomelabBuildApp(ctx context.Context) *kubehelpers.Builder {
 		// charts_apps.NewHeimdallChart)
 		// charts_apps.NewJitsiChart)
 
+		// my own apps
+		charts_apps.NewGossipChart,
+
 		// misc: testing CI/CD
 		charts_cicd.NewCICDChart,
 	}
