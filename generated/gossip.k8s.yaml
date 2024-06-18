@@ -50,6 +50,8 @@ spec:
         - command:
             - /app/gossip
             - client
+            - --delay
+            - "30"
             - --nats
             - nats.nats:4222
           env:
