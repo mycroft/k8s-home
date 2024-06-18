@@ -19,7 +19,8 @@ spec:
     spec:
       containers:
         - command:
-            - /app/server
+            - /app/gossip
+            - --server
           env:
             - name: NATS_SERVER
               value: nats.nats:4222
@@ -45,7 +46,8 @@ spec:
     spec:
       containers:
         - command:
-            - /app/client
+            - /app/gossip
+            - --client
           env:
             - name: NATS_SERVER
               value: nats.nats:4222
