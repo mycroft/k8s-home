@@ -56,7 +56,7 @@ func NewGossipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 								ImagePullPolicy: jsii.String("Always"),
 								Command: &[]*string{
 									jsii.String("/app/gossip"),
-									jsii.String("--server"),
+									jsii.String("server"),
 								},
 							},
 						},
@@ -90,7 +90,7 @@ func NewGossipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 								ImagePullPolicy: jsii.String("Always"),
 								Command: &[]*string{
 									jsii.String("/app/gossip"),
-									jsii.String("--client"),
+									jsii.String("client"),
 								},
 							},
 						},
