@@ -23,7 +23,7 @@ func NewGossipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	env := []*k8s.EnvVar{
 		{
 			Name:  jsii.String("DELAY"),
-			Value: jsii.String("10"),
+			Value: jsii.String("30"),
 		},
 	}
 
@@ -54,6 +54,8 @@ func NewGossipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 									jsii.String("server"),
 									jsii.String("--nats"),
 									jsii.String("nats.nats:4222"),
+									jsii.String("--temporal"),
+									jsii.String("temporal-frontend-headless.temporal:7233"),
 								},
 							},
 						},
@@ -95,6 +97,45 @@ func NewGossipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 						},
 					},
 				},
+			},
+		},
+	)
+
+	replicas := float64(3.)
+
+	k8s.NewKubeDeployment(
+		chart.Cdk8sChart,
+		jsii.String("deploy-worker"),
+		&k8s.KubeDeploymentProps{
+			Metadata: &k8s.ObjectMeta{
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &k8s.DeploymentSpec{
+				Selector: &k8s.LabelSelector{
+					MatchLabels: &labels,
+				},
+				Template: &k8s.PodTemplateSpec{
+					Metadata: &k8s.ObjectMeta{
+						Labels: &labels,
+					},
+					Spec: &k8s.PodSpec{
+						Containers: &[]*k8s.Container{
+							{
+								Env:             &env,
+								Name:            jsii.String(appName),
+								Image:           jsii.String(imageName),
+								ImagePullPolicy: jsii.String("Always"),
+								Command: &[]*string{
+									jsii.String("/app/gossip"),
+									jsii.String("worker"),
+									jsii.String("--temporal"),
+									jsii.String("temporal-frontend-headless.temporal:7233"),
+								},
+							},
+						},
+					},
+				},
+				Replicas: &replicas,
 			},
 		},
 	)
