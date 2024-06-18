@@ -22,11 +22,6 @@ func NewGossipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	env := []*k8s.EnvVar{
 		{
-			Name: jsii.String("NATS_SERVER"),
-			// there is something wierd with the headless service.
-			Value: jsii.String("nats.nats:4222"),
-		},
-		{
 			Name:  jsii.String("DELAY"),
 			Value: jsii.String("10"),
 		},
@@ -57,6 +52,8 @@ func NewGossipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 								Command: &[]*string{
 									jsii.String("/app/gossip"),
 									jsii.String("server"),
+									jsii.String("--nats"),
+									jsii.String("nats.nats:4222"),
 								},
 							},
 						},
@@ -91,6 +88,8 @@ func NewGossipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 								Command: &[]*string{
 									jsii.String("/app/gossip"),
 									jsii.String("client"),
+									jsii.String("--nats"),
+									jsii.String("nats.nats:4222"),
 								},
 							},
 						},
