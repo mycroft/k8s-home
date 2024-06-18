@@ -31,7 +31,7 @@ helmcharts:
   prometheus-community/prometheus-blackbox-exporter: 8.17.0
   redmine/redmine: 27.1.0
   requarks/wiki: 2.2.20
-  temporal/temporal: 0.41.1
+  temporal/temporal: 0.43.0
   scylla/scylla-operator: v1.12.2
   sealed-secrets/sealed-secrets: 2.15.4
   vmware-tanzu/velero: 6.7.0
