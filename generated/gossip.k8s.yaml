@@ -23,9 +23,11 @@ spec:
             - server
             - --nats
             - nats.nats:4222
+            - --temporal
+            - temporal-frontend-headless.temporal:7233
           env:
             - name: DELAY
-              value: "10"
+              value: "30"
           image: registry.mkz.me/mycroft/gossip:latest
           imagePullPolicy: Always
           name: gossip
@@ -52,7 +54,35 @@ spec:
             - nats.nats:4222
           env:
             - name: DELAY
-              value: "10"
+              value: "30"
+          image: registry.mkz.me/mycroft/gossip:latest
+          imagePullPolicy: Always
+          name: gossip
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gossip-deploy-worker-c87bd3a8
+  namespace: gossip
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gossip
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gossip
+    spec:
+      containers:
+        - command:
+            - /app/gossip
+            - worker
+            - --temporal
+            - temporal-frontend-headless.temporal:7233
+          env:
+            - name: DELAY
+              value: "30"
           image: registry.mkz.me/mycroft/gossip:latest
           imagePullPolicy: Always
           name: gossip
