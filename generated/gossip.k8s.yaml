@@ -21,9 +21,9 @@ spec:
         - command:
             - /app/gossip
             - server
+            - --nats
+            - nats.nats:4222
           env:
-            - name: NATS_SERVER
-              value: nats.nats:4222
             - name: DELAY
               value: "10"
           image: registry.mkz.me/mycroft/gossip:latest
@@ -48,9 +48,9 @@ spec:
         - command:
             - /app/gossip
             - client
+            - --nats
+            - nats.nats:4222
           env:
-            - name: NATS_SERVER
-              value: nats.nats:4222
             - name: DELAY
               value: "10"
           image: registry.mkz.me/mycroft/gossip:latest
