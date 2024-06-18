@@ -11,7 +11,7 @@ func NewGossipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	namespace := name
 	appName := name
-	imageName := "registry.mkz.me/test-ci/gossip:latest"
+	imageName := "registry.mkz.me/mycroft/gossip:latest"
 
 	chart := builder.NewChart(name)
 	chart.NewNamespace(namespace)
