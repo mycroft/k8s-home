@@ -26,7 +26,7 @@ spec:
               value: nats.nats:4222
             - name: DELAY
               value: "10"
-          image: registry.mkz.me/test-ci/gossip:latest
+          image: registry.mkz.me/mycroft/gossip:latest
           imagePullPolicy: Always
           name: gossip
 ---
@@ -53,6 +53,6 @@ spec:
               value: nats.nats:4222
             - name: DELAY
               value: "10"
-          image: registry.mkz.me/test-ci/gossip:latest
+          image: registry.mkz.me/mycroft/gossip:latest
           imagePullPolicy: Always
           name: gossip
