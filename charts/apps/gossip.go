@@ -90,6 +90,8 @@ func NewGossipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 								Command: &[]*string{
 									jsii.String("/app/gossip"),
 									jsii.String("client"),
+									jsii.String("--delay"),
+									jsii.String("30"),
 									jsii.String("--nats"),
 									jsii.String("nats.nats:4222"),
 								},
