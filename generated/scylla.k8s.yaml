@@ -9,7 +9,7 @@ metadata:
   name: scylla-cluster
   namespace: scylla
 spec:
-  agentVersion: 3.2.6
+  agentVersion: 3.2.8
   datacenter:
     name: eu-west-1
     racks:
