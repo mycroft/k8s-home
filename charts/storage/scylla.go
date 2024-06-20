@@ -45,7 +45,7 @@ func NewScyllaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			},
 			Spec: &scyllascylladbcom.ScyllaClusterSpec{
 				Version:       jsii.String("5.4.4"),
-				AgentVersion:  jsii.String("3.2.6"),
+				AgentVersion:  jsii.String("3.2.8"), // https://github.com/scylladb/scylla-manager
 				Repository:    jsii.String("scylladb/scylla"),
 				DeveloperMode: jsii.Bool(true), // using DeveloperMode to bypass FS checks
 				Datacenter: &scyllascylladbcom.ScyllaClusterSpecDatacenter{
