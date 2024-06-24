@@ -23,7 +23,7 @@ helmcharts:
   mariadb-operator/mariadb-operator: 0.29.0
   minio/operator: 5.0.15
   nats/nats: 1.2.0
-  onechart/onechart: 0.68.0
+  onechart/onechart: 0.69.0
   opensearch/opensearch: 2.12.0
   opensearch/opensearch-dashboards: 2.10.0
   postgres-operator/postgres-operator: 1.12.2
