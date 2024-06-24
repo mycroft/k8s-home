@@ -40,7 +40,7 @@ spec:
         kind: HelmRepository
         name: onechart
         namespace: flux-system
-      version: 0.68.0
+      version: 0.69.0
   install:
     createNamespace: false
     skipCRDs: false
