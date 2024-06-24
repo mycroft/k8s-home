@@ -65,7 +65,7 @@ spec:
                 secretKeyRef:
                   key: dsn
                   name: postgres
-          image: neosmemo/memos:stable
+          image: neosmemo/memos:0.22.2
           name: memos
           volumeMounts: []
       volumes: []
