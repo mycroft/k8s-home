@@ -41,7 +41,7 @@ func NewMemosChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		chart.Cdk8sChart,
 		namespace,
 		appName,
-		chart.Builder.RegisterContainerImage("neosmemo/memos:stable"),
+		chart.Builder.RegisterContainerImage("neosmemo/memos"),
 		labels,
 		env,
 		[]string{},
