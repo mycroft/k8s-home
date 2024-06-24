@@ -25,8 +25,8 @@ func NewPostgres(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"wikijs",
 		"temporal",
 		"temporal_visibility",
-		"backstage",
 		"authentik",
+		"memos",
 	}
 
 	databaseSpecs := map[string]*string{}
