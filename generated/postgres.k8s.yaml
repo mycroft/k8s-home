@@ -11,10 +11,10 @@ metadata:
 spec:
   databases:
     authentik: authentik-admin
-    backstage: backstage-admin
     dex: dex-admin
     freshrss: freshrss-admin
     grafana: grafana-admin
+    memos: memos-admin
     paperlessngx: paperlessngx-admin
     temporal: temporal-admin
     temporal_visibility: temporal_visibility-admin
@@ -33,10 +33,6 @@ spec:
     authentik-admin:
       - superuser
       - createdb
-    backstage: []
-    backstage-admin:
-      - superuser
-      - createdb
     dex: []
     dex-admin:
       - superuser
@@ -47,6 +43,10 @@ spec:
       - createdb
     grafana: []
     grafana-admin:
+      - superuser
+      - createdb
+    memos: []
+    memos-admin:
       - superuser
       - createdb
     paperlessngx: []
