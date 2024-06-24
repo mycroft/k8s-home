@@ -74,6 +74,7 @@ func HomelabBuildApp(ctx context.Context) *kubehelpers.Builder {
 		charts_apps.NewHomepageChart,
 		charts_apps.NewITToolsChart,
 		charts_apps.NewLinkdingChart,
+		charts_apps.NewMemosChart,
 		charts_apps.NewMicrobinChart,
 		charts_apps.NewPaperlessNGXChart,
 		charts_apps.NewPrivatebinChart,
