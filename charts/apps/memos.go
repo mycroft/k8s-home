@@ -26,6 +26,10 @@ func NewMemosChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Value: jsii.String("postgres"),
 		},
 		{
+			Name:  jsii.String("MEMOS_PORT"),
+			Value: jsii.String("5230"),
+		},
+		{
 			Name: jsii.String("MEMOS_DSN"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
