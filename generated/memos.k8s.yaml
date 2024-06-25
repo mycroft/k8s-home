@@ -45,7 +45,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: memos-deploy-c83b1033
+  name: memos
   namespace: memos
 spec:
   selector:
@@ -73,7 +73,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: memos-svc-c812b3e5
+  name: memos
   namespace: memos
 spec:
   ports:
@@ -97,7 +97,7 @@ spec:
         paths:
           - backend:
               service:
-                name: memos-svc-c812b3e5
+                name: memos
                 port:
                   name: http
             path: /
