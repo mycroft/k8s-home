@@ -60,6 +60,8 @@ spec:
         - env:
             - name: MEMOS_DRIVER
               value: postgres
+            - name: MEMOS_PORT
+              value: "5230"
             - name: MEMOS_DSN
               valueFrom:
                 secretKeyRef:
