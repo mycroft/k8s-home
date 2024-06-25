@@ -9,13 +9,17 @@ import (
 )
 
 func NewMemosChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
-	appName := "memos"
-	namespace := appName
-	appPort := 5230
-	appIngress := fmt.Sprintf("%s.services.mkz.me", appName)
-	labels := map[string]*string{
-		"app.kubernetes.io/name": jsii.String(appName),
+	name := "memos"
+	namespace := name
+	port := uint16(5230)
+	ingresses := []string{
+		fmt.Sprintf("%s.services.mkz.me", name),
 	}
+
+	labels := map[string]*string{
+		"app.kubernetes.io/name": jsii.String(name),
+	}
+
 	env := []*k8s.EnvVar{
 		{
 			Name:  jsii.String("MEMOS_DRIVER"),
@@ -37,27 +41,21 @@ func NewMemosChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.CreateSecretStore(namespace)
 	chart.CreateExternalSecret(namespace, "postgres")
 
-	kubehelpers.NewAppDeployment(
-		chart.Cdk8sChart,
-		namespace,
-		appName,
-		chart.Builder.RegisterContainerImage("neosmemo/memos"),
-		labels,
-		env,
-		[]string{},
-		[]kubehelpers.ConfigMapMount{},
-	)
+	chart.NewDeployment(&kubehelpers.Deployment{
+		Namespace: namespace,
+		Name:      name,
+		Image:     "neosmemo/memos",
+		Labels:    labels,
+		Env:       env,
+	})
 
-	kubehelpers.NewAppIngress(
-		builder.Context,
-		chart.Cdk8sChart,
-		labels,
-		appName,
-		appPort,
-		appIngress,
-		"",
-		map[string]string{},
-	)
+	chart.NewIngress(&kubehelpers.Ingress{
+		Namespace: namespace,
+		Name:      name,
+		Port:      port,
+		Ingresses: ingresses,
+		Labels:    labels,
+	})
 
 	return chart
 }

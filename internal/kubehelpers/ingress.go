@@ -10,6 +10,10 @@ import (
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
+type AppServiceOption struct {
+	Name string
+}
+
 func NewAppService(
 	chart cdk8s.Chart,
 	namespace string,
@@ -17,24 +21,37 @@ func NewAppService(
 	labels map[string]*string,
 	portName string,
 	portNumber uint,
+	opts ...AppServiceOption,
 ) k8s.KubeService {
+	metadata := k8s.ObjectMeta{
+		Namespace: jsii.String(namespace),
+	}
+
+	spec := k8s.ServiceSpec{
+		Ports: &[]*k8s.ServicePort{
+			{
+				Name: jsii.String(portName),
+				Port: jsii.Number(float64(portNumber)),
+			},
+		},
+		Selector: &labels,
+	}
+
+	for _, opt := range opts {
+		if opt.Name != "" {
+			metadata.Name = jsii.String(opt.Name)
+		}
+	}
+
+	props := k8s.KubeServiceProps{
+		Metadata: &metadata,
+		Spec:     &spec,
+	}
+
 	return k8s.NewKubeService(
 		chart,
 		jsii.String(serviceName),
-		&k8s.KubeServiceProps{
-			Metadata: &k8s.ObjectMeta{
-				Namespace: jsii.String(namespace),
-			},
-			Spec: &k8s.ServiceSpec{
-				Ports: &[]*k8s.ServicePort{
-					{
-						Name: jsii.String(portName),
-						Port: jsii.Number(float64(portNumber)),
-					},
-				},
-				Selector: &labels,
-			},
-		},
+		&props,
 	)
 }
 
@@ -145,5 +162,44 @@ func NewAppIngress(
 		},
 		serviceName,
 		customAnnotations,
+	)
+}
+
+type Ingress struct {
+	Namespace   string
+	Name        string
+	Port        uint16
+	Ingresses   []string
+	Labels      map[string]*string
+	ServiceName string
+	Annotations map[string]string
+}
+
+func (chart *Chart) NewIngress(ingress *Ingress) {
+	if ingress.ServiceName == "" {
+		ingress.ServiceName = ingress.Name
+
+		NewAppService(
+			chart.Cdk8sChart,
+			ingress.Namespace,
+			ingress.ServiceName,
+			ingress.Labels,
+			"http",
+			uint(ingress.Port),
+			AppServiceOption{
+				Name: ingress.Name,
+			},
+		)
+	}
+
+	NewAppIngresses(
+		chart.Builder.Context,
+		chart.Cdk8sChart,
+		ingress.Labels,
+		ingress.Namespace,
+		int(ingress.Port),
+		ingress.Ingresses,
+		ingress.ServiceName,
+		ingress.Annotations,
 	)
 }

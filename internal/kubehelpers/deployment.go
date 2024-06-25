@@ -14,6 +14,10 @@ type ConfigMapMount struct {
 	MountPath string
 }
 
+type AppDeploymentOption struct {
+	Name string
+}
+
 func NewAppDeployment(
 	chart cdk8s.Chart,
 	namespace, appName, appImage string,
@@ -21,6 +25,7 @@ func NewAppDeployment(
 	env []*k8s.EnvVar,
 	commands []string,
 	configMapMounts []ConfigMapMount,
+	opts ...AppDeploymentOption,
 ) {
 
 	volumes := []*k8s.Volume{}
@@ -62,13 +67,21 @@ func NewAppDeployment(
 		}
 	}
 
+	metadatas := k8s.ObjectMeta{
+		Namespace: jsii.String(namespace),
+	}
+
+	for _, opt := range opts {
+		if opt.Name != "" {
+			metadatas.Name = jsii.String(opt.Name)
+		}
+	}
+
 	k8s.NewKubeDeployment(
 		chart,
 		jsii.String("deploy"),
 		&k8s.KubeDeploymentProps{
-			Metadata: &k8s.ObjectMeta{
-				Namespace: jsii.String(namespace),
-			},
+			Metadata: &metadatas,
 			Spec: &k8s.DeploymentSpec{
 				Selector: &k8s.LabelSelector{
 					MatchLabels: &labels,
@@ -85,6 +98,32 @@ func NewAppDeployment(
 					},
 				},
 			},
+		},
+	)
+}
+
+type Deployment struct {
+	Namespace  string
+	Name       string
+	Image      string
+	Labels     map[string]*string
+	Env        []*k8s.EnvVar
+	Commands   []string
+	ConfigMaps []ConfigMapMount
+}
+
+func (chart *Chart) NewDeployment(deployment *Deployment) {
+	NewAppDeployment(
+		chart.Cdk8sChart,
+		deployment.Namespace,
+		deployment.Name,
+		chart.Builder.RegisterContainerImage(deployment.Image),
+		deployment.Labels,
+		deployment.Env,
+		deployment.Commands,
+		deployment.ConfigMaps,
+		AppDeploymentOption{
+			Name: deployment.Name,
 		},
 	)
 }
