@@ -87,7 +87,7 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-  name: memos-ingress-c8d6630e
+  name: memos
   namespace: memos
 spec:
   ingressClassName: traefik
