@@ -55,6 +55,10 @@ func NewAppService(
 	)
 }
 
+type AppIngressOption struct {
+	Name string
+}
+
 func NewAppIngresses(
 	ctx context.Context,
 	chart cdk8s.Chart,
@@ -64,6 +68,7 @@ func NewAppIngresses(
 	ingressHosts []string,
 	serviceName string,
 	customAnnotations map[string]string,
+	opts ...AppIngressOption,
 ) {
 	annotations := map[string]*string{
 		"cert-manager.io/cluster-issuer": jsii.String("letsencrypt-prod"),
@@ -119,14 +124,22 @@ func NewAppIngresses(
 		hosts = append(hosts, jsii.String(ingressHost))
 	}
 
+	metadatas := k8s.ObjectMeta{
+		Annotations: &annotations,
+		Namespace:   jsii.String(namespace),
+	}
+
+	for _, opt := range opts {
+		if opt.Name != "" {
+			metadatas.Name = jsii.String(opt.Name)
+		}
+	}
+
 	k8s.NewKubeIngress(
 		chart,
 		jsii.String("ingress"),
 		&k8s.KubeIngressProps{
-			Metadata: &k8s.ObjectMeta{
-				Annotations: &annotations,
-				Namespace:   jsii.String(namespace),
-			},
+			Metadata: &metadatas,
 			Spec: &k8s.IngressSpec{
 				IngressClassName: jsii.String("traefik"),
 				Rules:            &rules,
@@ -201,5 +214,8 @@ func (chart *Chart) NewIngress(ingress *Ingress) {
 		ingress.Ingresses,
 		ingress.ServiceName,
 		ingress.Annotations,
+		AppIngressOption{
+			Name: ingress.Name,
+		},
 	)
 }
