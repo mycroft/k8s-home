@@ -121,7 +121,7 @@ spec:
         kind: HelmRepository
         name: grafana
         namespace: flux-system
-      version: 0.3.2
+      version: 0.4.0
   install:
     createNamespace: false
     skipCRDs: false
