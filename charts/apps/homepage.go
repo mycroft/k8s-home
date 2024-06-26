@@ -32,7 +32,6 @@ func NewHomepageChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 					releaseName,
 					"homepage.yaml",
 					true,
-					"",
 				),
 			},
 		),

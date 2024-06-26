@@ -2,10 +2,6 @@
 # https://docs.requarks.io/install/kubernetes#configuration
 # https://github.com/Requarks/wiki/blob/main/dev/helm/values.yaml
 
-image:
-  repository: {{ .Image }}
-  imagePullPolicy: IfNotPresent
-
 ingress:
   enabled: true
   className: traefik
