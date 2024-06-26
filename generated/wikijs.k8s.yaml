@@ -119,7 +119,7 @@ spec:
         kind: HelmRepository
         name: requarks
         namespace: flux-system
-      version: 2.2.20
+      version: 2.2.21
   install:
     createNamespace: false
     skipCRDs: false
