@@ -188,6 +188,8 @@ type Ingress struct {
 	Annotations map[string]string
 }
 
+// NewIngress creates an ingress attached to deployment name/port
+// If ingress.ServiceName is unset, a new service will be created
 func (chart *Chart) NewIngress(ingress *Ingress) {
 	if ingress.ServiceName == "" {
 		ingress.ServiceName = ingress.Name

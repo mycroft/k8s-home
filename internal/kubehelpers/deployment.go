@@ -102,11 +102,15 @@ func NewAppDeployment(
 	)
 }
 
+// Deployment contains a deployment configuration
 type Deployment struct {
-	Namespace  string
-	Name       string
-	Image      string
-	Labels     map[string]*string
+	// The deployment Namespace
+	Namespace string
+	Name      string
+	Image     string
+	// Labels to apply
+	Labels map[string]*string
+	// Environement to set in deployment's pods
 	Env        []*k8s.EnvVar
 	Commands   []string
 	ConfigMaps []ConfigMapMount
