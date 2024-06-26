@@ -4,7 +4,7 @@ helmcharts:
   calibre-web/calibre-web: 19.0.13
   dex/dex: 0.18.0
   external-secrets/external-secrets: 0.9.19
-  grafana/alloy: 0.3.2
+  grafana/alloy: 0.4.0
   grafana/loki: 6.6.4
   grafana/promtail: 6.16.0
   grafana/tempo: 1.10.0
