@@ -72,6 +72,10 @@ data:
     # https://docs.requarks.io/install/kubernetes#configuration
     # https://github.com/Requarks/wiki/blob/main/dev/helm/values.yaml
 
+    image:
+      repository: requarks/wiki:2.5.303
+      imagePullPolicy: IfNotPresent
+
     ingress:
       enabled: true
       className: traefik
@@ -108,7 +112,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: c0b1bfbf46ab78d978fb33558c74e59f5f4e283439617907120565c9c60b90ec
+    configMapHash: 39d0c455e7e9f8f7da2d0fe5d49fe0e3ccfe1a6c02b6d08666143362d05d6a98
   name: wiki
   namespace: wikijs
 spec:
