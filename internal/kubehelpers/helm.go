@@ -25,7 +25,8 @@ type HelmChartVersion struct {
 }
 
 type TemplateValues struct {
-	Hash string
+	Hash  string
+	Image string
 }
 
 var helmChartVersions = []HelmChartVersion{}
@@ -233,6 +234,7 @@ func CreateHelmValuesTemplatedConfig(
 	chart constructs.Construct,
 	namespace, releaseName, filename string,
 	useCustomTemplate bool,
+	image string,
 ) HelmReleaseConfigMap {
 	var doc bytes.Buffer
 
@@ -257,7 +259,8 @@ func CreateHelmValuesTemplatedConfig(
 		h.Write([]byte(renderedContents))
 
 		values := TemplateValues{
-			Hash: fmt.Sprintf("%x", h.Sum(nil)),
+			Hash:  fmt.Sprintf("%x", h.Sum(nil)),
+			Image: image,
 		}
 
 		tmpl, err := template.New("config").Parse(renderedContents)
@@ -303,5 +306,6 @@ func CreateHelmValuesConfig(
 		releaseName,
 		filename,
 		false,
+		"",
 	)
 }

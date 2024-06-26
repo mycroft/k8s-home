@@ -43,11 +43,13 @@ func NewWikiJsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	)
 
 	configMaps := []kubehelpers.HelmReleaseConfigMap{
-		kubehelpers.CreateHelmValuesConfig(
+		kubehelpers.CreateHelmValuesTemplatedConfig(
 			chart.Cdk8sChart,
 			namespace,
 			repositoryName,
 			"wikijs.yaml",
+			true,
+			builder.RegisterContainerImage("requarks/wiki"),
 		),
 	}
 
