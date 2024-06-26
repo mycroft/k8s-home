@@ -2,6 +2,12 @@
 # https://docs.requarks.io/install/kubernetes#configuration
 # https://github.com/Requarks/wiki/blob/main/dev/helm/values.yaml
 
+# The following should be configurable
+image:
+  repository: requarks/wiki
+  imagePullPolicy: IfNotPresent
+  tag: 2.5.303
+
 ingress:
   enabled: true
   className: traefik
