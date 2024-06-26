@@ -15,6 +15,7 @@ Most important apps installed on my cluster are:
 - [longhorn](https://longhorn.io/) is used to provide distributed physical volumes across the cluster;
 - [vault](https://www.vaultproject.io/) & [External Secrets Operator](https://external-secrets.io/latest/) are used for most secrets. A few secrets are deployed using [sealed-secrets](https://github.com/bitnami-labs/sealed-secrets), to unlock encrypted volumes;
 - [dex-idp](https://dexidp.io/) is linked with my personal [gitea](https://about.gitea.com/) instance to provide oauth based SSO to services supporting it;
+- There also is an [authentik](https://goauthentik.io/) instance linked with a bunch of services for SSO authentication and authorization;
 - [traefik-forward-auth](https://doc.traefik.io/traefik/middlewares/http/forwardauth/) protects a few services behind an oauth authn/authz firewall for apps not linked to dex-idp;
 - [cert-manager](https://cert-manager.io/) generates TLS certificates for ingresses on demand;
 - [PostgreSQL](https://www.postgresql.org/), [Minio](https://min.io/), [ScyllaDB](https://www.scylladb.com/), [MariaDB](https://mariadb.org/) operators are installed to provide databases instances;
@@ -38,7 +39,8 @@ Most important apps installed on my cluster are:
   - [excalidraw](https://excalidraw.com/), virtual collaborative whiteboard;
   - [wikijs](https://js.wiki/), wiki as stated in its name;
   - [redmine](https://www.redmine.org/), because project management;
-  - [microbin](https://microbin.eu/) another pastebin kind of instance.
+  - [microbin](https://microbin.eu/) another pastebin kind of instance;
+  - [memos](https://www.usememos.com/) for note taking.
 
 ## Deployment
 
