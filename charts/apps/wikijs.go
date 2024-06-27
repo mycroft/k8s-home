@@ -1,6 +1,9 @@
 package apps
 
 import (
+	"fmt"
+	"strings"
+
 	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -42,12 +45,24 @@ func NewWikiJsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"https://charts.js.wiki",
 	)
 
+	image := chart.Builder.RegisterContainerImage("requarks/wiki")
+	if !strings.Contains(image, ":") {
+		panic(fmt.Errorf("invalid image repository/tag: Missing ':' in %s", image))
+	}
+
 	configMaps := []kubehelpers.HelmReleaseConfigMap{
-		kubehelpers.CreateHelmValuesConfig(
+		kubehelpers.CreateHelmValuesTemplatedConfig(
 			chart.Cdk8sChart,
 			namespace,
 			repositoryName,
 			"wikijs.yaml",
+			true,
+			map[string]interface{}{
+				"Image": map[string]string{
+					"Repository": strings.Split(image, ":")[0],
+					"Tag":        strings.Split(image, ":")[1],
+				},
+			},
 		),
 	}
 
