@@ -51,6 +51,10 @@ mysql:
 postgresql:
   enabled: true
 
+schema:
+  createDatabase:
+    enabled: false
+
 prometheus:
   enabled: false
 
