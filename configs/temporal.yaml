@@ -51,10 +51,6 @@ mysql:
 postgresql:
   enabled: true
 
-schema:
-  createDatabase:
-    enabled: false
-
 prometheus:
   enabled: false
 
@@ -65,6 +61,8 @@ elasticsearch:
   enabled: false
 
 schema:
+  createDatabase:
+    enabled: false
   setup:
     enabled: false
   update:
