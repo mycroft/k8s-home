@@ -134,10 +134,6 @@ data:
     postgresql:
       enabled: true
 
-    schema:
-      createDatabase:
-        enabled: false
-
     prometheus:
       enabled: false
 
@@ -148,6 +144,8 @@ data:
       enabled: false
 
     schema:
+      createDatabase:
+        enabled: false
       setup:
         enabled: false
       update:
@@ -157,7 +155,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 7661ed5c7ebf0a78ced00fab482cea9fc5f41d390b20cdc730a8ab7e80a62155
+    configMapHash: 465351c7e5cd35a2b4fa8ae3441874b4f0781dd534e4fbdebfdcb198dde18191
   name: temporal
   namespace: temporal
 spec:
