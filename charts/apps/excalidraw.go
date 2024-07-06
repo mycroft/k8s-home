@@ -36,8 +36,9 @@ func NewExcalidrawChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 					Spec: &k8s.PodSpec{
 						Containers: &[]*k8s.Container{
 							{
-								Name:  jsii.String(appName),
-								Image: jsii.String(image),
+								Name:            jsii.String(appName),
+								ImagePullPolicy: jsii.String("Always"),
+								Image:           jsii.String(image),
 							},
 						},
 					},
