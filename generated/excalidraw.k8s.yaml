@@ -19,6 +19,7 @@ spec:
     spec:
       containers:
         - image: excalidraw/excalidraw:latest
+          imagePullPolicy: Always
           name: excalidraw
 ---
 apiVersion: v1
