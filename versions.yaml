@@ -35,7 +35,7 @@ helmcharts:
   scylla/scylla-operator: v1.13.0
   sealed-secrets/sealed-secrets: 2.16.0
   vmware-tanzu/velero: 7.1.0
-  wiremind/karma: 2.5.3
+  wiremind/karma: 2.6.1
 images:
   corentinth/it-tools: 2024.5.13-a0bc346
   danielszabo99/microbin: 2.0.4
