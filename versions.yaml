@@ -7,7 +7,7 @@ helmcharts:
   grafana/alloy: 0.5.0
   grafana/loki: 6.6.5
   grafana/promtail: 6.16.0
-  grafana/tempo: 1.10.0
+  grafana/tempo: 1.10.1
   hashicorp/vault: 0.28.0
   jaegertracing/jaeger: 0.71.2
   jameswynn/homepage: 1.2.3
