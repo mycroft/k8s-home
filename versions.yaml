@@ -1,6 +1,6 @@
 helmcharts:
   aqua/trivy-operator: 0.18.4
-  authentik/authentik: 2024.6.0
+  authentik/authentik: 2024.6.1
   calibre-web/calibre-web: 19.0.13
   dex/dex: 0.18.0
   external-secrets/external-secrets: 0.9.20
