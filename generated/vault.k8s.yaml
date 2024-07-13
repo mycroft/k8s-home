@@ -119,7 +119,7 @@ spec:
         kind: HelmRepository
         name: hashicorp
         namespace: flux-system
-      version: 0.28.0
+      version: 0.28.1
   install:
     createNamespace: false
     skipCRDs: false
