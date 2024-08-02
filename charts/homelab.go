@@ -83,6 +83,7 @@ func HomelabBuildApp(ctx context.Context) *kubehelpers.Builder {
 		charts_apps.NewSnippetBoxChart,
 		charts_apps.NewUrlsChart,
 		charts_apps.NewVaultWardenChart,
+		charts_apps.NewVikunjaChart,
 		charts_apps.NewWallabagChart,
 		charts_apps.NewWhatIsMyIPChart,
 		charts_apps.NewWikiJsChart,
