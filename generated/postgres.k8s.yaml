@@ -19,6 +19,7 @@ spec:
     temporal: temporal-admin
     temporal_visibility: temporal_visibility-admin
     testaroo: testaroo-admin
+    vikunja: vikunja-admin
     wallabag: wallabag-admin
     wikijs: wikijs-admin
   env:
@@ -63,6 +64,10 @@ spec:
       - createdb
     testaroo: []
     testaroo-admin:
+      - superuser
+      - createdb
+    vikunja: []
+    vikunja-admin:
       - superuser
       - createdb
     wallabag: []
