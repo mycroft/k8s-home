@@ -3,7 +3,7 @@ helmcharts:
   authentik/authentik: 2024.6.2
   calibre-web/calibre-web: 19.0.13
   dex/dex: 0.18.0
-  external-secrets/external-secrets: 0.9.20
+  external-secrets/external-secrets: 0.10.0
   grafana/alloy: 0.5.1
   grafana/loki: 6.7.3
   grafana/promtail: 6.16.0
