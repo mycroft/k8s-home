@@ -155,7 +155,7 @@ spec:
               value: /usr/src/paperless/media
             - name: PAPERLESS_DATA_DIR
               value: /usr/src/paperless/data
-          image: paperlessngx/paperless-ngx:2.11.3
+          image: paperlessngx/paperless-ngx:2.11.4
           name: paperless-ngx
           volumeMounts:
             - mountPath: /usr/src/paperless/data
