@@ -25,7 +25,7 @@ spec:
         kind: HelmRepository
         name: postgres-operator
         namespace: flux-system
-      version: 1.12.2
+      version: 1.13.0
   install:
     createNamespace: false
     skipCRDs: false
