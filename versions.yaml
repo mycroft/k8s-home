@@ -21,7 +21,7 @@ helmcharts:
   linkerd/linkerd-viz: 30.12.11
   longhorn/longhorn: 1.7.0
   mariadb-operator/mariadb-operator: 0.29.0
-  minio/operator: 6.0.2
+  minio/operator: 6.0.3
   nats/nats: 1.2.3
   onechart/onechart: 0.70.0
   opensearch/opensearch: 2.12.0
