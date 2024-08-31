@@ -47,7 +47,7 @@ images:
   freshrss/freshrss: 1.24.2
   ghcr.io/gchq/cyberchef: 10.19.2
   jhaals/yopass: 11.16.0
-  linuxserver/bookstack: v24.05.3-ls160
+  linuxserver/bookstack: v24.05.4-ls162
   linuxserver/heimdall: v2.5.7-ls238
   neosmemo/memos: 0.22.4
   paulbouwer/hello-kubernetes: 1.10.1
