@@ -112,7 +112,7 @@ spec:
         kind: HelmRepository
         name: vmware-tanzu
         namespace: flux-system
-      version: 7.2.0
+      version: 7.2.1
   install:
     createNamespace: false
     skipCRDs: false
