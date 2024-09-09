@@ -31,7 +31,7 @@ server:
 
 web:
   image:
-    repository: temporalio/server
+    repository: temporalio/ui
     tag: 2.30.2
   ingress:
     enabled: true
