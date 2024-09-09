@@ -114,7 +114,7 @@ data:
 
     web:
       image:
-        repository: temporalio/server
+        repository: temporalio/ui
         tag: 2.30.2
       ingress:
         enabled: true
@@ -161,7 +161,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 7e0bae452a90454db32a857fe4dab644bf5e2b8ac70fa2395fc404c293ca4a96
+    configMapHash: 5b3887df6950e1c1861b33f21e3663255f19a86e4d9a2051926b385b8afaf17a
   name: temporal
   namespace: temporal
 spec:
