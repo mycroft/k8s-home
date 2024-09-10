@@ -84,9 +84,9 @@ data:
     # https://github.com/temporalio/helm-charts/blob/master/charts/temporal/values.yaml
 
     server:
-      image:
-        repository: temporalio/server
-        tag: 1.25.1
+    #  image:
+    #    repository: temporalio/server
+    #    tag: 1.25.0
       config:
         persistence:
           default:
@@ -113,9 +113,9 @@ data:
               existingSecret: postgresql-visibility
 
     web:
-      image:
-        repository: temporalio/ui
-        tag: 2.30.2
+    #  image:
+    #    repository: temporalio/ui
+    #    tag: 2.30.2
       ingress:
         enabled: true
         ingressClassName: traefik
@@ -161,7 +161,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: d759a9f56a99d1859879342b67a7b6b443db7866e981cd5eda836795ebb1d822
+    configMapHash: 79c1a5c37309f8af0742c95ea29edf56728c4fddd1fdcc8d3a6c608c3447775e
   name: temporal
   namespace: temporal
 spec:
