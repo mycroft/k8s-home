@@ -3,7 +3,7 @@
 server:
   image:
     repository: temporalio/server
-    tag: 1.25.0
+    tag: 1.25.1
   config:
     persistence:
       default:
