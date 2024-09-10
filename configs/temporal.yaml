@@ -1,9 +1,9 @@
 # https://github.com/temporalio/helm-charts/blob/master/charts/temporal/values.yaml
 
 server:
-  image:
-    repository: temporalio/server
-    tag: 1.25.1
+#  image:
+#    repository: temporalio/server
+#    tag: 1.25.0
   config:
     persistence:
       default:
@@ -30,9 +30,9 @@ server:
           existingSecret: postgresql-visibility
 
 web:
-  image:
-    repository: temporalio/ui
-    tag: 2.30.2
+#  image:
+#    repository: temporalio/ui
+#    tag: 2.30.2
   ingress:
     enabled: true
     ingressClassName: traefik
