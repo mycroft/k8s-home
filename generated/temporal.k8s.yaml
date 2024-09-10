@@ -86,7 +86,7 @@ data:
     server:
       image:
         repository: temporalio/server
-        tag: 1.25.0
+        tag: 1.25.1
       config:
         persistence:
           default:
@@ -161,7 +161,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 5b3887df6950e1c1861b33f21e3663255f19a86e4d9a2051926b385b8afaf17a
+    configMapHash: d759a9f56a99d1859879342b67a7b6b443db7866e981cd5eda836795ebb1d822
   name: temporal
   namespace: temporal
 spec:
@@ -172,7 +172,7 @@ spec:
         kind: HelmRepository
         name: temporal
         namespace: flux-system
-      version: 0.45.0
+      version: 0.45.1
   install:
     createNamespace: false
     skipCRDs: false
