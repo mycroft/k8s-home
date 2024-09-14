@@ -429,6 +429,10 @@ data:
                 summary: "There are {{ $value }} active Vault instance(s)"
                 description: "The Vault instance at `{{$labels.instance}}` has been Standby for the last 10m"
 
+    defaultRules:
+      disabled:
+        CPUThrottlingHigh: true
+
     # https://github.com/fluxcd/flux2-monitoring-example/blob/main/monitoring/controllers/kube-prometheus-stack/kube-state-metrics-config.yaml
     kube-state-metrics:
       # collectors: [ ]
@@ -655,7 +659,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 5b76a12cf22c2bd48c7f2f12558565f0908430ddd4e9cdb52698888edc0aa8dd
+    configMapHash: d804f76731e1713d464632b243bc424fdbd5dec0c6a7a23ff3e6ce9d18c5e6d8
   name: prometheus
   namespace: monitoring
 spec:
