@@ -277,6 +277,10 @@ additionalPrometheusRulesMap:
             summary: "There are {{ $value }} active Vault instance(s)"
             description: "The Vault instance at `{{$labels.instance}}` has been Standby for the last 10m"
 
+defaultRules:
+  disabled:
+    CPUThrottlingHigh: true
+
 # https://github.com/fluxcd/flux2-monitoring-example/blob/main/monitoring/controllers/kube-prometheus-stack/kube-state-metrics-config.yaml
 kube-state-metrics:
   # collectors: [ ]
