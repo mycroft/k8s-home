@@ -5,7 +5,7 @@ helmcharts:
   dex/dex: 0.19.1
   external-secrets/external-secrets: 0.10.4
   grafana/alloy: 0.8.1
-  grafana/loki: 6.12.0
+  grafana/loki: 6.15.0
   grafana/promtail: 6.16.0
   grafana/tempo: 1.10.3
   hashicorp/vault: 0.28.1
