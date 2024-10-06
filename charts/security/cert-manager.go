@@ -55,16 +55,11 @@ func NewCertManagerChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"https://charts.jetstack.io",
 	)
 
-	helmValues := map[string]*string{
-		"installCRDs": jsii.String("true"),
-	}
-
 	chart.CreateHelmRelease(
 		namespace,
 		"jetstack", // repository name
 		appName,    // chart name
 		appName,    // release name
-		kubehelpers.WithHelmValues(helmValues),
 		kubehelpers.WithDefaultConfigFile(),
 	)
 
