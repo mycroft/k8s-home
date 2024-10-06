@@ -66,3 +66,4 @@ patterns:
   images:
     redis: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     sissbruecker/linkding: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+    vaultwarden/server: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
