@@ -34,7 +34,7 @@ func HomelabBuildApp(ctx context.Context) *kubehelpers.Builder {
 		charts_storage.NewMinioOperator,
 		charts_storage.NewMinio,
 		charts_storage.NewScyllaOperatorChart,
-		charts_storage.NewScyllaChart,
+		// charts_storage.NewScyllaChart,
 		charts_storage.NewNATSChart,
 		charts_storage.NewMariaDBOperator,
 		charts_storage.NewMariaDBChart,
@@ -85,7 +85,7 @@ func HomelabBuildApp(ctx context.Context) *kubehelpers.Builder {
 		charts_apps.NewVaultWardenChart,
 		charts_apps.NewVikunjaChart,
 		charts_apps.NewWallabagChart,
-		charts_apps.NewWhatIsMyIPChart,
+		// charts_apps.NewWhatIsMyIPChart,
 		charts_apps.NewWikiJsChart,
 		charts_apps.NewYopassChart,
 		// charts_apps.NewHeimdallChart)
