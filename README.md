@@ -40,7 +40,8 @@ Most important apps installed on my cluster are:
   - [wikijs](https://js.wiki/), wiki as stated in its name;
   - [redmine](https://www.redmine.org/), because project management;
   - [microbin](https://microbin.eu/) another pastebin kind of instance;
-  - [memos](https://www.usememos.com/) for note taking.
+  - [memos](https://www.usememos.com/) for note taking;
+  - [opengist](https://github.com/thomiceli/opengist) as a github gist clone.
 
 ## Deployment
 
