@@ -12,7 +12,7 @@ func NewOpengistChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "opengist"
 
 	namespace := appName
-	appImage := builder.RegisterContainerImage("ghcr.io/thomiceli/opengist:1.7.5")
+	appImage := builder.RegisterContainerImage("ghcr.io/thomiceli/opengist")
 	appPort := 6157
 	appIngress := "opengist.services.mkz.me"
 
@@ -27,10 +27,6 @@ func NewOpengistChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	}
 
 	env := []*k8s.EnvVar{
-		// {
-		// 	Name:  jsii.String("OG_EXTERNAL_URL"),
-		// 	Value: jsii.String("https://" + appIngress),
-		// },
 		{
 			Name: jsii.String("OG_OIDC_CLIENT_KEY"),
 			ValueFrom: &k8s.EnvVarSource{
