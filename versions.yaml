@@ -48,7 +48,7 @@ images:
   ghcr.io/gchq/cyberchef: 10.19.2
   ghcr.io/thomiceli/opengist: 1.7.5
   jhaals/yopass: 11.17.0
-  linuxserver/bookstack: v24.10-ls167
+  linuxserver/bookstack: v24.10-ls169
   linuxserver/heimdall: v2.5.7-ls238
   neosmemo/memos: 0.22.5
   paulbouwer/hello-kubernetes: 1.10.1
