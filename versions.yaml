@@ -38,7 +38,7 @@ helmcharts:
   vmware-tanzu/velero: 7.2.1
   wiremind/karma: 2.9.1
 images:
-  corentinth/it-tools: 2024.5.13-a0bc346
+  corentinth/it-tools: 2024.10.22-7ca5933
   danielszabo99/microbin: 2.0.4
   docker.l5d.io/buoyantio/emojivoto-emoji-svc: v12
   docker.l5d.io/buoyantio/emojivoto-web: v12
