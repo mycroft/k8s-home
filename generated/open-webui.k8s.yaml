@@ -1,0 +1,168 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: open-webui
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: open-webui
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: open-webui-es-sso-c8e3e8d5
+  namespace: open-webui
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/open-webui/sso
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: sso
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: open-webui-es-openai-c8ab3cb2
+  namespace: open-webui
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/open-webui/openai
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: openai
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: open-webui
+  name: open-webui-open-webui-svc-c8c3d741
+  namespace: open-webui
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app.kubernetes.io/name: open-webui
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: open-webui-open-webui-sts-c8222b97
+  namespace: open-webui
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: open-webui
+  serviceName: open-webui-open-webui-svc-c8c3d741
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: open-webui
+    spec:
+      containers:
+        - env:
+            - name: OAUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: client_id
+                  name: sso
+            - name: OAUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: client_secret
+                  name: sso
+            - name: OPENID_PROVIDER_URL
+              valueFrom:
+                secretKeyRef:
+                  key: discovery_url
+                  name: sso
+            - name: ENABLE_OAUTH_SIGNUP
+              value: "true"
+            - name: OLLAMA_BASE_URL
+              value: http://10.0.0.8:11434
+            - name: ENABLE_OPENAI_API
+              value: "True"
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: api_key
+                  name: openai
+            - name: ENABLE_LOGIN_FORM
+              value: "False"
+          image: ghcr.io/open-webui/open-webui:main
+          name: open-webui
+          volumeMounts:
+            - mountPath: /openai
+              name: openai
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/name: open-webui
+        name: openai
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 8Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: open-webui-ingress-c8f5de06
+  namespace: open-webui
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: ai.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: open-webui-open-webui-svc-c8c3d741
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - ai.services.mkz.me
+      secretName: secret-tls-www
