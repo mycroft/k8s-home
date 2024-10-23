@@ -46,7 +46,7 @@ images:
   excalidraw/excalidraw: latest
   freshrss/freshrss: 1.24.3
   ghcr.io/gchq/cyberchef: 10.19.2
-  ghcr.io/open-webui/open-webui: main
+  ghcr.io/open-webui/open-webui: 0.3.32
   ghcr.io/thomiceli/opengist: 1.7.5
   jhaals/yopass: 11.17.0
   linuxserver/bookstack: v24.10-ls170
@@ -66,6 +66,7 @@ images:
   wallabag/wallabag: 2.6.9
 patterns:
   images:
+    ghcr.io/open-webui/open-webui: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     redis: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     sissbruecker/linkding: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     vaultwarden/server: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
