@@ -201,6 +201,8 @@ data:
         useExistingSecret: true
         configSecret: alertmanager-config
 
+        podAntiAffinity: ""
+
         affinity:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -659,7 +661,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: d804f76731e1713d464632b243bc424fdbd5dec0c6a7a23ff3e6ce9d18c5e6d8
+    configMapHash: af3a398387027cd553be7e65c20f468e0339191689c6950a36c831a6d95d4409
   name: prometheus
   namespace: monitoring
 spec:
