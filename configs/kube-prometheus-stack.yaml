@@ -49,6 +49,8 @@ alertmanager:
     useExistingSecret: true
     configSecret: alertmanager-config
 
+    podAntiAffinity: ""
+
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
