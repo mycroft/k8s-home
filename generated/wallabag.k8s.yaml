@@ -127,7 +127,7 @@ spec:
               value: wallabag@mkz.me
             - name: SYMFONY__ENV__FOSUSER_REGISTRATION
               value: "false"
-          image: wallabag/wallabag:2.6.9
+          image: wallabag/wallabag:2.6.10
           name: wallabag
           volumeMounts: []
       volumes: []
