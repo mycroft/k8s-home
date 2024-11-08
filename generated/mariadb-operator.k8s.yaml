@@ -39,7 +39,7 @@ spec:
         kind: HelmRepository
         name: mariadb-operator
         namespace: flux-system
-      version: 0.35.1
+      version: 0.36.0
   install:
     createNamespace: false
     skipCRDs: false
