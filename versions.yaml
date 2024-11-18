@@ -8,7 +8,7 @@ helmcharts:
   grafana/loki: 6.19.0
   grafana/promtail: 6.16.0
   grafana/tempo: 1.14.0
-  hashicorp/vault: 0.28.1
+  hashicorp/vault: 0.29.0
   jaegertracing/jaeger: 0.71.2
   jameswynn/homepage: 2.0.1
   jetstack/cert-manager: v1.16.1
