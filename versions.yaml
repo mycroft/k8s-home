@@ -11,7 +11,7 @@ helmcharts:
   hashicorp/vault: 0.29.0
   jaegertracing/jaeger: 0.71.2
   jameswynn/homepage: 2.0.1
-  jetstack/cert-manager: v1.16.1
+  jetstack/cert-manager: v1.16.2
   jitsi/jitsi-meet: v1.3.7
   kubernetes-dashboard/kubernetes-dashboard: 7.10.0
   kyverno/kyverno: v3.0.5
