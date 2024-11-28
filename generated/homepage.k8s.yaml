@@ -29,7 +29,7 @@ data:
         data:
           config.yaml: |
             # This CM is not used at all. It is only be maintained to force deployment restart after configuration change.
-            version: "4378a197fb74f40d1c40e3a478723f091494ad4236e939f77d1b2bbed6aecf00"
+            version: "c2f17a8ab3a86bdfc6a8adab9c9cc06319bff0e7ff23f45be0fcfa58cd4e0650"
 
     config:
       settings:
@@ -231,7 +231,7 @@ data:
           cert-manager.io/cluster-issuer: "letsencrypt-prod"
           traefik.ingress.kubernetes.io/redirect-entry-point: "https"
           traefik.ingress.kubernetes.io/redirect-permanent: "true"
-          traefik.ingress.kubernetes.io/router.middlewares: "authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd"
+          traefik.ingress.kubernetes.io/router.middlewares: "authentik-ak-outpost-outpost-for-homepage@kubernetescrd"
         ingressClassName: traefik
         hosts:
           - host: home.iop.cx
@@ -247,7 +247,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 1760bca332b65f9d5cb23cbe74488122e0ade6bf954e1af7242f9ca0ae79061f
+    configMapHash: 8f0b82de9d53edf8c4db95cd2a21f4d408f697358b0372172363f44e1633b2ed
   name: homepage
   namespace: homepage
 spec:
