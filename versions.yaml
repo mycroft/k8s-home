@@ -46,7 +46,7 @@ images:
   excalidraw/excalidraw: latest
   freshrss/freshrss: 1.24.3
   ghcr.io/gchq/cyberchef: 10.19.4
-  ghcr.io/open-webui/open-webui: 0.4.6
+  ghcr.io/open-webui/open-webui: 0.4.7
   ghcr.io/thomiceli/opengist: 1.8.3
   jhaals/yopass: 11.17.0
   linuxserver/bookstack: v24.10.3-ls178
