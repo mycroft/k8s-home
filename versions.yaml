@@ -51,7 +51,7 @@ images:
   jhaals/yopass: 11.17.0
   linuxserver/bookstack: v24.10.3-ls180
   linuxserver/heimdall: v2.5.7-ls238
-  neosmemo/memos: 0.22.5
+  neosmemo/memos: 0.23.0
   paulbouwer/hello-kubernetes: 1.10.1
   paperlessngx/paperless-ngx: 2.13.5
   pawelmalak/snippet-box: latest
