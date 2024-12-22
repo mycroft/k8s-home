@@ -92,6 +92,7 @@ func HomelabBuildApp(ctx context.Context) *kubehelpers.Builder {
 		// charts_apps.NewHeimdallChart,
 		// charts_apps.NewJitsiChart,
 		charts_apps.NewOpenWebuiChart,
+		charts_apps.NewZiplineChart,
 
 		// my own apps
 		charts_apps.NewGossipChart,
