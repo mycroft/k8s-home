@@ -1,0 +1,164 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zipline
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: zipline
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: zipline-es-postgresql-c8b62318
+  namespace: zipline
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/zipline/postgresql
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: zipline-es-core-c86a0e29
+  namespace: zipline
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/zipline/core
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: core
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: zipline
+  name: zipline-zipline-svc-c81fd821
+  namespace: zipline
+spec:
+  ports:
+    - name: http
+      port: 3000
+  selector:
+    app.kubernetes.io/name: zipline
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zipline-zipline-sts-c8f279e2
+  namespace: zipline
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: zipline
+  serviceName: zipline-zipline-svc-c81fd821
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: zipline
+    spec:
+      containers:
+        - env:
+            - name: CORE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: secret
+                  name: core
+            - name: CORE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: url
+                  name: postgresql
+          image: ghcr.io/diced/zipline:3.7.10
+          name: zipline
+          volumeMounts:
+            - mountPath: /zipline/uploads
+              name: zipline-uploads
+            - mountPath: /zipline/public
+              name: zipline-public
+      volumes: []
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/name: zipline
+        name: zipline-uploads
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 32Gi
+        storageClassName: longhorn-crypto-global
+    - metadata:
+        labels:
+          app.kubernetes.io/name: zipline
+        name: zipline-public
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 32Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: zipline-ingress-c82a235c
+  namespace: zipline
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: zipline.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: zipline-zipline-svc-c81fd821
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - zipline.services.mkz.me
+      secretName: secret-tls-www
