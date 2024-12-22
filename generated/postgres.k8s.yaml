@@ -22,6 +22,7 @@ spec:
     vikunja: vikunja-admin
     wallabag: wallabag-admin
     wikijs: wikijs-admin
+    zipline: zipline-admin
   env:
     - name: ALLOW_NOSSL
       value: "1"
@@ -76,6 +77,10 @@ spec:
       - createdb
     wikijs: []
     wikijs-admin:
+      - superuser
+      - createdb
+    zipline: []
+    zipline-admin:
       - superuser
       - createdb
   volume:
