@@ -84,6 +84,14 @@ go build && ./k8s-home -check-version
 
 Services must be updated by modifying versions in source code. Note all containers are not checked in with this command.
 
+### Non automated upgrades
+
+For some reason, the following components must be updated manually/using other methods.
+
+#### Excalidraw
+
+There is no tag for the excalidraw/excalidraw image. It is required to restart the pod to get updates. Check the latest pushed image on [docker hub](https://hub.docker.com/r/excalidraw/excalidraw/tags).
+
 ## Security
 
 Secrets can be either stored in source code thanks to `sealed-secrets` or in `vault` and deployed as a `Secret` in Kubernetes with `external-secrets`.
