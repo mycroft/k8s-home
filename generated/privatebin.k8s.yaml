@@ -134,7 +134,7 @@ spec:
                   name: minio
             - name: CONFIG_PATH
               value: /run/cfg
-          image: privatebin/nginx-fpm-alpine:latest
+          image: privatebin/nginx-fpm-alpine:1.7.5
           name: privatebin
           volumeMounts:
             - mountPath: /srv/cfg
