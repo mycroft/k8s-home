@@ -95,6 +95,7 @@ spec:
           volumeMounts:
             - mountPath: /opengist
               name: opengist
+      volumes: []
   volumeClaimTemplates:
     - metadata:
         labels:

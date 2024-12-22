@@ -55,6 +55,7 @@ spec:
           volumeMounts:
             - mountPath: /etc/linkding/data
               name: data
+      volumes: []
   volumeClaimTemplates:
     - metadata:
         labels:

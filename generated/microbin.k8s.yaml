@@ -104,6 +104,7 @@ spec:
           volumeMounts:
             - mountPath: /app/microbin_data
               name: micro-bin
+      volumes: []
   volumeClaimTemplates:
     - metadata:
         labels:

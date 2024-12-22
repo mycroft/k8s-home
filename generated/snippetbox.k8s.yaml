@@ -39,6 +39,7 @@ spec:
           volumeMounts:
             - mountPath: /app/data
               name: data
+      volumes: []
   volumeClaimTemplates:
     - metadata:
         labels:

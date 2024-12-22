@@ -47,6 +47,7 @@ spec:
               name: data
             - mountPath: /var/www/FreshRSS/extensions
               name: extensions
+      volumes: []
   volumeClaimTemplates:
     - metadata:
         labels:

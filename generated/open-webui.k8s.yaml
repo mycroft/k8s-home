@@ -129,6 +129,7 @@ spec:
           volumeMounts:
             - mountPath: /openai
               name: openai
+      volumes: []
   volumeClaimTemplates:
     - metadata:
         labels:

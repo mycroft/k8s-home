@@ -50,6 +50,7 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: data
+      volumes: []
   volumeClaimTemplates:
     - metadata:
         labels:

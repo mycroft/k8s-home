@@ -101,6 +101,7 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: data
+      volumes: []
   volumeClaimTemplates:
     - metadata:
         labels:
