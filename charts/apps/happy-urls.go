@@ -37,6 +37,7 @@ func NewHappyUrlsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		[]string{
 			"redis-server --save 60 1 --loglevel warning",
 		},
+		[]kubehelpers.ConfigMapMount{},
 		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",

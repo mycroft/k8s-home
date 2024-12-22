@@ -31,6 +31,7 @@ func NewLinkdingChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		labels,
 		[]*k8s.EnvVar{},
 		[]string{},
+		[]kubehelpers.ConfigMapMount{},
 		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",

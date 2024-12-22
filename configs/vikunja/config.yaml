@@ -1,0 +1,12 @@
+# Vikunja needs to know the frontend URL for password reset emails.
+# So you might need to provide its value, if you're not using an ingress.
+service:
+  enableregistration: false
+  publicurl: https://vikunja.services.mkz.me
+
+log:
+  level: DEBUG
+
+mailer:
+  enabled: false
+

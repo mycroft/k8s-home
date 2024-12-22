@@ -80,6 +80,7 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		paperlessngxLabels,
 		env,
 		[]string{},
+		[]kubehelpers.ConfigMapMount{},
 		[]kubehelpers.StatefulSetVolume{
 			{ // PAPERLESS_DATA_DIR
 				Name:        "data",

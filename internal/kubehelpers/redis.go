@@ -24,6 +24,7 @@ func (chart *Chart) NewRedisStatefulset(namespace string) (string, string) {
 		[]string{
 			"redis-server --save 60 1 --loglevel warning",
 		},
+		[]ConfigMapMount{},
 		[]StatefulSetVolume{
 			{
 				Name:        "data",

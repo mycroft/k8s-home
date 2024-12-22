@@ -23,6 +23,7 @@ func NewStatefulSet(
 	labels map[string]*string,
 	env []*k8s.EnvVar,
 	commands []string,
+	configMapMounts []ConfigMapMount,
 	storages []StatefulSetVolume,
 ) (string, string) {
 	// Warning: Changing statefulSet object names will rename PVCs
@@ -49,10 +50,10 @@ func NewStatefulSet(
 		},
 	)
 
-	mounts := []*k8s.VolumeMount{}
+	volumeMounts := []*k8s.VolumeMount{}
 	pvcspecs := []*k8s.KubePersistentVolumeClaimProps{}
 	for _, storage := range storages {
-		mounts = append(mounts, &k8s.VolumeMount{
+		volumeMounts = append(volumeMounts, &k8s.VolumeMount{
 			MountPath: jsii.String(storage.MountPath),
 			Name:      jsii.String(storage.Name),
 		})
@@ -75,11 +76,27 @@ func NewStatefulSet(
 		})
 	}
 
+	configVolumes := []*k8s.Volume{}
+
+	for _, v := range configMapMounts {
+		configVolumes = append(configVolumes, &k8s.Volume{
+			Name: jsii.String(v.Name),
+			ConfigMap: &k8s.ConfigMapVolumeSource{
+				Name: v.ConfigMap.Name(),
+			},
+		})
+
+		volumeMounts = append(volumeMounts, &k8s.VolumeMount{
+			Name:      jsii.String(v.Name),
+			MountPath: jsii.String(v.MountPath),
+		})
+	}
+
 	container := k8s.Container{
 		Name:         jsii.String(appName),
 		Image:        jsii.String(appImage),
 		Env:          &env,
-		VolumeMounts: &mounts,
+		VolumeMounts: &volumeMounts,
 	}
 
 	// If only one command...
@@ -118,6 +135,7 @@ func NewStatefulSet(
 						Containers: &[]*k8s.Container{
 							&container,
 						},
+						Volumes: &configVolumes,
 					},
 				},
 				VolumeClaimTemplates: &pvcspecs,

@@ -69,6 +69,7 @@ func NewOpengistChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		labels,
 		env,
 		[]string{},
+		[]kubehelpers.ConfigMapMount{},
 		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "opengist",
