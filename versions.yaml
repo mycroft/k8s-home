@@ -26,7 +26,7 @@ helmcharts:
   onechart/onechart: 0.73.0
   opensearch/opensearch: 2.12.0
   opensearch/opensearch-dashboards: 2.10.0
-  postgres-operator/postgres-operator: 1.13.0
+  postgres-operator/postgres-operator: 1.14.0
   prometheus-community/kube-prometheus-stack: 67.4.0
   prometheus-community/prometheus-blackbox-exporter: 9.1.0
   redmine/redmine: 27.1.0
