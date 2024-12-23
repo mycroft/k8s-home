@@ -67,7 +67,9 @@ images:
   wallabag/wallabag: 2.6.10
 patterns:
   images:
+    freshrss/freshrss: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     ghcr.io/open-webui/open-webui: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+    ghcr.io/diced/zipline: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     neosmemo/memos: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     redis: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     sissbruecker/linkding: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
