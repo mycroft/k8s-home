@@ -261,7 +261,7 @@ spec:
         kind: HelmRepository
         name: authentik
         namespace: flux-system
-      version: 2024.12.0
+      version: 2024.12.1
   install:
     createNamespace: false
     skipCRDs: false
