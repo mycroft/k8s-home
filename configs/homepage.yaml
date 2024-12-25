@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/gethomepage/homepage
-  tag: v0.9.6
+  tag: v0.10.4
 
 configMaps:
   config:
@@ -132,29 +132,43 @@ config:
           description: Personal Wiki Instance
       - IT-Tools:
           href: https://it-tools.services.mkz.me/
+          description: IT-Tools server for managing IT infrastructure
       - Send:
           href: https://send.services.mkz.me/
+          description: Send server for sending files
       - Yopass:
           href: https://yopass.services.mkz.me/
+          description: Yopass server for storing and sharing secrets
       - Excalidraw:
           href: https://excalidraw.services.mkz.me/
+          description: Excalidraw server for collaborative whiteboard
       - Redmine:
           href: https://redmine.services.mkz.me/
+          description: Redmine server for project management
       - Privatebin:
           href: https://privatebin.services.mkz.me/
+          description: Privatebin server for storing and sharing text
       - Vaultwarden:
           href: https://vaultwarden.services.mkz.me/
+          description: Vaultwarden server for managing secrets
       - Snippetbox:
           href: https://snippetbox.services.mkz.me/
+          description: Snippetbox server for storing and sharing code snippets
       - Paperless-NGX:
           href: https://paperless.services.mkz.me/
+          description: Paperless server for managing documents
       - Emojivoto:
           href: https://emojivoto.services.mkz.me/
+          description: Emojivoto server for voting
       - Microbin:
           href: https://bin.iop.cx/
+          description: Microbin server for storing and sharing text
       - Cyberchef:
           href: https://cyberchef.services.mkz.me/
           description: The Cyber Swiss Army Knife - a web app for encryption, encoding, compression and data analysis.
+      - Vikunja:
+          href: https://vikunja.services.mkz.me/
+          description: Vikunja server for task management
 
   widgets:
     # show the kubernetes widget, with the cluster summary and individual nodes
