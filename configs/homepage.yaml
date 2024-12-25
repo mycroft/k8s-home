@@ -14,7 +14,6 @@ config:
   settings:
     headerStyle: boxedWidgets
     title: Myc's homelab
-    background: https://images.unsplash.com/photo-1502790671504-542ad42d5189?auto=format&fit=crop&w=2560&q=80
     providers:
       longhorn:
         url: http://longhorn-frontend.longhorn-system
@@ -43,6 +42,9 @@ config:
       - Github:
         - abbr: GH
           href: https://github.com/mycroft
+      - Gitea:
+        - abbr: GIT
+          href: https://git.mkz.me/
 
     - Social:
       - Reddit:
@@ -51,9 +53,6 @@ config:
       - Mastodon:
         - abbr: MS
           href: https://mamot.fr/home
-      - Twitter:
-        - abbr: TW
-          href: https://x.com/home
 
     - News:
       - Lobsters:
@@ -64,7 +63,7 @@ config:
     - System:
       - Pi-Hole/DNS:
           href: http://10.0.0.254/admin/
-          description: Linux network-level advertisement and Internet tracker blocking application
+          description: Pi-Hole/DNS server for blocking ads and trackers
       - Capacitor:
           href: https://capacitor.services.mkz.me/
           description: General purpose UI for Flux
@@ -73,21 +72,28 @@ config:
           description: Web-based Kubernetes user interface
       - Authentik:
           href: https://auth.services.mkz.me/
-          description: Identity Provider
+          description: Authentik server for authentication and authorization
       - Grafana:
           href: https://grafana.services.mkz.me/
+          description: Grafana server for monitoring and alerting
       - Karma:
           href: https://karma.services.mkz.me/
+          description: Karma server for monitoring and alerting
       - Prometheus:
           href: https://prometheus.services.mkz.me/
+          description: Prometheus server for monitoring and alerting
       - Alertmanager:
           href: https://alertmanager.services.mkz.me/
+          description: Alertmanager server for monitoring and alerting
       - Traefik:
           href: https://traefik.services.mkz.me/dashboard/
+          description: Traefik dashboard for managing ingress
       - Longhorn:
           href: https://longhorn.services.mkz.me/
+          description: Longhorn server for managing persistent storage
       - Vault:
           href: https://vault.services.mkz.me/
+          description: Vault server for managing secrets
 
     - Web Services:
       - Gitea:
