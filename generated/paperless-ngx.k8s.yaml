@@ -157,7 +157,7 @@ spec:
             - name: PAPERLESS_DATA_DIR
               value: /usr/src/paperless/data
             - name: PAPERLESS_OCR_USER_ARGS
-              value: "'{\"invalidate_digital_signatures\": true}'"
+              value: '{"invalidate_digital_signatures": true}'
           image: paperlessngx/paperless-ngx:2.13.5
           name: paperless-ngx
           volumeMounts:
