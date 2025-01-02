@@ -64,7 +64,7 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 		{
 			Name:  jsii.String("PAPERLESS_OCR_USER_ARGS"),
-			Value: jsii.String("'{\"invalidate_digital_signatures\": true}'"),
+			Value: jsii.String("{\"invalidate_digital_signatures\": true}"),
 		},
 	}
 
