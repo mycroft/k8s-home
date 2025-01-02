@@ -62,6 +62,10 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name:  jsii.String("PAPERLESS_DATA_DIR"),
 			Value: jsii.String("/usr/src/paperless/data"),
 		},
+		{
+			Name:  jsii.String("PAPERLESS_OCR_USER_ARGS"),
+			Value: jsii.String("'{\"invalidate_digital_signatures\": true}'"),
+		},
 	}
 
 	paperlessngxLabels := map[string]*string{
