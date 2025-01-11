@@ -124,7 +124,7 @@ spec:
                   name: openai
             - name: ENABLE_LOGIN_FORM
               value: "False"
-          image: ghcr.io/open-webui/open-webui:0.5.2
+          image: ghcr.io/open-webui/open-webui:0.5.4
           name: open-webui
           volumeMounts:
             - mountPath: /openai
