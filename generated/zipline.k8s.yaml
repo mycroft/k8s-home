@@ -106,7 +106,7 @@ spec:
                 secretKeyRef:
                   key: url
                   name: postgresql
-          image: ghcr.io/diced/zipline:3.7.10
+          image: ghcr.io/diced/zipline:3.7.11
           name: zipline
           volumeMounts:
             - mountPath: /zipline/uploads
