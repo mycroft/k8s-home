@@ -1,0 +1,310 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hoarder
+---
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: hoarder
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: hoarder-es-openai-c8316e2c
+  namespace: hoarder
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/hoarder/openai
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: openai
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: hoarder-es-sso-c87989dc
+  namespace: hoarder
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/hoarder/sso
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: sso
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: hoarder-es-secret-c8b5b7ec
+  namespace: hoarder
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/hoarder/secret
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: secret
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hoarder-deploy-c8081153
+  namespace: hoarder
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/components: chromium
+      app.kubernetes.io/name: hoarder
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/components: chromium
+        app.kubernetes.io/name: hoarder
+    spec:
+      containers:
+        - command:
+            - chromium-browser
+            - --headless
+            - --no-sandbox
+            - --disable-dev-shm-usage
+            - --disable-gpu
+            - --remote-debugging-address=0.0.0.0
+            - --remote-debugging-port=9222
+            - --hide-scrollbars
+          env: []
+          image: gcr.io/zenika-hub/alpine-chrome:123
+          name: alpine-chrome
+          volumeMounts: []
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hoarder-chromium-c8dcd309
+  namespace: hoarder
+spec:
+  ports:
+    - name: chromium
+      port: 9222
+  selector:
+    app.kubernetes.io/components: chromium
+    app.kubernetes.io/name: hoarder
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/components: meili
+    app.kubernetes.io/name: hoarder
+  name: hoarder-meilisearch-svc-c888bfe8
+  namespace: hoarder
+spec:
+  ports:
+    - name: http
+      port: 7700
+  selector:
+    app.kubernetes.io/components: meili
+    app.kubernetes.io/name: hoarder
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hoarder-meilisearch-sts-c87e8a7b
+  namespace: hoarder
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/components: meili
+      app.kubernetes.io/name: hoarder
+  serviceName: hoarder-meilisearch-svc-c888bfe8
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/components: meili
+        app.kubernetes.io/name: hoarder
+    spec:
+      containers:
+        - env:
+            - name: MEILI_NO_ANALYTICS
+              value: "true"
+          image: getmeili/meilisearch:v1.11.1
+          name: meilisearch
+          volumeMounts:
+            - mountPath: /meili_data
+              name: data
+      volumes: []
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/components: meili
+          app.kubernetes.io/name: hoarder
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 32Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/components: hoarder
+    app.kubernetes.io/name: hoarder
+  name: hoarder-hoarder-svc-c8a900e1
+  namespace: hoarder
+spec:
+  ports:
+    - name: http
+      port: 3000
+  selector:
+    app.kubernetes.io/components: hoarder
+    app.kubernetes.io/name: hoarder
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hoarder-hoarder-sts-c8179c46
+  namespace: hoarder
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/components: hoarder
+      app.kubernetes.io/name: hoarder
+  serviceName: hoarder-hoarder-svc-c8a900e1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/components: hoarder
+        app.kubernetes.io/name: hoarder
+    spec:
+      containers:
+        - env:
+            - name: NEXTAUTH_URL
+              value: https://hoarder.services.mkz.me
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: secret
+                  name: secret
+            - name: DATA_DIR
+              value: /data
+            - name: BROWSER_WEB_URL
+              value: http://hoarder-chromium-c8dcd309:9222
+            - name: MAX_ASSET_SIZE_MB
+              value: "16"
+            - name: MEILI_ADDR
+              value: http://hoarder-meilisearch-svc-c888bfe8:7700
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: api_key
+                  name: openai
+            - name: DISABLE_PASSWORD_AUTH
+              value: "true"
+            - name: OAUTH_WELLKNOWN_URL
+              valueFrom:
+                secretKeyRef:
+                  key: discovery_url
+                  name: sso
+            - name: OAUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: client_secret
+                  name: sso
+            - name: OAUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: client_id
+                  name: sso
+            - name: OAUTH_PROVIDER_NAME
+              value: Authentik
+          image: ghcr.io/hoarder-app/hoarder:0.21.0
+          name: hoarder
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      volumes: []
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/components: hoarder
+          app.kubernetes.io/name: hoarder
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 32Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: hoarder-ingress-c8f88173
+  namespace: hoarder
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: hoarder.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: hoarder-hoarder-svc-c8a900e1
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - hoarder.services.mkz.me
+      secretName: secret-tls-www
