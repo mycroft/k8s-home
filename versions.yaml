@@ -63,7 +63,7 @@ images:
   redis: 7.4.2
   sissbruecker/linkding: 1.36.0
   thomseddon/traefik-forward-auth: 2.2.0
-  vaultwarden/server: 1.32.7
+  vaultwarden/server: 1.33.0
   vikunja/vikunja: 0.24.6
   wallabag/wallabag: 2.6.10
 patterns:
