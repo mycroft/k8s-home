@@ -61,7 +61,7 @@ images:
   registry.mkz.me/mycroft/whatismyip: 5
   requarks/wiki: 2.5.305
   redis: 7.4.2
-  sissbruecker/linkding: 1.36.0
+  sissbruecker/linkding: 1.37.0
   thomseddon/traefik-forward-auth: 2.2.0
   vaultwarden/server: 1.33.0
   vikunja/vikunja: 0.24.6
