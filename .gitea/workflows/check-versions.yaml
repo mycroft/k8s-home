@@ -14,6 +14,7 @@ jobs:
       - name: Build cdk8s charts
         run: |
           cdk8s --version
+          ls -l
           cdk8s import
           git diff
           git checkout cdk8s.yaml
