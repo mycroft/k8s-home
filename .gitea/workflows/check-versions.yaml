@@ -23,4 +23,4 @@ jobs:
           cdk8s synth
       - name: Check versions
         run: |
-          go run main.go -check-version 2>/dev/null
+          go run main.go --check-version 2>/dev/null
