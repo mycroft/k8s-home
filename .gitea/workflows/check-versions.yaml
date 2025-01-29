@@ -1,0 +1,17 @@
+name: Check versions
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 5 * * *"
+
+jobs:
+  check-versions:
+    runs-on: git.mkz.me/mycroft/golang-cdk8s:latest
+    steps:
+      - run: |
+          cdk8s import
+          git diff
+          git checkout cdk8s.yaml
+          cdk8s synth
+          go run main.go -check-version 2>/dev/null
