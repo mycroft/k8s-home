@@ -7,11 +7,16 @@ on:
 
 jobs:
   check-versions:
-    runs-on: git.mkz.me/mycroft/golang-cdk8s:latest
+    runs-on: ubuntu-latest
+    container:
+      image: git.mkz.me/mycroft/golang-cdk8s:latest
     steps:
-      - run: |
+      - name: Build cdk8s charts
+        run: |
           cdk8s import
           git diff
           git checkout cdk8s.yaml
           cdk8s synth
+      - name: Check versions
+        run: |
           go run main.go -check-version 2>/dev/null
