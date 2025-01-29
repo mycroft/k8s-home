@@ -11,6 +11,8 @@ jobs:
     container:
       image: git.mkz.me/mycroft/golang-cdk8s:latest
     steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
       - name: Build cdk8s charts
         run: |
           cdk8s --version
