@@ -13,7 +13,7 @@ helmcharts:
   jameswynn/homepage: 2.0.1
   jetstack/cert-manager: v1.16.3
   jitsi/jitsi-meet: v1.3.7
-  kubernetes-dashboard/kubernetes-dashboard: 7.10.1
+  kubernetes-dashboard/kubernetes-dashboard: 7.10.3
   kyverno/kyverno: v3.0.5
   kyverno/kyverno-policies: v3.0.4
   linkerd/linkerd-crds: 1.8.0
