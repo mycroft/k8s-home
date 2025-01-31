@@ -39,3 +39,4 @@ jobs:
           branch: generated
           commit_user_name: mycroft
           commit_user_email: pm@mkz.me
+          commit_author: mycroft <pm@mkz.me>
