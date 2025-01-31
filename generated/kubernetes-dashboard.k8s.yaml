@@ -65,7 +65,7 @@ spec:
         kind: HelmRepository
         name: kubernetes-dashboard
         namespace: flux-system
-      version: 7.10.1
+      version: 7.10.3
   install:
     createNamespace: false
     skipCRDs: false
