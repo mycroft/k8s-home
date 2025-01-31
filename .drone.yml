@@ -65,23 +65,3 @@ steps:
     ssh_key:
       from_secret: ssh_key_drone
 
----
-kind: pipeline
-type: docker
-name: check-version
-
-trigger:
-  event:
-  - cron
-  cron:
-  - nightly
-
-steps:
-- name: build on main
-  image: git.mkz.me/mycroft/golang-cdk8s:latest
-  commands:
-  - cdk8s import
-  - git diff
-  - git checkout cdk8s.yaml
-  - cdk8s synth
-  - go run main.go -check-version 2>/dev/null
