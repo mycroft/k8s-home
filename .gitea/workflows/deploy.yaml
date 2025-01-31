@@ -31,3 +31,11 @@ jobs:
           touch generated/.gitkeep
           cp -Rp dist/* generated/
           find generated
+
+      - name: Git auto-commit changes to generated
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Update generated configuration
+          branch: generated
+          commit_user_name: mycroft
+          commit_user_email: pm@mkz.me
