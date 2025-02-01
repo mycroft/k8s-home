@@ -10,7 +10,7 @@ fileupload = false
 burnafterreadingselected = false
 defaultformatter = "plaintext"
 sizelimit = 10485760
-template = "bootstrap"
+template = "bootstrap-dark"
 languageselection = false
 
 [expire]
