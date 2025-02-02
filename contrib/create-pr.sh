@@ -2,13 +2,37 @@
 
 set -e
 
-if test $# -ne 1
-then
-  echo "Usage: $0 <chart>;<oldver>;<newver>"
-  exit 1
-fi
+# if test $# -ne 1
+# then
+#   echo "Usage: $0 <chart>;<oldver>;<newver>"
+#   exit 1
+# fi
+#
+OPTSTRING="f:m:"
 
-arg=$1
+while getopts ${OPTSTRING} opt; do
+  case ${opt} in
+    f)
+      # I really need to rewrite this.
+      arg=$(just check-versions --filter ${OPTARG} | head -1)
+      ;;
+    m)
+      arg=${OPTARG}
+      ;;
+    ?)
+      echo "Invalid option: -${OPTARG}."
+      echo
+      echo "Usage: $0 [-m 'prometheus;0.1.0;0.1.2'|-f prom]"
+      exit 1
+      ;;
+  esac
+done
+
+if test "${arg}" = ""
+then
+    echo "Nothing to update."
+    exit 1
+fi
 
 chart=$(echo $arg | cut -d ';' -f1 | sed -e 's/\//\\\//g')
 target_update=$(echo $chart | tr -d '\\')
