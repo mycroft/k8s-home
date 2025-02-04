@@ -90,7 +90,7 @@ spec:
                   name: sso
             - name: OG_SSH_PORT
               value: "22222"
-          image: ghcr.io/thomiceli/opengist:1.9.0
+          image: ghcr.io/thomiceli/opengist:1.9.1
           name: opengist
           volumeMounts:
             - mountPath: /opengist
