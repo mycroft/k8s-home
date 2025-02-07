@@ -3,6 +3,10 @@
 crds:
   upgradeJob:
     enabled: true
+    kubectl:
+      registry: registry.k8s.io
+      repository: kubectl
+      tag: v1.31.4
 
 prometheus:
   prometheusSpec:
