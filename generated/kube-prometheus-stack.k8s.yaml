@@ -155,6 +155,10 @@ data:
     crds:
       upgradeJob:
         enabled: true
+        kubectl:
+          registry: registry.k8s.io
+          repository: kubectl
+          tag: v1.31.4
 
     prometheus:
       prometheusSpec:
@@ -665,7 +669,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 5eef4d062416b2e2915013f553611f2a1a03968e411c996619836f7c4fe41f48
+    configMapHash: b784efbf6d1f86c7499fbb83397906fdf9cd76aabe9d2590f79726e62e8124b8
   name: prometheus
   namespace: monitoring
 spec:
