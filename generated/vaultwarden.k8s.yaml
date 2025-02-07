@@ -33,7 +33,9 @@ spec:
         app.kubernetes.io/name: vaultwarden
     spec:
       containers:
-        - env: []
+        - env:
+            - name: DOMAIN
+              value: https://vaultwarden.services.mkz.me
           image: vaultwarden/server:1.33.1
           name: vaultwarden
           volumeMounts:
