@@ -1,6 +1,8 @@
 package apps
 
 import (
+	"fmt"
+
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -20,6 +22,13 @@ func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"app.kubernetes.io/name": jsii.String(appName),
 	}
 
+	env := []*k8s.EnvVar{
+		{
+			Name:  jsii.String("DOMAIN"),
+			Value: jsii.String(fmt.Sprintf("https://%s", appIngress)),
+		},
+	}
+
 	_, svcName := kubehelpers.NewStatefulSet(
 		chart.Cdk8sChart,
 		namespace,
@@ -27,7 +36,7 @@ func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		appImage,
 		appPort,
 		labels,
-		[]*k8s.EnvVar{},
+		env,
 		[]string{},
 		[]kubehelpers.ConfigMapMount{},
 		[]kubehelpers.StatefulSetVolume{
