@@ -83,3 +83,8 @@ fi
 git checkout ${current_branch}
 git branch -D ${pr_branch_name}
 git checkout versions.yaml
+
+echo
+echo "Active PRs"
+tea pr list --fields index,title --output simple
+echo "To merge: 'tea pr merge --style rebase <PR>'"

@@ -16,3 +16,6 @@ lint:
 
 check-versions *ARGS: build
     ./k8s-home check-versions {{ARGS}}
+
+update-version *ARGS: build
+    sh contrib/create-pr.sh {{ARGS}}
