@@ -44,7 +44,7 @@ images:
   docker.l5d.io/buoyantio/emojivoto-voting-svc: v12
   excalidraw/excalidraw: latest
   freshrss/freshrss: 1.25.0
-  ghcr.io/diced/zipline: 4.0.0
+  ghcr.io/diced/zipline: 3.7.13
   ghcr.io/gchq/cyberchef: 10.19.4
   ghcr.io/hoarder-app/hoarder: 0.22.0
   ghcr.io/open-webui/open-webui: 0.5.12
