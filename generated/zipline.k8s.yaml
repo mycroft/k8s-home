@@ -45,13 +45,13 @@ spec:
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: zipline-es-postgresql_v4-c8fef205
+  name: zipline-es-postgresql-v4-c8a234ce
   namespace: zipline
 spec:
   dataFrom:
     - extract:
         conversionStrategy: Default
-        key: secret/namespaces/zipline/postgresql_v4
+        key: secret/namespaces/zipline/postgresql-v4
   refreshInterval: 15m
   secretStoreRef:
     kind: SecretStore
@@ -60,7 +60,7 @@ spec:
     creationPolicy: Owner
     deletionPolicy: Delete
     immutable: false
-    name: postgresql_v4
+    name: postgresql-v4
     template:
       engineVersion: v2
       type: Opaque
