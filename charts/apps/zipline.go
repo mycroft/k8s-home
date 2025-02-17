@@ -40,7 +40,7 @@ func NewZiplineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
 					Key:  jsii.String("url"),
-					Name: jsii.String("postgresql_v4"),
+					Name: jsii.String("postgresql-v4"),
 				},
 			},
 		},
