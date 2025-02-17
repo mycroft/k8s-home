@@ -22,7 +22,7 @@ func NewZiplineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql_v4")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-v4")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "core")
 
 	env := []*k8s.EnvVar{
