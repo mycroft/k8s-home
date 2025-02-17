@@ -128,7 +128,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: url
-                  name: postgresql_v4
+                  name: postgresql-v4
             - name: CORE_DATABASE_URL
               valueFrom:
                 secretKeyRef:
