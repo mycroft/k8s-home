@@ -101,7 +101,7 @@ spec:
                 secretKeyRef:
                   key: secret
                   name: core
-            - name: CORE_DATABASE_URL
+            - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   key: url
