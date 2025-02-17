@@ -35,7 +35,7 @@ func NewZiplineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			},
 		},
 		{
-			Name: jsii.String("CORE_DATABASE_URL"),
+			Name: jsii.String("DATABASE_URL"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
 					Key:  jsii.String("url"),
