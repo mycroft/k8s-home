@@ -23,6 +23,7 @@ spec:
     wallabag: wallabag-admin
     wikijs: wikijs-admin
     zipline: zipline-admin
+    zipline_v4: zipline_v4-admin
   env:
     - name: ALLOW_NOSSL
       value: "1"
@@ -81,6 +82,10 @@ spec:
       - createdb
     zipline: []
     zipline-admin:
+      - superuser
+      - createdb
+    zipline_v4: []
+    zipline_v4-admin:
       - superuser
       - createdb
   volume:
