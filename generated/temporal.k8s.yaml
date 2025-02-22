@@ -22,13 +22,13 @@ spec:
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: temporal-es-postgresql-c850b6a7
+  name: temporal-es-postgresql2-c86e0251
   namespace: temporal
 spec:
   dataFrom:
     - extract:
         conversionStrategy: Default
-        key: secret/namespaces/temporal/postgresql
+        key: secret/namespaces/temporal/postgresql2
   refreshInterval: 15m
   secretStoreRef:
     kind: SecretStore
@@ -37,7 +37,7 @@ spec:
     creationPolicy: Owner
     deletionPolicy: Delete
     immutable: false
-    name: postgresql
+    name: postgresql2
     template:
       engineVersion: v2
       type: Opaque
@@ -45,13 +45,13 @@ spec:
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: temporal-es-postgresql-visibility-c8c7f640
+  name: temporal-es-postgresql-visibility2-c8980449
   namespace: temporal
 spec:
   dataFrom:
     - extract:
         conversionStrategy: Default
-        key: secret/namespaces/temporal/postgresql-visibility
+        key: secret/namespaces/temporal/postgresql-visibility2
   refreshInterval: 15m
   secretStoreRef:
     kind: SecretStore
@@ -60,7 +60,7 @@ spec:
     creationPolicy: Owner
     deletionPolicy: Delete
     immutable: false
-    name: postgresql-visibility
+    name: postgresql-visibility2
     template:
       engineVersion: v2
       type: Opaque
@@ -84,9 +84,6 @@ data:
     # https://github.com/temporalio/helm-charts/blob/master/charts/temporal/values.yaml
 
     server:
-    #  image:
-    #    repository: temporalio/server
-    #    tag: 1.25.0
       config:
         persistence:
           default:
@@ -95,27 +92,24 @@ data:
               driver: "postgres12"
               host: postgres-instance.postgres
               port: 5432
-              user: temporal
-              database: temporal
+              user: temporal2
+              database: temporal2
               maxConns: 20
               maxConnLifetime: "1h"
-              existingSecret: postgresql
+              existingSecret: postgresql2
           visibility:
             driver: "sql"
             sql:
               driver: "postgres12"
               host: postgres-instance.postgres
               port: 5432
-              user: temporal_visibility
-              database: temporal_visibility
+              user: temporal_visibility2
+              database: temporal_visibility2
               maxConns: 20
               maxConnLifetime: "1h"
-              existingSecret: postgresql-visibility
+              existingSecret: postgresql-visibility2
 
     web:
-    #  image:
-    #    repository: temporalio/ui
-    #    tag: 2.30.2
       ingress:
         enabled: true
         ingressClassName: traefik
@@ -145,7 +139,7 @@ data:
 
     grafana:
       enabled: false
-      
+
     elasticsearch:
       enabled: false
 
@@ -161,7 +155,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 79c1a5c37309f8af0742c95ea29edf56728c4fddd1fdcc8d3a6c608c3447775e
+    configMapHash: 57886f8dcd0a96b878ff5e6170972bdbdf35eff5c498414df4c63307348e5e8b
   name: temporal
   namespace: temporal
 spec:
