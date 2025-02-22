@@ -1,9 +1,6 @@
 # https://github.com/temporalio/helm-charts/blob/master/charts/temporal/values.yaml
 
 server:
-#  image:
-#    repository: temporalio/server
-#    tag: 1.25.0
   config:
     persistence:
       default:
@@ -12,27 +9,24 @@ server:
           driver: "postgres12"
           host: postgres-instance.postgres
           port: 5432
-          user: temporal
-          database: temporal
+          user: temporal2
+          database: temporal2
           maxConns: 20
           maxConnLifetime: "1h"
-          existingSecret: postgresql
+          existingSecret: postgresql2
       visibility:
         driver: "sql"
         sql:
           driver: "postgres12"
           host: postgres-instance.postgres
           port: 5432
-          user: temporal_visibility
-          database: temporal_visibility
+          user: temporal_visibility2
+          database: temporal_visibility2
           maxConns: 20
           maxConnLifetime: "1h"
-          existingSecret: postgresql-visibility
+          existingSecret: postgresql-visibility2
 
 web:
-#  image:
-#    repository: temporalio/ui
-#    tag: 2.30.2
   ingress:
     enabled: true
     ingressClassName: traefik
@@ -62,7 +56,7 @@ prometheus:
 
 grafana:
   enabled: false
-  
+
 elasticsearch:
   enabled: false
 
