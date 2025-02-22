@@ -96,7 +96,7 @@ func HomelabBuildApp(ctx context.Context) *kubehelpers.Builder {
 		charts_apps.NewZiplineChart,
 
 		// my own apps
-		charts_apps.NewGossipChart,
+		// charts_apps.NewGossipChart,
 
 		// misc: testing CI/CD
 		charts_cicd.NewCICDChart,
