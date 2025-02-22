@@ -17,7 +17,9 @@ spec:
     memos: memos-admin
     paperlessngx: paperlessngx-admin
     temporal: temporal-admin
+    temporal2: temporal2-admin
     temporal_visibility: temporal_visibility-admin
+    temporal_visibility2: temporal_visibility2-admin
     testaroo: testaroo-admin
     vikunja: vikunja-admin
     wallabag: wallabag-admin
@@ -60,8 +62,16 @@ spec:
     temporal-admin:
       - superuser
       - createdb
+    temporal2: []
+    temporal2-admin:
+      - superuser
+      - createdb
     temporal_visibility: []
     temporal_visibility-admin:
+      - superuser
+      - createdb
+    temporal_visibility2: []
+    temporal_visibility2-admin:
       - superuser
       - createdb
     testaroo: []
