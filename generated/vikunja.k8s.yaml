@@ -48,11 +48,11 @@ metadata:
   name: vikunja-config-c8098df7
   namespace: vikunja
 data:
-  config.yml: |+
+  config.yml: |
     # Vikunja needs to know the frontend URL for password reset emails.
     # So you might need to provide its value, if you're not using an ingress.
     service:
-      enableregistration: false
+      enableregistration: true
       publicurl: https://vikunja.services.mkz.me
 
     log:
@@ -61,6 +61,12 @@ data:
     mailer:
       enabled: false
 
+    metrics:
+      enabled: true
+
+    auth:
+      local:
+        enabled: false
 ---
 apiVersion: v1
 kind: Service
