@@ -16,3 +16,6 @@ metrics:
 auth:
   local:
     enabled: false
+
+  openid:
+    enabled: true
