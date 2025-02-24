@@ -20,4 +20,5 @@ auth:
   openid:
     enabled: true
     providers:
-      - name: AUTHENTIK
+      authentik:
+        - name: AUTHENTIK
