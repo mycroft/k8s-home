@@ -94,8 +94,7 @@ data:
       openid:
         enabled: true
         providers:
-          authentik:
-            - name: AUTHENTIK
+          - name: AUTHENTIK
 ---
 apiVersion: v1
 kind: Service
