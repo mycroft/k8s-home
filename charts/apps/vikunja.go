@@ -26,6 +26,7 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "openid")
 
 	env := []*k8s.EnvVar{
 		{
@@ -55,6 +56,50 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				SecretKeyRef: &k8s.SecretKeySelector{
 					Key:  jsii.String("password"),
 					Name: jsii.String("postgresql"),
+				},
+			},
+		},
+		{
+			Name:  jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS"),
+			Value: jsii.String("authentik"),
+		},
+		{
+			Name:  jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_NAME"),
+			Value: jsii.String("authentik"),
+		},
+		{
+			Name: jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_AUTHURL"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Key:  jsii.String("auth_url"),
+					Name: jsii.String("openid"),
+				},
+			},
+		},
+		{
+			Name: jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_LOGOUTURL"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Key:  jsii.String("logout_url"),
+					Name: jsii.String("openid"),
+				},
+			},
+		},
+		{
+			Name: jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTID"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Key:  jsii.String("clientid"),
+					Name: jsii.String("openid"),
+				},
+			},
+		},
+		{
+			Name: jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Key:  jsii.String("clientsecret"),
+					Name: jsii.String("openid"),
 				},
 			},
 		},
