@@ -64,6 +64,10 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Value: jsii.String("authentik"),
 		},
 		{
+			Name:  jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK"),
+			Value: jsii.String("AUTHENTIK"),
+		},
+		{
 			Name:  jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_NAME"),
 			Value: jsii.String("authentik"),
 		},
