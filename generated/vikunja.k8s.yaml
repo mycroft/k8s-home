@@ -89,17 +89,7 @@ data:
 
     auth:
       local:
-        enabled: false
-
-      openid:
         enabled: true
-        providers:
-          - name: AUTHENTIK
-            scope: openid email profile
-            authurl: ~
-            logouturl: ~
-            clientid: ~
-            clientsecret: ~
 ---
 apiVersion: v1
 kind: Service
