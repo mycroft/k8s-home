@@ -90,6 +90,9 @@ data:
     auth:
       local:
         enabled: false
+
+      openid:
+        enabled: true
 ---
 apiVersion: v1
 kind: Service
