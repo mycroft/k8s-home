@@ -143,6 +143,8 @@ spec:
                   name: postgresql
             - name: VIKUNJA_AUTH_OPENID_PROVIDERS
               value: authentik
+            - name: VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK
+              value: AUTHENTIK
             - name: VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_NAME
               value: authentik
             - name: VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_AUTHURL
