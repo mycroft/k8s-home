@@ -89,7 +89,7 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name: jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTID"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Key:  jsii.String("clientid"),
+					Key:  jsii.String("client_id"),
 					Name: jsii.String("openid"),
 				},
 			},
@@ -98,7 +98,7 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name: jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Key:  jsii.String("clientsecret"),
+					Key:  jsii.String("client_secret"),
 					Name: jsii.String("openid"),
 				},
 			},
