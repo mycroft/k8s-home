@@ -85,7 +85,7 @@ data:
       enabled: false
 
     metrics:
-      enabled: true
+      enabled: false
 
     auth:
       local:
@@ -95,6 +95,11 @@ data:
         enabled: true
         providers:
           - name: AUTHENTIK
+            scope: openid email profile
+            authurl: ~
+            logouturl: ~
+            clientid: ~
+            clientsecret: ~
 ---
 apiVersion: v1
 kind: Service
