@@ -42,6 +42,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: vikunja-es-openid-c82c8fbc
+  namespace: vikunja
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/vikunja/openid
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: openid
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -115,6 +138,30 @@ spec:
                 secretKeyRef:
                   key: password
                   name: postgresql
+            - name: VIKUNJA_AUTH_OPENID_PROVIDERS
+              value: authentik
+            - name: VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_NAME
+              value: authentik
+            - name: VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_AUTHURL
+              valueFrom:
+                secretKeyRef:
+                  key: auth_url
+                  name: openid
+            - name: VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_LOGOUTURL
+              valueFrom:
+                secretKeyRef:
+                  key: logout_url
+                  name: openid
+            - name: VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  key: clientid
+                  name: openid
+            - name: VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  key: clientsecret
+                  name: openid
           image: vikunja/vikunja:0.24.6
           name: vikunja
           volumeMounts:
