@@ -42,13 +42,12 @@ data:
     tempoQuery:
       enabled: true
       repository: grafana/tempo-query
-      tag: 2.5.0
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 9fa4187a54054eb8cda76191bae768aa1cee934a64b26021bc8cf044f8ce54b5
+    configMapHash: 8cbc3ccc0aa6ed6a3dbdb598f82769385bd655f65541eb2ff7455125372c8706
   name: tempo
   namespace: tempo
 spec:
