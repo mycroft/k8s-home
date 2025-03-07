@@ -14,4 +14,3 @@ tempo:
 tempoQuery:
   enabled: true
   repository: grafana/tempo-query
-  tag: 2.5.0
