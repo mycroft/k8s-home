@@ -19,6 +19,7 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "sso")
 
 	_, redisServiceName := chart.NewRedisStatefulset(namespace)
 
@@ -65,6 +66,31 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		{
 			Name:  jsii.String("PAPERLESS_OCR_USER_ARGS"),
 			Value: jsii.String("{\"invalidate_digital_signatures\": true}"),
+		},
+		{
+			Name: jsii.String("PAPERLESS_SOCIALACCOUNT_PROVIDERS"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Name: jsii.String("sso"),
+					Key:  jsii.String("providers"),
+				},
+			},
+		},
+		{
+			Name:  jsii.String("PAPERLESS_APPS"),
+			Value: jsii.String("allauth.socialaccount.providers.openid_connect"),
+		},
+		{
+			Name:  jsii.String("PAPERLESS_DISABLE_REGULAR_LOGIN"),
+			Value: jsii.String("true"),
+		},
+		{
+			Name:  jsii.String("PAPERLESS_REDIRECT_LOGIN_TO_SSO"),
+			Value: jsii.String("true"),
+		},
+		{
+			Name:  jsii.String("PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS"),
+			Value: jsii.String("false"),
 		},
 	}
 
