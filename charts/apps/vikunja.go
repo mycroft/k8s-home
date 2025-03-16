@@ -1,9 +1,6 @@
 package apps
 
 import (
-	"log"
-	"os"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -26,7 +23,8 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "openid")
+	// kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "openid")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "config") // key: config.yml
 
 	env := []*k8s.EnvVar{
 		{
@@ -59,62 +57,34 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				},
 			},
 		},
-		{
-			Name: jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_AUTHURL"),
-			ValueFrom: &k8s.EnvVarSource{
-				SecretKeyRef: &k8s.SecretKeySelector{
-					Key:  jsii.String("auth_url"),
-					Name: jsii.String("openid"),
-				},
-			},
-		},
-		{
-			Name: jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_LOGOUTURL"),
-			ValueFrom: &k8s.EnvVarSource{
-				SecretKeyRef: &k8s.SecretKeySelector{
-					Key:  jsii.String("logout_url"),
-					Name: jsii.String("openid"),
-				},
-			},
-		},
-		{
-			Name: jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTID"),
-			ValueFrom: &k8s.EnvVarSource{
-				SecretKeyRef: &k8s.SecretKeySelector{
-					Key:  jsii.String("client_id"),
-					Name: jsii.String("openid"),
-				},
-			},
-		},
-		{
-			Name: jsii.String("VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET"),
-			ValueFrom: &k8s.EnvVarSource{
-				SecretKeyRef: &k8s.SecretKeySelector{
-					Key:  jsii.String("client_secret"),
-					Name: jsii.String("openid"),
-				},
-			},
-		},
-	}
-	config, err := os.ReadFile("configs/vikunja/config.yaml")
-	if err != nil {
-		log.Fatalf("Could not read privatebin configuration file: %s", err.Error())
 	}
 
-	configMap := k8s.NewKubeConfigMap(
-		chart.Cdk8sChart,
-		jsii.String("config"),
-		&k8s.KubeConfigMapProps{
-			Metadata: &k8s.ObjectMeta{
-				Namespace: jsii.String(namespace),
-			},
-			Data: &map[string]*string{
-				"config.yml": jsii.String(string(config)),
-			},
-		},
-	)
+	// config, err := os.ReadFile("configs/vikunja/config.yaml")
+	// if err != nil {
+	// 	log.Fatalf("Could not read privatebin configuration file: %s", err.Error())
+	// }
 
-	_, svcName := kubehelpers.NewStatefulSet(
+	// configMap := k8s.NewKubeConfigMap(
+	// 	chart.Cdk8sChart,
+	// 	jsii.String("config"),
+	// 	&k8s.KubeConfigMapProps{
+	// 		Metadata: &k8s.ObjectMeta{
+	// 			Namespace: jsii.String(namespace),
+	// 		},
+	// 		Data: &map[string]*string{
+	// 			"config.yml": jsii.String(string(config)),
+	// 		},
+	// 	},
+	// )
+
+	secrets := []kubehelpers.SecretMount{
+		{
+			Name:      "config",
+			MountPath: "/etc/vikunja",
+		},
+	}
+
+	_, svcName := kubehelpers.NewStatefulSetWithSecrets(
 		chart.Cdk8sChart,
 		namespace,
 		appName,
@@ -124,12 +94,13 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		env,
 		[]string{},
 		[]kubehelpers.ConfigMapMount{
-			{
-				Name:      "config",
-				ConfigMap: configMap,
-				MountPath: "/etc/vikunja",
-			},
+			// {
+			// 	Name:      "config",
+			// 	ConfigMap: configMap,
+			// 	MountPath: "/etc/vikunja",
+			// },
 		},
+		secrets,
 		[]kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",

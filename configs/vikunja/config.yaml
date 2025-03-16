@@ -1,7 +1,9 @@
+# This file is not used! The real file is in vault!
+#
 # Vikunja needs to know the frontend URL for password reset emails.
 # So you might need to provide its value, if you're not using an ingress.
 service:
-  enableregistration: true
+  enableregistration: false
   publicurl: https://vikunja.services.mkz.me
 
 log:
@@ -15,4 +17,13 @@ metrics:
 
 auth:
   local:
+    enabled: false
+  openid:
     enabled: true
+    redirecturl: https://vikunja.services.mkz.me/auth/openid/
+    providers:
+      - name: authentik
+        authurl: https://auth.services.mkz.me/application/o/vikunja/
+        clientid: <redacted>
+        clientsecret: <redacted>
+        scope: openid profile email

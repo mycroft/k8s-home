@@ -15,6 +15,11 @@ type StatefulSetVolume struct {
 	StorageSize string
 }
 
+type SecretMount struct {
+	Name      string
+	MountPath string
+}
+
 // NewStatefulSet creates a new statefulset and returns its name and its service name
 func NewStatefulSet(
 	chart cdk8s.Chart,
@@ -24,6 +29,21 @@ func NewStatefulSet(
 	env []*k8s.EnvVar,
 	commands []string,
 	configMapMounts []ConfigMapMount,
+	storages []StatefulSetVolume,
+) (string, string) {
+	return NewStatefulSetWithSecrets(chart, namespace, appName, appImage, appPort, labels, env, commands, configMapMounts, []SecretMount{}, storages)
+}
+
+// NewStatefulSet creates a new statefulset and returns its name and its service name
+func NewStatefulSetWithSecrets(
+	chart cdk8s.Chart,
+	namespace, appName, appImage string,
+	appPort int,
+	labels map[string]*string,
+	env []*k8s.EnvVar,
+	commands []string,
+	configMapMounts []ConfigMapMount,
+	secretMapMounts []SecretMount,
 	storages []StatefulSetVolume,
 ) (string, string) {
 	// Warning: Changing statefulSet object names will rename PVCs
@@ -76,10 +96,24 @@ func NewStatefulSet(
 		})
 	}
 
-	configVolumes := []*k8s.Volume{}
+	volumes := []*k8s.Volume{}
+
+	for _, secret := range secretMapMounts {
+		volumes = append(volumes, &k8s.Volume{
+			Name: jsii.String(secret.Name),
+			Secret: &k8s.SecretVolumeSource{
+				SecretName: jsii.String(secret.Name),
+			},
+		})
+
+		volumeMounts = append(volumeMounts, &k8s.VolumeMount{
+			Name:      jsii.String(secret.Name),
+			MountPath: jsii.String(secret.MountPath),
+		})
+	}
 
 	for _, v := range configMapMounts {
-		configVolumes = append(configVolumes, &k8s.Volume{
+		volumes = append(volumes, &k8s.Volume{
 			Name: jsii.String(v.Name),
 			ConfigMap: &k8s.ConfigMapVolumeSource{
 				Name: v.ConfigMap.Name(),
@@ -135,7 +169,7 @@ func NewStatefulSet(
 						Containers: &[]*k8s.Container{
 							&container,
 						},
-						Volumes: &configVolumes,
+						Volumes: &volumes,
 					},
 				},
 				VolumeClaimTemplates: &pvcspecs,
