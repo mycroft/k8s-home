@@ -19,6 +19,29 @@ spec:
       server: http://vault.vault:8200
       version: v2
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: linkding-es-openid-c865fd3e
+  namespace: linkding
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/linkding/openid
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: openid
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -49,7 +72,27 @@ spec:
         app.kubernetes.io/name: linkding
     spec:
       containers:
-        - env: []
+        - env:
+            - name: OIDC_RP_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: client_id
+                  name: openid
+            - name: OIDC_RP_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: client_secret
+                  name: openid
+            - name: OIDC_OP_AUTHORIZATION_ENDPOINT
+              value: https://auth.services.mkz.me/application/o/authorize/
+            - name: OIDC_OP_TOKEN_ENDPOINT
+              value: https://auth.services.mkz.me/application/o/token/
+            - name: OIDC_OP_USER_ENDPOINT
+              value: https://auth.services.mkz.me/application/o/userinfo/
+            - name: OIDC_OP_JWKS_ENDPOINT
+              value: https://auth.services.mkz.me/application/o/linkding/jwks/
+            - name: LD_ENABLE_OIDC
+              value: "True"
           image: sissbruecker/linkding:1.39.1
           name: linkding
           volumeMounts:
