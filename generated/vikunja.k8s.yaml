@@ -45,13 +45,13 @@ spec:
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: vikunja-es-openid-c82c8fbc
+  name: vikunja-es-config-c88c1faa
   namespace: vikunja
 spec:
   dataFrom:
     - extract:
         conversionStrategy: Default
-        key: secret/namespaces/vikunja/openid
+        key: secret/namespaces/vikunja/config
   refreshInterval: 15m
   secretStoreRef:
     kind: SecretStore
@@ -60,36 +60,10 @@ spec:
     creationPolicy: Owner
     deletionPolicy: Delete
     immutable: false
-    name: openid
+    name: config
     template:
       engineVersion: v2
       type: Opaque
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: vikunja-config-c8098df7
-  namespace: vikunja
-data:
-  config.yml: |
-    # Vikunja needs to know the frontend URL for password reset emails.
-    # So you might need to provide its value, if you're not using an ingress.
-    service:
-      enableregistration: true
-      publicurl: https://vikunja.services.mkz.me
-
-    log:
-      level: DEBUG
-
-    mailer:
-      enabled: false
-
-    metrics:
-      enabled: false
-
-    auth:
-      local:
-        enabled: true
 ---
 apiVersion: v1
 kind: Service
@@ -138,26 +112,6 @@ spec:
                 secretKeyRef:
                   key: password
                   name: postgresql
-            - name: VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_AUTHURL
-              valueFrom:
-                secretKeyRef:
-                  key: auth_url
-                  name: openid
-            - name: VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_LOGOUTURL
-              valueFrom:
-                secretKeyRef:
-                  key: logout_url
-                  name: openid
-            - name: VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTID
-              valueFrom:
-                secretKeyRef:
-                  key: client_id
-                  name: openid
-            - name: VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET
-              valueFrom:
-                secretKeyRef:
-                  key: client_secret
-                  name: openid
           image: vikunja/vikunja:0.24.6
           name: vikunja
           volumeMounts:
@@ -166,9 +120,9 @@ spec:
             - mountPath: /etc/vikunja
               name: config
       volumes:
-        - configMap:
-            name: vikunja-config-c8098df7
-          name: config
+        - name: config
+          secret:
+            secretName: config
   volumeClaimTemplates:
     - metadata:
         labels:
