@@ -22,7 +22,7 @@ helmcharts:
   longhorn/longhorn: 1.8.1
   mariadb-operator/mariadb-operator: 0.37.1
   minio/operator: 7.0.1
-  nats/nats: 1.2.11
+  nats/nats: 1.3.1
   onechart/onechart: 0.73.0
   opensearch/opensearch: 2.12.0
   opensearch/opensearch-dashboards: 2.10.0
