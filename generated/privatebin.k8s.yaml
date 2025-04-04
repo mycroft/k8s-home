@@ -42,6 +42,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: privatebin-es-postgres-c8d8facc
+  namespace: privatebin
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/privatebin/postgres
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgres
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -90,15 +113,23 @@ data:
     batchsize = 10
 
     [model]
-    class = S3Storage
+    class = Database
     [model_options]
-    region = "fr-north-1"
-    version = "latest"
-    endpoint = "https://minio-storage.services.mkz.me"
-    use_path_style_endpoint = true
-    bucket = "privatebin"
-    accesskey = "AWS_ACCESS_KEY_ID"
-    secretkey = "AWS_SECRET_ACCESS_KEY"
+    dsn = "pgsql:host=postgres-instance.postgres;dbname=privatebin"
+    tbl = "privatebin_"
+    usr = "POSTGRESQL_USERNAME"
+    pwd = "POSTGRESQL_PASSWORD"
+    opt[12] = true
+
+    ; class = S3Storage
+    ; [model_options]
+    ; region = "fr-north-1"
+    ; version = "latest"
+    ; endpoint = "https://minio-storage.services.mkz.me"
+    ; use_path_style_endpoint = true
+    ; bucket = "privatebin"
+    ; accesskey = "AWS_ACCESS_KEY_ID"
+    ;secretkey = "AWS_SECRET_ACCESS_KEY"
 
     [yourls]
 ---
@@ -120,7 +151,7 @@ spec:
         - command:
             - /bin/sh
             - -c
-            - mkdir /run/cfg && cp /srv/cfg/conf.php /run/cfg/conf.php && sed -i "s/AWS_ACCESS_KEY_ID/$AWS_ACCESS_KEY_ID/" /run/cfg/conf.php && sed -i "s/AWS_SECRET_ACCESS_KEY/$AWS_SECRET_ACCESS_KEY/" /run/cfg/conf.php && /etc/init.d/rc.local
+            - mkdir /run/cfg && cp /srv/cfg/conf.php /run/cfg/conf.php && sed -i "s/AWS_ACCESS_KEY_ID/$AWS_ACCESS_KEY_ID/" /run/cfg/conf.php && sed -i "s/AWS_SECRET_ACCESS_KEY/$AWS_SECRET_ACCESS_KEY/" /run/cfg/conf.php && sed -i "s/POSTGRES_USERNAME/$POSTGRES_USERNAME/" /run/cfg/conf.php && sed -i "s/POSTGRES_PASSWORD/$POSTGRES_PASSWORD/" /run/cfg/conf.php && /etc/init.d/rc.local
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
@@ -132,6 +163,16 @@ spec:
                 secretKeyRef:
                   key: secret_access_key
                   name: minio
+            - name: POSTGRES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: postgres
             - name: CONFIG_PATH
               value: /run/cfg
           image: privatebin/nginx-fpm-alpine:1.7.6
