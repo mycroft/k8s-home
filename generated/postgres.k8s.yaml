@@ -16,6 +16,7 @@ spec:
     grafana: grafana-admin
     memos: memos-admin
     paperlessngx: paperlessngx-admin
+    privatebin: privatebin-admin
     temporal: temporal-admin
     temporal2: temporal2-admin
     temporal_visibility: temporal_visibility-admin
@@ -56,6 +57,10 @@ spec:
       - createdb
     paperlessngx: []
     paperlessngx-admin:
+      - superuser
+      - createdb
+    privatebin: []
+    privatebin-admin:
       - superuser
       - createdb
     temporal: []
