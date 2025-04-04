@@ -22,6 +22,7 @@ func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "minio")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgres")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -65,6 +66,24 @@ func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			},
 		},
 		{
+			Name: jsii.String("POSTGRES_USERNAME"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Name: jsii.String("postgres"),
+					Key:  jsii.String("username"),
+				},
+			},
+		},
+		{
+			Name: jsii.String("POSTGRES_PASSWORD"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Name: jsii.String("postgres"),
+					Key:  jsii.String("password"),
+				},
+			},
+		},
+		{
 			Name:  jsii.String("CONFIG_PATH"),
 			Value: jsii.String("/run/cfg"),
 		},
@@ -75,6 +94,8 @@ func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"cp /srv/cfg/conf.php /run/cfg/conf.php",
 		"sed -i \"s/AWS_ACCESS_KEY_ID/$AWS_ACCESS_KEY_ID/\" /run/cfg/conf.php",
 		"sed -i \"s/AWS_SECRET_ACCESS_KEY/$AWS_SECRET_ACCESS_KEY/\" /run/cfg/conf.php",
+		"sed -i \"s/POSTGRES_USERNAME/$POSTGRES_USERNAME/\" /run/cfg/conf.php",
+		"sed -i \"s/POSTGRES_PASSWORD/$POSTGRES_PASSWORD/\" /run/cfg/conf.php",
 		"/etc/init.d/rc.local",
 	}
 
