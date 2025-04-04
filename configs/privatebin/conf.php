@@ -41,7 +41,7 @@ batchsize = 10
 [model]
 class = S3Storage
 [model_options]
-region = ""
+region = "fr-north-1"
 version = "latest"
 endpoint = "https://minio-storage.services.mkz.me"
 use_path_style_endpoint = true
