@@ -43,8 +43,8 @@ class = Database
 [model_options]
 dsn = "pgsql:host=postgres-instance.postgres;dbname=privatebin"
 tbl = "privatebin_"
-usr = "POSTGRESQL_USERNAME"
-pwd = "POSTGRESQL_PASSWORD"
+usr = "POSTGRES_USERNAME"
+pwd = "POSTGRES_PASSWORD"
 opt[12] = true
 
 ; class = S3Storage
@@ -55,6 +55,6 @@ opt[12] = true
 ; use_path_style_endpoint = true
 ; bucket = "privatebin"
 ; accesskey = "AWS_ACCESS_KEY_ID"
-;secretkey = "AWS_SECRET_ACCESS_KEY"
+; secretkey = "AWS_SECRET_ACCESS_KEY"
 
 [yourls]
