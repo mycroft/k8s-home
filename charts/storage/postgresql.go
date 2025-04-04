@@ -32,6 +32,7 @@ func NewPostgres(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"zipline_v4",
 		"temporal2",
 		"temporal_visibility2",
+		"privatebin",
 	}
 
 	databaseSpecs := map[string]*string{}
