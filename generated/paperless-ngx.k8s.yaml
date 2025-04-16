@@ -194,7 +194,7 @@ spec:
               value: "true"
             - name: PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS
               value: "false"
-          image: paperlessngx/paperless-ngx:2.15.1
+          image: paperlessngx/paperless-ngx:2.15.2
           name: paperless-ngx
           volumeMounts:
             - mountPath: /usr/src/paperless/data
