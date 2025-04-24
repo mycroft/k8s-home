@@ -135,7 +135,7 @@ spec:
                 secretKeyRef:
                   key: AWS_ACCESS_SECRET_KEY
                   name: minio
-          image: registry.gitlab.com/timvisee/send:v3.4.23
+          image: registry.gitlab.com/timvisee/send:3.4.25
           name: send
           volumeMounts: []
       volumes: []
