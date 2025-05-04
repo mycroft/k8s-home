@@ -18,13 +18,15 @@ metadata:
   name: linkerd-helm-val-linkerd-crds-c89526e7
   namespace: linkerd
 data:
-  values.yaml: "installGatewayAPI: false"
+  values.yaml: |-
+    installGatewayAPI: false
+    enableHttpRoutes: false
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: e49a0074832c5d7702bfcea74a3f9449cd95a81618898f3e42c232b4519dec45
+    configMapHash: 5f269ee2800e54a326b141737807b15645019f695e75ef31397b79a4fc7fbf7a
   name: linkerd-crds
   namespace: linkerd
 spec:
