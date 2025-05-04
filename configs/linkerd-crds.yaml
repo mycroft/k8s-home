@@ -1,1 +1,2 @@
 installGatewayAPI: false
+enableHttpRoutes: false
