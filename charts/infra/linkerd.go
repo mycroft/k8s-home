@@ -23,6 +23,7 @@ func NewLinkerdChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		repositoryName, // repo name
 		"linkerd-crds", // chart name
 		"linkerd-crds", // release name
+		kubehelpers.WithDefaultConfigFile(),
 	)
 
 	chart.CreateHelmRelease(
