@@ -47,7 +47,7 @@ images:
   ghcr.io/diced/zipline: 4.0.2
   ghcr.io/gchq/cyberchef: 10.19.4
   ghcr.io/hoarder-app/hoarder: 0.24.1
-  ghcr.io/open-webui/open-webui: 0.6.5
+  ghcr.io/open-webui/open-webui: 0.6.6
   ghcr.io/thomiceli/opengist: 1.10.0
   jhaals/yopass: 11.19.1
   linuxserver/bookstack: v25.02.2-ls202
