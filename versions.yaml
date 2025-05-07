@@ -10,7 +10,7 @@ helmcharts:
   grafana/tempo: 1.21.1
   hashicorp/vault: 0.30.0
   jaegertracing/jaeger: 0.71.2
-  jameswynn/homepage: 2.0.2
+  jameswynn/homepage: 2.1.0
   jetstack/cert-manager: v1.17.2
   jitsi/jitsi-meet: v1.3.7
   kubernetes-dashboard/kubernetes-dashboard: 7.12.0
