@@ -278,7 +278,7 @@ spec:
         kind: HelmRepository
         name: jameswynn
         namespace: flux-system
-      version: 2.0.2
+      version: 2.1.0
   install:
     createNamespace: false
     skipCRDs: false
