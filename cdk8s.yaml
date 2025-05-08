@@ -12,10 +12,10 @@ imports:
   - https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.20.2/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
   - secretstore:=https://raw.githubusercontent.com/external-secrets/external-secrets/v0.9.7/config/crds/bases/external-secrets.io_secretstores.yaml
   - externalsecrets:=https://raw.githubusercontent.com/external-secrets/external-secrets/v0.9.7/config/crds/bases/external-secrets.io_externalsecrets.yaml
-  - podmonitor:=crds/crd-podmonitors.yaml
-  - servicemonitor:=crds/crd-servicemonitors.yaml
+  - podmonitor:=https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/refs/heads/main/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
+  - servicemonitor:=https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/refs/heads/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
   - https://raw.githubusercontent.com/traefik/traefik/v2.10.7/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
-  - crds/postgresql.crd.yaml
+  - https://raw.githubusercontent.com/zalando/postgres-operator/refs/heads/master/manifests/postgresql.crd.yaml
   - https://raw.githubusercontent.com/minio/operator/v5.0.15/resources/base/crds/minio.min.io_tenants.yaml
   - https://raw.githubusercontent.com/scylladb/scylla-operator/master/pkg/api/scylla/v1/scylla.scylladb.com_scyllaclusters.yaml
   - https://raw.githubusercontent.com/mariadb-operator/mariadb-operator/helm-chart-0.27.0/deploy/charts/mariadb-operator/crds/crds.yaml
