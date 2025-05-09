@@ -10,7 +10,7 @@ func NewZiplineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "zipline"
 	appName := namespace
 	appImage := builder.RegisterContainerImage("ghcr.io/diced/zipline")
-	appPort := 3000
+	appPort := uint(3000)
 	appIngress := "zipline.services.mkz.me"
 
 	chart := builder.NewChart(namespace)

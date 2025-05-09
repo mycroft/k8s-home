@@ -13,7 +13,7 @@ func NewWallabagChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := namespace
 	appImage := builder.RegisterContainerImage("wallabag/wallabag")
 	appIngress := "wallabag.services.mkz.me"
-	appPort := 80
+	appPort := uint(80)
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)

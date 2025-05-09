@@ -24,7 +24,7 @@ type SecretMount struct {
 func NewStatefulSet(
 	chart cdk8s.Chart,
 	namespace, appName, appImage string,
-	appPort int,
+	appPort uint,
 	labels map[string]*string,
 	env []*k8s.EnvVar,
 	commands []string,
@@ -38,7 +38,7 @@ func NewStatefulSet(
 func NewStatefulSetWithSecrets(
 	chart cdk8s.Chart,
 	namespace, appName, appImage string,
-	appPort int,
+	appPort uint,
 	labels map[string]*string,
 	env []*k8s.EnvVar,
 	commands []string,

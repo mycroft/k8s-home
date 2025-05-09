@@ -11,7 +11,7 @@ import (
 func NewMemosChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	name := "memos"
 	namespace := name
-	port := uint16(5230)
+	port := uint(5230)
 	ingresses := []string{
 		fmt.Sprintf("%s.services.mkz.me", name),
 	}

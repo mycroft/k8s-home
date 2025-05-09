@@ -11,7 +11,7 @@ func NewSnippetBoxChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "snippetbox"
 	appIngress := "snippetbox.services.mkz.me"
 	appName := "snippetbox"
-	appPort := 5000
+	appPort := uint(5000)
 	image := builder.RegisterContainerImage("pawelmalak/snippet-box")
 
 	labels := map[string]*string{

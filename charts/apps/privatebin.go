@@ -12,7 +12,7 @@ import (
 func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "privatebin"
 	appName := namespace
-	appPort := 8080
+	appPort := uint(8080)
 	appIngress := "privatebin.services.mkz.me"
 	privatebinImage := builder.RegisterContainerImage("privatebin/nginx-fpm-alpine")
 

@@ -10,7 +10,7 @@ func NewHeimdallChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "heimdall"
 	appName := "heimdall"
 	appImage := builder.RegisterContainerImage("linuxserver/heimdall")
-	appPort := 80
+	appPort := uint(80)
 	appIngress := "heimdall.services.mkz.me"
 
 	chart := builder.NewChart(appName)

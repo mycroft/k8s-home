@@ -15,7 +15,7 @@ const (
 func NewHappyUrlsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "happy-urls"
 	appName := namespace
-	appPort := 3000
+	appPort := uint(3000)
 	ingressHost := fmt.Sprintf("%s.services.mkz.me", appName)
 
 	chart := builder.NewChart(namespace)

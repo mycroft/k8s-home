@@ -15,7 +15,7 @@ func NewCyberchefChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	}
 	env := []*k8s.EnvVar{}
 
-	appPort := 80
+	appPort := uint(80)
 	appIngress := "cyberchef.services.mkz.me"
 
 	chart := builder.NewChart(namespace)

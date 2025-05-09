@@ -16,7 +16,7 @@ func NewHoarderChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "hoarder"
 	appName := namespace
 	appImage := builder.RegisterContainerImage("ghcr.io/hoarder-app/hoarder")
-	appPort := 3000
+	appPort := uint(3000)
 	appIngress := "hoarder.services.mkz.me"
 
 	chart := builder.NewChart(namespace)

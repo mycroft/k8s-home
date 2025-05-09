@@ -17,7 +17,7 @@ const (
 func NewHeyChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "hey"
 	appName := namespace
-	appPort := 3000
+	appPort := uint(3000)
 	ingressHosts := []string{
 		fmt.Sprintf("%s.services.mkz.me", appName),
 		fmt.Sprintf("%s.mkz.cx", appName),

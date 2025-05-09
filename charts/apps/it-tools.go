@@ -10,7 +10,7 @@ func NewITToolsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "it-tools"
 	appIngress := "it-tools.services.mkz.me"
 	appName := "it-tools"
-	appPort := 80
+	appPort := uint(80)
 
 	image := builder.RegisterContainerImage("corentinth/it-tools")
 

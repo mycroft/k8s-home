@@ -64,7 +64,7 @@ func NewAppIngresses(
 	chart cdk8s.Chart,
 	labels map[string]*string,
 	namespace string,
-	appPort int,
+	appPort uint,
 	ingressHosts []string,
 	serviceName string,
 	customAnnotations map[string]string,
@@ -91,7 +91,7 @@ func NewAppIngresses(
 			"svc",
 			labels,
 			portName,
-			uint(appPort),
+			appPort,
 		)
 
 		serviceName = *svc.Name()
@@ -159,7 +159,7 @@ func NewAppIngress(
 	chart cdk8s.Chart,
 	labels map[string]*string,
 	namespace string,
-	appPort int,
+	appPort uint,
 	ingressHost string,
 	serviceName string,
 	customAnnotations map[string]string,
@@ -181,7 +181,7 @@ func NewAppIngress(
 type Ingress struct {
 	Namespace   string
 	Name        string
-	Port        uint16
+	Port        uint
 	Ingresses   []string
 	Labels      map[string]*string
 	ServiceName string
@@ -200,7 +200,7 @@ func (chart *Chart) NewIngress(ingress *Ingress) {
 			ingress.ServiceName,
 			ingress.Labels,
 			"http",
-			uint(ingress.Port),
+			ingress.Port,
 			AppServiceOption{
 				Name: ingress.Name,
 			},
@@ -212,7 +212,7 @@ func (chart *Chart) NewIngress(ingress *Ingress) {
 		chart.Cdk8sChart,
 		ingress.Labels,
 		ingress.Namespace,
-		int(ingress.Port),
+		ingress.Port,
 		ingress.Ingresses,
 		ingress.ServiceName,
 		ingress.Annotations,

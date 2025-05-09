@@ -12,7 +12,7 @@ func NewSendChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "send"
 	appName := "send"
 	ingressHost := "send.services.mkz.me"
-	appPort := 1443
+	appPort := uint(1443)
 	image := builder.RegisterContainerImage("registry.gitlab.com/timvisee/send")
 
 	chart := builder.NewChart(namespace)

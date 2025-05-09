@@ -187,7 +187,7 @@ func (builder *Builder) CheckVersions(debug bool, filter string) {
 			log.Printf("checking %s...", image)
 		}
 
-		start_ts := time.Now()
+		startTs := time.Now()
 
 		pattern := ".+"
 		if _, ok := versions.Patterns.Images[parts[0]]; ok {
@@ -200,10 +200,10 @@ func (builder *Builder) CheckVersions(debug bool, filter string) {
 			fmt.Printf("%s;%s;%s\n", parts[0], parts[1], foundVersions[len(foundVersions)-1])
 		}
 
-		done_ts := time.Now()
+		doneTs := time.Now()
 
 		if debug {
-			log.Printf("done checking after %d msec", done_ts.UnixMilli()-start_ts.UnixMilli())
+			log.Printf("done checking after %d msec", doneTs.UnixMilli()-startTs.UnixMilli())
 		}
 
 	}

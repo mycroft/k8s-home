@@ -15,7 +15,7 @@ func NewBookstackChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "bookstack"
 	appName := namespace
 	appImage := builder.RegisterContainerImage("linuxserver/bookstack")
-	appPort := 80
+	appPort := uint(80)
 	appIngress := "bookstack.services.mkz.me"
 
 	useLegacyIngress := true

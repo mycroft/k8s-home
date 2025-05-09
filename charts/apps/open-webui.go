@@ -12,7 +12,7 @@ func NewOpenWebuiChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	appIngress := "ai.services.mkz.me"
 	appImage := builder.RegisterContainerImage("ghcr.io/open-webui/open-webui")
-	appPort := 8080
+	appPort := uint(8080)
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)

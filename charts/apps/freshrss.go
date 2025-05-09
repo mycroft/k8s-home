@@ -12,7 +12,7 @@ func NewFreshRSS(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "freshrss"
 	appName := namespace
 	appImage := builder.RegisterContainerImage("freshrss/freshrss")
-	appPort := 80
+	appPort := uint(80)
 	appIngress := "freshrss.services.mkz.me"
 
 	chart := builder.NewChart(namespace)

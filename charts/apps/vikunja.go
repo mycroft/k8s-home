@@ -11,7 +11,7 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	namespace := appName
 	appImage := builder.RegisterContainerImage("vikunja/vikunja")
-	appPort := 3456
+	appPort := uint(3456)
 	appIngress := "vikunja.services.mkz.me"
 
 	chart := builder.NewChart(namespace)

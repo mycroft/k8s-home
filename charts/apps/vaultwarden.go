@@ -12,7 +12,7 @@ func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "vaultwarden"
 	appName := namespace
 	appImage := builder.RegisterContainerImage("vaultwarden/server")
-	appPort := 80
+	appPort := uint(80)
 	appIngress := "vaultwarden.services.mkz.me"
 
 	chart := builder.NewChart(namespace)

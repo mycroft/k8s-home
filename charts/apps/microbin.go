@@ -15,7 +15,7 @@ func NewMicrobinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	// appImage := builder.RegisterContainerImage("danielszabo99/microbin")
 	appImage := "ghcr.io/zhaobenny/microbin:latest"
-	appPort := 8080
+	appPort := uint(8080)
 
 	chart := builder.NewChart(appName)
 

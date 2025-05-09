@@ -10,7 +10,7 @@ func NewTraefikChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "kube-system"
 	ingressHost := "traefik.services.mkz.me"
 	portName := "web"
-	appPort := 9000
+	appPort := uint(9000)
 
 	annotations := map[string]*string{
 		"cert-manager.io/cluster-issuer":                     jsii.String("letsencrypt-prod"),
@@ -33,7 +33,7 @@ func NewTraefikChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"svc",
 		labels,
 		portName,
-		uint(appPort),
+		appPort,
 	)
 
 	rules := []*k8s.IngressRule{}

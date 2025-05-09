@@ -99,7 +99,7 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	}
 
 	appName := "paperless-ngx"
-	appPort := 8000
+	appPort := uint(8000)
 
 	_, svcName := kubehelpers.NewStatefulSet(
 		chart.Cdk8sChart,

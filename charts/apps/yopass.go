@@ -14,7 +14,7 @@ func NewYopassChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "yopass"
 	appIngress := "yopass.services.mkz.me"
 	appName := "yopass"
-	appPort := 1337
+	appPort := uint(1337)
 	image := builder.RegisterContainerImage("jhaals/yopass")
 
 	chart := builder.NewChart(namespace)

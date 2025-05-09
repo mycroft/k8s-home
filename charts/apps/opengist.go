@@ -13,7 +13,7 @@ func NewOpengistChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	namespace := appName
 	appImage := builder.RegisterContainerImage("ghcr.io/thomiceli/opengist")
-	appPort := 6157
+	appPort := uint(6157)
 	appIngress := "opengist.services.mkz.me"
 
 	chart := builder.NewChart(namespace)

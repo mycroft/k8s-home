@@ -9,7 +9,7 @@ import (
 func NewLinkdingChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "linkding"
 	appName := namespace
-	appPort := 9090
+	appPort := uint(9090)
 	appIngress := "links.services.mkz.me"
 	linkdingImage := builder.RegisterContainerImage("sissbruecker/linkding")
 
