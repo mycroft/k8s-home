@@ -19,6 +19,9 @@ jobs:
 
       - name: Build cdk8s charts
         run: |
+          echo "Golang version:"
+          go version
+          echo "cdk8s version:"
           cdk8s --version
           cdk8s import
           git diff
