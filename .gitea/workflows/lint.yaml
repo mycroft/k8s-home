@@ -16,7 +16,7 @@ jobs:
     container:
       image: registry.mkz.me/mycroft/golang-cdk8s:latest
       pull: always
-    
+
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -38,6 +38,17 @@ jobs:
           go version
           echo "Go environment:"
           go env GOARCH GOOS GOPATH
+
+      - name: Build cdk8s charts
+        run: |
+          echo "Golang version:"
+          go version
+          echo "cdk8s version:"
+          cdk8s --version
+          cdk8s import
+          git diff
+          git checkout cdk8s.yaml
+          cdk8s synth
 
       - name: Run golangci-lint
         run: |
