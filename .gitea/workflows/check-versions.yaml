@@ -9,7 +9,8 @@ jobs:
   check-versions:
     runs-on: ubuntu-latest
     container:
-      image: git.mkz.me/mycroft/golang-cdk8s:latest
+      image: registry.mkz.me/mycroft/golang-cdk8s:latest
+      options: --pull always
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
