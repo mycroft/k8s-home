@@ -1,0 +1,56 @@
+name: Go Linting
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - generated
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  golangci-lint:
+    name: Run golangci-lint
+    runs-on: ubuntu-latest
+    container:
+      image: registry.mkz.me/mycroft/golang-cdk8s:latest
+      pull: always
+    
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install golangci-lint
+        run: |
+          if ! command -v golangci-lint &> /dev/null; then
+            echo "Installing golangci-lint..."
+            go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+            export PATH=$PATH:$(go env GOPATH)/bin
+          fi
+          golangci-lint --version
+
+      - name: Verify Go version
+        run: |
+          echo "Go version:"
+          go version
+          echo "Go environment:"
+          go env GOARCH GOOS GOPATH
+
+      - name: Run golangci-lint
+        run: |
+          echo "Running golangci-lint on Go code..."
+          golangci-lint run -v --timeout=5m --config=.golangci.yaml ./...
+
+      - name: Report status
+        if: ${{ always() }}
+        run: |
+          if [ "${{ job.status }}" == "failure" ]; then
+            echo "❌ golangci-lint found issues that need to be fixed."
+            echo "Please fix the issues before merging to main."
+            exit 1
+          else
+            echo "✅ golangci-lint passed successfully!"
+          fi
