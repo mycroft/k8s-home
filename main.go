@@ -12,12 +12,6 @@ import (
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 )
 
-type key int
-
-const (
-	values key = iota
-)
-
 var (
 	debug  *bool
 	filter *string
@@ -47,9 +41,14 @@ var checkVersionCmd = &cobra.Command{
 			log.Println("preparing charts...")
 		}
 
-		builder := charts.HomelabBuildApp(context.WithValue(context.TODO(), values, kubehelpers.ContextValues{
-			Debug: *debug,
-		}))
+		builder := charts.HomelabBuildApp(
+			context.WithValue(
+				context.TODO(),
+				kubehelpers.ValueKey,
+				kubehelpers.ContextValues{
+					Debug: *debug,
+				},
+			))
 
 		if *debug {
 			log.Println("running check-versions...")
@@ -63,9 +62,13 @@ func GenerateYamlCharts() {
 		log.Println("preparing charts...")
 	}
 
-	builder := charts.HomelabBuildApp(context.WithValue(context.TODO(), values, kubehelpers.ContextValues{
-		Debug: *debug,
-	}))
+	builder := charts.HomelabBuildApp(
+		context.WithValue(context.TODO(),
+			kubehelpers.ValueKey,
+			kubehelpers.ContextValues{
+				Debug: *debug,
+			},
+		))
 
 	if *debug {
 		log.Println("syntheizing yamls...")
