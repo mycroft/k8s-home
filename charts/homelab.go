@@ -12,8 +12,8 @@ import (
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 )
 
-func HomelabBuildApp(ctx context.Context) *kubehelpers.Builder {
-	builder := kubehelpers.NewBuilder(ctx)
+func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Builder {
+	builder := kubehelpers.NewBuilder(ctx, versionsFile)
 
 	charts := [](func(*kubehelpers.Builder) *kubehelpers.Chart){
 		// security charts

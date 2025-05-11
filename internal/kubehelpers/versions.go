@@ -152,11 +152,7 @@ func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]st
 // CheckVersions checks the installed releases for update
 func (builder *Builder) CheckVersions(debug bool, filter string) {
 	searched := make(map[string]bool)
-
-	versions, err := ReadVersions()
-	if err != nil {
-		panic(err)
-	}
+	versions := builder.Versions
 
 	helmVersions, err := builder.GetHelmUpdates(debug, filter)
 	if err != nil {
@@ -268,14 +264,14 @@ func GetLastImageTag(debug bool, image, version, pattern string) []string {
 }
 
 // ReadVersions reads versions.yaml, parses it and return its configuration in a Version instance
-func ReadVersions() (Versions, error) {
+func ReadVersions(versionsFile string) (Versions, error) {
 	var versions Versions
 
 	if len(versions.Images) != 0 || len(versions.HelmCharts) != 0 {
 		return Versions{}, nil
 	}
 
-	body, err := os.ReadFile("versions.yaml")
+	body, err := os.ReadFile(versionsFile)
 	if err != nil {
 		return Versions{}, fmt.Errorf("could not open versions.yaml: %s", err.Error())
 	}

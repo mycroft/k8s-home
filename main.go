@@ -20,23 +20,26 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "k8s-home",
 	Short: "k8s-home is the yaml charts generator for my homelab",
-	Run: func(_ *cobra.Command, _ []string) {
-		GenerateYamlCharts()
+	Run: func(command *cobra.Command, _ []string) {
+		GenerateYamlCharts(command.Flags().Lookup("versions").Value.String())
 	},
 }
 
 var GenerateYamlChartsCmd = &cobra.Command{
-	Use:   "generate-yaml-charts",
-	Short: "generates Yaml charts",
-	Run: func(_ *cobra.Command, _ []string) {
-		GenerateYamlCharts()
+	Use:     "generate-yaml-charts",
+	Short:   "generates Yaml charts",
+	Long:    "generates Yaml charts for all the helm charts used in my homelab",
+	Example: "k8s-home generate-yaml-charts",
+	Aliases: []string{"generate-yaml"},
+	Run: func(command *cobra.Command, _ []string) {
+		GenerateYamlCharts(command.Flags().Lookup("versions").Value.String())
 	},
 }
 
 var checkVersionCmd = &cobra.Command{
 	Use:   "check-versions",
 	Short: "check versions of declared helm charts & docker images",
-	Run: func(_ *cobra.Command, _ []string) {
+	Run: func(command *cobra.Command, _ []string) {
 		if *debug {
 			log.Println("preparing charts...")
 		}
@@ -48,7 +51,9 @@ var checkVersionCmd = &cobra.Command{
 				kubehelpers.ContextValues{
 					Debug: *debug,
 				},
-			))
+			),
+			command.Flags().Lookup("versions").Value.String(),
+		)
 
 		if *debug {
 			log.Println("running check-versions...")
@@ -57,7 +62,7 @@ var checkVersionCmd = &cobra.Command{
 	},
 }
 
-func GenerateYamlCharts() {
+func GenerateYamlCharts(versionsFile string) {
 	if *debug {
 		log.Println("preparing charts...")
 	}
@@ -68,7 +73,9 @@ func GenerateYamlCharts() {
 			kubehelpers.ContextValues{
 				Debug: *debug,
 			},
-		))
+		),
+		versionsFile,
+	)
 
 	if *debug {
 		log.Println("syntheizing yamls...")
@@ -80,6 +87,8 @@ func GenerateYamlCharts() {
 func init() {
 	rootCmd.AddCommand(checkVersionCmd)
 	rootCmd.AddCommand(GenerateYamlChartsCmd)
+
+	rootCmd.PersistentFlags().String("versions", "versions.yaml", "versions.yaml file to user")
 
 	debug = rootCmd.PersistentFlags().Bool("debug", false, "enable debug")
 	filter = checkVersionCmd.Flags().String("filter", "", "filter to apply when checking helm/container images")

@@ -23,8 +23,8 @@ type Chart struct {
 }
 
 // NewBuilder creates a Builder context with cdk8s app, context & read versions file
-func NewBuilder(ctx context.Context) *Builder {
-	versions, err := ReadVersions()
+func NewBuilder(ctx context.Context, versionsFile string) *Builder {
+	versions, err := ReadVersions(versionsFile)
 	if err != nil {
 		log.Fatal(err)
 	}

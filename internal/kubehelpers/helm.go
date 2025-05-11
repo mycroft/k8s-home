@@ -112,8 +112,9 @@ func WithConfigMaps(configMaps []HelmReleaseConfigMap) HelmReleaseOption {
 // It installs CRDs by default.
 // ex:
 // - helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.9.1 --set installCRDs=true
-func CreateHelmRelease(
+func internalCreateHelmRelease(
 	chart constructs.Construct,
+	versions *Versions,
 	namespace, repoName, chartName, releaseName string,
 	opts ...HelmReleaseOption,
 ) helmtoolkitfluxcdio.HelmRelease {
@@ -132,11 +133,7 @@ func CreateHelmRelease(
 	}
 
 	if helmReleaseOptions.Versions == nil {
-		versions, err := ReadVersions()
-		if err != nil {
-			panic(err)
-		}
-		helmReleaseOptions.Versions = &versions
+		helmReleaseOptions.Versions = versions
 	}
 
 	if helmReleaseOptions.UseSameNameConfigFile {
@@ -223,8 +220,9 @@ func (chart *Chart) CreateHelmRelease(
 ) helmtoolkitfluxcdio.HelmRelease {
 	opts = append(opts, WithVersions(&chart.Builder.Versions))
 
-	return CreateHelmRelease(
+	return internalCreateHelmRelease(
 		chart.Cdk8sChart,
+		&chart.Builder.Versions,
 		namespace, repoName, chartName, releaseName,
 		opts...,
 	)
