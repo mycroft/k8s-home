@@ -14,6 +14,7 @@ type AppServiceOption struct {
 	Name string
 }
 
+// NewAppService creates a Service resource for the application.
 func NewAppService(
 	chart cdk8s.Chart,
 	namespace string,
@@ -59,6 +60,7 @@ type AppIngressOption struct {
 	Name string
 }
 
+// NewAppIngresses creates one or more Ingress resources for the application.
 func NewAppIngresses(
 	ctx context.Context,
 	chart cdk8s.Chart,
@@ -154,6 +156,7 @@ func NewAppIngresses(
 	)
 }
 
+// NewAppIngress creates an Ingress resource for the application.
 func NewAppIngress(
 	ctx context.Context,
 	chart cdk8s.Chart,
