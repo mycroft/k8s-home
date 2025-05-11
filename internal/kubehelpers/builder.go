@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
@@ -53,11 +52,6 @@ func (builder *Builder) NewChart(namespace string) *Chart {
 // BuildChart calls the passed callback with the current Builder context
 func (builder *Builder) BuildChart(callback func(*Builder) *Chart) *Chart {
 	return callback(builder)
-}
-
-// BuildChartLegacy calls the passed callback with the current Builder context (legacy version)
-func (builder *Builder) BuildChartLegacy(callback func(context.Context, constructs.Construct) cdk8s.Chart) cdk8s.Chart {
-	return callback(builder.Context, builder.App)
 }
 
 // RegisterContainerImage marks container images used for version checking
