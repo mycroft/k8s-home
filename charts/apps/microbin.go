@@ -19,7 +19,7 @@ func NewMicrobinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	chart := builder.NewChart(appName)
 
-	kubehelpers.NewNamespace(chart.Cdk8sChart, namespace)
+	chart.NewNamespace(namespace)
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "admin")
 
