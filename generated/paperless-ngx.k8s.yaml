@@ -103,7 +103,7 @@ spec:
             - --loglevel
             - warning
           env: []
-          image: redis:8.0.0
+          image: redis:8.0.1
           name: redis
           volumeMounts:
             - mountPath: /data
