@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: dex-idp
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: secretstore-vault
@@ -242,7 +242,7 @@ stringData:
     #   username: "{{ .Env.STATIC_ADMIN_USERNAME }}"
     #   userID: "{{ .Env.STATIC_ADMIN_UUID }}"
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: dex-idp-es-static-admin-c88f9c6e
@@ -265,7 +265,7 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: dex-idp-es-gitea-c8bff4a6
@@ -288,7 +288,7 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: dex-idp-es-grafana-oidc-client-c8bf7dc8
@@ -311,7 +311,7 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: dex-idp-es-traefik-forward-auth-oidc-c84cf0c8
@@ -334,7 +334,7 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: dex-idp-es-postgresql-c8fc46d7

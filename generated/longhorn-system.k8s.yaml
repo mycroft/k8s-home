@@ -42,7 +42,7 @@ kind: Namespace
 metadata:
   name: longhorn-system
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: secretstore-vault
@@ -110,7 +110,7 @@ spec:
       name: longhorn-system-helm-val-longhorn-c89d0ba2
       valuesKey: values.yaml
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: longhorn-system-es-nas0-minio-c8ce1a0c
@@ -133,7 +133,7 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: longhorn-system-es-basic-auth-users-c8e97f64

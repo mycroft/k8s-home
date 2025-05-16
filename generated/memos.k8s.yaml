@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: memos
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: secretstore-vault
@@ -19,7 +19,7 @@ spec:
       server: http://vault.vault:8200
       version: v2
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: memos-es-postgres-c87059cc

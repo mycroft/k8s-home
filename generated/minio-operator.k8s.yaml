@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: minio-operator
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: secretstore-vault
@@ -28,7 +28,7 @@ spec:
   interval: 1m0s
   url: https://operator.min.io/
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: minio-operator-es-root-c8c61a9b

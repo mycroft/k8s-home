@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: traefik-forward-auth
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: secretstore-vault
@@ -19,7 +19,7 @@ spec:
       server: http://vault.vault:8200
       version: v2
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: traefik-forward-auth-es-oidc-c8ee8fdd
@@ -42,7 +42,7 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: traefik-forward-auth-es-secret-c8023dc9

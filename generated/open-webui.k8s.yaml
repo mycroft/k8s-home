@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: open-webui
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: secretstore-vault
@@ -19,7 +19,7 @@ spec:
       server: http://vault.vault:8200
       version: v2
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: open-webui-es-sso-c8e3e8d5
@@ -42,7 +42,7 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: open-webui-es-openai-c8ab3cb2

@@ -3,7 +3,7 @@ kind: Namespace
 metadata:
   name: privatebin
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: secretstore-vault
@@ -19,7 +19,7 @@ spec:
       server: http://vault.vault:8200
       version: v2
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: privatebin-es-minio-c843c129
@@ -42,7 +42,7 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: privatebin-es-postgres-c8d8facc
