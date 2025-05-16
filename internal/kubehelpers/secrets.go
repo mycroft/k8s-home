@@ -11,22 +11,22 @@ import (
 )
 
 func CreateSecretStore(chart constructs.Construct, namespace string) {
-	secretstore_externalsecretsio.NewSecretStoreV1Beta1(
+	secretstore_externalsecretsio.NewSecretStore(
 		chart,
 		jsii.String("secret-store"),
-		&secretstore_externalsecretsio.SecretStoreV1Beta1Props{
+		&secretstore_externalsecretsio.SecretStoreProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Namespace: jsii.String(namespace),
 				Name:      jsii.String("secretstore-vault"),
 			},
-			Spec: &secretstore_externalsecretsio.SecretStoreV1Beta1Spec{
-				Provider: &secretstore_externalsecretsio.SecretStoreV1Beta1SpecProvider{
-					Vault: &secretstore_externalsecretsio.SecretStoreV1Beta1SpecProviderVault{
+			Spec: &secretstore_externalsecretsio.SecretStoreSpec{
+				Provider: &secretstore_externalsecretsio.SecretStoreSpecProvider{
+					Vault: &secretstore_externalsecretsio.SecretStoreSpecProviderVault{
 						Server:  jsii.String("http://vault.vault:8200"),
 						Path:    jsii.String("secret"),
-						Version: secretstore_externalsecretsio.SecretStoreV1Beta1SpecProviderVaultVersion_V2,
-						Auth: &secretstore_externalsecretsio.SecretStoreV1Beta1SpecProviderVaultAuth{
-							Kubernetes: &secretstore_externalsecretsio.SecretStoreV1Beta1SpecProviderVaultAuthKubernetes{
+						Version: secretstore_externalsecretsio.SecretStoreSpecProviderVaultVersion_V2,
+						Auth: &secretstore_externalsecretsio.SecretStoreSpecProviderVaultAuth{
+							Kubernetes: &secretstore_externalsecretsio.SecretStoreSpecProviderVaultAuthKubernetes{
 								MountPath: jsii.String("kubernetes"),
 								Role:      jsii.String("external-secrets"),
 							},
@@ -43,34 +43,34 @@ func (chart *Chart) CreateSecretStore(namespace string) {
 }
 
 func CreateExternalSecret(chart constructs.Construct, namespace, name string) {
-	externalsecrets_externalsecretsio.NewExternalSecretV1Beta1(
+	externalsecrets_externalsecretsio.NewExternalSecret(
 		chart,
 		jsii.String(fmt.Sprintf("es-%s", name)),
-		&externalsecrets_externalsecretsio.ExternalSecretV1Beta1Props{
+		&externalsecrets_externalsecretsio.ExternalSecretProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Namespace: jsii.String(namespace),
 			},
-			Spec: &externalsecrets_externalsecretsio.ExternalSecretV1Beta1Spec{
-				DataFrom: &[]*externalsecrets_externalsecretsio.ExternalSecretV1Beta1SpecDataFrom{
+			Spec: &externalsecrets_externalsecretsio.ExternalSecretSpec{
+				DataFrom: &[]*externalsecrets_externalsecretsio.ExternalSecretSpecDataFrom{
 					{
-						Extract: &externalsecrets_externalsecretsio.ExternalSecretV1Beta1SpecDataFromExtract{
-							ConversionStrategy: jsii.String("Default"),
+						Extract: &externalsecrets_externalsecretsio.ExternalSecretSpecDataFromExtract{
+							ConversionStrategy: externalsecrets_externalsecretsio.ExternalSecretSpecDataFromExtractConversionStrategy_DEFAULT,
 							Key:                jsii.String(fmt.Sprintf("secret/namespaces/%s/%s", namespace, name)),
 						},
 					},
 				},
 				RefreshInterval: jsii.String("15m"),
-				SecretStoreRef: &externalsecrets_externalsecretsio.ExternalSecretV1Beta1SpecSecretStoreRef{
-					Kind: jsii.String("SecretStore"),
+				SecretStoreRef: &externalsecrets_externalsecretsio.ExternalSecretSpecSecretStoreRef{
+					Kind: externalsecrets_externalsecretsio.ExternalSecretSpecSecretStoreRefKind_SECRET_STORE,
 					Name: jsii.String("secretstore-vault"),
 				},
-				Target: &externalsecrets_externalsecretsio.ExternalSecretV1Beta1SpecTarget{
-					CreationPolicy: externalsecrets_externalsecretsio.ExternalSecretV1Beta1SpecTargetCreationPolicy_OWNER,
-					DeletionPolicy: externalsecrets_externalsecretsio.ExternalSecretV1Beta1SpecTargetDeletionPolicy_DELETE,
+				Target: &externalsecrets_externalsecretsio.ExternalSecretSpecTarget{
+					CreationPolicy: externalsecrets_externalsecretsio.ExternalSecretSpecTargetCreationPolicy_OWNER,
+					DeletionPolicy: externalsecrets_externalsecretsio.ExternalSecretSpecTargetDeletionPolicy_DELETE,
 					Immutable:      jsii.Bool(false),
 					Name:           jsii.String(name),
-					Template: &externalsecrets_externalsecretsio.ExternalSecretV1Beta1SpecTargetTemplate{
-						EngineVersion: jsii.String("v2"),
+					Template: &externalsecrets_externalsecretsio.ExternalSecretSpecTargetTemplate{
+						EngineVersion: externalsecrets_externalsecretsio.ExternalSecretSpecTargetTemplateEngineVersion_V2,
 						Type:          jsii.String("Opaque"),
 					},
 				},
