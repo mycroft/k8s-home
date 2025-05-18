@@ -4,7 +4,6 @@ import (
 	"context"
 
 	charts_apps "git.mkz.me/mycroft/k8s-home/charts/apps"
-	charts_cicd "git.mkz.me/mycroft/k8s-home/charts/cicd"
 	charts_infra "git.mkz.me/mycroft/k8s-home/charts/infra"
 	charts_observability "git.mkz.me/mycroft/k8s-home/charts/observability"
 	charts_security "git.mkz.me/mycroft/k8s-home/charts/security"
