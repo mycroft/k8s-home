@@ -99,7 +99,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		// charts_apps.NewGossipChart,
 
 		// misc: testing CI/CD
-		charts_cicd.NewCICDChart,
+		// charts_cicd.NewCICDChart,
 	}
 
 	for _, chartCallback := range charts {
