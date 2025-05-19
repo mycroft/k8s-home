@@ -70,6 +70,11 @@ then
     --head ${pr_branch_name} \
     --title "${target_update} update to ${newver}" \
     --description "Update from ${oldver} to ${newver}"
+
+  pr_id=$(tea pr --repo mycroft/k8s-home --state open --fields index,head --output simple|grep ${pr_branch_name}|cut -d' ' -f1)
+
+  echo "pr id is ${pr_id}"
+
 else
   echo "skip creating PR as branch was already existing."
 
@@ -87,6 +92,6 @@ git checkout versions.yaml
 echo
 echo "Active PRs"
 tea pr list --fields index,title --output simple
-echo "To merge: 'tea pr merge --style rebase <PR>'"
+echo "To merge: 'tea pr merge --style rebase ${pr_id}'"
 echo "Then delete branch:"
 echo "git push origin :${pr_branch_name}"
