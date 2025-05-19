@@ -49,7 +49,7 @@ images:
   ghcr.io/hoarder-app/hoarder: 0.24.1
   ghcr.io/open-webui/open-webui: 0.6.9
   ghcr.io/thomiceli/opengist: 1.10.0
-  jhaals/yopass: 11.19.1
+  jhaals/yopass: 11.20.0
   linuxserver/bookstack: v25.02.5-ls205
   linuxserver/heimdall: v2.5.7-ls238
   neosmemo/memos: 0.24.3
