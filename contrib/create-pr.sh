@@ -88,3 +88,5 @@ echo
 echo "Active PRs"
 tea pr list --fields index,title --output simple
 echo "To merge: 'tea pr merge --style rebase <PR>'"
+echo "Then delete branch:"
+echo "git push origin :${pr_branch_name}"
