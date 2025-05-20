@@ -8,7 +8,9 @@ set -e
 #   exit 1
 # fi
 #
-OPTSTRING="f:m:"
+OPTSTRING="f:m:M"
+
+automerge=0
 
 while getopts ${OPTSTRING} opt; do
   case ${opt} in
@@ -18,6 +20,9 @@ while getopts ${OPTSTRING} opt; do
       ;;
     m)
       arg=${OPTARG}
+      ;;
+    M)
+      automerge=1
       ;;
     ?)
       echo "Invalid option: -${OPTARG}."
@@ -89,9 +94,19 @@ git checkout ${current_branch}
 git branch -D ${pr_branch_name}
 git checkout versions.yaml
 
-echo
-echo "Active PRs"
-tea pr list --fields index,title --output simple
-echo "To merge: 'tea pr merge --style rebase ${pr_id}'"
-echo "Then delete branch:"
-echo "git push origin :${pr_branch_name}"
+if test $automerge = 1
+then
+  tea pr merge --style rebase ${pr_id}
+  sleep 10
+  git push origin :${pr_branch_name}
+else
+  echo
+  echo
+  echo "Active PRs"
+  tea pr list --fields index,title --output simple
+  echo
+  echo "To merge:"
+  echo "  tea pr merge --style rebase ${pr_id}"
+  echo "To clean branch:"
+  echo "  git push origin :${pr_branch_name}"
+fi
