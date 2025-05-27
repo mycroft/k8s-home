@@ -20,4 +20,4 @@ imports:
   - https://raw.githubusercontent.com/scylladb/scylla-operator/master/pkg/api/scylla/v1/scylla.scylladb.com_scyllaclusters.yaml
   - https://raw.githubusercontent.com/mariadb-operator/mariadb-operator/helm-chart-0.27.0/deploy/charts/mariadb-operator/crds/crds.yaml
   - https://raw.githubusercontent.com/vmware-tanzu/helm-charts/main/charts/velero/crds/schedules.yaml
-  - https://raw.githubusercontent.com/longhorn/longhorn-manager/v1.4.1/k8s/crds.yaml
+  - crds/longhorn-v1.9.0-crds.yaml
