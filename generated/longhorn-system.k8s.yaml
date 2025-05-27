@@ -200,7 +200,7 @@ spec:
   tls:
     secretName: secret-tls-www
 ---
-apiVersion: longhorn.io/v1beta1
+apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: longhorn-backups
@@ -215,7 +215,7 @@ spec:
   retain: 3
   task: backup
 ---
-apiVersion: longhorn.io/v1beta1
+apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: longhorn-backups-disabled
@@ -230,7 +230,7 @@ spec:
   retain: 3
   task: backup
 ---
-apiVersion: longhorn.io/v1beta1
+apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: longhorn-snapshots
@@ -245,7 +245,7 @@ spec:
   retain: 3
   task: snapshot
 ---
-apiVersion: longhorn.io/v1beta1
+apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: longhorn-snapshots-disabled
@@ -260,7 +260,7 @@ spec:
   retain: 3
   task: snapshot
 ---
-apiVersion: longhorn.io/v1beta1
+apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
   name: longhorn-snapshots-daily
