@@ -1,10 +1,6 @@
 name: Go Linting
 
 on:
-  push:
-    branches-ignore:
-      - main
-      - generated
   pull_request:
     branches:
       - main
