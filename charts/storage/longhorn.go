@@ -31,6 +31,12 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	chart := builder.NewChart(namespace)
 
+	snapshotRetain := 1
+	snapshotConcurrency := 1
+
+	backupRetain := 3
+	backupConcurrency := 1
+
 	// longhorn-crypto
 	bitnamicom.NewSealedSecret(
 		chart.Cdk8sChart,
@@ -202,8 +208,8 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				Groups: &[]*string{
 					jsii.String("default"),
 				},
-				Retain:      jsii.Number(3),
-				Concurrency: jsii.Number(2),
+				Retain:      jsii.Number(backupRetain),
+				Concurrency: jsii.Number(backupConcurrency),
 				Labels: &map[string]*string{
 					"job": jsii.String("daily-backup"),
 				},
@@ -225,8 +231,8 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				Groups: &[]*string{
 					jsii.String("disabled"),
 				},
-				Retain:      jsii.Number(3),
-				Concurrency: jsii.Number(2),
+				Retain:      jsii.Number(backupRetain),
+				Concurrency: jsii.Number(backupConcurrency),
 				Labels: &map[string]*string{
 					"job": jsii.String("daily-backup"),
 				},
@@ -248,8 +254,8 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				Groups: &[]*string{
 					jsii.String("default"),
 				},
-				Retain:      jsii.Number(3),
-				Concurrency: jsii.Number(2),
+				Retain:      jsii.Number(snapshotRetain),
+				Concurrency: jsii.Number(snapshotConcurrency),
 				Labels: &map[string]*string{
 					"job": jsii.String("multiple-snapshot"),
 				},
@@ -271,8 +277,8 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				Groups: &[]*string{
 					jsii.String("disabled"),
 				},
-				Retain:      jsii.Number(3),
-				Concurrency: jsii.Number(2),
+				Retain:      jsii.Number(snapshotRetain),
+				Concurrency: jsii.Number(snapshotConcurrency),
 				Labels: &map[string]*string{
 					"job": jsii.String("multiple-snapshot"),
 				},
@@ -294,8 +300,8 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				Groups: &[]*string{
 					jsii.String("daily"),
 				},
-				Retain:      jsii.Number(3),
-				Concurrency: jsii.Number(2),
+				Retain:      jsii.Number(snapshotRetain),
+				Concurrency: jsii.Number(snapshotConcurrency),
 				Labels: &map[string]*string{
 					"job": jsii.String("multiple-daily"),
 				},
