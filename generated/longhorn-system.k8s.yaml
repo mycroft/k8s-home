@@ -206,7 +206,7 @@ metadata:
   name: longhorn-backups
   namespace: longhorn-system
 spec:
-  concurrency: 2
+  concurrency: 1
   cron: 45 6 * * *
   groups:
     - default
@@ -221,7 +221,7 @@ metadata:
   name: longhorn-backups-disabled
   namespace: longhorn-system
 spec:
-  concurrency: 2
+  concurrency: 1
   cron: 0 5 31 2 *
   groups:
     - disabled
@@ -236,13 +236,13 @@ metadata:
   name: longhorn-snapshots
   namespace: longhorn-system
 spec:
-  concurrency: 2
+  concurrency: 1
   cron: 15 1,7,13,19 * * *
   groups:
     - default
   labels:
     job: multiple-snapshot
-  retain: 3
+  retain: 1
   task: snapshot
 ---
 apiVersion: longhorn.io/v1beta2
@@ -251,13 +251,13 @@ metadata:
   name: longhorn-snapshots-disabled
   namespace: longhorn-system
 spec:
-  concurrency: 2
+  concurrency: 1
   cron: 0 5 31 2 *
   groups:
     - disabled
   labels:
     job: multiple-snapshot
-  retain: 3
+  retain: 1
   task: snapshot
 ---
 apiVersion: longhorn.io/v1beta2
@@ -266,13 +266,13 @@ metadata:
   name: longhorn-snapshots-daily
   namespace: longhorn-system
 spec:
-  concurrency: 2
+  concurrency: 1
   cron: 0 5 31 2 *
   groups:
     - daily
   labels:
     job: multiple-daily
-  retain: 3
+  retain: 1
   task: snapshot
 ---
 apiVersion: monitoring.coreos.com/v1
