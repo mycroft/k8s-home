@@ -37,6 +37,8 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	backupRetain := 3
 	backupConcurrency := 1
 
+	group := "k8s-home"
+
 	// longhorn-crypto
 	bitnamicom.NewSealedSecret(
 		chart.Cdk8sChart,
@@ -206,7 +208,7 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Spec: &longhornio.RecurringJobV1Beta2Spec{
 				Cron: jsii.String("45 6 * * *"),
 				Groups: &[]*string{
-					jsii.String("default"),
+					jsii.String(group),
 				},
 				Retain:      jsii.Number(backupRetain),
 				Concurrency: jsii.Number(backupConcurrency),
@@ -252,7 +254,7 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Spec: &longhornio.RecurringJobV1Beta2Spec{
 				Cron: jsii.String("15 1,7,13,19 * * *"),
 				Groups: &[]*string{
-					jsii.String("default"),
+					jsii.String(group),
 				},
 				Retain:      jsii.Number(snapshotRetain),
 				Concurrency: jsii.Number(snapshotConcurrency),
