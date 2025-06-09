@@ -209,7 +209,7 @@ spec:
   concurrency: 1
   cron: 45 6 * * *
   groups:
-    - default
+    - k8s-home
   labels:
     job: daily-backup
   retain: 3
@@ -239,7 +239,7 @@ spec:
   concurrency: 1
   cron: 15 1,7,13,19 * * *
   groups:
-    - default
+    - k8s-home
   labels:
     job: multiple-snapshot
   retain: 1
