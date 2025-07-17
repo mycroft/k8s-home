@@ -57,7 +57,7 @@ images:
   paperlessngx/paperless-ngx: 2.17.1
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: 1.7.8
-  registry.gitlab.com/timvisee/send: v3.4.25
+  registry.gitlab.com/timvisee/send: 3.4.27
   registry.mkz.me/mycroft/whatismyip: 5
   requarks/wiki: 2.5.307
   redis: 8.0.2
