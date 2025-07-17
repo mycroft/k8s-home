@@ -7,8 +7,8 @@ imports:
   - https://raw.githubusercontent.com/fluxcd/source-controller/v1.3.0/config/crd/bases/source.toolkit.fluxcd.io_helmcharts.yaml
   - https://raw.githubusercontent.com/fluxcd/source-controller/v1.3.0/config/crd/bases/source.toolkit.fluxcd.io_helmrepositories.yaml
   - https://github.com/fluxcd/helm-controller/releases/download/v1.0.1/helm-controller.crds.yaml
-  - https://raw.githubusercontent.com/cert-manager/cert-manager/master/deploy/crds/crd-clusterissuers.yaml
-  - certificates:=https://raw.githubusercontent.com/cert-manager/cert-manager/master/deploy/crds/crd-certificates.yaml
+  - https://raw.githubusercontent.com/cert-manager/cert-manager/v1.18.2/deploy/crds/crd-clusterissuers.yaml
+  - certificates:=https://raw.githubusercontent.com/cert-manager/cert-manager/v1.18.2/deploy/crds/crd-certificates.yaml
   - https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.20.2/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
   - secretstore:=https://raw.githubusercontent.com/external-secrets/external-secrets/v0.17.0/config/crds/bases/external-secrets.io_secretstores.yaml
   - externalsecrets:=https://raw.githubusercontent.com/external-secrets/external-secrets/v0.17.0/config/crds/bases/external-secrets.io_externalsecrets.yaml
