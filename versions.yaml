@@ -60,7 +60,7 @@ images:
   registry.gitlab.com/timvisee/send: v3.4.27
   registry.mkz.me/mycroft/whatismyip: 5
   requarks/wiki: 2.5.307
-  redis: 8.0.3
+  redis: 8.2.0
   sissbruecker/linkding: 1.41.0
   thomseddon/traefik-forward-auth: 2.2.0
   vaultwarden/server: 1.34.3
