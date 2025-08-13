@@ -76,7 +76,7 @@ data:
     image:
       repository: requarks/wiki
       imagePullPolicy: IfNotPresent
-      tag: 2.5.307
+      tag: 2.5.308
 
     ingress:
       enabled: true
@@ -114,7 +114,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 9e9b30849960f1164ecb594e8e0b28ce5cce20745facff602b3a7e2858ef6f5e
+    configMapHash: e82bee2a42f98df197c0f7a07c9dd14e8382a8d0a7e4aba8a76c39c45c3932b7
   name: wiki
   namespace: wikijs
 spec:
