@@ -166,7 +166,7 @@ spec:
         kind: HelmRepository
         name: temporal
         namespace: flux-system
-      version: 0.64.0
+      version: 0.65.0
   install:
     createNamespace: false
     skipCRDs: false
