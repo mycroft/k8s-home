@@ -2,7 +2,7 @@ helmcharts:
   aqua/trivy-operator: 0.18.4
   authentik/authentik: 2025.8.1
   calibre-web/calibre-web: 20.2.8
-  dex/dex: 0.23.1
+  dex/dex: 0.24.0
   external-secrets/external-secrets: 0.19.2
   grafana/alloy: 1.2.1
   grafana/loki: 6.38.0
