@@ -48,7 +48,7 @@ images:
   ghcr.io/gchq/cyberchef: 10.19.4
   ghcr.io/hoarder-app/hoarder: 0.27.1
   ghcr.io/open-webui/open-webui: 0.6.28
-  ghcr.io/thomiceli/opengist: 1.10.0
+  ghcr.io/thomiceli/opengist: 1.11.0
   jhaals/yopass: 12.2.0
   linuxserver/bookstack: v25.07.2-ls219
   linuxserver/heimdall: v2.5.7-ls238
