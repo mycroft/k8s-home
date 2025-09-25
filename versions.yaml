@@ -19,7 +19,7 @@ helmcharts:
   linkerd/linkerd-crds: 1.8.0
   linkerd/linkerd-control-plane: 1.16.11
   linkerd/linkerd-viz: 30.12.11
-  longhorn/longhorn: 1.9.1
+  longhorn/longhorn: 1.10.0
   mariadb-operator/mariadb-operator: 25.8.3
   minio/operator: 7.1.1
   nats/nats: 1.3.14
