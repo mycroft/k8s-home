@@ -20,7 +20,7 @@ helmcharts:
   linkerd/linkerd-control-plane: 1.16.11
   linkerd/linkerd-viz: 30.12.11
   longhorn/longhorn: 1.10.0
-  mariadb-operator/mariadb-operator: 25.8.3
+  mariadb-operator/mariadb-operator: 25.8.4
   minio/operator: 7.1.1
   nats/nats: 1.3.14
   onechart/onechart: 0.73.0
