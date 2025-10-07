@@ -50,7 +50,7 @@ images:
   ghcr.io/open-webui/open-webui: 0.6.32
   ghcr.io/thomiceli/opengist: 1.11.1
   jhaals/yopass: 12.3.0
-  linuxserver/bookstack: v25.07.2-ls221
+  linuxserver/bookstack: v25.07.3-ls222
   linuxserver/heimdall: v2.5.7-ls238
   neosmemo/memos: 0.25.1
   paulbouwer/hello-kubernetes: 1.10.1
