@@ -56,7 +56,7 @@ images:
   paulbouwer/hello-kubernetes: 1.10.1
   paperlessngx/paperless-ngx: 2.19.3
   pawelmalak/snippet-box: latest
-  privatebin/nginx-fpm-alpine: 2.0.1
+  privatebin/nginx-fpm-alpine: 2.0.2
   registry.gitlab.com/timvisee/send: v3.4.27
   registry.mkz.me/mycroft/whatismyip: 5
   requarks/wiki: 2.5.308
