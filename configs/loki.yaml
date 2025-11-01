@@ -14,6 +14,10 @@ loki:
       schema: v13
   storage:
     type: filesystem
+    bucketsName:
+      chunks: loki_chunks
+      ruler: loki_ruler
+      admin: loki_admin
 
 deploymentMode: SingleBinary
 
