@@ -65,6 +65,10 @@ data:
           schema: v13
       storage:
         type: filesystem
+        bucketsName:
+          chunks: loki_chunks
+          ruler: loki_ruler
+          admin: loki_admin
 
     deploymentMode: SingleBinary
 
@@ -99,7 +103,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: a77c9be3fb40886bc0ecf0b7faa620fc5d3d8cba556b7d0d6bc43965004ee9e6
+    configMapHash: 14d2815fb9bf5b40427347f4f3d8b766c1c8830eb7789652064a34e8b83c39fc
   name: loki
   namespace: loki
 spec:
