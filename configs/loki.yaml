@@ -14,7 +14,7 @@ loki:
       schema: v13
   storage:
     type: filesystem
-    bucketName:
+    bucketNames:
       chunks: loki_chunks
       ruler: loki_ruler
       admin: loki_admin
