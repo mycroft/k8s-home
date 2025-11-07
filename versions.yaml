@@ -28,7 +28,7 @@ helmcharts:
   opensearch/opensearch-dashboards: 2.10.0
   postgres-operator/postgres-operator: 1.14.0
   prometheus-community/kube-prometheus-stack: 79.4.0
-  prometheus-community/prometheus-blackbox-exporter: 11.4.1
+  prometheus-community/prometheus-blackbox-exporter: 11.4.2
   redmine/redmine: 27.1.0
   requarks/wiki: 2.2.24
   temporal/temporal: 0.70.0
