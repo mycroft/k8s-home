@@ -175,7 +175,7 @@ spec:
                   name: postgres
             - name: CONFIG_PATH
               value: /run/cfg
-          image: privatebin/nginx-fpm-alpine:2.0.2
+          image: privatebin/nginx-fpm-alpine:2.0.3
           name: privatebin
           volumeMounts:
             - mountPath: /srv/cfg
