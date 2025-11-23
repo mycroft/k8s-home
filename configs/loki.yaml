@@ -45,6 +45,12 @@ monitoring:
     metricsInstance:
       enabled: false
 
+lokiCanary:
+  enabled: false
+
+test:
+  enabled: false
+
 # gateway:
 #   service:
 #     labels:
