@@ -54,6 +54,10 @@ data:
       auth_enabled: false
       commonConfig:
         replication_factor: 1
+      compactor:
+        retention_enabled: true
+        retention_delete_delay: 1h
+        delete_request_store: filesystem
       limits_config:
         retention_period: 336h
       schemaConfig:
@@ -111,7 +115,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 665643b132b3bf1e5929f52541e9aede1117e162d987827fe48ea5ba1a23ff7c
+    configMapHash: b14fd9d280c6028c530e5e8ebfa9693af051cec7ce0e0527a9d4b26075864182
   name: loki
   namespace: loki
 spec:
