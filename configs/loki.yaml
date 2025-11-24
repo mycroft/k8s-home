@@ -3,6 +3,10 @@ loki:
   auth_enabled: false
   commonConfig:
     replication_factor: 1
+  compactor:
+    retention_enabled: true
+    retention_delete_delay: 1h
+    delete_request_store: filesystem
   limits_config:
     retention_period: 336h
   schemaConfig:
