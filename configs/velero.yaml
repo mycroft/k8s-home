@@ -36,3 +36,8 @@ upgradeJobResources:
   limits:
     cpu: 100m
     memory: 1024Mi
+
+kubectl:
+  image:
+    repository: public.ecr.aws/bitnami/kubectl
+    tag: latest
