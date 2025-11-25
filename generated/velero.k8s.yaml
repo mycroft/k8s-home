@@ -96,12 +96,17 @@ data:
       limits:
         cpu: 100m
         memory: 1024Mi
+
+    kubectl:
+      image:
+        repository: public.ecr.aws/bitnami/kubectl
+        tag: latest
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: b1927108d967daeafc32a9bc1869fd87ef1162707e4a85aa099d2071a7e1bf13
+    configMapHash: ca9f4245deb21ba4b24602868c48ed524e2761d2e055e7bb452d49575fb2c050
   name: velero
   namespace: velero
 spec:
