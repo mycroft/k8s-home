@@ -96,7 +96,7 @@ spec:
                   name: mariadb
             - name: SESSION_LIFETIME
               value: "1800"
-          image: linuxserver/bookstack:v25.11.3-ls229
+          image: linuxserver/bookstack:v25.11.5-ls232
           name: bookstack
           volumeMounts:
             - mountPath: /config
