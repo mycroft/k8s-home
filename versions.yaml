@@ -46,7 +46,7 @@ images:
   freshrss/freshrss: 1.27.1
   ghcr.io/diced/zipline: 4.3.2
   ghcr.io/gchq/cyberchef: 10.19.4
-  ghcr.io/hoarder-app/hoarder: 0.29.2
+  ghcr.io/hoarder-app/hoarder: 0.29.3
   ghcr.io/open-webui/open-webui: 0.6.41
   ghcr.io/thomiceli/opengist: 1.11.1
   jhaals/yopass: 12.5.0
