@@ -59,7 +59,7 @@ images:
   privatebin/nginx-fpm-alpine: 2.0.3
   registry.gitlab.com/timvisee/send: v3.4.27
   registry.mkz.me/mycroft/whatismyip: 5
-  requarks/wiki: 2.5.310
+  requarks/wiki: 2.5.311
   redis: 8.4.0
   sissbruecker/linkding: 1.45.0
   thomseddon/traefik-forward-auth: 2.2.0
