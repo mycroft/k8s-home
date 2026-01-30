@@ -15,7 +15,7 @@ imports:
   - podmonitor:=https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/refs/heads/main/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
   - servicemonitor:=https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/refs/heads/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
   - https://raw.githubusercontent.com/traefik/traefik/v2.10.7/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
-  - https://raw.githubusercontent.com/zalando/postgres-operator/refs/heads/master/manifests/postgresql.crd.yaml
+  - https://raw.githubusercontent.com/zalando/postgres-operator/v1.15.1/manifests/postgresql.crd.yaml
   - https://raw.githubusercontent.com/minio/operator/v5.0.15/resources/base/crds/minio.min.io_tenants.yaml
   - https://raw.githubusercontent.com/scylladb/scylla-operator/master/pkg/api/scylla/v1/scylla.scylladb.com_scyllaclusters.yaml
   - https://raw.githubusercontent.com/mariadb-operator/mariadb-operator/v25.8.4/deploy/crds/crds.yaml
