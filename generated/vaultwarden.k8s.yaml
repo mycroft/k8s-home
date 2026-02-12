@@ -36,7 +36,7 @@ spec:
         - env:
             - name: DOMAIN
               value: https://vaultwarden.services.mkz.me
-          image: vaultwarden/server:1.35.2
+          image: vaultwarden/server:1.35.3
           name: vaultwarden
           volumeMounts:
             - mountPath: /data
