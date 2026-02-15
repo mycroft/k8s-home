@@ -112,7 +112,7 @@ spec:
                 secretKeyRef:
                   key: password
                   name: postgresql
-          image: vikunja/vikunja:0.24.6
+          image: vikunja/vikunja:1.1.0
           name: vikunja
           volumeMounts:
             - mountPath: /app/vikunja/files
