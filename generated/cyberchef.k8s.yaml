@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - env: []
-          image: ghcr.io/gchq/cyberchef:10.20.0
+          image: ghcr.io/gchq/cyberchef:10.22.1
           name: cyberchef
           volumeMounts: []
       volumes: []
