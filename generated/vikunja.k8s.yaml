@@ -119,6 +119,8 @@ spec:
               name: data
             - mountPath: /etc/vikunja
               name: config
+      securityContext:
+        fsGroup: 1000
       volumes:
         - name: config
           secret:

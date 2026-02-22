@@ -39,6 +39,8 @@ spec:
           volumeMounts:
             - mountPath: /app/data
               name: data
+      securityContext:
+        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:

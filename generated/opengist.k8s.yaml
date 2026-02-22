@@ -95,6 +95,8 @@ spec:
           volumeMounts:
             - mountPath: /opengist
               name: opengist
+      securityContext:
+        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:

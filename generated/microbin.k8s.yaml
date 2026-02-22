@@ -104,6 +104,8 @@ spec:
           volumeMounts:
             - mountPath: /app/microbin_data
               name: micro-bin
+      securityContext:
+        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:

@@ -141,6 +141,8 @@ spec:
               name: zipline-uploads
             - mountPath: /zipline/public
               name: zipline-public
+      securityContext:
+        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:

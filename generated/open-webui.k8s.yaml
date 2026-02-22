@@ -129,6 +129,8 @@ spec:
           volumeMounts:
             - mountPath: /openai
               name: openai
+      securityContext:
+        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:
