@@ -108,6 +108,7 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				StorageSize: "1Gi",
 			},
 		},
+		1000,
 	)
 
 	kubehelpers.NewAppIngress(

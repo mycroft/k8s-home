@@ -31,7 +31,7 @@ func NewStatefulSet(
 	configMapMounts []ConfigMapMount,
 	storages []StatefulSetVolume,
 ) (string, string) {
-	return NewStatefulSetWithSecrets(chart, namespace, appName, appImage, appPort, labels, env, commands, configMapMounts, []SecretMount{}, storages)
+	return NewStatefulSetWithSecrets(chart, namespace, appName, appImage, appPort, labels, env, commands, configMapMounts, []SecretMount{}, storages, 0)
 }
 
 // NewStatefulSet creates a new statefulset and returns its name and its service name
@@ -45,6 +45,7 @@ func NewStatefulSetWithSecrets(
 	configMapMounts []ConfigMapMount,
 	secretMapMounts []SecretMount,
 	storages []StatefulSetVolume,
+	fsGroup int,
 ) (string, string) {
 	// Warning: Changing statefulSet object names will rename PVCs
 	serviceObjectName := fmt.Sprintf("%s-svc", appName)
@@ -168,6 +169,9 @@ func NewStatefulSetWithSecrets(
 					Spec: &k8s.PodSpec{
 						Containers: &[]*k8s.Container{
 							&container,
+						},
+						SecurityContext: &k8s.PodSecurityContext{
+							FsGroup: jsii.Number(fsGroup),
 						},
 						Volumes: &volumes,
 					},
