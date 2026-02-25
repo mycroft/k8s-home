@@ -33,10 +33,12 @@ ingress:
 
 postgresql:
   enabled: false
+
+externalPostgresql:
   ssl: false
-  postgresqlHost: postgres-instance.postgres
-  postgresqlPort: 5432
-  postgresqlUser: wikijs
-  postgresqlDatabase: wikijs
+  host: postgres-instance.postgres
+  port: 5432
+  username: wikijs
+  database: wikijs
   existingSecret: postgresql
   existingSecretKey: password
