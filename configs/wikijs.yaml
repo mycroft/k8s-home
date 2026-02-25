@@ -32,7 +32,7 @@ ingress:
       secretName: secret-tls-www
 
 postgresql:
-  enabled: false
+  enabled: true
   ssl: false
   postgresqlHost: postgres-instance.postgres
   postgresqlPort: 5432
