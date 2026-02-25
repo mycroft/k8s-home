@@ -102,7 +102,7 @@ data:
           secretName: secret-tls-www
 
     postgresql:
-      enabled: true
+      enabled: false
       ssl: false
       postgresqlHost: postgres-instance.postgres
       postgresqlPort: 5432
@@ -115,7 +115,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: e9fd05a26aa1a0b83a9abc26e437da4307f4f1f40104903b1105c48cca39c420
+    configMapHash: 268dfc93fa49076ceb512778cd009180270d8fd2359f98aa21882b3ce6dc2208
   name: wiki
   namespace: wikijs
 spec:
