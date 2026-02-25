@@ -29,7 +29,7 @@ helmcharts:
   prometheus-community/kube-prometheus-stack: 82.2.0
   prometheus-community/prometheus-blackbox-exporter: 11.8.0
   redmine/redmine: 27.1.0
-  requarks/wiki: 2.2.24
+  requarks/wiki: 3.0.0
   temporal/temporal: 0.73.1
   scylla/scylla-operator: v1.20.0
   sealed-secrets/sealed-secrets: 2.18.1
