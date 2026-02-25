@@ -105,6 +105,7 @@ data:
       enabled: false
       ssl: false
       postgresqlHost: postgres-instance.postgres
+      postgresqlPort: 5432
       postgresqlUser: wikijs
       postgresqlDatabase: wikijs
       existingSecret: postgresql
@@ -114,7 +115,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: f2bf1477f8ddf39dd82102de3d3c3c4ef25ee3adba97c4832247909ca9d9f5d0
+    configMapHash: 268dfc93fa49076ceb512778cd009180270d8fd2359f98aa21882b3ce6dc2208
   name: wiki
   namespace: wikijs
 spec:
