@@ -35,6 +35,7 @@ postgresql:
   enabled: false
   ssl: false
   postgresqlHost: postgres-instance.postgres
+  postgresqlPort: 5432
   postgresqlUser: wikijs
   postgresqlDatabase: wikijs
   existingSecret: postgresql
