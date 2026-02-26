@@ -88,7 +88,7 @@ spec:
             - --redis
             - redis://yopass-redis-svc-c8a159bf:6379
           env: []
-          image: jhaals/yopass:12.5.0
+          image: jhaals/yopass:13.0.0
           name: yopass
           volumeMounts: []
       volumes: []
