@@ -33,7 +33,7 @@ helmcharts:
   temporal/temporal: 0.73.1
   scylla/scylla-operator: v1.20.0
   sealed-secrets/sealed-secrets: 2.18.3
-  vmware-tanzu/velero: 11.3.2
+  vmware-tanzu/velero: 11.4.0
   wiremind/karma: 2.11.0
 images:
   corentinth/it-tools: 2024.10.22-7ca5933
