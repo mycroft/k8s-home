@@ -69,6 +69,7 @@ func GetEntriesFromIndex(body []byte) (map[string][]*Entry, error) {
 
 func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]string, error) {
 	retVersions := map[string]string{}
+	versions := builder.Versions
 
 	for _, helmRelease := range helmChartVersions {
 		chartName := fmt.Sprintf("%s/%s", helmRelease.RepositoryName, helmRelease.ChartName)
@@ -114,6 +115,21 @@ func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]st
 					continue
 				}
 			}
+
+			pattern := ".+"
+			if _, ok := versions.Patterns.HelmCharts[chartName]; ok {
+				pattern = versions.Patterns.HelmCharts[chartName]
+			}
+
+			matched, err := regexp.MatchString(pattern, chartVersion.Version)
+			if err != nil {
+				panic(err)
+			}
+
+			if !matched {
+				continue
+			}
+
 			foundVersions = append(foundVersions, chartVersion.Version)
 		}
 
