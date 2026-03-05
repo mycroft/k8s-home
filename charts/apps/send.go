@@ -19,7 +19,7 @@ func NewSendChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.NewNamespace(namespace)
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "minio")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "garage")
 
 	sendLabels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("send"),
@@ -32,14 +32,14 @@ func NewSendChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	env := []*k8s.EnvVar{
 		{Name: jsii.String("BASE_URL"), Value: jsii.String(fmt.Sprintf("https://%s", ingressHost))},
 		{Name: jsii.String("REDIS_HOST"), Value: jsii.String(redisHost)},
-		{Name: jsii.String("S3_ENDPOINT"), Value: jsii.String("https://minio-storage.services.mkz.me")},
+		{Name: jsii.String("S3_ENDPOINT"), Value: jsii.String("https://s3-api.iop.cx")},
 		{Name: jsii.String("S3_BUCKET"), Value: jsii.String("send")},
 		{Name: jsii.String("S3_USE_PATH_STYLE_ENDPOINT"), Value: jsii.String("true")},
 		{
 			Name: jsii.String("AWS_ACCESS_KEY_ID"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Name: jsii.String("minio"),
+					Name: jsii.String("garage"),
 					Key:  jsii.String("AWS_ACCESS_KEY_ID"),
 				},
 			},
@@ -48,7 +48,7 @@ func NewSendChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name: jsii.String("AWS_SECRET_ACCESS_KEY"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Name: jsii.String("minio"),
+					Name: jsii.String("garage"),
 					Key:  jsii.String("AWS_ACCESS_SECRET_KEY"),
 				},
 			},
