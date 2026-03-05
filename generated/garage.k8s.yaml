@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: garage
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: garage
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://charts.derwitt.dev/
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: garage-helm-val-garage-c86fe7af
+  namespace: garage
+data:
+  values.yaml: |
+    garage:
+      # Use only 2 replicas per object
+      replicationFactor: 2
+
+    # Start 4 instances (StatefulSets) of garage
+    deployment:
+      replicaCount: 4
+
+    # Override default storage class and size
+    persistence:
+      meta:
+        storageClass: "longhorn-crypto-global"
+        size: 100Mi
+      data:
+        storageClass: "longhorn-crypto-global"
+        size: 64Gi
+
+    ingress:
+      s3:
+        api:
+          enabled: true
+          className: "traefik"
+          annotations:
+            cert-manager.io/cluster-issuer: "letsencrypt-prod"
+          hosts:
+            - host: s3-api.iop.cx
+              paths:
+                - path: /
+                  pathType: Prefix
+          tls:
+            - secretName: garage-ingress-cert
+              hosts:
+                - s3-api.iop.cx
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: 773eb7a781ef2d4ad92ebaade7a385297e6dea6d68279672d1000bc78354f713
+  name: garage
+  namespace: garage
+spec:
+  chart:
+    spec:
+      chart: garage
+      sourceRef:
+        kind: HelmRepository
+        name: garage
+        namespace: flux-system
+      version: v2.1.0
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: garage-helm-val-garage-c86fe7af
+      valuesKey: values.yaml
