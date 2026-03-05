@@ -21,7 +21,7 @@ func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "minio")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "garage")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgres")
 
 	labels := map[string]*string{
@@ -51,7 +51,7 @@ func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name: jsii.String("AWS_ACCESS_KEY_ID"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Name: jsii.String("minio"),
+					Name: jsii.String("garage"),
 					Key:  jsii.String("access_key_id"),
 				},
 			},
@@ -60,7 +60,7 @@ func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name: jsii.String("AWS_SECRET_ACCESS_KEY"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Name: jsii.String("minio"),
+					Name: jsii.String("garage"),
 					Key:  jsii.String("secret_access_key"),
 				},
 			},
