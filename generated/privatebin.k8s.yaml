@@ -22,13 +22,13 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: privatebin-es-minio-c843c129
+  name: privatebin-es-garage-c8f89227
   namespace: privatebin
 spec:
   dataFrom:
     - extract:
         conversionStrategy: Default
-        key: secret/namespaces/privatebin/minio
+        key: secret/namespaces/privatebin/garage
   refreshInterval: 15m
   secretStoreRef:
     kind: SecretStore
@@ -37,7 +37,7 @@ spec:
     creationPolicy: Owner
     deletionPolicy: Delete
     immutable: false
-    name: minio
+    name: garage
     template:
       engineVersion: v2
       type: Opaque
@@ -157,12 +157,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: access_key_id
-                  name: minio
+                  name: garage
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   key: secret_access_key
-                  name: minio
+                  name: garage
             - name: POSTGRES_USERNAME
               valueFrom:
                 secretKeyRef:
