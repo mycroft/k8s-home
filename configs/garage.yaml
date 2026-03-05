@@ -1,0 +1,33 @@
+garage:
+  # Use only 2 replicas per object
+  replicationFactor: 2
+
+# Start 4 instances (StatefulSets) of garage
+deployment:
+  replicaCount: 4
+
+# Override default storage class and size
+persistence:
+  meta:
+    storageClass: "longhorn-crypto-global"
+    size: 100Mi
+  data:
+    storageClass: "longhorn-crypto-global"
+    size: 64Gi
+
+ingress:
+  s3:
+    api:
+      enabled: true
+      className: "traefik"
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      hosts:
+        - host: s3-api.iop.cx
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: garage-ingress-cert
+          hosts:
+            - s3-api.iop.cx

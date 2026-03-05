@@ -37,6 +37,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_storage.NewNATSChart,
 		charts_storage.NewMariaDBOperator,
 		charts_storage.NewMariaDBChart,
+		charts_storage.NewGarage,
 		// charts_storage.NewOpenSearchChart,
 
 		// misc infra charts
