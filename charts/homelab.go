@@ -61,7 +61,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		// charts_observability.NewJaegerChart
 
 		// apps
-		charts_apps.NewBookstackChart,
+		// charts_apps.NewBookstackChart,
 		charts_apps.NewCalibreWebChart,
 		charts_apps.NewCyberchefChart,
 		// charts_apps.NewEmojivotoChart,
