@@ -119,6 +119,8 @@ spec:
     spec:
       containers:
         - env:
+            - name: DATA_DIR
+              value: /open-webui
             - name: OAUTH_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -153,8 +155,8 @@ spec:
           image: ghcr.io/open-webui/open-webui:0.8.8
           name: open-webui
           volumeMounts:
-            - mountPath: /openai
-              name: openai
+            - mountPath: /open-webui
+              name: open-webui
       securityContext:
         fsGroup: 0
       volumes: []
@@ -162,7 +164,7 @@ spec:
     - metadata:
         labels:
           app.kubernetes.io/name: open-webui
-        name: openai
+        name: open-webui
       spec:
         accessModes:
           - ReadWriteOnce
