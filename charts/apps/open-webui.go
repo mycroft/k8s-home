@@ -28,6 +28,10 @@ func NewOpenWebuiChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	env := []*k8s.EnvVar{
 		{
+			Name:  jsii.String("DATA_DIR"),
+			Value: jsii.String("/open-webui"),
+		},
+		{
 			Name: jsii.String("OAUTH_CLIENT_ID"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
@@ -98,8 +102,8 @@ func NewOpenWebuiChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		[]kubehelpers.ConfigMapMount{},
 		[]kubehelpers.StatefulSetVolume{
 			{
-				Name:        "openai",
-				MountPath:   "/openai",
+				Name:        "open-webui",
+				MountPath:   "/open-webui",
 				StorageSize: "8Gi",
 			},
 		},
