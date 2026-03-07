@@ -65,6 +65,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: open-webui-es-ollama-c8592bfd
+  namespace: open-webui
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/open-webui/ollama
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: ollama
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -114,7 +137,10 @@ spec:
             - name: ENABLE_OAUTH_SIGNUP
               value: "true"
             - name: OLLAMA_BASE_URL
-              value: http://10.0.0.8:11434
+              valueFrom:
+                secretKeyRef:
+                  key: url
+                  name: ollama
             - name: ENABLE_OPENAI_API
               value: "True"
             - name: OPENAI_API_KEY
