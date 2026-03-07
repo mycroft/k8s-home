@@ -20,6 +20,7 @@ func NewOpenWebuiChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "sso")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "openai")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "ollama")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -58,8 +59,13 @@ func NewOpenWebuiChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Value: jsii.String("true"),
 		},
 		{
-			Name:  jsii.String("OLLAMA_BASE_URL"),
-			Value: jsii.String("http://10.0.0.8:11434"),
+			Name: jsii.String("OLLAMA_BASE_URL"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Name: jsii.String("ollama"),
+					Key:  jsii.String("url"),
+				},
+			},
 		},
 		{
 			Name:  jsii.String("ENABLE_OPENAI_API"),
