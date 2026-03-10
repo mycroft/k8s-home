@@ -45,7 +45,7 @@ Most important apps installed on my cluster are:
 
 ## Deployment
 
-When a PR is merged in `main`, a Drone CI-based pipeline is started to build cdk8s dependencies, then build charts, and finally push generated charts in the `generated` branch. This branch is pulled every 2 minutes by `flux`. See `.drone.yml`.
+When a PR is merged in `main`, a Gitea Actions based pipeline is started to build cdk8s dependencies, then build charts, and finally push generated charts in the `generated` branch. This branch is pulled every 2 minutes by `flux`. See `.gitea/workflows/deploy.yaml`.
 
 ## Maintenance notes
 
@@ -79,10 +79,11 @@ Then re-run the `bootstrap` command as seen in the `Installation` section.
 To check outdated Helm charts & images, use:
 
 ```sh
-go build && ./k8s-home -check-version
+go build -o ./... && ./k8s-home check-versions
 ```
 
-Services must be updated by modifying versions in source code. Note all containers are not checked in with this command.
+To run updates, use the `bash contrib/create-pr.sh [project]` command where `[project]` is the component to update. The `[project]` must include the whole project name and component name.
+Never update to release candidates, alpha or beta versions. Note all containers are not checked in with this command.
 
 ### Non automated upgrades
 
