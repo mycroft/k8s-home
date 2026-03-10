@@ -27,3 +27,9 @@ ingress:
     - hosts:
         - n8n.iop.cx
       secretName: secret-tls-n8n
+
+worker:
+  mode: queue
+
+webhook:
+  mode: queue
