@@ -11,7 +11,7 @@ metadata:
 spec:
   interval: 1m0s
   type: oci
-  url: oci://tccr.io/truecharts
+  url: oci://oci.trueforge.org/truecharts
 ---
 apiVersion: v1
 kind: ConfigMap
