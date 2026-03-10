@@ -76,6 +76,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_apps.NewLinkdingChart,
 		charts_apps.NewMemosChart,
 		charts_apps.NewMicrobinChart,
+		charts_apps.NewN8nChart,
 		charts_apps.NewOpengistChart,
 		charts_apps.NewPaperlessNGXChart,
 		charts_apps.NewPrivatebinChart,
