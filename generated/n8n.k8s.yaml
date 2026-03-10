@@ -1,0 +1,175 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: n8n
+---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: n8n
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: n8n-es-postgresql-c8dd68c9
+  namespace: n8n
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/n8n/postgresql
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: redis
+  name: n8n-redis-svc-c8f0e5af
+  namespace: n8n
+spec:
+  ports:
+    - name: http
+      port: 6379
+  selector:
+    app.kubernetes.io/component: redis
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: n8n-redis-sts-c8aac79b
+  namespace: n8n
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: redis
+  serviceName: n8n-redis-svc-c8f0e5af
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: redis
+    spec:
+      containers:
+        - command:
+            - redis-server
+            - --save
+            - "60"
+            - "1"
+            - --loglevel
+            - warning
+          env: []
+          image: redis:8.6.1
+          name: redis
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      securityContext:
+        fsGroup: 0
+      volumes: []
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/component: redis
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: helm-charts
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://community-charts.github.io/helm-charts
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: n8n-helm-val-helm-charts-c847bfa7
+  namespace: n8n
+data:
+  values.yaml: |
+    # https://github.com/community-charts/helm-charts/blob/main/charts/n8n/values.yaml
+    db:
+      type: postgresdb
+
+    externalRedis:
+      host: "n8n-redis-svc-c8f0e5af"
+      port: 6379
+
+    externalPostgresql:
+      host: postgres-instance.postgres
+      port: 5432
+      username: n8n
+      database: n8n
+      existingSecret: postgresql
+
+    ingress:
+      enabled: true
+      className: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts:
+        - host: n8n.iop.cx
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - n8n.iop.cx
+          secretName: secret-tls-n8n
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: e678285be5d047320742439b43212c9ed48bbaf24bb9c6a433f5de4530248052
+  name: n8n
+  namespace: n8n
+spec:
+  chart:
+    spec:
+      chart: n8n
+      sourceRef:
+        kind: HelmRepository
+        name: helm-charts
+        namespace: flux-system
+      version: 1.16.29
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: n8n-helm-val-helm-charts-c847bfa7
+      valuesKey: values.yaml
