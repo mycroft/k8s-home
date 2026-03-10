@@ -86,13 +86,13 @@ data:
     image:
       longhorn:
         instanceManager:
-          tag: v1.11.1
+          tag: v1.11.0-hotfix-1
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 05198fe8deb7fa9e77e839d9f384784ceb1b65f1b64e627d607b92e7bb1e092a
+    configMapHash: b88497e25ba391d1fd874061470de8079a2f4736107bd791798eb813ba5f1319
   name: longhorn
   namespace: longhorn-system
 spec:
