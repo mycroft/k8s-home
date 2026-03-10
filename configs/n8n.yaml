@@ -29,7 +29,8 @@ ingress:
       secretName: secret-tls-n8n
 
 worker:
-  mode: queue
+  mode: regular
 
 webhook:
-  mode: queue
+  mode: regular
+  url: "https://n8n.iop.cx"
