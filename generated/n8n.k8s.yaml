@@ -146,12 +146,18 @@ data:
         - hosts:
             - n8n.iop.cx
           secretName: secret-tls-n8n
+
+    worker:
+      mode: queue
+
+    webhook:
+      mode: queue
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: e678285be5d047320742439b43212c9ed48bbaf24bb9c6a433f5de4530248052
+    configMapHash: 3d5e8177f9d5eb5aaf43f9885753ae6ced342a81f16924d49cf1794c43c91555
   name: n8n
   namespace: n8n
 spec:
