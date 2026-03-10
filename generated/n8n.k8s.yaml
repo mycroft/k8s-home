@@ -148,16 +148,17 @@ data:
           secretName: secret-tls-n8n
 
     worker:
-      mode: queue
+      mode: regular
 
     webhook:
-      mode: queue
+      mode: regular
+      url: "https://n8n.iop.cx"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 3d5e8177f9d5eb5aaf43f9885753ae6ced342a81f16924d49cf1794c43c91555
+    configMapHash: 60a6ef763a0c16a96046750abc2d1644742d2bda12d8693deadbd56ec763a897
   name: n8n
   namespace: n8n
 spec:
