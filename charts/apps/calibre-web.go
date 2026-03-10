@@ -20,7 +20,7 @@ func NewCalibreWebChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	chart.CreateHelmRepository(
 		repositoryName,
-		"oci://tccr.io/truecharts",
+		"oci://oci.trueforge.org/truecharts",
 	)
 
 	chart.CreateHelmRelease(
