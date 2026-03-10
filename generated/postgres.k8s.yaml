@@ -15,6 +15,7 @@ spec:
     freshrss: freshrss-admin
     grafana: grafana-admin
     memos: memos-admin
+    n8n: n8n-admin
     paperlessngx: paperlessngx-admin
     privatebin: privatebin-admin
     temporal: temporal-admin
@@ -53,6 +54,10 @@ spec:
       - createdb
     memos: []
     memos-admin:
+      - superuser
+      - createdb
+    n8n: []
+    n8n-admin:
       - superuser
       - createdb
     paperlessngx: []
