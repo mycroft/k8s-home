@@ -1,0 +1,29 @@
+# https://github.com/community-charts/helm-charts/blob/main/charts/n8n/values.yaml
+db:
+  type: postgresdb
+
+externalRedis:
+  host: "{{ .CustomValues.Redis }}"
+  port: 6379
+
+externalPostgresql:
+  host: postgres-instance.postgres
+  port: 5432
+  username: n8n
+  database: n8n
+  existingSecret: postgresql
+
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: n8n.iop.cx
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - n8n.iop.cx
+      secretName: secret-tls-n8n
