@@ -101,17 +101,14 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "paperless-ngx"
 	appPort := uint(8000)
 
-	_, svcName := kubehelpers.NewStatefulSet(
-		chart.Cdk8sChart,
-		namespace,
-		appName,
-		paperlessNgxImage,
-		appPort,
-		paperlessngxLabels,
-		env,
-		[]string{},
-		[]kubehelpers.ConfigMapMount{},
-		[]kubehelpers.StatefulSetVolume{
+	_, svcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
+		Namespace: namespace,
+		AppName:   appName,
+		AppImage:  paperlessNgxImage,
+		AppPort:   appPort,
+		Labels:    paperlessngxLabels,
+		Env:       env,
+		Storages: []kubehelpers.StatefulSetVolume{
 			{ // PAPERLESS_DATA_DIR
 				Name:        "data",
 				MountPath:   "/usr/src/paperless/data",
@@ -123,7 +120,7 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				StorageSize: "32Gi",
 			},
 		},
-	)
+	})
 
 	kubehelpers.NewAppIngress(
 		builder.Context,

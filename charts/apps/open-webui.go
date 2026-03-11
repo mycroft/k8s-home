@@ -90,24 +90,21 @@ func NewOpenWebuiChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	}
 
-	_, serviceName := kubehelpers.NewStatefulSet(
-		chart.Cdk8sChart,
-		namespace,
-		appName,
-		appImage,
-		appPort,
-		labels,
-		env,
-		[]string{},
-		[]kubehelpers.ConfigMapMount{},
-		[]kubehelpers.StatefulSetVolume{
+	_, serviceName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
+		Namespace: namespace,
+		AppName:   appName,
+		AppImage:  appImage,
+		AppPort:   appPort,
+		Labels:    labels,
+		Env:       env,
+		Storages: []kubehelpers.StatefulSetVolume{
 			{
 				Name:        "open-webui",
 				MountPath:   "/open-webui",
 				StorageSize: "8Gi",
 			},
 		},
-	)
+	})
 
 	kubehelpers.NewAppIngress(
 		builder.Context,

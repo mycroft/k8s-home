@@ -73,26 +73,23 @@ func NewHoarderChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		9222,
 	)
 
-	_, meiliSvcName := kubehelpers.NewStatefulSet(
-		chart.Cdk8sChart,
-		namespace,
-		"meilisearch",
-		"getmeili/meilisearch:v1.11.1",
-		7700,
-		meiliLabels,
-		[]*k8s.EnvVar{
+	_, meiliSvcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
+		Namespace: namespace,
+		AppName:   "meilisearch",
+		AppImage:  "getmeili/meilisearch:v1.11.1",
+		AppPort:   7700,
+		Labels:    meiliLabels,
+		Env: []*k8s.EnvVar{
 			{Name: jsii.String("MEILI_NO_ANALYTICS"), Value: jsii.String("true")},
 		},
-		[]string{},
-		[]kubehelpers.ConfigMapMount{},
-		[]kubehelpers.StatefulSetVolume{
+		Storages: []kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/meili_data",
 				StorageSize: "32Gi",
 			},
 		},
-	)
+	})
 
 	env := []*k8s.EnvVar{
 		{Name: jsii.String("NEXTAUTH_URL"), Value: jsii.String(fmt.Sprintf("https://%s", appIngress))},
@@ -153,24 +150,21 @@ func NewHoarderChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	}
 
-	_, svcName := kubehelpers.NewStatefulSet(
-		chart.Cdk8sChart,
-		namespace,
-		appName,
-		appImage,
-		appPort,
-		labels,
-		env,
-		[]string{},
-		[]kubehelpers.ConfigMapMount{},
-		[]kubehelpers.StatefulSetVolume{
+	_, svcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
+		Namespace: namespace,
+		AppName:   appName,
+		AppImage:  appImage,
+		AppPort:   appPort,
+		Labels:    labels,
+		Env:       env,
+		Storages: []kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/data",
 				StorageSize: "32Gi",
 			},
 		},
-	)
+	})
 
 	kubehelpers.NewAppIngress(
 		builder.Context,

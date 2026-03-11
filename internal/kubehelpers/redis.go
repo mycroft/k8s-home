@@ -1,7 +1,6 @@
 package kubehelpers
 
 import (
-	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"github.com/aws/jsii-runtime-go"
 )
 
@@ -13,26 +12,23 @@ func (chart *Chart) NewRedisStatefulset(namespace string) (string, string) {
 		"app.kubernetes.io/component": jsii.String("redis"),
 	}
 
-	sst, serviceName := NewStatefulSet(
-		chart.Cdk8sChart,
-		namespace,
-		"redis",
-		imageName,
-		6379,
-		redisLabels,
-		[]*k8s.EnvVar{},
-		[]string{
+	sst, serviceName := NewStatefulSet(chart.Cdk8sChart, StatefulSetConfig{
+		Namespace: namespace,
+		AppName:   "redis",
+		AppImage:  imageName,
+		AppPort:   6379,
+		Labels:    redisLabels,
+		Commands: []string{
 			"redis-server --save 60 1 --loglevel warning",
 		},
-		[]ConfigMapMount{},
-		[]StatefulSetVolume{
+		Storages: []StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/data",
 				StorageSize: "1Gi",
 			},
 		},
-	)
+	})
 
 	return sst, serviceName
 

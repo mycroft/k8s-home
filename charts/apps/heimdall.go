@@ -26,17 +26,14 @@ func NewHeimdallChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		{Name: jsii.String("TZ"), Value: jsii.String("Etc/UTC")},
 	}
 
-	kubehelpers.NewStatefulSet(
-		chart.Cdk8sChart,
-		namespace,
-		appName,
-		appImage,
-		appPort,
-		labels,
-		env,
-		[]string{},
-		[]kubehelpers.ConfigMapMount{},
-		[]kubehelpers.StatefulSetVolume{
+	kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
+		Namespace: namespace,
+		AppName:   appName,
+		AppImage:  appImage,
+		AppPort:   appPort,
+		Labels:    labels,
+		Env:       env,
+		Storages: []kubehelpers.StatefulSetVolume{
 			{
 				Name:        "config",
 				MountPath:   "/config",
@@ -48,7 +45,7 @@ func NewHeimdallChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				StorageSize: "1Gi",
 			},
 		},
-	)
+	})
 
 	kubehelpers.NewAppIngress(
 		builder.Context,

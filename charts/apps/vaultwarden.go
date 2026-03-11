@@ -29,24 +29,21 @@ func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	}
 
-	_, svcName := kubehelpers.NewStatefulSet(
-		chart.Cdk8sChart,
-		namespace,
-		appName,
-		appImage,
-		appPort,
-		labels,
-		env,
-		[]string{},
-		[]kubehelpers.ConfigMapMount{},
-		[]kubehelpers.StatefulSetVolume{
+	_, svcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
+		Namespace: namespace,
+		AppName:   appName,
+		AppImage:  appImage,
+		AppPort:   appPort,
+		Labels:    labels,
+		Env:       env,
+		Storages: []kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/data",
 				StorageSize: "10Gi",
 			},
 		},
-	)
+	})
 
 	kubehelpers.NewAppIngress(
 		builder.Context,

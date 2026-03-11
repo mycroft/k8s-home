@@ -20,50 +20,39 @@ type SecretMount struct {
 	MountPath string
 }
 
-// NewStatefulSet creates a new statefulset and returns its name and its service name
-func NewStatefulSet(
-	chart cdk8s.Chart,
-	namespace, appName, appImage string,
-	appPort uint,
-	labels map[string]*string,
-	env []*k8s.EnvVar,
-	commands []string,
-	configMapMounts []ConfigMapMount,
-	storages []StatefulSetVolume,
-) (string, string) {
-	return NewStatefulSetWithSecrets(chart, namespace, appName, appImage, appPort, labels, env, commands, configMapMounts, []SecretMount{}, storages, 0)
+type StatefulSetConfig struct {
+	Namespace       string
+	AppName         string
+	AppImage        string
+	AppPort         uint
+	Labels          map[string]*string
+	Env             []*k8s.EnvVar
+	Commands        []string
+	ConfigMapMounts []ConfigMapMount
+	SecretMounts    []SecretMount
+	Storages        []StatefulSetVolume
+	FsGroup         int
 }
 
 // NewStatefulSet creates a new statefulset and returns its name and its service name
-func NewStatefulSetWithSecrets(
-	chart cdk8s.Chart,
-	namespace, appName, appImage string,
-	appPort uint,
-	labels map[string]*string,
-	env []*k8s.EnvVar,
-	commands []string,
-	configMapMounts []ConfigMapMount,
-	secretMapMounts []SecretMount,
-	storages []StatefulSetVolume,
-	fsGroup int,
-) (string, string) {
+func NewStatefulSet(chart cdk8s.Chart, cfg StatefulSetConfig) (string, string) {
 	// Warning: Changing statefulSet object names will rename PVCs
-	serviceObjectName := fmt.Sprintf("%s-svc", appName)
-	statefulSetObjectName := fmt.Sprintf("%s-sts", appName)
+	serviceObjectName := fmt.Sprintf("%s-svc", cfg.AppName)
+	statefulSetObjectName := fmt.Sprintf("%s-sts", cfg.AppName)
 
 	svc := k8s.NewKubeService(
 		chart,
 		jsii.String(serviceObjectName),
 		&k8s.KubeServiceProps{
 			Metadata: &k8s.ObjectMeta{
-				Namespace: jsii.String(namespace),
-				Labels:    &labels,
+				Namespace: jsii.String(cfg.Namespace),
+				Labels:    &cfg.Labels,
 			},
 			Spec: &k8s.ServiceSpec{
-				Selector: &labels,
+				Selector: &cfg.Labels,
 				Ports: &[]*k8s.ServicePort{
 					{
-						Port: jsii.Number(float64(appPort)),
+						Port: jsii.Number(float64(cfg.AppPort)),
 						Name: jsii.String("http"),
 					},
 				},
@@ -73,14 +62,14 @@ func NewStatefulSetWithSecrets(
 
 	volumeMounts := []*k8s.VolumeMount{}
 	pvcspecs := []*k8s.KubePersistentVolumeClaimProps{}
-	for _, storage := range storages {
+	for _, storage := range cfg.Storages {
 		volumeMounts = append(volumeMounts, &k8s.VolumeMount{
 			MountPath: jsii.String(storage.MountPath),
 			Name:      jsii.String(storage.Name),
 		})
 		pvcspecs = append(pvcspecs, &k8s.KubePersistentVolumeClaimProps{
 			Metadata: &k8s.ObjectMeta{
-				Labels: &labels,
+				Labels: &cfg.Labels,
 				Name:   jsii.String(storage.Name),
 			},
 			Spec: &k8s.PersistentVolumeClaimSpec{
@@ -99,7 +88,7 @@ func NewStatefulSetWithSecrets(
 
 	volumes := []*k8s.Volume{}
 
-	for _, secret := range secretMapMounts {
+	for _, secret := range cfg.SecretMounts {
 		volumes = append(volumes, &k8s.Volume{
 			Name: jsii.String(secret.Name),
 			Secret: &k8s.SecretVolumeSource{
@@ -113,7 +102,7 @@ func NewStatefulSetWithSecrets(
 		})
 	}
 
-	for _, v := range configMapMounts {
+	for _, v := range cfg.ConfigMapMounts {
 		volumes = append(volumes, &k8s.Volume{
 			Name: jsii.String(v.Name),
 			ConfigMap: &k8s.ConfigMapVolumeSource{
@@ -128,25 +117,25 @@ func NewStatefulSetWithSecrets(
 	}
 
 	container := k8s.Container{
-		Name:         jsii.String(appName),
-		Image:        jsii.String(appImage),
-		Env:          &env,
+		Name:         jsii.String(cfg.AppName),
+		Image:        jsii.String(cfg.AppImage),
+		Env:          &cfg.Env,
 		VolumeMounts: &volumeMounts,
 	}
 
 	// If only one command...
-	if len(commands) == 1 {
-		commandsElmts := strings.Split(commands[0], " ")
+	if len(cfg.Commands) == 1 {
+		commandsElmts := strings.Split(cfg.Commands[0], " ")
 		command := []*string{}
 		for _, el := range commandsElmts {
 			command = append(command, jsii.String(el))
 		}
 		container.Command = &command
-	} else if len(commands) > 0 { // or multiple...
+	} else if len(cfg.Commands) > 0 { // or multiple...
 		container.Command = &[]*string{
 			jsii.String("/bin/sh"),
 			jsii.String("-c"),
-			jsii.String(strings.Join(commands, " && ")),
+			jsii.String(strings.Join(cfg.Commands, " && ")),
 		}
 	}
 
@@ -155,23 +144,23 @@ func NewStatefulSetWithSecrets(
 		jsii.String(statefulSetObjectName),
 		&k8s.KubeStatefulSetProps{
 			Metadata: &k8s.ObjectMeta{
-				Namespace: jsii.String(namespace),
+				Namespace: jsii.String(cfg.Namespace),
 			},
 			Spec: &k8s.StatefulSetSpec{
 				Selector: &k8s.LabelSelector{
-					MatchLabels: &labels,
+					MatchLabels: &cfg.Labels,
 				},
 				ServiceName: svc.Name(),
 				Template: &k8s.PodTemplateSpec{
 					Metadata: &k8s.ObjectMeta{
-						Labels: &labels,
+						Labels: &cfg.Labels,
 					},
 					Spec: &k8s.PodSpec{
 						Containers: &[]*k8s.Container{
 							&container,
 						},
 						SecurityContext: &k8s.PodSecurityContext{
-							FsGroup: jsii.Number(fsGroup),
+							FsGroup: jsii.Number(cfg.FsGroup),
 						},
 						Volumes: &volumes,
 					},

@@ -26,26 +26,23 @@ func NewHappyUrlsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"app.kubernetes.io/component": jsii.String("redis"),
 	}
 
-	_, redisSvcName := kubehelpers.NewStatefulSet(
-		chart.Cdk8sChart,
-		namespace,
-		"redis",
-		builder.RegisterContainerImage("redis"),
-		6379,
-		redisLabels,
-		[]*k8s.EnvVar{},
-		[]string{
+	_, redisSvcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
+		Namespace: namespace,
+		AppName:   "redis",
+		AppImage:  builder.RegisterContainerImage("redis"),
+		AppPort:   6379,
+		Labels:    redisLabels,
+		Commands: []string{
 			"redis-server --save 60 1 --loglevel warning",
 		},
-		[]kubehelpers.ConfigMapMount{},
-		[]kubehelpers.StatefulSetVolume{
+		Storages: []kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/data",
 				StorageSize: "1Gi",
 			},
 		},
-	)
+	})
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name":      jsii.String(appName),

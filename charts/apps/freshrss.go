@@ -28,17 +28,14 @@ func NewFreshRSS(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		{Name: jsii.String("TZ"), Value: jsii.String("Etc/UTC")},
 	}
 
-	stsName, svcName := kubehelpers.NewStatefulSet(
-		chart.Cdk8sChart,
-		namespace,
-		appName,
-		appImage,
-		appPort,
-		labels,
-		env,
-		[]string{},
-		[]kubehelpers.ConfigMapMount{},
-		[]kubehelpers.StatefulSetVolume{
+	stsName, svcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
+		Namespace: namespace,
+		AppName:   appName,
+		AppImage:  appImage,
+		AppPort:   appPort,
+		Labels:    labels,
+		Env:       env,
+		Storages: []kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/var/www/FreshRSS/data",
@@ -50,7 +47,7 @@ func NewFreshRSS(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				StorageSize: "1Gi",
 			},
 		},
-	)
+	})
 
 	affinity := &k8s.Affinity{
 		PodAffinity: &k8s.PodAffinity{

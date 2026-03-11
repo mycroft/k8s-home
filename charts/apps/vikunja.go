@@ -84,32 +84,23 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	}
 
-	_, svcName := kubehelpers.NewStatefulSetWithSecrets(
-		chart.Cdk8sChart,
-		namespace,
-		appName,
-		appImage,
-		appPort,
-		labels,
-		env,
-		[]string{},
-		[]kubehelpers.ConfigMapMount{
-			// {
-			// 	Name:      "config",
-			// 	ConfigMap: configMap,
-			// 	MountPath: "/etc/vikunja",
-			// },
-		},
-		secrets,
-		[]kubehelpers.StatefulSetVolume{
+	_, svcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
+		Namespace:    namespace,
+		AppName:      appName,
+		AppImage:     appImage,
+		AppPort:      appPort,
+		Labels:       labels,
+		Env:          env,
+		SecretMounts: secrets,
+		Storages: []kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/app/vikunja/files",
 				StorageSize: "1Gi",
 			},
 		},
-		1000,
-	)
+		FsGroup: 1000,
+	})
 
 	kubehelpers.NewAppIngress(
 		builder.Context,

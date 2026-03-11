@@ -1,7 +1,6 @@
 package apps
 
 import (
-	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 
 	"github.com/aws/jsii-runtime-go"
@@ -21,24 +20,20 @@ func NewSnippetBoxChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
 
-	_, svcName := kubehelpers.NewStatefulSet(
-		chart.Cdk8sChart,
-		namespace,
-		appName,
-		image,
-		appPort,
-		labels,
-		[]*k8s.EnvVar{},
-		[]string{},
-		[]kubehelpers.ConfigMapMount{},
-		[]kubehelpers.StatefulSetVolume{
+	_, svcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
+		Namespace: namespace,
+		AppName:   appName,
+		AppImage:  image,
+		AppPort:   appPort,
+		Labels:    labels,
+		Storages: []kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/app/data",
 				StorageSize: "1Gi",
 			},
 		},
-	)
+	})
 
 	kubehelpers.NewAppIngress(
 		builder.Context,

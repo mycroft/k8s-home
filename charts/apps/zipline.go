@@ -55,17 +55,14 @@ func NewZiplineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	}
 
-	_, svcName := kubehelpers.NewStatefulSet(
-		chart.Cdk8sChart,
-		namespace,
-		appName,
-		appImage,
-		appPort,
-		labels,
-		env,
-		[]string{},
-		[]kubehelpers.ConfigMapMount{},
-		[]kubehelpers.StatefulSetVolume{
+	_, svcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
+		Namespace: namespace,
+		AppName:   appName,
+		AppImage:  appImage,
+		AppPort:   appPort,
+		Labels:    labels,
+		Env:       env,
+		Storages: []kubehelpers.StatefulSetVolume{
 			{
 				Name:        "zipline-uploads",
 				MountPath:   "/zipline/uploads",
@@ -77,7 +74,7 @@ func NewZiplineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				StorageSize: "32Gi",
 			},
 		},
-	)
+	})
 
 	kubehelpers.NewAppIngress(
 		builder.Context,

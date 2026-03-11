@@ -51,24 +51,21 @@ func NewBookstackChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		{Name: jsii.String("SESSION_LIFETIME"), Value: jsii.String("1800")},
 	}
 
-	_, serviceName := kubehelpers.NewStatefulSet(
-		chart.Cdk8sChart,
-		namespace,
-		appName,
-		appImage,
-		appPort,
-		labels,
-		env,
-		[]string{},
-		[]kubehelpers.ConfigMapMount{},
-		[]kubehelpers.StatefulSetVolume{
+	_, serviceName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
+		Namespace: namespace,
+		AppName:   appName,
+		AppImage:  appImage,
+		AppPort:   appPort,
+		Labels:    labels,
+		Env:       env,
+		Storages: []kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
 				MountPath:   "/config",
 				StorageSize: "1Gi",
 			},
 		},
-	)
+	})
 
 	if useLegacyIngress {
 		kubehelpers.NewAppIngress(
