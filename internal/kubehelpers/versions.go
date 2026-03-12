@@ -148,6 +148,10 @@ func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]st
 			semvers[i] = v
 		}
 
+		if len(semvers) == 0 {
+			continue
+		}
+
 		sort.Sort(sort.Reverse(semver.Collection(semvers)))
 
 		lastVersion := ""
