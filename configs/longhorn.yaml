@@ -6,8 +6,3 @@ defaultSettings:
 
 persistence:
   defaultClass: false
-
-image:
-  longhorn:
-    instanceManager:
-      tag: v1.11.0-hotfix-1
