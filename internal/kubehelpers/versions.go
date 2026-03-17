@@ -169,19 +169,12 @@ func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]st
 	return retVersions, nil
 }
 
-// CheckVersions checks the installed releases for update
-func (builder *Builder) CheckVersions(debug bool, filter string) {
-	searched := make(map[string]bool)
+// GetImageUpdates checks Docker images for newer versions.
+// Returns a map from image name to "currentVersion;latestVersion".
+func (builder *Builder) GetImageUpdates(debug bool, filter string) (map[string]string, error) {
+	retVersions := map[string]string{}
 	versions := builder.Versions
-
-	helmVersions, err := builder.GetHelmUpdates(debug, filter)
-	if err != nil {
-		panic(err)
-	}
-
-	for k, v := range helmVersions {
-		fmt.Printf("%s;%s\n", k, v)
-	}
+	searched := make(map[string]bool)
 
 	for _, image := range builder.DockerImages {
 		parts := strings.Split(image, ":")
@@ -196,6 +189,7 @@ func (builder *Builder) CheckVersions(debug bool, filter string) {
 			if debug {
 				log.Printf("skipping image check: %s...", image)
 			}
+
 			continue
 		}
 
@@ -213,15 +207,36 @@ func (builder *Builder) CheckVersions(debug bool, filter string) {
 		foundVersions := GetLastImageTag(debug, parts[0], parts[1], pattern)
 
 		if len(foundVersions) > 0 {
-			fmt.Printf("%s;%s;%s\n", parts[0], parts[1], foundVersions[len(foundVersions)-1])
+			retVersions[parts[0]] = fmt.Sprintf("%s;%s", parts[1], foundVersions[len(foundVersions)-1])
 		}
-
-		doneTs := time.Now()
 
 		if debug {
-			log.Printf("done checking after %d msec", doneTs.UnixMilli()-startTs.UnixMilli())
+			log.Printf("done checking after %d msec", time.Since(startTs).Milliseconds())
 		}
+	}
 
+	return retVersions, nil
+}
+
+// CheckVersions checks the installed releases for update
+func (builder *Builder) CheckVersions(debug bool, filter string) {
+	helmVersions, err := builder.GetHelmUpdates(debug, filter)
+	if err != nil {
+		panic(err)
+	}
+
+	for k, v := range helmVersions {
+		fmt.Printf("%s;%s\n", k, v)
+	}
+
+	imageVersions, err := builder.GetImageUpdates(debug, filter)
+	if err != nil {
+		panic(err)
+	}
+
+	for k, v := range imageVersions {
+		parts := strings.SplitN(v, ";", 2)
+		fmt.Printf("%s;%s;%s\n", k, parts[0], parts[1])
 	}
 }
 

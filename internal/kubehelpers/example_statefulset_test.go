@@ -66,4 +66,5 @@ func ExampleNewStatefulSet() {
 	// Pass svcName to NewAppIngress to route external traffic to this StatefulSet.
 	_ = stsName
 	_ = svcName
+	// Output:
 }
