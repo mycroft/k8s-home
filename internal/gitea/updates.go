@@ -10,18 +10,25 @@ import (
 // CreateVersionBumpPRs creates one pull request per outdated dependency in updates.
 //
 // updates is a map from dependency name to "oldVersion;newVersion".
+// branchOverride, when non-empty, sets the branch name for the PR; it is an error
+// to set it when more than one update is found.
 // If dryRun is true, the function prints what it would do without making API calls.
 func CreateVersionBumpPRs(
 	ctx context.Context,
 	client *Client,
 	updates map[string]string,
 	baseBranch string,
+	branchOverride string,
 	dryRun bool,
 ) error {
 	if len(updates) == 0 {
 		fmt.Println("All versions are up to date.")
 
 		return nil
+	}
+
+	if branchOverride != "" && len(updates) > 1 {
+		return fmt.Errorf("--branch requires exactly one update, but %d were found", len(updates))
 	}
 
 	var errCount int
@@ -31,6 +38,10 @@ func CreateVersionBumpPRs(
 		oldVer, newVer := parts[0], parts[1]
 
 		branchName := buildBranchName(name, oldVer)
+		if branchOverride != "" {
+			branchName = branchOverride
+		}
+
 		title := fmt.Sprintf("Updating %s from %s to %s", name, oldVer, newVer)
 
 		fmt.Printf("Processing %s: %s → %s\n", name, oldVer, newVer)

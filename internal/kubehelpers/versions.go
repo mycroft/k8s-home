@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/Masterminds/semver"
@@ -68,19 +69,64 @@ func GetEntriesFromIndex(body []byte) (map[string][]*Entry, error) {
 }
 
 func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]string, error) {
-	retVersions := map[string]string{}
 	versions := builder.Versions
 
+	// Collect unique repo URLs to fetch, validating that all repos are known.
+	repoURLs := make(map[string]string) // repoName -> URL
+
 	for _, helmRelease := range helmChartVersions {
-		chartName := fmt.Sprintf("%s/%s", helmRelease.RepositoryName, helmRelease.ChartName)
 		if _, ok := builder.HelmRepositories[helmRelease.RepositoryName]; !ok {
 			panic(fmt.Sprintf("Unknown repo %s", helmRelease.RepositoryName))
 		}
+
+		repoURL := builder.HelmRepositories[helmRelease.RepositoryName]
+		if !strings.HasPrefix(repoURL, "oci://") {
+			repoURLs[helmRelease.RepositoryName] = repoURL
+		}
+	}
+
+	// Fetch all repo indexes concurrently.
+	var mu sync.Mutex
+
+	repoEntries := make(map[string]map[string][]*Entry) // repoURL -> entries
+
+	var wg sync.WaitGroup
+
+	for _, repoURL := range repoURLs {
+		wg.Add(1)
+
+		go func(url string) {
+			defer wg.Done()
+
+			body, err := GetRepoIndex(fmt.Sprintf("%s/index.yaml", url))
+			if err != nil {
+				panic(err)
+			}
+
+			entries, err := GetEntriesFromIndex(body)
+			if err != nil {
+				panic(err)
+			}
+
+			mu.Lock()
+			repoEntries[url] = entries
+			mu.Unlock()
+		}(repoURL)
+	}
+
+	wg.Wait()
+
+	// Process each chart against the cached indexes.
+	retVersions := make(map[string]string)
+
+	for _, helmRelease := range helmChartVersions {
+		chartName := fmt.Sprintf("%s/%s", helmRelease.RepositoryName, helmRelease.ChartName)
 
 		if filter != "" && !strings.Contains(chartName, filter) {
 			if debug {
 				log.Printf("skipping helm chart check: %s", chartName)
 			}
+
 			continue
 		}
 
@@ -90,34 +136,30 @@ func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]st
 			if debug {
 				log.Printf("skipped %s as oci:// is not supported", repositoryURL)
 			}
+
 			continue
 		}
 
-		body, err := GetRepoIndex(fmt.Sprintf("%s/index.yaml", repositoryURL))
-		if err != nil {
-			panic(err)
-		}
-
-		entries, err := GetEntriesFromIndex(body)
-		if err != nil {
-			panic(err)
+		entries, ok := repoEntries[repositoryURL]
+		if !ok {
+			continue
 		}
 
 		// find entries for this chart
-		if _, ok := entries[helmRelease.ChartName]; !ok {
+		if _, ok = entries[helmRelease.ChartName]; !ok {
 			panic(fmt.Sprintf("No chart for name %s", helmRelease.ChartName))
 		}
 
 		foundVersions := []string{}
 		for _, chartVersion := range entries[helmRelease.ChartName] {
-			if _, ok := chartVersion.Annotations["artifacthub.io/prerelease"]; ok {
+			if _, ok = chartVersion.Annotations["artifacthub.io/prerelease"]; ok {
 				if chartVersion.Annotations["artifacthub.io/prerelease"] == "true" {
 					continue
 				}
 			}
 
 			pattern := ".+"
-			if _, ok := versions.Patterns.HelmCharts[chartName]; ok {
+			if _, ok = versions.Patterns.HelmCharts[chartName]; ok {
 				pattern = versions.Patterns.HelmCharts[chartName]
 			}
 
@@ -141,10 +183,12 @@ func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]st
 				version = version[1:]
 				hasVPrefix = true
 			}
+
 			v, err := semver.NewVersion(version)
 			if err != nil {
 				panic(fmt.Sprintf("Invalid version %s: %s", version, err))
 			}
+
 			semvers[i] = v
 		}
 
@@ -172,18 +216,27 @@ func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]st
 // GetImageUpdates checks Docker images for newer versions.
 // Returns a map from image name to "currentVersion;latestVersion".
 func (builder *Builder) GetImageUpdates(debug bool, filter string) (map[string]string, error) {
-	retVersions := map[string]string{}
 	versions := builder.Versions
-	searched := make(map[string]bool)
+
+	// Deduplicate images and build the work list.
+	type imageWork struct {
+		name    string
+		version string
+		pattern string
+	}
+
+	seen := make(map[string]bool)
+
+	var work []imageWork
 
 	for _, image := range builder.DockerImages {
 		parts := strings.Split(image, ":")
 
-		if _, ok := searched[parts[0]]; ok {
+		if seen[parts[0]] {
 			continue
 		}
 
-		searched[parts[0]] = true
+		seen[parts[0]] = true
 
 		if filter != "" && !strings.Contains(image, filter) {
 			if debug {
@@ -193,45 +246,87 @@ func (builder *Builder) GetImageUpdates(debug bool, filter string) (map[string]s
 			continue
 		}
 
-		if debug {
-			log.Printf("checking %s...", image)
-		}
-
-		startTs := time.Now()
-
 		pattern := ".+"
-		if _, ok := versions.Patterns.Images[parts[0]]; ok {
-			pattern = versions.Patterns.Images[parts[0]]
+		if p, ok := versions.Patterns.Images[parts[0]]; ok {
+			pattern = p
 		}
 
-		foundVersions := GetLastImageTag(debug, parts[0], parts[1], pattern)
-
-		if len(foundVersions) > 0 {
-			retVersions[parts[0]] = fmt.Sprintf("%s;%s", parts[1], foundVersions[len(foundVersions)-1])
-		}
-
-		if debug {
-			log.Printf("done checking after %d msec", time.Since(startTs).Milliseconds())
-		}
+		work = append(work, imageWork{name: parts[0], version: parts[1], pattern: pattern})
 	}
+
+	// Check all images concurrently.
+	var mu sync.Mutex
+
+	retVersions := make(map[string]string)
+
+	var wg sync.WaitGroup
+
+	for _, w := range work {
+		wg.Add(1)
+
+		go func(item imageWork) {
+			defer wg.Done()
+
+			if debug {
+				log.Printf("checking %s...", item.name)
+			}
+
+			startTs := time.Now()
+
+			foundVersions := GetLastImageTag(debug, item.name, item.version, item.pattern)
+
+			if len(foundVersions) > 0 {
+				mu.Lock()
+				retVersions[item.name] = fmt.Sprintf("%s;%s", item.version, foundVersions[len(foundVersions)-1])
+				mu.Unlock()
+			}
+
+			if debug {
+				log.Printf("done checking %s after %d msec", item.name, time.Since(startTs).Milliseconds())
+			}
+		}(w)
+	}
+
+	wg.Wait()
 
 	return retVersions, nil
 }
 
 // CheckVersions checks the installed releases for update
 func (builder *Builder) CheckVersions(debug bool, filter string) {
-	helmVersions, err := builder.GetHelmUpdates(debug, filter)
-	if err != nil {
-		panic(err)
+	var (
+		helmVersions  map[string]string
+		imageVersions map[string]string
+		helmErr       error
+		imageErr      error
+	)
+
+	var wg sync.WaitGroup
+
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		helmVersions, helmErr = builder.GetHelmUpdates(debug, filter)
+	}()
+
+	go func() {
+		defer wg.Done()
+		imageVersions, imageErr = builder.GetImageUpdates(debug, filter)
+	}()
+
+	wg.Wait()
+
+	if helmErr != nil {
+		panic(helmErr)
+	}
+
+	if imageErr != nil {
+		panic(imageErr)
 	}
 
 	for k, v := range helmVersions {
 		fmt.Printf("%s;%s\n", k, v)
-	}
-
-	imageVersions, err := builder.GetImageUpdates(debug, filter)
-	if err != nil {
-		panic(err)
 	}
 
 	for k, v := range imageVersions {

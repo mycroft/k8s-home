@@ -54,6 +54,7 @@ type updateFileRequest struct {
 	Content string `json:"content"`
 	SHA     string `json:"sha"`
 	Branch  string `json:"branch"`
+	Signoff bool   `json:"signoff"`
 }
 
 type createBranchRequest struct {
@@ -66,6 +67,10 @@ type createPRRequest struct {
 	Head  string `json:"head"`
 	Base  string `json:"base"`
 	Body  string `json:"body"`
+}
+
+func apiError(action string, status int, body []byte) error {
+	return fmt.Errorf("%s: unexpected status %d: %s", action, status, strings.TrimSpace(string(body)))
 }
 
 func (c *Client) doRequest(ctx context.Context, method, path string, payload any) ([]byte, int, error) {
@@ -126,13 +131,13 @@ func (c *Client) CreateBranch(ctx context.Context, newBranch, baseBranch string)
 		OldBranchName: baseBranch,
 	}
 
-	_, status, err := c.doRequest(ctx, http.MethodPost, path, payload)
+	body, status, err := c.doRequest(ctx, http.MethodPost, path, payload)
 	if err != nil {
 		return err
 	}
 
 	if status != http.StatusCreated {
-		return fmt.Errorf("create branch %q: unexpected status %d", newBranch, status)
+		return apiError(fmt.Sprintf("create branch %q", newBranch), status, body)
 	}
 
 	return nil
@@ -148,7 +153,7 @@ func (c *Client) GetFile(ctx context.Context, filepath, branch string) (string, 
 	}
 
 	if status != http.StatusOK {
-		return "", "", fmt.Errorf("get file %q: unexpected status %d", filepath, status)
+		return "", "", apiError(fmt.Sprintf("get file %q", filepath), status, body)
 	}
 
 	var fc fileContent
@@ -175,15 +180,16 @@ func (c *Client) UpdateFile(ctx context.Context, filepath, branch, sha, message,
 		Content: base64.StdEncoding.EncodeToString([]byte(content)),
 		SHA:     sha,
 		Branch:  branch,
+		Signoff: true,
 	}
 
-	_, status, err := c.doRequest(ctx, http.MethodPut, path, payload)
+	body, status, err := c.doRequest(ctx, http.MethodPut, path, payload)
 	if err != nil {
 		return err
 	}
 
 	if status != http.StatusOK {
-		return fmt.Errorf("update file %q: unexpected status %d", filepath, status)
+		return apiError(fmt.Sprintf("update file %q", filepath), status, body)
 	}
 
 	return nil
@@ -199,7 +205,7 @@ func (c *Client) ListOpenPRs(ctx context.Context) ([]PullRequest, error) {
 	}
 
 	if status != http.StatusOK {
-		return nil, fmt.Errorf("list PRs: unexpected status %d", status)
+		return nil, apiError("list PRs", status, body)
 	}
 
 	var prs []PullRequest
@@ -219,13 +225,13 @@ func (c *Client) MergePR(ctx context.Context, number int) error {
 	path := fmt.Sprintf("/repos/%s/%s/pulls/%d/merge", c.owner, c.repo, number)
 	payload := mergePRRequest{Do: "rebase"}
 
-	_, status, err := c.doRequest(ctx, http.MethodPost, path, payload)
+	body, status, err := c.doRequest(ctx, http.MethodPost, path, payload)
 	if err != nil {
 		return err
 	}
 
 	if status != http.StatusNoContent && status != http.StatusOK {
-		return fmt.Errorf("merge PR #%d: unexpected status %d", number, status)
+		return apiError(fmt.Sprintf("merge PR #%d", number), status, body)
 	}
 
 	return nil
@@ -247,7 +253,7 @@ func (c *Client) CreatePR(ctx context.Context, title, head, base, body string) (
 	}
 
 	if status != http.StatusCreated {
-		return nil, fmt.Errorf("create PR %q: unexpected status %d", title, status)
+		return nil, apiError(fmt.Sprintf("create PR %q", title), status, respBody)
 	}
 
 	var pr PullRequest

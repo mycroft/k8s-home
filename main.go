@@ -15,14 +15,15 @@ import (
 )
 
 var (
-	debug      *bool
-	filter     *string
-	giteaURL   *string
-	owner      *string
-	repo       *string
-	baseBranch *string
-	dryRun     *bool
-	prFilter   *string
+	debug            *bool
+	filter           *string
+	giteaURL         *string
+	owner            *string
+	repo             *string
+	baseBranch       *string
+	dryRun           *bool
+	prFilter         *string
+	prBranchOverride *string
 )
 
 var rootCmd = &cobra.Command{
@@ -133,7 +134,7 @@ func runCreatePRs(command *cobra.Command) {
 
 	client := gitea.NewClient(*giteaURL, token, *owner, *repo)
 
-	if err = gitea.CreateVersionBumpPRs(ctx, client, allUpdates, *baseBranch, *dryRun); err != nil {
+	if err = gitea.CreateVersionBumpPRs(ctx, client, allUpdates, *baseBranch, *prBranchOverride, *dryRun); err != nil {
 		log.Fatalf("create PRs: %v", err)
 	}
 }
@@ -221,6 +222,7 @@ func init() {
 	baseBranch = createPRsCmd.Flags().String("base-branch", "main", "base branch for pull requests")
 	dryRun = createPRsCmd.Flags().Bool("dry-run", false, "print what would be done without creating PRs")
 	prFilter = createPRsCmd.Flags().String("filter", "", "filter to apply when checking helm/container images")
+	prBranchOverride = createPRsCmd.Flags().String("branch", "", "override the generated branch name (requires exactly one update)")
 }
 
 func main() {
