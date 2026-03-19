@@ -96,7 +96,7 @@ func (c *Client) doRequest(ctx context.Context, method, path string, payload any
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.http.Do(req) //nolint:gosec // URL is user-supplied Gitea base URL, SSRF is intentional
+	resp, err := c.http.Do(req)
 	if err != nil {
 		return nil, 0, fmt.Errorf("do request: %w", err)
 	}
