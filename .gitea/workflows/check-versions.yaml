@@ -27,6 +27,6 @@ jobs:
           go run main.go check-versions 2>/dev/null
       - name: Create PRs for outdated versions
         env:
-          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+          GITEA_TOKEN: ${{ secrets.TOKEN }}
         run: |
           go run main.go create-prs 2>/dev/null
