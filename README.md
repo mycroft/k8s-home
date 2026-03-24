@@ -130,28 +130,25 @@ Note: Do not edit `traefik.yaml`. It is overwritten on restart.
 
 ### Viewing traefik dashboard
 
-port-forward the 9000 port and reach `http://localhost:9000/dashboard/`:
+The dashboard can be viewed through `https://traefik.services.mkz.me/dashboard/#/`.
 
+The following `IngressRoute` must be added first:
+
+```yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+spec:
+  routes:
+    - match: Host(`traefik.services.mkz.me`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      kind: Rule
+      services:
+        - name: api@internal
+          kind: TraefikService
+      middlewares:
+        - name: traefik-forward-auth-traefik-forward-auth@kubernetescrd
 ```
-> k port-forward -n kube-system (k get pods -n kube-system | grep ^traefik | cut -d' ' -f1) 9000:9000
-Forwarding from 127.0.0.1:9000 -> 9000
-Forwarding from [::1]:9000 -> 9000
-```
-
-### Kubernetes-Dashboard
-
-Generate a login and use it on https://kubernetes-dashboard.services.mkz.me/
-
-```sh
-kubectl -n kubernetes-dashboard create token admin
-```
-
-You need a recent kubectl binary to be able to do this!
-
-This is fully described on https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
-
-See https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/README.md#login-view
-
 
 ### Vault & External-Secrets
 
