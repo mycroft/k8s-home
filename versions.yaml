@@ -65,7 +65,7 @@ images:
   sissbruecker/linkding: 1.45.0
   thomseddon/traefik-forward-auth: 2.2.0
   vaultwarden/server: 1.35.4
-  vikunja/vikunja: 2.2.0
+  vikunja/vikunja: 2.2.2
   wallabag/wallabag: 2.6.14
 patterns:
   images:
