@@ -1,79 +1,63 @@
 package infra
 
 import (
-	"git.mkz.me/mycroft/k8s-home/imports/k8s"
+	"git.mkz.me/mycroft/k8s-home/imports/certificates_certmanagerio"
+	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
+	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
 func NewTraefikChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "kube-system"
 	ingressHost := "traefik.services.mkz.me"
-	portName := "web"
-	appPort := uint(9000)
-
-	annotations := map[string]*string{
-		"cert-manager.io/cluster-issuer":                     jsii.String("letsencrypt-prod"),
-		"traefik.ingress.kubernetes.io/router.middlewares":   jsii.String("traefik-forward-auth-traefik-forward-auth@kubernetescrd"),
-		"traefik.ingress.kubernetes.io/redirect-entry-point": jsii.String("https"),
-		"traefik.ingress.kubernetes.io/redirect-permanent":   jsii.String("true"),
-		"traefik.ingress.kubernetes.io/app-root":             jsii.String("/dashboard/"),
-	}
 
 	chart := builder.NewChart("traefik")
 
-	labels := map[string]*string{
-		"app.kubernetes.io/instance": jsii.String("traefik-kube-system"),
-		"app.kubernetes.io/name":     jsii.String("traefik"),
-	}
-
-	svc := kubehelpers.NewAppService(
+	certificates_certmanagerio.NewCertificate(
 		chart.Cdk8sChart,
-		namespace,
-		"svc",
-		labels,
-		portName,
-		appPort,
-	)
-
-	rules := []*k8s.IngressRule{}
-	hosts := []*string{&ingressHost}
-
-	rules = append(rules, &k8s.IngressRule{
-		Host: jsii.String(ingressHost),
-		Http: &k8s.HttpIngressRuleValue{
-			Paths: &[]*k8s.HttpIngressPath{
-				{
-					Backend: &k8s.IngressBackend{
-						Service: &k8s.IngressServiceBackend{
-							Name: svc.Name(),
-							Port: &k8s.ServiceBackendPort{
-								Name: jsii.String(portName),
-							},
-						},
-					},
-					Path:     jsii.String("/"),
-					PathType: jsii.String("Prefix"),
+		jsii.String("traefik-dashboard-cert"),
+		&certificates_certmanagerio.CertificateProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &certificates_certmanagerio.CertificateSpec{
+				SecretName: jsii.String("secret-tls-www"),
+				DnsNames: &[]*string{
+					jsii.String(ingressHost),
+				},
+				IssuerRef: &certificates_certmanagerio.CertificateSpecIssuerRef{
+					Name: jsii.String("letsencrypt-prod"),
+					Kind: jsii.String("ClusterIssuer"),
 				},
 			},
 		},
-	})
+	)
 
-	k8s.NewKubeIngress(
+	traefikio.NewIngressRoute(
 		chart.Cdk8sChart,
-		jsii.String("ingress"),
-		&k8s.KubeIngressProps{
-			Metadata: &k8s.ObjectMeta{
-				Annotations: &annotations,
-				Namespace:   jsii.String(namespace),
+		jsii.String("traefik-dashboard"),
+		&traefikio.IngressRouteProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name:      jsii.String("traefik-dashboard"),
+				Namespace: jsii.String(namespace),
 			},
-			Spec: &k8s.IngressSpec{
-				IngressClassName: jsii.String("traefik"),
-				Rules:            &rules,
-				Tls: &[]*k8s.IngressTls{
+			Spec: &traefikio.IngressRouteSpec{
+				Routes: &[]*traefikio.IngressRouteSpecRoutes{
 					{
-						Hosts:      &hosts,
-						SecretName: jsii.String("secret-tls-www"),
+						Match: jsii.String("Host(`" + ingressHost + "`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"),
+						Kind:  traefikio.IngressRouteSpecRoutesKind_RULE,
+						Services: &[]*traefikio.IngressRouteSpecRoutesServices{
+							{
+								Name: jsii.String("api@internal"),
+								Kind: traefikio.IngressRouteSpecRoutesServicesKind_TRAEFIK_SERVICE,
+							},
+						},
+						Middlewares: &[]*traefikio.IngressRouteSpecRoutesMiddlewares{
+							{
+								Name: jsii.String("traefik-forward-auth-traefik-forward-auth@kubernetescrd"),
+							},
+						},
 					},
 				},
 			},
