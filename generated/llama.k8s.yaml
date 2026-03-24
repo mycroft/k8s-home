@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: llama
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: llama-openjunk-cert-c82a288a
+  namespace: llama
+spec:
+  dnsNames:
+    - llm-api.iop.cx
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: llama-redirect-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llama-external-api-c8c3e1e6
+  namespace: llama
+spec:
+  externalName: 10.0.0.7
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ExternalName
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: llama-llama-ingress-c88f955a
+  namespace: llama
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`llm-api.iop.cx`)
+      services:
+        - name: llama-external-api-c8c3e1e6
+          port: http
+  tls:
+    secretName: llama-redirect-tls
