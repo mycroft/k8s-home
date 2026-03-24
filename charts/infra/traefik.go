@@ -11,6 +11,7 @@ import (
 func NewTraefikChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "kube-system"
 	ingressHost := "traefik.services.mkz.me"
+	secretName := "secret-tls-www"
 
 	chart := builder.NewChart("traefik")
 
@@ -22,7 +23,7 @@ func NewTraefikChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				Namespace: jsii.String(namespace),
 			},
 			Spec: &certificates_certmanagerio.CertificateSpec{
-				SecretName: jsii.String("secret-tls-www"),
+				SecretName: jsii.String(secretName),
 				DnsNames: &[]*string{
 					jsii.String(ingressHost),
 				},
@@ -59,6 +60,9 @@ func NewTraefikChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 							},
 						},
 					},
+				},
+				Tls: &traefikio.IngressRouteSpecTls{
+					SecretName: jsii.String(secretName),
 				},
 			},
 		},
