@@ -95,6 +95,9 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_apps.NewOpenWebuiChart,
 		charts_apps.NewZiplineChart,
 
+		// redirections
+		charts_apps.NewLlamaChart,
+
 		// my own apps
 		// charts_apps.NewGossipChart,
 
