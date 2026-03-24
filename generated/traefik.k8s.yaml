@@ -25,3 +25,5 @@ spec:
       services:
         - kind: TraefikService
           name: api@internal
+  tls:
+    secretName: secret-tls-www
