@@ -5,7 +5,7 @@ helmcharts:
   dex/dex: 0.24.0
   external-secrets/external-secrets: 2.2.0
   garage/garage: 2.1.0
-  grafana/alloy: 1.6.2
+  grafana/alloy: 1.7.0
   grafana/loki: 6.55.0
   grafana/promtail: 6.16.0
   grafana/tempo: 1.24.4
