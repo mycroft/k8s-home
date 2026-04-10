@@ -15,6 +15,8 @@ server:
             maxConns: 20
             maxConnLifetime: "1h"
             existingSecret: postgresql2
+            createDatabase: false
+            manageSchema: false
         visibility:
           driver: "sql"
           sql:
@@ -26,6 +28,8 @@ server:
             maxConns: 20
             maxConnLifetime: "1h"
             existingSecret: postgresql-visibility2
+            createDatabase: false
+            manageSchema: false
 
 web:
   ingress:
@@ -43,10 +47,4 @@ web:
         hosts:
           - temporal.services.mkz.me
 
-schema:
-  createDatabase:
-    enabled: false
-  setup:
-    enabled: false
-  update:
-    enabled: false
+
