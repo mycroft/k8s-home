@@ -86,28 +86,29 @@ data:
     server:
       config:
         persistence:
-          default:
-            driver: "sql"
-            sql:
-              driver: "postgres12"
-              host: postgres-instance.postgres
-              port: 5432
-              user: temporal2
-              database: temporal2
-              maxConns: 20
-              maxConnLifetime: "1h"
-              existingSecret: postgresql2
-          visibility:
-            driver: "sql"
-            sql:
-              driver: "postgres12"
-              host: postgres-instance.postgres
-              port: 5432
-              user: temporal_visibility2
-              database: temporal_visibility2
-              maxConns: 20
-              maxConnLifetime: "1h"
-              existingSecret: postgresql-visibility2
+          datastores:
+            default:
+              driver: "sql"
+              sql:
+                driver: "postgres12"
+                host: postgres-instance.postgres
+                port: 5432
+                user: temporal2
+                database: temporal2
+                maxConns: 20
+                maxConnLifetime: "1h"
+                existingSecret: postgresql2
+            visibility:
+              driver: "sql"
+              sql:
+                driver: "postgres12"
+                host: postgres-instance.postgres
+                port: 5432
+                user: temporal_visibility2
+                database: temporal_visibility2
+                maxConns: 20
+                maxConnLifetime: "1h"
+                existingSecret: postgresql-visibility2
 
     web:
       ingress:
@@ -137,7 +138,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 9ad4886a8817a5f70e823bc6fa849a2d86556bc8cccf794e031ccc9927e7a350
+    configMapHash: de7214c9c6829fbbf33398980e59165fe4637948b10062739173f5cc0888bc6b
   name: temporal
   namespace: temporal
 spec:
