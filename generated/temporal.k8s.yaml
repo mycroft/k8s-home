@@ -125,9 +125,6 @@ data:
             hosts:
               - temporal.services.mkz.me
 
-    cassandra:
-      enabled: false
-
     mysql:
       enabled: false
 
@@ -155,7 +152,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 57886f8dcd0a96b878ff5e6170972bdbdf35eff5c498414df4c63307348e5e8b
+    configMapHash: 5d3b3fd8b16e4d3c8494795da6f0d28b67fbdd98b9732f4793c1e15bba3ce9ba
   name: temporal
   namespace: temporal
 spec:
