@@ -9,6 +9,7 @@ server:
           sql:
             pluginName: "postgres12"
             connectAddr: "postgres-instance.postgres:5432"
+            connectProtocol: tcp
             user: temporal2
             databaseName: temporal2
             maxConns: 20
@@ -21,6 +22,7 @@ server:
           sql:
             pluginName: "postgres12"
             connectAddr: "postgres-instance.postgres:5432"
+            connectProtocol: tcp
             user: temporal_visibility2
             databaseName: temporal_visibility2
             maxConns: 20
