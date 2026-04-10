@@ -92,6 +92,7 @@ data:
               sql:
                 pluginName: "postgres12"
                 connectAddr: "postgres-instance.postgres:5432"
+                connectProtocol: tcp
                 user: temporal2
                 databaseName: temporal2
                 maxConns: 20
@@ -104,6 +105,7 @@ data:
               sql:
                 pluginName: "postgres12"
                 connectAddr: "postgres-instance.postgres:5432"
+                connectProtocol: tcp
                 user: temporal_visibility2
                 databaseName: temporal_visibility2
                 maxConns: 20
@@ -134,7 +136,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 5dcee79e30944adabf565605125ac697df202e8dc79c7203195e1fc2b747bacf
+    configMapHash: 552bcbe55af445fc4e136726246246a3b560ecbf392cab354347883ec9585712
   name: temporal
   namespace: temporal
 spec:
