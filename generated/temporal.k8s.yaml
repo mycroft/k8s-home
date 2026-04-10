@@ -125,21 +125,6 @@ data:
             hosts:
               - temporal.services.mkz.me
 
-    mysql:
-      enabled: false
-
-    postgresql:
-      enabled: true
-
-    prometheus:
-      enabled: false
-
-    grafana:
-      enabled: false
-
-    elasticsearch:
-      enabled: false
-
     schema:
       createDatabase:
         enabled: false
@@ -152,7 +137,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 5d3b3fd8b16e4d3c8494795da6f0d28b67fbdd98b9732f4793c1e15bba3ce9ba
+    configMapHash: 9ad4886a8817a5f70e823bc6fa849a2d86556bc8cccf794e031ccc9927e7a350
   name: temporal
   namespace: temporal
 spec:
