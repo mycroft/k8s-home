@@ -80,7 +80,7 @@ metadata:
   name: temporal-helm-val-temporal-c860c230
   namespace: temporal
 data:
-  values.yaml: |
+  values.yaml: |+
     # https://github.com/temporalio/helm-charts/blob/master/charts/temporal/values.yaml
 
     server:
@@ -98,6 +98,8 @@ data:
                 maxConns: 20
                 maxConnLifetime: "1h"
                 existingSecret: postgresql2
+                createDatabase: false
+                manageSchema: false
             visibility:
               driver: "sql"
               sql:
@@ -109,6 +111,8 @@ data:
                 maxConns: 20
                 maxConnLifetime: "1h"
                 existingSecret: postgresql-visibility2
+                createDatabase: false
+                manageSchema: false
 
     web:
       ingress:
@@ -126,19 +130,13 @@ data:
             hosts:
               - temporal.services.mkz.me
 
-    schema:
-      createDatabase:
-        enabled: false
-      setup:
-        enabled: false
-      update:
-        enabled: false
+
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: de7214c9c6829fbbf33398980e59165fe4637948b10062739173f5cc0888bc6b
+    configMapHash: d20bbe78498f4efaf7d5fd1c6eda3b65c44dbbe57476484aa4a66cf9495c2e75
   name: temporal
   namespace: temporal
 spec:
