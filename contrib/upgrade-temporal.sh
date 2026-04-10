@@ -23,8 +23,8 @@ kubectl exec -n ${NS} -ti ${ADMIN_POD} -- ${DRY} temporal-sql-tool --plugin post
     update-schema -d "/etc/temporal/schema/postgresql/v12/temporal/versioned"
 
 DBNAME=temporal_visibility2
-POSTGRES_USER=$(kubectl get -n ${NS} secret -o yaml postgresql_visibility2 -o json | jq -r .data.username | base64 -d)
-POSTGRES_PWD=$(kubectl get -n ${NS} secret -o yaml postgresql_visibility2 -o json | jq -r .data.password | base64 -d)
+POSTGRES_USER=$(kubectl get -n ${NS} secret -o yaml postgresql-visibility2 -o json | jq -r .data.username | base64 -d)
+POSTGRES_PWD=$(kubectl get -n ${NS} secret -o yaml postgresql-visibility2 -o json | jq -r .data.password | base64 -d)
 
 # kubectl exec -n ${NS} -ti ${ADMIN_POD} -- ${DRY} temporal-sql-tool --plugin postgres12 --ep "${POSTGRES_SEEDS}" -u "${POSTGRES_USER}" -pw "${POSTGRES_PWD}" -p "${DB_PORT}" --db "${DBNAME}" \
 #     setup-schema -v 0.0

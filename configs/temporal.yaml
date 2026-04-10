@@ -42,9 +42,6 @@ web:
         hosts:
           - temporal.services.mkz.me
 
-cassandra:
-  enabled: false
-
 mysql:
   enabled: false
 
