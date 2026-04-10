@@ -90,11 +90,10 @@ data:
             default:
               driver: "sql"
               sql:
-                driver: "postgres12"
-                host: postgres-instance.postgres
-                port: 5432
+                pluginName: "postgres12"
+                connectAddr: "postgres-instance.postgres:5432"
                 user: temporal2
-                database: temporal2
+                databaseName: temporal2
                 maxConns: 20
                 maxConnLifetime: "1h"
                 existingSecret: postgresql2
@@ -103,11 +102,10 @@ data:
             visibility:
               driver: "sql"
               sql:
-                driver: "postgres12"
-                host: postgres-instance.postgres
-                port: 5432
+                pluginName: "postgres12"
+                connectAddr: "postgres-instance.postgres:5432"
                 user: temporal_visibility2
-                database: temporal_visibility2
+                databaseName: temporal_visibility2
                 maxConns: 20
                 maxConnLifetime: "1h"
                 existingSecret: postgresql-visibility2
@@ -136,7 +134,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: d20bbe78498f4efaf7d5fd1c6eda3b65c44dbbe57476484aa4a66cf9495c2e75
+    configMapHash: 5dcee79e30944adabf565605125ac697df202e8dc79c7203195e1fc2b747bacf
   name: temporal
   namespace: temporal
 spec:
