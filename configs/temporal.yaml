@@ -7,11 +7,10 @@ server:
         default:
           driver: "sql"
           sql:
-            driver: "postgres12"
-            host: postgres-instance.postgres
-            port: 5432
+            pluginName: "postgres12"
+            connectAddr: "postgres-instance.postgres:5432"
             user: temporal2
-            database: temporal2
+            databaseName: temporal2
             maxConns: 20
             maxConnLifetime: "1h"
             existingSecret: postgresql2
@@ -20,11 +19,10 @@ server:
         visibility:
           driver: "sql"
           sql:
-            driver: "postgres12"
-            host: postgres-instance.postgres
-            port: 5432
+            pluginName: "postgres12"
+            connectAddr: "postgres-instance.postgres:5432"
             user: temporal_visibility2
-            database: temporal_visibility2
+            databaseName: temporal_visibility2
             maxConns: 20
             maxConnLifetime: "1h"
             existingSecret: postgresql-visibility2
