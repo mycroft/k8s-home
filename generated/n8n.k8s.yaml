@@ -169,7 +169,7 @@ spec:
         kind: HelmRepository
         name: helm-charts
         namespace: flux-system
-      version: 1.16.35
+      version: 1.16.36
   install:
     createNamespace: false
     skipCRDs: false
