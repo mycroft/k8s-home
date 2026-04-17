@@ -80,7 +80,7 @@ metadata:
   name: temporal-helm-val-temporal-c860c230
   namespace: temporal
 data:
-  values.yaml: |+
+  values.yaml: |
     # https://github.com/temporalio/helm-charts/blob/master/charts/temporal/values.yaml
 
     server:
@@ -114,6 +114,10 @@ data:
                 createDatabase: false
                 manageSchema: false
 
+    shims:
+      dockerize: false # Disable if using Temporal 1.30+
+      elasticsearchTool: false # Disable if using Temporal 1.30+
+
     web:
       ingress:
         enabled: true
@@ -129,14 +133,12 @@ data:
           - secretName: temporal-tls
             hosts:
               - temporal.services.mkz.me
-
-
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 552bcbe55af445fc4e136726246246a3b560ecbf392cab354347883ec9585712
+    configMapHash: cab05f56ce6f714701ceedaa23947b329f413451141cfe2ddc91b6602be1d1d5
   name: temporal
   namespace: temporal
 spec:
