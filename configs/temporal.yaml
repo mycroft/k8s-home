@@ -31,6 +31,10 @@ server:
             createDatabase: false
             manageSchema: false
 
+shims:
+  dockerize: false # Disable if using Temporal 1.30+
+  elasticsearchTool: false # Disable if using Temporal 1.30+
+
 web:
   ingress:
     enabled: true
@@ -46,5 +50,3 @@ web:
       - secretName: temporal-tls
         hosts:
           - temporal.services.mkz.me
-
-
