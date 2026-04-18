@@ -68,7 +68,7 @@ spec:
         kind: HelmRepository
         name: garage
         namespace: flux-system
-      version: 2.3.1
+      version: 2.3.2
   install:
     createNamespace: false
     skipCRDs: false
