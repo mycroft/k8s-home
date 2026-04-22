@@ -46,3 +46,17 @@ jobs:
           commit_user_name: mycroft
           commit_user_email: pm@mkz.me
           commit_author: mycroft <pm@mkz.me>
+
+      - name: Login to container registry
+        uses: docker/login-action@v3
+        with:
+          registry: registry.mkz.me
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Push OCI artifact
+        run: |
+          flux push artifact \
+            oci://registry.mkz.me/mycroft/k8s-home/manifests:${{ github.sha }} \
+            --source=${{ github.server_url }}/${{ github.repository }} \
+            --files=dist/*
