@@ -48,7 +48,7 @@ jobs:
           commit_author: mycroft <pm@mkz.me>
 
       - name: Upload generated manifests
-        uses: https://github.com/christopherHX/gitea-upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: manifests
           path: dist/
@@ -59,7 +59,7 @@ jobs:
 
     steps:
       - name: Download generated manifests
-        uses: https://github.com/christopherHX/gitea-download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: manifests
           path: dist/
