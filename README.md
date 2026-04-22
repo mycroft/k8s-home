@@ -183,30 +183,6 @@ When a PR is merged into `main`, a Gitea Actions pipeline builds cdk8s dependenc
 
 ## Maintenance
 
-### Initial Flux Installation
-
-Install Flux CD using the `flux` binary. See the [official getting started guide](https://fluxcd.io/flux/get-started/).
-
-```sh
-flux bootstrap gitea \
-  --url=ssh://git@git.mkz.me/mycroft/k8s-home.git \
-  --private-key-file=/tmp/rsa \
-  --branch=generated \
-  --path=generated/ \
-  --owner=mycroft \
-  --component-owner=mycroft
-```
-
-### Upgrading Flux
-
-Dump the key file:
-
-```sh
-k get secret -n flux-system -o yaml flux-system | yq .data.identity -r | base64 -d > /tmp/rsa
-```
-
-Then re-run the bootstrap command above.
-
 ### Upgrade Services
 
 Check for outdated Helm charts and images:
@@ -303,23 +279,6 @@ This is sufficient to create valid `SecretStore` and `ExternalSecret` objects.
 
 ## Operational Notes
 
-### Force HelmRelease Reconcile
-
-After an undetected change, annotate the HelmRelease:
-
-```sh
-kubectl annotate --overwrite -n monitoring helmrelease/prometheus reconcile.fluxcd.io/requestedAt="$(date +%s)"
-```
-
-### HelmRelease Install Retries Exhausted
-
-After fixing the issue, suspend and resume:
-
-```sh
-flux suspend hr -n kubernetes-dashboard kubernetes-dashboard
-flux resume hr -n kubernetes-dashboard kubernetes-dashboard
-```
-
 ### Creating a Secret with Sealed-Secrets
 
 See [bitnami-labs/sealed-secrets](https://github.com/bitnami-labs/sealed-secrets):
@@ -377,6 +336,7 @@ See [traefik values.yaml](https://github.com/traefik/traefik-helm-chart/blob/mas
 
 - [cdk8s Documentation](https://cdk8s.io/) — Cloud Development Kit for Kubernetes
 - [Flux CD Documentation](https://fluxcd.io/) — GitOps Kubernetes automation
+- [docs/flux.md](docs/flux.md) — Flux CD installation, upgrade, and troubleshooting playbook
 - [External-Secrets Vault Provider](https://external-secrets.io/latest/provider/hashicorp-vault/) — Vault integration guide
 - [Vault Kubernetes Auth](https://developer.hashicorp.com/vault/docs/auth/kubernetes) — Kubernetes authentication for Vault
 - [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) — Encrypted Kubernetes secrets
