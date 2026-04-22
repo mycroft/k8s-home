@@ -70,3 +70,9 @@ jobs:
             --source=${{ github.server_url }}/${{ github.repository }} \
             --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)" \
             --path="./generated"
+
+      - name: Tag as latest
+        run: |
+          ./flux tag \
+            oci://registry.mkz.me/mycroft/k8s-home/manifests:${{ github.sha }} \
+            --tag=latest
