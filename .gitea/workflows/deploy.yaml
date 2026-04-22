@@ -52,7 +52,7 @@ jobs:
 
       - name: Install flux CLI
         run: |
-          curl -sKL https://fluxcd.io/install.sh | sh
+          curl -sL https://fluxcd.io/install.sh | sh
           sudo mv bin/flux /usr/local/bin/
 
       - name: Login to container registry
