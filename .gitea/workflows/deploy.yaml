@@ -68,4 +68,4 @@ jobs:
           ./flux push artifact \
             oci://registry.mkz.me/mycroft/k8s-home/manifests:${{ github.sha }} \
             --source=${{ github.server_url }}/${{ github.repository }} \
-            --files=generated/*
+            --path="./generated"
