@@ -47,6 +47,28 @@ jobs:
           commit_user_email: pm@mkz.me
           commit_author: mycroft <pm@mkz.me>
 
+      - name: Upload generated manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: manifests
+          path: dist/
+
+  push-oci:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download generated manifests
+        uses: actions/download-artifact@v4
+        with:
+          name: manifests
+          path: dist/
+
+      - name: Install flux CLI
+        run: |
+          curl -sKL https://fluxcd.io/install.sh | sh
+          sudo mv bin/flux /usr/local/bin/
+
       - name: Login to container registry
         uses: docker/login-action@v3
         with:
