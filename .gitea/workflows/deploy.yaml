@@ -60,6 +60,7 @@ jobs:
           REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
           REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
         run: |
+          echo "Logging in to container registry with username ${REGISTRY_USERNAME}"
           echo "${REGISTRY_PASSWORD}" | docker login registry.mkz.me -u "${REGISTRY_USERNAME}" --password-stdin
 
       - name: Push OCI artifact
