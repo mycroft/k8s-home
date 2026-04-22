@@ -73,6 +73,6 @@ jobs:
 
       - name: Tag as latest
         run: |
-          ./flux tag \
+          ./flux tag  artifact \
             oci://registry.mkz.me/mycroft/k8s-home/manifests:${{ github.sha }} \
             --tag=latest
