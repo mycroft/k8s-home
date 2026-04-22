@@ -28,41 +28,27 @@ jobs:
           git checkout cdk8s.yaml
           cdk8s synth
 
-      - name: Prepare generated
+      - name: Push to generated branch
         run: |
+          git config user.name "mycroft"
+          git config user.email "pm@mkz.me"
           git fetch origin +refs/heads/generated
           git checkout generated
           git rm generated/*.yaml
-          mkdir -p generated
-          touch generated/.gitkeep
           cp -Rp dist/* generated/
-          find generated
-
-      - name: Git auto-commit changes to generated
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: Update generated configuration
-          branch: generated
-          commit_user_name: mycroft
-          commit_user_email: pm@mkz.me
-          commit_author: mycroft <pm@mkz.me>
-
-      - name: Upload generated manifests
-        uses: actions/upload-artifact@v3
-        with:
-          name: manifests
-          path: dist/
+          git add generated/
+          git commit -m "Update generated configuration" || exit 0
+          git push origin generated
 
   push-oci:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download generated manifests
-        uses: actions/download-artifact@v3
+      - name: Check out generated branch
+        uses: actions/checkout@v4
         with:
-          name: manifests
-          path: dist/
+          ref: generated
 
       - name: Install flux CLI
         run: |
@@ -70,15 +56,12 @@ jobs:
           sudo mv bin/flux /usr/local/bin/
 
       - name: Login to container registry
-        uses: docker/login-action@v3
-        with:
-          registry: registry.mkz.me
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+        run: |
+          echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.mkz.me -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
 
       - name: Push OCI artifact
         run: |
           flux push artifact \
             oci://registry.mkz.me/mycroft/k8s-home/manifests:${{ github.sha }} \
             --source=${{ github.server_url }}/${{ github.repository }} \
-            --files=dist/*
+            --files=generated/*
