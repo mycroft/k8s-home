@@ -56,8 +56,11 @@ jobs:
           tar xvfz flux.tgz
 
       - name: Login to container registry
+        env:
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+          REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
         run: |
-          echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.mkz.me -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+          echo "${REGISTRY_PASSWORD}" | docker login registry.mkz.me -u "${REGISTRY_USERNAME}" --password-stdin
 
       - name: Push OCI artifact
         run: |
