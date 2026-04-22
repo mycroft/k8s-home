@@ -52,8 +52,8 @@ jobs:
 
       - name: Install flux CLI
         run: |
-          curl -sL https://fluxcd.io/install.sh | sh
-          sudo mv bin/flux /usr/local/bin/
+          curl -sL -o flux.tgz https://github.com/fluxcd/flux2/releases/download/v2.8.6/flux_2.8.6_linux_amd64.tar.gz
+          tar xvfz flux.tgz
 
       - name: Login to container registry
         run: |
@@ -61,7 +61,7 @@ jobs:
 
       - name: Push OCI artifact
         run: |
-          flux push artifact \
+          ./flux push artifact \
             oci://registry.mkz.me/mycroft/k8s-home/manifests:${{ github.sha }} \
             --source=${{ github.server_url }}/${{ github.repository }} \
             --files=generated/*
