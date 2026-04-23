@@ -15,7 +15,7 @@ func NewFluxCDChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	// Replicate secret from vault to flux-system namespace
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "registry")
+	kubehelpers.CreateDockerConfigJSONSecret(chart.Cdk8sChart, namespace, "registry", "registry.mkz.me")
 
 	// Add the OCI repository to the flux-system namespace
 	fluxcd_ocirepositories_sourcetoolkitfluxcdio.NewOciRepository(

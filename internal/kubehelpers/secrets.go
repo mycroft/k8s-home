@@ -79,6 +79,60 @@ func CreateExternalSecret(chart constructs.Construct, namespace, name string) {
 	)
 }
 
+func CreateDockerConfigJSONSecret(chart constructs.Construct, namespace, name, registry string) {
+	vaultKey := fmt.Sprintf("secret/namespaces/%s/%s", namespace, name)
+
+	externalsecrets_externalsecretsio.NewExternalSecret(
+		chart,
+		jsii.String(fmt.Sprintf("es-%s", name)),
+		&externalsecrets_externalsecretsio.ExternalSecretProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &externalsecrets_externalsecretsio.ExternalSecretSpec{
+				DataFrom: &[]*externalsecrets_externalsecretsio.ExternalSecretSpecDataFrom{
+					{
+						Extract: &externalsecrets_externalsecretsio.ExternalSecretSpecDataFromExtract{
+							ConversionStrategy: externalsecrets_externalsecretsio.ExternalSecretSpecDataFromExtractConversionStrategy_DEFAULT,
+							Key:                jsii.String(vaultKey),
+						},
+					},
+				},
+				RefreshInterval: jsii.String("15m"),
+				SecretStoreRef: &externalsecrets_externalsecretsio.ExternalSecretSpecSecretStoreRef{
+					Kind: externalsecrets_externalsecretsio.ExternalSecretSpecSecretStoreRefKind_SECRET_STORE,
+					Name: jsii.String("secretstore-vault"),
+				},
+				Target: &externalsecrets_externalsecretsio.ExternalSecretSpecTarget{
+					CreationPolicy: externalsecrets_externalsecretsio.ExternalSecretSpecTargetCreationPolicy_OWNER,
+					DeletionPolicy: externalsecrets_externalsecretsio.ExternalSecretSpecTargetDeletionPolicy_DELETE,
+					Immutable:      jsii.Bool(false),
+					Name:           jsii.String(name),
+					Template: &externalsecrets_externalsecretsio.ExternalSecretSpecTargetTemplate{
+						EngineVersion: externalsecrets_externalsecretsio.ExternalSecretSpecTargetTemplateEngineVersion_V2,
+						Type:          jsii.String("kubernetes.io/dockerconfigjson"),
+						Data: &map[string]*string{
+".dockerconfigjson": jsii.String(fmt.Sprintf(`{
+  "auths": {
+    "%s": {
+      "username": "{{ .username }}",
+      "password": "{{ .password }}",
+      "auth": "{{ printf "\x25s:\x25s" .username .password | b64enc }}"
+    }
+  }
+}`, registry)),
+						},
+					},
+				},
+			},
+		},
+	)
+}
+
 func (chart *Chart) CreateExternalSecret(namespace, name string) {
 	CreateExternalSecret(chart.Cdk8sChart, namespace, name)
+}
+
+func (chart *Chart) CreateDockerConfigJSONSecret(namespace, name, registry string) {
+	CreateDockerConfigJSONSecret(chart.Cdk8sChart, namespace, name, registry)
 }
