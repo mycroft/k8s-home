@@ -34,8 +34,19 @@ spec:
     immutable: false
     name: registry
     template:
+      data:
+        .dockerconfigjson: |-
+          {
+            "auths": {
+              "registry.mkz.me": {
+                "username": "{{ .username }}",
+                "password": "{{ .password }}",
+                "auth": "{{ printf "\x25s:\x25s" .username .password | b64enc }}"
+              }
+            }
+          }
       engineVersion: v2
-      type: Opaque
+      type: kubernetes.io/dockerconfigjson
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
