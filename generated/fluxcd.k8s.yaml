@@ -1,3 +1,54 @@
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: flux-system
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: fluxcd-es-registry-c8678c03
+  namespace: flux-system
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/flux-system/registry
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: registry
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: flux-system
+spec:
+  interval: 1m0s
+  ref:
+    tag: latest
+  secretRef:
+    name: registry
+  url: oci://registry.mkz.me/k8s-home/k8s-home/manifests
+---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
