@@ -6,6 +6,7 @@ imports:
   - k8s@1.34.0
   - https://raw.githubusercontent.com/fluxcd/source-controller/v1.3.0/config/crd/bases/source.toolkit.fluxcd.io_helmcharts.yaml
   - https://raw.githubusercontent.com/fluxcd/source-controller/v1.3.0/config/crd/bases/source.toolkit.fluxcd.io_helmrepositories.yaml
+  - ocirepositories:=https://raw.githubusercontent.com/fluxcd/source-controller/refs/tags/v1.8.3/config/crd/bases/source.toolkit.fluxcd.io_ocirepositories.yaml
   - https://github.com/fluxcd/helm-controller/releases/download/v1.0.1/helm-controller.crds.yaml
   - https://raw.githubusercontent.com/cert-manager/cert-manager/v1.18.2/deploy/crds/crd-clusterissuers.yaml
   - certificates:=https://raw.githubusercontent.com/cert-manager/cert-manager/v1.18.2/deploy/crds/crd-certificates.yaml

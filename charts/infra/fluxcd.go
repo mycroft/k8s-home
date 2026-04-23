@@ -1,6 +1,7 @@
 package infra
 
 import (
+	fluxcd_ocirepositories_sourcetoolkitfluxcdio "git.mkz.me/mycroft/k8s-home/imports/ocirepositories_sourcetoolkitfluxcdio"
 	podmonitor "git.mkz.me/mycroft/k8s-home/imports/podmonitor_monitoringcoreoscom"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -11,6 +12,31 @@ func NewFluxCDChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "flux-system"
 
 	chart := builder.NewChart("fluxcd")
+
+	// Replicate secret from vault to flux-system namespace
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "registry")
+
+	// Add the OCI repository to the flux-system namespace
+	fluxcd_ocirepositories_sourcetoolkitfluxcdio.NewOciRepository(
+		chart.Cdk8sChart,
+		jsii.String("oci-repository-flux"),
+		&fluxcd_ocirepositories_sourcetoolkitfluxcdio.OciRepositoryProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name: jsii.String("flux-system"),
+			},
+			Spec: &fluxcd_ocirepositories_sourcetoolkitfluxcdio.OciRepositorySpec{
+				Url:      jsii.String("oci://registry.mkz.me/mycroft/k8s-home/manifests"),
+				Interval: jsii.String("1m0s"),
+				Ref: &fluxcd_ocirepositories_sourcetoolkitfluxcdio.OciRepositorySpecRef{
+					Tag: jsii.String("latest"),
+				},
+				SecretRef: &fluxcd_ocirepositories_sourcetoolkitfluxcdio.OciRepositorySpecSecretRef{
+					Name: jsii.String("registry"),
+				},
+			},
+		},
+	)
 
 	podmonitor.NewPodMonitor(
 		chart.Cdk8sChart,
