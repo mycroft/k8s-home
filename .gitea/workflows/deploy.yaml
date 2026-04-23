@@ -66,7 +66,7 @@ jobs:
       - name: Push OCI artifact
         run: |
           ./flux push artifact \
-            oci://registry.mkz.me/mycroft/k8s-home/manifests:${{ github.sha }} \
+            oci://registry.mkz.me/k8s-home/manifests:${{ github.sha }} \
             --source=${{ github.server_url }}/${{ github.repository }} \
             --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)" \
             --path="./generated"
@@ -74,5 +74,5 @@ jobs:
       - name: Tag as latest
         run: |
           ./flux tag  artifact \
-            oci://registry.mkz.me/mycroft/k8s-home/manifests:${{ github.sha }} \
+            oci://registry.mkz.me/k8s-home/manifests:${{ github.sha }} \
             --tag=latest
