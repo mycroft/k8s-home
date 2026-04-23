@@ -23,7 +23,8 @@ func NewFluxCDChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		jsii.String("oci-repository-flux"),
 		&fluxcd_ocirepositories_sourcetoolkitfluxcdio.OciRepositoryProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
-				Name: jsii.String("flux-system"),
+				Name:      jsii.String("flux-system"),
+				Namespace: jsii.String(namespace),
 			},
 			Spec: &fluxcd_ocirepositories_sourcetoolkitfluxcdio.OciRepositorySpec{
 				Url:      jsii.String("oci://registry.mkz.me/k8s-home/k8s-home/manifests"),
