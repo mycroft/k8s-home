@@ -26,7 +26,7 @@ func NewFluxCDChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				Name: jsii.String("flux-system"),
 			},
 			Spec: &fluxcd_ocirepositories_sourcetoolkitfluxcdio.OciRepositorySpec{
-				Url:      jsii.String("oci://registry.mkz.me/mycroft/k8s-home/manifests"),
+				Url:      jsii.String("oci://registry.mkz.me/k8s-home/k8s-home/manifests"),
 				Interval: jsii.String("1m0s"),
 				Ref: &fluxcd_ocirepositories_sourcetoolkitfluxcdio.OciRepositorySpecRef{
 					Tag: jsii.String("latest"),

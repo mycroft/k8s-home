@@ -170,11 +170,12 @@ Wait until the status shows `ready` and the revision matches the latest artifact
 
 ### 4. Update the Kustomization
 
-Patch the existing `flux-system` Kustomization to reference the OCIRepository instead of the GitRepository:
+Patch the existing `flux-system` Kustomization to reference the OCIRepository instead of the GitRepository. The path must also be updated since OCI files are stored at the root (not under `generated/`):
 
 ```sh
 kubectl patch kustomization flux-system -n flux-system --type=merge -p '{
   "spec": {
+    "path": ".",
     "sourceRef": {
       "apiVersion": "source.toolkit.fluxcd.io/v1",
       "kind": "OCIRepository",
@@ -208,6 +209,7 @@ If the OCI sync fails, revert the Kustomization to use the GitRepository:
 ```sh
 kubectl patch kustomization flux-system -n flux-system --type=merge -p '{
   "spec": {
+    "path": "generated/",
     "sourceRef": {
       "apiVersion": "source.toolkit.fluxcd.io/v1",
       "kind": "GitRepository",
