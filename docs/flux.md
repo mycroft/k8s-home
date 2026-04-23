@@ -4,11 +4,11 @@ This playbook covers Flux CD installation, upgrade, and troubleshooting for the 
 
 ## Overview
 
-Flux CD is the GitOps engine that reconciles the cluster state with the manifests in the `generated` branch. The workflow:
+Flux CD is the GitOps engine that reconciles the cluster state with manifests. The workflow:
 
 1. Go code in `charts/` synthesizes YAML manifests into `dist/`
-2. On merge to `main`, Gitea Actions pushes `dist/` to the `generated` branch
-3. Flux CD polls the `generated` branch every 2 minutes and applies changes
+2. On merge to `main`, Gitea Actions pushes `dist/` to the `generated` branch and publishes an OCI artifact
+3. Flux CD polls the source (Git or OCI) every 2 minutes and applies changes
 
 The `flux-system` namespace contains the Flux controllers. A `PodMonitor` in `charts/infra/fluxcd.go` exposes metrics to Prometheus.
 
@@ -103,6 +103,120 @@ flux --version
 flux get all -n flux-system
 ```
 
+## Migrate from Git to OCI
+
+This procedure switches Flux from syncing the `generated` Git branch to pulling manifests from an OCI registry, with no downtime.
+
+### Prerequisites
+
+- OCI registry credentials (if the registry requires authentication)
+- OCI artifacts already pushed to `registry.mkz.me/mycroft/k8s-home/manifests` (tagged `latest`)
+
+### 1. Create Registry Credentials Secret
+
+If your registry requires authentication:
+
+```sh
+kubectl create secret docker-registry oci-registry-credentials \
+  --docker-server=registry.mkz.me \
+  --docker-username=<username> \
+  --docker-password=<password> \
+  -n flux-system
+```
+
+### 2. Create OCIRepository
+
+Apply the OCIRepository resource:
+
+```yaml
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: k8s-home
+  namespace: flux-system
+spec:
+  interval: 2m0s
+  url: oci://registry.mkz.me/mycroft/k8s-home/manifests
+  ref:
+    tag: latest
+  secretRef:
+    name: oci-registry-credentials
+```
+
+```sh
+kubectl apply -f - <<'EOF'
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: k8s-home
+  namespace: flux-system
+spec:
+  interval: 2m0s
+  url: oci://registry.mkz.me/mycroft/k8s-home/manifests
+  ref:
+    tag: latest
+  secretRef:
+    name: oci-registry-credentials
+EOF
+```
+
+### 3. Verify OCIRepository is Ready
+
+```sh
+flux get ocirepository k8s-home -n flux-system
+```
+
+Wait until the status shows `ready` and the revision matches the latest artifact.
+
+### 4. Update the Kustomization
+
+Patch the existing `flux-system` Kustomization to reference the OCIRepository instead of the GitRepository:
+
+```sh
+kubectl patch kustomization flux-system -n flux-system --type=merge -p '{
+  "spec": {
+    "sourceRef": {
+      "apiVersion": "source.toolkit.fluxcd.io/v1",
+      "kind": "OCIRepository",
+      "name": "k8s-home"
+    }
+  }
+}'
+```
+
+### 5. Verify Sync
+
+```sh
+flux get kustomization flux-system -n flux-system
+flux get all -n flux-system
+```
+
+Confirm the Kustomization is reconciling successfully against the OCIRepository.
+
+### 6. Clean Up (Optional)
+
+Once the OCI-based sync is verified working, remove the old GitRepository:
+
+```sh
+kubectl delete gitrepository flux-system -n flux-system
+```
+
+### Rollback
+
+If the OCI sync fails, revert the Kustomization to use the GitRepository:
+
+```sh
+kubectl patch kustomization flux-system -n flux-system --type=merge -p '{
+  "spec": {
+    "sourceRef": {
+      "apiVersion": "source.toolkit.fluxcd.io/v1",
+      "kind": "GitRepository",
+      "name": "flux-system"
+    }
+  }
+}'
+```
+
 ## Troubleshooting
 
 ### Force HelmRelease Reconcile
@@ -151,5 +265,6 @@ Flux controllers expose Prometheus metrics on the `http-prom` port. The `PodMoni
 - [Flux CD Documentation](https://fluxcd.io/)
 - [Flux Getting Started](https://fluxcd.io/flux/get-started/)
 - [Flux Bootstrap Generic Git](https://fluxcd.io/flux/installation/bootstrap/generic-git-server/)
+- [Flux OCI Repositories](https://fluxcd.io/flux/components/source/ocirepositories/)
 - [Flux Monitoring Example](https://github.com/fluxcd/flux2-monitoring-example)
 - [Flux HelmRelease Troubleshooting](https://fluxcd.io/flux/tutorials/hello-world/)
