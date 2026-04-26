@@ -16,6 +16,7 @@ spec:
     grafana: grafana-admin
     memos: memos-admin
     n8n: n8n-admin
+    outline: outline-admin
     paperlessngx: paperlessngx-admin
     privatebin: privatebin-admin
     temporal: temporal-admin
@@ -58,6 +59,10 @@ spec:
       - createdb
     n8n: []
     n8n-admin:
+      - superuser
+      - createdb
+    outline: []
+    outline-admin:
       - superuser
       - createdb
     paperlessngx: []
