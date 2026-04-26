@@ -22,6 +22,7 @@ ingress:
       className: "traefik"
       annotations:
         cert-manager.io/cluster-issuer: "letsencrypt-prod"
+        traefik.ingress.kubernetes.io/router.middlewares: garage-cors-headers@kubernetescrd
       hosts:
         - host: s3-api.iop.cx
           paths:

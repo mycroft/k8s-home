@@ -1,6 +1,11 @@
 package storage
 
-import "git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
+import (
+	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
+	"github.com/aws/jsii-runtime-go"
+	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
+)
 
 func NewGarage(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chartName := "garage"
@@ -11,6 +16,37 @@ func NewGarage(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
+
+	// Create cors-headers middleware
+	traefikio.NewMiddleware(
+		chart.Cdk8sChart,
+		jsii.String("cors-headers"),
+		&traefikio.MiddlewareProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name:      jsii.String("cors-headers"),
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &traefikio.MiddlewareSpec{
+				Headers: &traefikio.MiddlewareSpecHeaders{
+					AccessControlAllowMethods: &[]*string{
+						jsii.String("GET"),
+						jsii.String("POST"),
+						jsii.String("PUT"),
+						jsii.String("DELETE"),
+						jsii.String("OPTIONS"),
+					},
+					AccessControlAllowHeaders: &[]*string{
+						jsii.String("*"),
+					},
+					AccessControlAllowOriginList: &[]*string{
+						jsii.String("*"),
+					},
+					AccessControlMaxAge: jsii.Number(float64(100)),
+					AddVaryHeader:       jsii.Bool(true),
+				},
+			},
+		},
+	)
 
 	chart.CreateHelmRepository(
 		repoName,
