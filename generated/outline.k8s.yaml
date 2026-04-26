@@ -1,0 +1,317 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outline
+---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: outline
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: outline-es-postgres-c89cd9b5
+  namespace: outline
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/outline/postgres
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgres
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: outline-es-secret-c859b5a3
+  namespace: outline
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/outline/secret
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: secret
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: outline-es-oidc-c8558937
+  namespace: outline
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/outline/oidc
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: oidc
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: outline-es-garage-c8f086be
+  namespace: outline
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/outline/garage
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: garage
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: redis
+  name: outline-redis-svc-c88604a7
+  namespace: outline
+spec:
+  ports:
+    - name: http
+      port: 6379
+  selector:
+    app.kubernetes.io/component: redis
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: outline-redis-sts-c8bb7be3
+  namespace: outline
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: redis
+  serviceName: outline-redis-svc-c88604a7
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: redis
+    spec:
+      containers:
+        - command:
+            - redis-server
+            - --save
+            - "60"
+            - "1"
+            - --loglevel
+            - warning
+          env: []
+          image: redis:8.6.2
+          name: redis
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      securityContext:
+        fsGroup: 0
+      volumes: []
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/component: redis
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: outline
+  name: outline-outline-svc-c8d23920
+  namespace: outline
+spec:
+  ports:
+    - name: http
+      port: 3000
+  selector:
+    app.kubernetes.io/component: outline
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: outline-outline-sts-c83879d8
+  namespace: outline
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: outline
+  serviceName: outline-outline-svc-c8d23920
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: outline
+    spec:
+      containers:
+        - env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: url
+                  name: postgres
+            - name: REDIS_URL
+              value: redis://outline-redis-svc-c88604a7:6379
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: secret_key
+                  name: secret
+            - name: UTILS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: utils_secret
+                  name: secret
+            - name: URL
+              value: https://outline.iop.cx
+            - name: COLLABORATION_URL
+              value: https://outline.iop.cx
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: client_id
+                  name: oidc
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: client_secret
+                  name: oidc
+            - name: OIDC_AUTH_URI
+              valueFrom:
+                secretKeyRef:
+                  key: auth_uri
+                  name: oidc
+            - name: OIDC_TOKEN_URI
+              valueFrom:
+                secretKeyRef:
+                  key: token_uri
+                  name: oidc
+            - name: OIDC_USERINFO_URI
+              valueFrom:
+                secretKeyRef:
+                  key: userinfo_uri
+                  name: oidc
+            - name: OIDC_LOGOUT_URI
+              valueFrom:
+                secretKeyRef:
+                  key: logout_uri
+                  name: oidc
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: access_key_id
+                  name: garage
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: secret_access_key
+                  name: garage
+            - name: AWS_REGION
+              value: garage
+            - name: AWS_S3_UPLOAD_BUCKET_URL
+              value: https://s3-api.iop.cx
+            - name: AWS_S3_UPLOAD_BUCKET_NAME
+              value: outline
+            - name: AWS_S3_FORCE_PATH_STYLE
+              value: "true"
+          image: outlinewiki/outline:1.7.0
+          name: outline
+          volumeMounts:
+            - mountPath: /var/lib/outline/data
+              name: data
+      securityContext:
+        fsGroup: 0
+      volumes: []
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/component: outline
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 16Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: outline-ingress-c83fa31f
+  namespace: outline
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: outline.iop.cx
+      http:
+        paths:
+          - backend:
+              service:
+                name: outline-outline-svc-c8d23920
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - outline.iop.cx
+      secretName: secret-tls-www

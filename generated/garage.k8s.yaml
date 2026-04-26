@@ -3,6 +3,26 @@ kind: Namespace
 metadata:
   name: garage
 ---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: cors-headers
+  namespace: garage
+spec:
+  headers:
+    accessControlAllowHeaders:
+      - "*"
+    accessControlAllowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    accessControlAllowOriginList:
+      - "*"
+    accessControlMaxAge: 100
+    addVaryHeader: true
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
@@ -43,6 +63,7 @@ data:
           className: "traefik"
           annotations:
             cert-manager.io/cluster-issuer: "letsencrypt-prod"
+            traefik.ingress.kubernetes.io/router.middlewares: garage-cors-headers@kubernetescrd
           hosts:
             - host: s3-api.iop.cx
               paths:
@@ -57,7 +78,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 773eb7a781ef2d4ad92ebaade7a385297e6dea6d68279672d1000bc78354f713
+    configMapHash: 2cbc602e49921991088124b66abc16485d6f7fd0ebfcc32effe5c4805f8c3118
   name: garage
   namespace: garage
 spec:
