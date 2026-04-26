@@ -148,11 +148,11 @@ kubectl apply -f - <<'EOF'
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: k8s-home
+  name: flux-system
   namespace: flux-system
 spec:
   interval: 2m0s
-  url: oci://registry.mkz.me/mycroft/k8s-home/manifests
+  url: oci://registry.mkz.me/k8s-home/k8s-home/manifests
   ref:
     tag: latest
   secretRef:
@@ -163,7 +163,7 @@ EOF
 ### 3. Verify OCIRepository is Ready
 
 ```sh
-flux get ocirepository k8s-home -n flux-system
+flux get sources oci -n flux-system flux-system
 ```
 
 Wait until the status shows `ready` and the revision matches the latest artifact.
@@ -179,7 +179,7 @@ kubectl patch kustomization flux-system -n flux-system --type=merge -p '{
     "sourceRef": {
       "apiVersion": "source.toolkit.fluxcd.io/v1",
       "kind": "OCIRepository",
-      "name": "k8s-home"
+      "name": "flux-system"
     }
   }
 }'
