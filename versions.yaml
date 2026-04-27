@@ -56,7 +56,7 @@ images:
   linuxserver/heimdall: v2.5.7-ls238
   neosmemo/memos: 0.28.0
   paulbouwer/hello-kubernetes: 1.10.1
-  paperlessngx/paperless-ngx: 2.20.14
+  paperlessngx/paperless-ngx: 2.20.15
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: 2.0.3
   registry.gitlab.com/timvisee/send: v3.4.27
