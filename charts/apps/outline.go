@@ -157,6 +157,10 @@ func NewOutlineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name:  jsii.String("AWS_S3_FORCE_PATH_STYLE"),
 			Value: jsii.String("true"),
 		},
+		{
+			Name:  jsii.String("FILE_STORAGE_UPLOAD_MAX_SIZE"),
+			Value: jsii.String("268435456"),
+		},
 	}
 
 	outlineLabels := map[string]*string{
