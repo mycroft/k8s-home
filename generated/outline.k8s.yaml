@@ -270,6 +270,8 @@ spec:
               value: outline
             - name: AWS_S3_FORCE_PATH_STYLE
               value: "true"
+            - name: FILE_STORAGE_UPLOAD_MAX_SIZE
+              value: "268435456"
           image: outlinewiki/outline:1.7.0
           name: outline
           volumeMounts:
