@@ -680,7 +680,7 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
-      version: 84.3.0
+      version: 84.4.0
   install:
     createNamespace: false
     skipCRDs: false
