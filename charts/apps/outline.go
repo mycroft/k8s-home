@@ -124,6 +124,14 @@ func NewOutlineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			},
 		},
 		{
+			Name:  jsii.Sprintf("OIDC_SCOPES"),
+			Value: jsii.String("openid profile email"),
+		},
+		{
+			Name:  jsii.String("OIDC_DISPLAY_NAME"),
+			Value: jsii.String("authentik"),
+		},
+		{
 			Name: jsii.String("AWS_ACCESS_KEY_ID"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
