@@ -252,6 +252,10 @@ spec:
                 secretKeyRef:
                   key: logout_uri
                   name: oidc
+            - name: OIDC_SCOPES
+              value: openid profile email
+            - name: OIDC_DISPLAY_NAME
+              value: authentik
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
