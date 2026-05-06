@@ -36,7 +36,7 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
-      version: 11.9.2
+      version: 11.10.0
   install:
     createNamespace: false
     skipCRDs: false
