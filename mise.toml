@@ -1,0 +1,27 @@
+[tools]
+golang = "1.26.1"
+golangci-lint = { version = "2.12.2", depends = "golang" }
+node = "22"
+"npm:cdk8s-cli" = { version = "2.206.10", depends = "node" }
+
+[tasks.import]
+description = "cdk8s import"
+run = "cdk8s import"
+
+[tasks.synth]
+description = "cdk8s synth"
+run = "cdk8s synth"
+
+[tasks.build]
+description = "Build the k8s-home binary"
+run = "go build -o . ./..."
+
+[tasks.lint]
+description = "Run lint against golang code"
+run = "golangci-lint run -c .golangci.yaml"
+
+[tasks.check-versions]
+description = "Find outdated helm charts & images"
+depends = ["build"]
+run = "./k8s-home check-versions {{arg(name='args', var=true, default='')}}"
+
