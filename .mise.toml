@@ -15,6 +15,20 @@ run = "cdk8s synth"
 [tasks.build]
 description = "Build the k8s-home binary"
 run = "go build -o . ./..."
+sources = ["charts/**/*", "internal/**/*", "main.go"]
+outputs = ["k8s-home"]
+
+[tasks.generate-charts]
+description = "Generate k8s charts"
+depends = "build"
+run = "./k8s-home"
+outputs = ["dist/*.k8s.yaml"]
+
+[tasks.conftest]
+description = "Run conftest against generated charts"
+depends = ["generate-charts"]
+sources = ["dist/*.k8s.yaml"]
+run = "conftest test --policy policies ./dist"
 
 [tasks.lint]
 description = "Run lint against golang code"

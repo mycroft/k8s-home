@@ -95,6 +95,9 @@ func NewAppDeployment(
 							&container,
 						},
 						Volumes: &volumes,
+						SecurityContext: &k8s.PodSecurityContext{
+							RunAsNonRoot: jsii.Bool(true),
+						},
 					},
 				},
 			},
