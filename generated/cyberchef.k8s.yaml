@@ -23,7 +23,9 @@ spec:
           name: cyberchef
           volumeMounts: []
       securityContext:
+        runAsGroup: 1000
         runAsNonRoot: true
+        runAsUser: 1000
       volumes: []
 ---
 apiVersion: v1
