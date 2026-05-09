@@ -180,6 +180,8 @@ spec:
           volumeMounts:
             - mountPath: /srv/cfg
               name: config
+      securityContext:
+        runAsNonRoot: true
       volumes:
         - configMap:
             name: privatebin-config-c8e3bb26

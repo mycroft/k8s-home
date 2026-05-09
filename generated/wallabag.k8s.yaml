@@ -130,6 +130,8 @@ spec:
           image: wallabag/wallabag:2.6.14
           name: wallabag
           volumeMounts: []
+      securityContext:
+        runAsNonRoot: true
       volumes: []
 ---
 apiVersion: v1

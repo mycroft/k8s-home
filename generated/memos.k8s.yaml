@@ -70,6 +70,8 @@ spec:
           image: neosmemo/memos:0.28.0
           name: memos
           volumeMounts: []
+      securityContext:
+        runAsNonRoot: true
       volumes: []
 ---
 apiVersion: v1

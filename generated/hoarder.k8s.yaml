@@ -118,6 +118,8 @@ spec:
           image: gcr.io/zenika-hub/alpine-chrome:123
           name: alpine-chrome
           volumeMounts: []
+      securityContext:
+        runAsNonRoot: true
       volumes: []
 ---
 apiVersion: v1

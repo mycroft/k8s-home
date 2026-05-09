@@ -91,6 +91,8 @@ spec:
           image: jhaals/yopass:13.1.0
           name: yopass
           volumeMounts: []
+      securityContext:
+        runAsNonRoot: true
       volumes: []
 ---
 apiVersion: v1

@@ -22,6 +22,8 @@ spec:
           image: corentinth/it-tools:2024.10.22-7ca5933
           name: it-tools
           volumeMounts: []
+      securityContext:
+        runAsNonRoot: true
       volumes: []
 ---
 apiVersion: v1
