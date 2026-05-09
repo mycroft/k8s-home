@@ -22,10 +22,6 @@ spec:
           image: ghcr.io/gchq/cyberchef:11.0.0
           name: cyberchef
           volumeMounts: []
-      securityContext:
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
       volumes: []
 ---
 apiVersion: v1

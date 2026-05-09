@@ -22,10 +22,6 @@ spec:
           image: corentinth/it-tools:2024.10.22-7ca5933
           name: it-tools
           volumeMounts: []
-      securityContext:
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
       volumes: []
 ---
 apiVersion: v1

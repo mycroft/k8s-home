@@ -142,10 +142,6 @@ spec:
           image: registry.gitlab.com/timvisee/send:v3.4.27
           name: send
           volumeMounts: []
-      securityContext:
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
       volumes: []
 ---
 apiVersion: v1
