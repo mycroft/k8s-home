@@ -95,11 +95,11 @@ func NewAppDeployment(
 							&container,
 						},
 						Volumes: &volumes,
-						SecurityContext: &k8s.PodSecurityContext{
-							RunAsNonRoot: jsii.Bool(true),
-							RunAsUser:    jsii.Number(1000),
-							RunAsGroup:   jsii.Number(1000),
-						},
+						// SecurityContext: &k8s.PodSecurityContext{
+						// 	RunAsNonRoot: jsii.Bool(true),
+						// 	RunAsUser:    jsii.Number(1000),
+						// 	RunAsGroup:   jsii.Number(1000),
+						// },
 					},
 				},
 			},
