@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: useless
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: useless-c8e58794
+  namespace: useless
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: useless
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: useless
+    spec:
+      containers:
+        - image: registry.mkz.me/mycroft/useless:v0.0.8
+          imagePullPolicy: Always
+          name: useless
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: useless-svc-c85f6b1a
+  namespace: useless
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app.kubernetes.io/name: useless
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: useless-ingress-c88f42fc
+  namespace: useless
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: useless.iop.cx
+      http:
+        paths:
+          - backend:
+              service:
+                name: useless-svc-c85f6b1a
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - useless.iop.cx
+      secretName: secret-tls-www
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: prometheus
+  name: useless-service-monitor-c8c9cb1b
+  namespace: useless
+spec:
+  endpoints:
+    - path: /metrics
+      port: http
+  selector:
+    matchLabels: {}
