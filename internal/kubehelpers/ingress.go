@@ -57,7 +57,8 @@ func NewAppService(
 }
 
 type AppIngressOption struct {
-	Name string
+	Name     string
+	PortName string
 }
 
 // NewAppIngresses creates one or more Ingress resources for the application.
@@ -81,6 +82,11 @@ func NewAppIngresses(
 	}
 
 	portName := "http"
+	for _, opt := range opts {
+		if opt.PortName != "" {
+			portName = opt.PortName
+		}
+	}
 
 	if serviceName == "" {
 		if ContextGetDebug(ctx) {

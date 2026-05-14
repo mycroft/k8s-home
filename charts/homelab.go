@@ -23,6 +23,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_security.NewDexIdpChart,
 		charts_security.NewTraefikForwardAuth,
 		charts_security.NewAuthentikChart,
+		charts_security.NewHarborScannerTrivy,
 		// charts_security.NewTrivyChart
 		// charts_security.NewKyvernoChart
 

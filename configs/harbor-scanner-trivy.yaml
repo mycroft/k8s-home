@@ -1,0 +1,5 @@
+# https://github.com/goharbor/harbor-scanner-trivy/blob/main/helm/harbor-scanner-trivy/values.yaml
+
+scanner:
+  redis:
+    poolURL: "redis://harbor-scanner-trivy-redis-svc-c8371f05:6379"
