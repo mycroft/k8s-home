@@ -18,7 +18,7 @@ spec:
         app.kubernetes.io/name: useless
     spec:
       containers:
-        - image: registry.mkz.me/mycroft/useless:0.0.9
+        - image: registry.mkz.me/mycroft/useless:0.0.10
           imagePullPolicy: Always
           name: useless
 ---
