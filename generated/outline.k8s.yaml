@@ -276,7 +276,7 @@ spec:
               value: "true"
             - name: FILE_STORAGE_UPLOAD_MAX_SIZE
               value: "268435456"
-          image: outlinewiki/outline:1.8.0-0
+          image: outlinewiki/outline:1.8.0-1
           name: outline
           volumeMounts:
             - mountPath: /var/lib/outline/data
