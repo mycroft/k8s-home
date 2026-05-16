@@ -87,7 +87,7 @@ spec:
               value: useless-redis-svc-c8901fc8.useless
             - name: REDIS_PORT
               value: "6379"
-          image: registry.mkz.me/mycroft/useless:0.0.13
+          image: registry.mkz.me/mycroft/useless:0.0.15
           imagePullPolicy: Always
           name: useless
 ---
