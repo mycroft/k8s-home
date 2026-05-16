@@ -21,7 +21,24 @@ func NewUselessChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.NewNamespace(namespace)
 
 	labels := map[string]*string{
-		"app.kubernetes.io/name": jsii.String(appName),
+		"app.kubernetes.io/name":      jsii.String(appName),
+		"app.kubernetes.io/component": jsii.String("api"),
+	}
+
+	redisOpts := kubehelpers.RedisOpts{
+		AppPort: 6379,
+	}
+	_, redisServiceName := chart.NewRedisStatefulsetWithOpts(namespace, redisOpts)
+
+	env := []*k8s.EnvVar{
+		{
+			Name:  jsii.String("REDIS_HOST"),
+			Value: jsii.Sprintf("%s.%s", redisServiceName, namespace),
+		},
+		{
+			Name:  jsii.String("REDIS_PORT"),
+			Value: jsii.Sprintf("%d", redisOpts.AppPort),
+		},
 	}
 
 	k8s.NewKubeDeployment(
@@ -30,6 +47,7 @@ func NewUselessChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		&k8s.KubeDeploymentProps{
 			Metadata: &k8s.ObjectMeta{
 				Namespace: jsii.String(namespace),
+				Labels:    &labels,
 			},
 			Spec: &k8s.DeploymentSpec{
 				Selector: &k8s.LabelSelector{
@@ -42,6 +60,7 @@ func NewUselessChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 					Spec: &k8s.PodSpec{
 						Containers: &[]*k8s.Container{
 							{
+								Env:             &env,
 								Name:            jsii.String(appName),
 								Image:           jsii.String(appImage),
 								ImagePullPolicy: jsii.String("Always"),
