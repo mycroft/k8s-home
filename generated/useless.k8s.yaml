@@ -141,4 +141,6 @@ spec:
     - path: /metrics
       port: http
   selector:
-    matchLabels: {}
+    matchLabels:
+      app.kubernetes.io/component: api
+      app.kubernetes.io/name: useless
