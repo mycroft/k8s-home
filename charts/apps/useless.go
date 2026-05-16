@@ -95,7 +95,7 @@ func NewUselessChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			},
 			Spec: &servicemonitor_monitoringcoreoscom.ServiceMonitorSpec{
 				Selector: &servicemonitor_monitoringcoreoscom.ServiceMonitorSpecSelector{
-					MatchLabels: &map[string]*string{},
+					MatchLabels: &labels,
 				},
 				Endpoints: &[]*servicemonitor_monitoringcoreoscom.ServiceMonitorSpecEndpoints{
 					{
