@@ -3,22 +3,91 @@ kind: Namespace
 metadata:
   name: useless
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: redis
+  name: useless-redis-svc-c8901fc8
+  namespace: useless
+spec:
+  ports:
+    - name: http
+      port: 6379
+  selector:
+    app.kubernetes.io/component: redis
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: useless-redis-sts-c89866f7
+  namespace: useless
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: redis
+  serviceName: useless-redis-svc-c8901fc8
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: redis
+    spec:
+      containers:
+        - command:
+            - redis-server
+            - --save
+            - "60"
+            - "1"
+            - --loglevel
+            - warning
+          env: []
+          image: redis:8.6.3
+          name: redis
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      securityContext:
+        fsGroup: 0
+      volumes: []
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/component: redis
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: longhorn-crypto-global
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app.kubernetes.io/component: api
+    app.kubernetes.io/name: useless
   name: useless-c8e58794
   namespace: useless
 spec:
   selector:
     matchLabels:
+      app.kubernetes.io/component: api
       app.kubernetes.io/name: useless
   template:
     metadata:
       labels:
+        app.kubernetes.io/component: api
         app.kubernetes.io/name: useless
     spec:
       containers:
-        - image: registry.mkz.me/mycroft/useless:0.0.12
+        - env:
+            - name: REDIS_HOST
+              value: useless-redis-svc-c8901fc8.useless
+            - name: REDIS_PORT
+              value: "6379"
+          image: registry.mkz.me/mycroft/useless:0.0.12
           imagePullPolicy: Always
           name: useless
 ---
@@ -32,6 +101,7 @@ spec:
     - name: http
       port: 8080
   selector:
+    app.kubernetes.io/component: api
     app.kubernetes.io/name: useless
 ---
 apiVersion: networking.k8s.io/v1
