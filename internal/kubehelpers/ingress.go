@@ -26,6 +26,7 @@ func NewAppService(
 ) k8s.KubeService {
 	metadata := k8s.ObjectMeta{
 		Namespace: jsii.String(namespace),
+		Labels:    &labels,
 	}
 
 	spec := k8s.ServiceSpec{
