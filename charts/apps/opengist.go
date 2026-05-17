@@ -14,7 +14,10 @@ func NewOpengistChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := appName
 	appImage := builder.RegisterContainerImage("ghcr.io/thomiceli/opengist")
 	appPort := uint(6157)
-	appIngress := "opengist.services.mkz.me"
+	appIngresses := []string{
+		"opengist.services.mkz.me",
+		"gist.iop.cx",
+	}
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
@@ -76,13 +79,13 @@ func NewOpengistChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	})
 
-	kubehelpers.NewAppIngress(
+	kubehelpers.NewAppIngresses(
 		builder.Context,
 		chart.Cdk8sChart,
 		labels,
 		appName,
 		appPort,
-		appIngress,
+		appIngresses,
 		serviceName,
 		map[string]string{},
 	)
