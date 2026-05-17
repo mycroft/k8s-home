@@ -150,6 +150,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/name: opengist
   name: opengist-opengist-ssh-svc-c8db8f7c
   namespace: opengist
 spec:

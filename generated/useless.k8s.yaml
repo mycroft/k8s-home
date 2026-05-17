@@ -94,6 +94,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/component: api
+    app.kubernetes.io/name: useless
   name: useless-svc-c85f6b1a
   namespace: useless
 spec:

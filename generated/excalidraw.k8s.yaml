@@ -25,6 +25,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/name: excalidraw
   name: excalidraw-svc-c8cb7575
   namespace: excalidraw
 spec:

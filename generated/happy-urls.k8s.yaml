@@ -94,6 +94,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/component: happy-urls
+    app.kubernetes.io/name: happy-urls
   name: happy-urls-svc-c8e83750
   namespace: happy-urls
 spec:

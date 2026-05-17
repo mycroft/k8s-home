@@ -27,6 +27,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/component: it-tools
   name: it-tools-svc-c81df85c
   namespace: it-tools
 spec:

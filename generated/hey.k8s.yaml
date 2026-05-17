@@ -25,6 +25,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/name: hey
   name: hey-svc-c8e476b5
   namespace: hey
 spec:

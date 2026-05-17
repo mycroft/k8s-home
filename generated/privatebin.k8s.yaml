@@ -188,6 +188,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/name: privatebin
   name: privatebin-svc-c83b1859
   namespace: privatebin
 spec:

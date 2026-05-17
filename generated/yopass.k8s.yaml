@@ -96,6 +96,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/component: yopass
   name: yopass-svc-c8a1cf88
   namespace: yopass
 spec:
@@ -133,6 +135,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/component: yopass
   name: yopass-metrics-c8d26b2a
   namespace: yopass
 spec:

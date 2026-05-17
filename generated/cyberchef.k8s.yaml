@@ -27,6 +27,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/name: cyberchef
   name: cyberchef-svc-c8decb58
   namespace: cyberchef
 spec:

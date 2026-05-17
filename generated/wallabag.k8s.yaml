@@ -135,6 +135,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/name: wallabag
   name: wallabag-svc-c8a62292
   namespace: wallabag
 spec:

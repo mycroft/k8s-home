@@ -147,6 +147,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/component: send
   name: send-svc-c8d4a006
   namespace: send
 spec:

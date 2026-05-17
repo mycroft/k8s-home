@@ -37,6 +37,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/name: hello-kubernetes
   name: hello-kubernetes-svc-c819e9ba
   namespace: hello-kubernetes
 spec:
