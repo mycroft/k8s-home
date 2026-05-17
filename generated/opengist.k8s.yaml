@@ -131,9 +131,20 @@ spec:
                   name: http
             path: /
             pathType: Prefix
+    - host: gist.iop.cx
+      http:
+        paths:
+          - backend:
+              service:
+                name: opengist-opengist-svc-c811a844
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
   tls:
     - hosts:
         - opengist.services.mkz.me
+        - gist.iop.cx
       secretName: secret-tls-www
 ---
 apiVersion: v1
