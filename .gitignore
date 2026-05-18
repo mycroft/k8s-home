@@ -2,3 +2,4 @@ dist/
 imports/
 k8s-home
 .vscode
+/.claude
