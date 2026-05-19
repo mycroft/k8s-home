@@ -16,7 +16,7 @@ This project uses Go code to programmatically define and generate Flux CD `HelmR
 ### Prerequisites
 
 - Go 1.23+ (toolchain go1.24.2)
-- [just](https://just.systems/) command runner
+- [mise](https://mise.jdx.dev/) task runner
 - [golangci-lint](https://golangci-lint.run/) for linting
 - [cdk8s](https://cdk8s.io/) CLI for importing CRDs
 - kubectl configured against the target k3s cluster
@@ -38,7 +38,7 @@ export GITEA_TOKEN=<your-gitea-token>
 ### Generate Charts
 
 ```sh
-just generate
+mise run generate-charts
 ```
 
 This builds the binary and runs `./k8s-home` to synthesize `dist/*.k8s.yaml` files.
@@ -46,39 +46,45 @@ This builds the binary and runs `./k8s-home` to synthesize `dist/*.k8s.yaml` fil
 ### Production Build
 
 ```sh
-just build
+mise run build
 ```
 
 ### Lint
 
 ```sh
-just lint
+mise run lint
 ```
 
 ### Check for Outdated Versions
 
 ```sh
-just check-versions
+mise run check-versions
 ```
 
 ### Create Update PR
 
 ```sh
-just update-version <project/component>
+sh contrib/create-pr.sh -f <filter>
+```
+
+Or with an explicit version bump:
+
+```sh
+sh contrib/create-pr.sh -m 'chart;old;new'
 ```
 
 ### Diff Generated Output
 
 ```sh
-just diff
+sh contrib/diff.sh
 ```
 
-Generates charts then diffs `dist/` against the `generated` branch.
+Diffs `dist/` against the `generated` branch.
 
 ### Import CRDs
 
 ```sh
-just import
+mise run import
 ```
 
 Regenerates Go CRD bindings in `imports/`.
@@ -91,40 +97,40 @@ go test ./...
 
 ## Configuration
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `GITEA_TOKEN` | Yes | — | Authentication token for Gitea API (used by `create-prs`, `list-prs`, `merge-pr`) |
-| `GITHUB_TOKEN` | No | — | Fallback authentication token if `GITEA_TOKEN` is not set |
+| Variable       | Required | Default | Description                                                                       |
+| -------------- | -------- | ------- | --------------------------------------------------------------------------------- |
+| `GITEA_TOKEN`  | Yes      | —       | Authentication token for Gitea API (used by `create-prs`, `list-prs`, `merge-pr`) |
+| `GITHUB_TOKEN` | No       | —       | Fallback authentication token if `GITEA_TOKEN` is not set                         |
 
 ### CLI Flags
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--versions` | `versions.yaml` | Path to the versions file |
-| `--debug` | `false` | Enable debug logging |
-| `--gitea-url` | `https://git.mkz.me` | Gitea instance URL |
-| `--owner` | `mycroft` | Repository owner |
-| `--repo` | `k8s-home` | Repository name |
+| Flag          | Default              | Description               |
+| ------------- | -------------------- | ------------------------- |
+| `--versions`  | `versions.yaml`      | Path to the versions file |
+| `--debug`     | `false`              | Enable debug logging      |
+| `--gitea-url` | `https://git.mkz.me` | Gitea instance URL        |
+| `--owner`     | `mycroft`            | Repository owner          |
+| `--repo`      | `k8s-home`           | Repository name           |
 
 ## Project Structure
 
-| Path | Description |
-|------|-------------|
-| `charts/apps/` | User-facing app charts (wallabag, freshrss, vaultwarden, etc.) |
-| `charts/infra/` | Infrastructure charts (Flux CD, Traefik, Velero, Temporal, etc.) |
-| `charts/observability/` | Monitoring charts (Grafana, Prometheus, Loki, Tempo, etc.) |
-| `charts/security/` | Security charts (Vault, cert-manager, Dex, Authentik, etc.) |
-| `charts/storage/` | Storage charts (Longhorn, PostgreSQL, NATS, Garage, etc.) |
-| `charts/static/` | Static YAML manifests (Tekton pipeline definitions) |
+| Path                    | Description                                                        |
+| ----------------------- | ------------------------------------------------------------------ |
+| `charts/apps/`          | User-facing app charts (wallabag, freshrss, vaultwarden, etc.)     |
+| `charts/infra/`         | Infrastructure charts (Flux CD, Traefik, Velero, Temporal, etc.)   |
+| `charts/observability/` | Monitoring charts (Grafana, Prometheus, Loki, Tempo, etc.)         |
+| `charts/security/`      | Security charts (Vault, cert-manager, Dex, Authentik, etc.)        |
+| `charts/storage/`       | Storage charts (Longhorn, PostgreSQL, NATS, Garage, etc.)          |
+| `charts/static/`        | Static YAML manifests (Tekton pipeline definitions)                |
 | `internal/kubehelpers/` | Shared builder library for HelmRelease, Ingress, StatefulSet, etc. |
-| `internal/gitea/` | Gitea API client for PR automation |
-| `configs/` | Helm values YAML files, injected as ConfigMaps |
-| `dist/` | Generated output (`.k8s.yaml` files) |
-| `imports/` | Auto-generated Go CRD bindings |
-| `crds/` | Custom CRD YAML files for cdk8s imports |
-| `cicd/` | Tekton pipeline definitions |
-| `contrib/` | Helper scripts |
-| `versions.yaml` | Single source of truth for all versions |
+| `internal/gitea/`       | Gitea API client for PR automation                                 |
+| `configs/`              | Helm values YAML files, injected as ConfigMaps                     |
+| `dist/`                 | Generated output (`.k8s.yaml` files)                               |
+| `imports/`              | Auto-generated Go CRD bindings                                     |
+| `crds/`                 | Custom CRD YAML files for cdk8s imports                            |
+| `cicd/`                 | Tekton pipeline definitions                                        |
+| `contrib/`              | Helper scripts                                                     |
+| `versions.yaml`         | Single source of truth for all versions                            |
 
 ## Installed Apps
 
@@ -188,16 +194,22 @@ When a PR is merged into `main`, a Gitea Actions pipeline builds cdk8s dependenc
 Check for outdated Helm charts and images:
 
 ```sh
-just check-versions
+mise run check-versions
 ```
 
 Run updates:
 
 ```sh
-just update-version <project/component>
+sh contrib/create-pr.sh -f <filter>
 ```
 
-`<project/component>` must include the full project name and component name. Never update to release candidates, alpha, or beta versions. Note that not all containers are checked by this command.
+Or with an explicit version bump:
+
+```sh
+sh contrib/create-pr.sh -m 'chart;old;new'
+```
+
+Never update to release candidates, alpha, or beta versions. Note that not all containers are checked by this command.
 
 #### Excalidraw
 
@@ -216,10 +228,10 @@ Ingresses are protected by `traefik-forward-auth`, which performs OAuth using a 
 Redirect all HTTP requests to HTTPS. On the master node, edit `/var/lib/rancher/k3s/server/manifests/traefik-config.yaml` and add in the `valuesContent` section:
 
 ```yaml
-  valuesContent: |-
-    ports:
-      web:
-        redirectTo: websecure
+valuesContent: |-
+  ports:
+    web:
+      redirectTo: websecure
 ```
 
 k3s will automatically redeploy the Helm chart.
@@ -227,9 +239,9 @@ k3s will automatically redeploy the Helm chart.
 Allow `IngressRoute` middlewares from other namespaces:
 
 ```yaml
-    providers:
-      kubernetesCRD:
-        allowCrossNamespace: true
+providers:
+  kubernetesCRD:
+    allowCrossNamespace: true
 ```
 
 Do not edit `traefik.yaml` directly — it is overwritten on restart.
@@ -341,6 +353,4 @@ See [traefik values.yaml](https://github.com/traefik/traefik-helm-chart/blob/mas
 - [Vault Kubernetes Auth](https://developer.hashicorp.com/vault/docs/auth/kubernetes) — Kubernetes authentication for Vault
 - [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) — Encrypted Kubernetes secrets
 - [Traefik Helm Chart Values](https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml) — Traefik configuration reference
-- [CLAUDE.md](CLAUDE.md) — Architecture, conventions, and how to add new apps
 - [README.vault.md](README.vault.md) — Vault setup, initialization, and unsealing
-- [README.cdk8s.md](README.cdk8s.md) — cdk8s-specific documentation
