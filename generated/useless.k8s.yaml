@@ -65,10 +65,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app.kubernetes.io/component: api
-    app.kubernetes.io/name: useless
-  name: useless-c8e58794
+  name: useless
   namespace: useless
 spec:
   selector:
@@ -97,7 +94,7 @@ metadata:
   labels:
     app.kubernetes.io/component: api
     app.kubernetes.io/name: useless
-  name: useless-svc-c85f6b1a
+  name: useless
   namespace: useless
 spec:
   ports:
@@ -112,7 +109,7 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-  name: useless-ingress-c88f42fc
+  name: useless
   namespace: useless
 spec:
   ingressClassName: traefik
@@ -122,7 +119,7 @@ spec:
         paths:
           - backend:
               service:
-                name: useless-svc-c85f6b1a
+                name: useless
                 port:
                   name: http
             path: /
