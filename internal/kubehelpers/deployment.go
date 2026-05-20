@@ -131,7 +131,7 @@ type Deployment struct {
 	// Labels to apply
 	Labels map[string]string
 	// Environement to set in deployment's pods
-	Env        []*k8s.EnvVar
+	Env        []EnvEntry
 	Commands   []string
 	ConfigMaps []ConfigMapMount
 }
@@ -147,7 +147,7 @@ func (chart *Chart) NewDeployment(deployment *Deployment) {
 		deployment.Name,
 		chart.Builder.RegisterContainerImage(deployment.Image),
 		ToLabelsPtr(deployment.Labels),
-		deployment.Env,
+		ToK8sEnv(deployment.Env),
 		deployment.Commands,
 		deployment.ConfigMaps,
 		AppDeploymentOption{

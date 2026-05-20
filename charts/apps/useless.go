@@ -1,12 +1,12 @@
 package apps
 
 import (
-	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/jsii-runtime-go"
+	"fmt"
+
+	kube "git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 )
 
-func NewUselessChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
+func NewUselessChart(builder *kube.Builder) *kube.Chart {
 	name := "useless"
 
 	namespace := name
@@ -24,22 +24,16 @@ func NewUselessChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"app.kubernetes.io/component": "api",
 	}
 
-	_, redisServiceName := chart.NewRedisStatefulsetWithOpts(namespace, kubehelpers.RedisOpts{
+	_, redisServiceName := chart.NewRedisStatefulsetWithOpts(namespace, kube.RedisOpts{
 		AppPort: uint(redisPort),
 	})
 
-	env := []*k8s.EnvVar{
-		{
-			Name:  jsii.String("REDIS_HOST"),
-			Value: jsii.Sprintf("%s.%s", redisServiceName, namespace),
-		},
-		{
-			Name:  jsii.String("REDIS_PORT"),
-			Value: jsii.Sprintf("%d", redisPort),
-		},
+	env := []kube.EnvEntry{
+		{Name: "REDIS_HOST", Value: kube.EnvValue{Value: fmt.Sprintf("%s.%s", redisServiceName, namespace)}},
+		{Name: "REDIS_PORT", Value: kube.EnvValue{Value: fmt.Sprintf("%d", redisPort)}},
 	}
 
-	chart.NewDeployment(&kubehelpers.Deployment{
+	chart.NewDeployment(&kube.Deployment{
 		Name:            name,
 		Labels:          labels,
 		Env:             env,
@@ -47,7 +41,7 @@ func NewUselessChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		ImagePullPolicy: "Always",
 	})
 
-	chart.NewIngress(&kubehelpers.Ingress{
+	chart.NewIngress(&kube.Ingress{
 		Name:   name,
 		Labels: labels,
 		Ingresses: []string{
@@ -56,7 +50,7 @@ func NewUselessChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		Port: uint(appPort),
 	})
 
-	chart.NewServiceMonitor(&kubehelpers.ServiceMonitor{
+	chart.NewServiceMonitor(&kube.ServiceMonitor{
 		Labels: labels,
 	})
 

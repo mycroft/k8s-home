@@ -3,12 +3,10 @@ package apps
 import (
 	"fmt"
 
-	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/jsii-runtime-go"
+	kube "git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 )
 
-func NewMemosChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
+func NewMemosChart(builder *kube.Builder) *kube.Chart {
 	name := "memos"
 	namespace := name
 	port := uint(5230)
@@ -20,24 +18,13 @@ func NewMemosChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"app.kubernetes.io/name": name,
 	}
 
-	env := []*k8s.EnvVar{
-		{
-			Name:  jsii.String("MEMOS_DRIVER"),
-			Value: jsii.String("postgres"),
-		},
-		{
-			Name:  jsii.String("MEMOS_PORT"),
-			Value: jsii.String("5230"),
-		},
-		{
-			Name: jsii.String("MEMOS_DSN"),
-			ValueFrom: &k8s.EnvVarSource{
-				SecretKeyRef: &k8s.SecretKeySelector{
-					Key:  jsii.String("dsn"),
-					Name: jsii.String("postgres"),
-				},
-			},
-		},
+	env := []kube.EnvEntry{
+		{Name: "MEMOS_DRIVER", Value: kube.EnvValue{Value: "postgres"}},
+		{Name: "MEMOS_PORT", Value: kube.EnvValue{Value: "5230"}},
+		{Name: "MEMOS_DSN", Value: kube.EnvValue{ValueFromSecret: kube.EnvValueFromSecret{
+			Key:  "dsn",
+			Name: "postgres",
+		}}},
 	}
 
 	chart := builder.NewChart(namespace)
@@ -45,14 +32,14 @@ func NewMemosChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.CreateSecretStore(namespace)
 	chart.CreateExternalSecret(namespace, "postgres")
 
-	chart.NewDeployment(&kubehelpers.Deployment{
+	chart.NewDeployment(&kube.Deployment{
 		Name:   name,
 		Image:  "neosmemo/memos",
 		Labels: labels,
 		Env:    env,
 	})
 
-	chart.NewIngress(&kubehelpers.Ingress{
+	chart.NewIngress(&kube.Ingress{
 		Name:      name,
 		Port:      port,
 		Ingresses: ingresses,
