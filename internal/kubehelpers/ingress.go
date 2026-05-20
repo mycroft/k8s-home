@@ -73,7 +73,7 @@ func NewAppIngresses(
 	serviceName string,
 	customAnnotations map[string]string,
 	opts ...AppIngressOption,
-) {
+) string {
 	annotations := map[string]*string{
 		"cert-manager.io/cluster-issuer": jsii.String("letsencrypt-prod"),
 	}
@@ -144,7 +144,7 @@ func NewAppIngresses(
 		}
 	}
 
-	k8s.NewKubeIngress(
+	k8sIngress := k8s.NewKubeIngress(
 		chart,
 		jsii.String("ingress"),
 		&k8s.KubeIngressProps{
@@ -161,6 +161,8 @@ func NewAppIngresses(
 			},
 		},
 	)
+
+	return *k8sIngress.Name()
 }
 
 // NewAppIngress creates an Ingress resource for the application.
@@ -173,8 +175,8 @@ func NewAppIngress(
 	ingressHost string,
 	serviceName string,
 	customAnnotations map[string]string,
-) {
-	NewAppIngresses(
+) string {
+	ingressName := NewAppIngresses(
 		ctx,
 		chart,
 		labels,
@@ -186,6 +188,8 @@ func NewAppIngress(
 		serviceName,
 		customAnnotations,
 	)
+
+	return ingressName
 }
 
 type Ingress struct {
@@ -199,15 +203,19 @@ type Ingress struct {
 
 // NewIngress creates an ingress attached to deployment name/port
 // If ingress.ServiceName is unset, a new service will be created
-func (chart *Chart) NewIngress(ingress *Ingress) {
+//
+// Returns the ingress name and service name
+func (chart *Chart) NewIngress(ingress *Ingress) (string, string) {
 	if chart.Namespace == "" {
 		panic("namespace was not defined")
 	}
 
+	serviceName := ingress.ServiceName
+
 	if ingress.ServiceName == "" {
 		ingress.ServiceName = ingress.Name
 
-		NewAppService(
+		service := NewAppService(
 			chart.Cdk8sChart,
 			chart.Namespace,
 			ingress.ServiceName,
@@ -218,9 +226,11 @@ func (chart *Chart) NewIngress(ingress *Ingress) {
 				Name: ingress.Name,
 			},
 		)
+
+		serviceName = *service.Name()
 	}
 
-	NewAppIngresses(
+	ingressName := NewAppIngresses(
 		chart.Builder.Context,
 		chart.Cdk8sChart,
 		ToLabelsPtr(ingress.Labels),
@@ -233,4 +243,6 @@ func (chart *Chart) NewIngress(ingress *Ingress) {
 			Name: ingress.Name,
 		},
 	)
+
+	return ingressName, serviceName
 }
