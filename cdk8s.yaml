@@ -4,12 +4,12 @@ language: go
 app: go run .
 imports:
   - k8s@1.34.0
-  - https://raw.githubusercontent.com/fluxcd/source-controller/v1.3.0/config/crd/bases/source.toolkit.fluxcd.io_helmcharts.yaml
-  - https://raw.githubusercontent.com/fluxcd/source-controller/v1.3.0/config/crd/bases/source.toolkit.fluxcd.io_helmrepositories.yaml
-  - ocirepositories:=https://raw.githubusercontent.com/fluxcd/source-controller/refs/tags/v1.8.3/config/crd/bases/source.toolkit.fluxcd.io_ocirepositories.yaml
-  - https://github.com/fluxcd/helm-controller/releases/download/v1.0.1/helm-controller.crds.yaml
-  - https://raw.githubusercontent.com/cert-manager/cert-manager/v1.18.2/deploy/crds/crd-clusterissuers.yaml
-  - certificates:=https://raw.githubusercontent.com/cert-manager/cert-manager/v1.18.2/deploy/crds/crd-certificates.yaml
+  - https://raw.githubusercontent.com/fluxcd/source-controller/v1.8.5/config/crd/bases/source.toolkit.fluxcd.io_helmcharts.yaml
+  - https://raw.githubusercontent.com/fluxcd/source-controller/v1.8.5/config/crd/bases/source.toolkit.fluxcd.io_helmrepositories.yaml
+  - ocirepositories:=https://raw.githubusercontent.com/fluxcd/source-controller/refs/tags/v1.8.5/config/crd/bases/source.toolkit.fluxcd.io_ocirepositories.yaml
+  - https://raw.githubusercontent.com/fluxcd/helm-controller/refs/tags/v1.5.5/config/crd/bases/helm.toolkit.fluxcd.io_helmreleases.yaml
+  - https://raw.githubusercontent.com/cert-manager/cert-manager/refs/tags/v1.20.2/deploy/crds/cert-manager.io_clusterissuers.yaml
+  - certificates:=https://raw.githubusercontent.com/cert-manager/cert-manager/refs/tags/v1.20.2/deploy/crds/cert-manager.io_certificates.yaml
   - https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.20.2/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
   - secretstore:=https://raw.githubusercontent.com/external-secrets/external-secrets/v0.20.1/config/crds/bases/external-secrets.io_secretstores.yaml
   - externalsecrets:=https://raw.githubusercontent.com/external-secrets/external-secrets/v0.20.1/config/crds/bases/external-secrets.io_externalsecrets.yaml
