@@ -18,11 +18,8 @@ spec:
         app.kubernetes.io/component: it-tools
     spec:
       containers:
-        - env: []
-          image: corentinth/it-tools:2024.10.22-7ca5933
+        - image: corentinth/it-tools:2024.10.22-7ca5933
           name: it-tools
-          volumeMounts: []
-      volumes: []
 ---
 apiVersion: v1
 kind: Service

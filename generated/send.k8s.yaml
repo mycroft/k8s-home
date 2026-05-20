@@ -141,8 +141,6 @@ spec:
                   name: garage
           image: registry.gitlab.com/timvisee/send:v3.4.27
           name: send
-          volumeMounts: []
-      volumes: []
 ---
 apiVersion: v1
 kind: Service

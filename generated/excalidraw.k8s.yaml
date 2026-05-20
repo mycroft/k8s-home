@@ -6,15 +6,17 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: excalidraw-deploy-c85ccec3
+  name: excalidraw
   namespace: excalidraw
 spec:
   selector:
     matchLabels:
+      app.kubernetes.io/component: main
       app.kubernetes.io/name: excalidraw
   template:
     metadata:
       labels:
+        app.kubernetes.io/component: main
         app.kubernetes.io/name: excalidraw
     spec:
       containers:
@@ -26,14 +28,16 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
+    app.kubernetes.io/component: main
     app.kubernetes.io/name: excalidraw
-  name: excalidraw-svc-c8cb7575
+  name: excalidraw
   namespace: excalidraw
 spec:
   ports:
     - name: http
       port: 80
   selector:
+    app.kubernetes.io/component: main
     app.kubernetes.io/name: excalidraw
 ---
 apiVersion: networking.k8s.io/v1
@@ -41,7 +45,7 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-  name: excalidraw-ingress-c89a86cb
+  name: excalidraw
   namespace: excalidraw
 spec:
   ingressClassName: traefik
@@ -51,7 +55,7 @@ spec:
         paths:
           - backend:
               service:
-                name: excalidraw-svc-c8cb7575
+                name: excalidraw
                 port:
                   name: http
             path: /

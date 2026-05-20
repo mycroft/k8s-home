@@ -18,11 +18,8 @@ spec:
         app.kubernetes.io/name: cyberchef
     spec:
       containers:
-        - env: []
-          image: ghcr.io/gchq/cyberchef:11.0.0
+        - image: ghcr.io/gchq/cyberchef:11.0.0
           name: cyberchef
-          volumeMounts: []
-      volumes: []
 ---
 apiVersion: v1
 kind: Service
