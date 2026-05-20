@@ -15,7 +15,8 @@ type ConfigMapMount struct {
 }
 
 type AppDeploymentOption struct {
-	Name string
+	Name            string
+	ImagePullPolicy string
 }
 
 func NewAppDeployment(
@@ -27,6 +28,7 @@ func NewAppDeployment(
 	configMapMounts []ConfigMapMount,
 	opts ...AppDeploymentOption,
 ) {
+	imagePullPolicy := ""
 
 	volumes := []*k8s.Volume{}
 	volumeMounts := []*k8s.VolumeMount{}
@@ -45,11 +47,35 @@ func NewAppDeployment(
 		})
 	}
 
+	metadatas := k8s.ObjectMeta{
+		Namespace: jsii.String(namespace),
+	}
+
+	for _, opt := range opts {
+		if opt.Name != "" {
+			metadatas.Name = jsii.String(opt.Name)
+		}
+
+		if opt.ImagePullPolicy != "" {
+			imagePullPolicy = opt.ImagePullPolicy
+		}
+	}
+
 	container := k8s.Container{
-		Name:         jsii.String(appName),
-		Image:        jsii.String(appImage),
-		Env:          &env,
-		VolumeMounts: &volumeMounts,
+		Name:  jsii.String(appName),
+		Image: jsii.String(appImage),
+	}
+
+	if imagePullPolicy != "" {
+		container.ImagePullPolicy = jsii.String(imagePullPolicy)
+	}
+
+	if len(env) > 0 {
+		container.Env = &env
+	}
+
+	if len(volumeMounts) > 0 {
+		container.VolumeMounts = &volumeMounts
 	}
 
 	if len(commands) == 1 { // if one command...
@@ -67,14 +93,19 @@ func NewAppDeployment(
 		}
 	}
 
-	metadatas := k8s.ObjectMeta{
-		Namespace: jsii.String(namespace),
+	podTemplateSpec := k8s.PodTemplateSpec{
+		Metadata: &k8s.ObjectMeta{
+			Labels: &labels,
+		},
+		Spec: &k8s.PodSpec{
+			Containers: &[]*k8s.Container{
+				&container,
+			},
+		},
 	}
 
-	for _, opt := range opts {
-		if opt.Name != "" {
-			metadatas.Name = jsii.String(opt.Name)
-		}
+	if len(volumes) > 0 {
+		podTemplateSpec.Spec.Volumes = &volumes
 	}
 
 	k8s.NewKubeDeployment(
@@ -86,22 +117,7 @@ func NewAppDeployment(
 				Selector: &k8s.LabelSelector{
 					MatchLabels: &labels,
 				},
-				Template: &k8s.PodTemplateSpec{
-					Metadata: &k8s.ObjectMeta{
-						Labels: &labels,
-					},
-					Spec: &k8s.PodSpec{
-						Containers: &[]*k8s.Container{
-							&container,
-						},
-						Volumes: &volumes,
-						// SecurityContext: &k8s.PodSecurityContext{
-						// 	RunAsNonRoot: jsii.Bool(true),
-						// 	RunAsUser:    jsii.Number(1000),
-						// 	RunAsGroup:   jsii.Number(1000),
-						// },
-					},
-				},
+				Template: &podTemplateSpec,
 			},
 		},
 	)
@@ -109,10 +125,9 @@ func NewAppDeployment(
 
 // Deployment contains a deployment configuration
 type Deployment struct {
-	// The deployment Namespace
-	Namespace string
-	Name      string
-	Image     string
+	Name            string
+	Image           string
+	ImagePullPolicy string
 	// Labels to apply
 	Labels map[string]*string
 	// Environement to set in deployment's pods
@@ -122,9 +137,13 @@ type Deployment struct {
 }
 
 func (chart *Chart) NewDeployment(deployment *Deployment) {
+	if chart.Namespace == "" {
+		panic("namespace was not defined")
+	}
+
 	NewAppDeployment(
 		chart.Cdk8sChart,
-		deployment.Namespace,
+		chart.Namespace,
 		deployment.Name,
 		chart.Builder.RegisterContainerImage(deployment.Image),
 		deployment.Labels,
@@ -132,7 +151,8 @@ func (chart *Chart) NewDeployment(deployment *Deployment) {
 		deployment.Commands,
 		deployment.ConfigMaps,
 		AppDeploymentOption{
-			Name: deployment.Name,
+			Name:            deployment.Name,
+			ImagePullPolicy: deployment.ImagePullPolicy,
 		},
 	)
 }

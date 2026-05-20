@@ -46,15 +46,13 @@ func NewMemosChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.CreateExternalSecret(namespace, "postgres")
 
 	chart.NewDeployment(&kubehelpers.Deployment{
-		Namespace: namespace,
-		Name:      name,
-		Image:     "neosmemo/memos",
-		Labels:    labels,
-		Env:       env,
+		Name:   name,
+		Image:  "neosmemo/memos",
+		Labels: labels,
+		Env:    env,
 	})
 
 	chart.NewIngress(&kubehelpers.Ingress{
-		Namespace: namespace,
 		Name:      name,
 		Port:      port,
 		Ingresses: ingresses,

@@ -1,62 +1,36 @@
 package apps
 
 import (
-	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
 )
 
 func NewExcalidrawChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
-	appName := "excalidraw"
-	image := builder.RegisterContainerImage("excalidraw/excalidraw")
-	ingressHost := "excalidraw.services.mkz.me"
+	name := "excalidraw"
 
-	chart := builder.NewChart(appName)
-	chart.NewNamespace(appName)
+	chart := builder.NewChart(name)
+	chart.NewNamespace(name)
 
 	labels := map[string]*string{
-		"app.kubernetes.io/name": jsii.String(appName),
+		"app.kubernetes.io/name":      jsii.String(name),
+		"app.kubernetes.io/component": jsii.String("main"),
 	}
 
-	k8s.NewKubeDeployment(
-		chart.Cdk8sChart,
-		jsii.String("deploy"),
-		&k8s.KubeDeploymentProps{
-			Metadata: &k8s.ObjectMeta{
-				Namespace: jsii.String(appName),
-			},
-			Spec: &k8s.DeploymentSpec{
-				Selector: &k8s.LabelSelector{
-					MatchLabels: &labels,
-				},
-				Template: &k8s.PodTemplateSpec{
-					Metadata: &k8s.ObjectMeta{
-						Labels: &labels,
-					},
-					Spec: &k8s.PodSpec{
-						Containers: &[]*k8s.Container{
-							{
-								Name:            jsii.String(appName),
-								ImagePullPolicy: jsii.String("Always"),
-								Image:           jsii.String(image),
-							},
-						},
-					},
-				},
-			},
-		},
-	)
+	chart.NewDeployment(&kubehelpers.Deployment{
+		Name:            name,
+		Labels:          labels,
+		Image:           builder.RegisterContainerImage("excalidraw/excalidraw"),
+		ImagePullPolicy: "Always",
+	})
 
-	kubehelpers.NewAppIngress(
-		builder.Context,
-		chart.Cdk8sChart,
-		labels,
-		appName,
-		80,
-		ingressHost,
-		"",
-		map[string]string{},
-	)
+	chart.NewIngress(&kubehelpers.Ingress{
+		Name:   name,
+		Labels: labels,
+		Port:   80,
+		Ingresses: []string{
+			"excalidraw.services.mkz.me",
+		},
+	})
 
 	return chart
 }

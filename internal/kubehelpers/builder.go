@@ -20,6 +20,7 @@ type Builder struct {
 type Chart struct {
 	Cdk8sChart cdk8s.Chart
 	Builder    *Builder
+	Namespace  string
 }
 
 // NewBuilder creates a Builder context with cdk8s app, context & read versions file

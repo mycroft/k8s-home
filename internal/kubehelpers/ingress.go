@@ -189,7 +189,6 @@ func NewAppIngress(
 }
 
 type Ingress struct {
-	Namespace   string
 	Name        string
 	Port        uint
 	Ingresses   []string
@@ -201,12 +200,16 @@ type Ingress struct {
 // NewIngress creates an ingress attached to deployment name/port
 // If ingress.ServiceName is unset, a new service will be created
 func (chart *Chart) NewIngress(ingress *Ingress) {
+	if chart.Namespace == "" {
+		panic("namespace was not defined")
+	}
+
 	if ingress.ServiceName == "" {
 		ingress.ServiceName = ingress.Name
 
 		NewAppService(
 			chart.Cdk8sChart,
-			ingress.Namespace,
+			chart.Namespace,
 			ingress.ServiceName,
 			ingress.Labels,
 			"http",
@@ -221,7 +224,7 @@ func (chart *Chart) NewIngress(ingress *Ingress) {
 		chart.Builder.Context,
 		chart.Cdk8sChart,
 		ingress.Labels,
-		ingress.Namespace,
+		chart.Namespace,
 		ingress.Port,
 		ingress.Ingresses,
 		ingress.ServiceName,
