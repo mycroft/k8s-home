@@ -6,7 +6,7 @@ This project uses Go code to programmatically define and generate Flux CD `HelmR
 
 ## Features
 
-- **Chart generation** — Go-based cdk8s code synthesizes Kubernetes manifests for 35+ apps, infrastructure, observability, and security components
+- **Chart generation** — Go-based cdk8s code synthesizes Kubernetes manifests for 70+ apps, infrastructure, observability, and security components
 - **Version management** — Single `versions.yaml` file tracks all Helm chart and container image versions with optional regex filters
 - **Automated PR creation** — CLI commands check for outdated versions and create pull requests on Gitea
 - **GitOps deployment** — Gitea Actions pipeline builds charts on merge to `main`, Flux CD applies them to the cluster
@@ -95,6 +95,14 @@ Regenerates Go CRD bindings in `imports/`.
 go test ./...
 ```
 
+### Policy Checks
+
+```sh
+mise run conftest
+```
+
+Runs OPA/Rego policy validation against the generated charts in `dist/`.
+
 ## Configuration
 
 | Variable       | Required | Default | Description                                                                       |
@@ -121,6 +129,7 @@ go test ./...
 | `charts/observability/` | Monitoring charts (Grafana, Prometheus, Loki, Tempo, etc.)         |
 | `charts/security/`      | Security charts (Vault, cert-manager, Dex, Authentik, etc.)        |
 | `charts/storage/`       | Storage charts (Longhorn, PostgreSQL, NATS, Garage, etc.)          |
+| `charts/cicd/`          | CI/CD pipeline charts (Tekton triggers, etc.)                      |
 | `charts/static/`        | Static YAML manifests (Tekton pipeline definitions)                |
 | `internal/kubehelpers/` | Shared builder library for HelmRelease, Ingress, StatefulSet, etc. |
 | `internal/gitea/`       | Gitea API client for PR automation                                 |
@@ -129,6 +138,7 @@ go test ./...
 | `imports/`              | Auto-generated Go CRD bindings                                     |
 | `crds/`                 | Custom CRD YAML files for cdk8s imports                            |
 | `cicd/`                 | Tekton pipeline definitions                                        |
+| `policies/`             | OPA/Rego policy rules for `conftest` validation                    |
 | `contrib/`              | Helper scripts                                                     |
 | `versions.yaml`         | Single source of truth for all versions                            |
 
@@ -353,4 +363,5 @@ See [traefik values.yaml](https://github.com/traefik/traefik-helm-chart/blob/mas
 - [Vault Kubernetes Auth](https://developer.hashicorp.com/vault/docs/auth/kubernetes) — Kubernetes authentication for Vault
 - [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) — Encrypted Kubernetes secrets
 - [Traefik Helm Chart Values](https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml) — Traefik configuration reference
-- [README.vault.md](README.vault.md) — Vault setup, initialization, and unsealing
+- [docs/vault.md](docs/vault.md) — Vault setup, initialization, and unsealing
+- [docs/temporal.md](docs/temporal.md) — Temporal workflow setup and configuration
