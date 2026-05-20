@@ -192,7 +192,7 @@ type Ingress struct {
 	Name        string
 	Port        uint
 	Ingresses   []string
-	Labels      map[string]*string
+	Labels      map[string]string
 	ServiceName string
 	Annotations map[string]string
 }
@@ -211,7 +211,7 @@ func (chart *Chart) NewIngress(ingress *Ingress) {
 			chart.Cdk8sChart,
 			chart.Namespace,
 			ingress.ServiceName,
-			ingress.Labels,
+			ToLabelsPtr(ingress.Labels),
 			"http",
 			ingress.Port,
 			AppServiceOption{
@@ -223,7 +223,7 @@ func (chart *Chart) NewIngress(ingress *Ingress) {
 	NewAppIngresses(
 		chart.Builder.Context,
 		chart.Cdk8sChart,
-		ingress.Labels,
+		ToLabelsPtr(ingress.Labels),
 		chart.Namespace,
 		ingress.Port,
 		ingress.Ingresses,

@@ -16,8 +16,8 @@ func NewMemosChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		fmt.Sprintf("%s.services.mkz.me", name),
 	}
 
-	labels := map[string]*string{
-		"app.kubernetes.io/name": jsii.String(name),
+	labels := map[string]string{
+		"app.kubernetes.io/name": name,
 	}
 
 	env := []*k8s.EnvVar{

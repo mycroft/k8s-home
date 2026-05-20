@@ -129,7 +129,7 @@ type Deployment struct {
 	Image           string
 	ImagePullPolicy string
 	// Labels to apply
-	Labels map[string]*string
+	Labels map[string]string
 	// Environement to set in deployment's pods
 	Env        []*k8s.EnvVar
 	Commands   []string
@@ -146,7 +146,7 @@ func (chart *Chart) NewDeployment(deployment *Deployment) {
 		chart.Namespace,
 		deployment.Name,
 		chart.Builder.RegisterContainerImage(deployment.Image),
-		deployment.Labels,
+		ToLabelsPtr(deployment.Labels),
 		deployment.Env,
 		deployment.Commands,
 		deployment.ConfigMaps,

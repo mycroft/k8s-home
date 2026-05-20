@@ -7,7 +7,12 @@ import (
 	"github.com/aws/jsii-runtime-go"
 )
 
-// NewNamespace creates a Namespace in Chart and returns its k8s.KubeNamespace object
+// NewNamespace creates a Kubernetes Namespace resource in the chart and records it
+// as the chart's canonical namespace, used by NewDeployment, NewIngress, and other
+// helpers that need to know which namespace they're operating in.
+//
+// Each chart is expected to own exactly one namespace: calling this twice on the
+// same chart panics to catch accidental misconfiguration at synth time.
 func (chart *Chart) NewNamespace(name string) k8s.KubeNamespace {
 	if chart.Namespace != "" {
 		panic("can not overwrite this chart's namespace")

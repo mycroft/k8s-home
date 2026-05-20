@@ -2,7 +2,6 @@ package apps
 
 import (
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/jsii-runtime-go"
 )
 
 func NewExcalidrawChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
@@ -11,9 +10,9 @@ func NewExcalidrawChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart := builder.NewChart(name)
 	chart.NewNamespace(name)
 
-	labels := map[string]*string{
-		"app.kubernetes.io/name":      jsii.String(name),
-		"app.kubernetes.io/component": jsii.String("main"),
+	labels := map[string]string{
+		"app.kubernetes.io/name":      name,
+		"app.kubernetes.io/component": "main",
 	}
 
 	chart.NewDeployment(&kubehelpers.Deployment{
