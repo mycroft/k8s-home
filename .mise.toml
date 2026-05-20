@@ -24,6 +24,10 @@ depends = "build"
 run = "./k8s-home"
 outputs = ["dist/*.k8s.yaml"]
 
+[tasks.diff]
+description = "Diff"
+run = "git diff remotes/origin/generated:generated dist"
+
 [tasks.conftest]
 description = "Run conftest against generated charts"
 depends = ["generate-charts"]
