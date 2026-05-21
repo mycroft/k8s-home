@@ -89,7 +89,6 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_apps.NewVaultWardenChart,
 		charts_apps.NewVikunjaChart,
 		charts_apps.NewWallabagChart,
-		// charts_apps.NewWhatIsMyIPChart,
 		charts_apps.NewWikiJsChart,
 		charts_apps.NewYopassChart,
 		// charts_apps.NewHeimdallChart,
@@ -100,9 +99,6 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		// redirections
 		charts_apps.NewLlamaChart,
 		charts_apps.NewMusicAssistantChart,
-
-		// misc: testing CI/CD
-		// charts_cicd.NewCICDChart,
 	}
 
 	for _, chartCallback := range charts {
