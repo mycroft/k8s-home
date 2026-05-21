@@ -101,9 +101,6 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_apps.NewLlamaChart,
 		charts_apps.NewMusicAssistantChart,
 
-		// my own apps
-		// charts_apps.NewGossipChart,
-
 		// misc: testing CI/CD
 		// charts_cicd.NewCICDChart,
 	}
