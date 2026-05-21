@@ -93,7 +93,6 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_apps.NewWikiJsChart,
 		charts_apps.NewYopassChart,
 		// charts_apps.NewHeimdallChart,
-		// charts_apps.NewJitsiChart,
 		charts_apps.NewOpenWebuiChart,
 		charts_apps.NewZiplineChart,
 		charts_apps.NewUselessChart,
