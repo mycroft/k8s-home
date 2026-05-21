@@ -129,7 +129,6 @@ Runs OPA/Rego policy validation against the generated charts in `dist/`.
 | `charts/observability/` | Monitoring charts (Grafana, Prometheus, Loki, Tempo, etc.)         |
 | `charts/security/`      | Security charts (Vault, cert-manager, Dex, Authentik, etc.)        |
 | `charts/storage/`       | Storage charts (Longhorn, PostgreSQL, NATS, Garage, etc.)          |
-| `charts/cicd/`          | CI/CD pipeline charts (Tekton triggers, etc.)                      |
 | `charts/static/`        | Static YAML manifests (Tekton pipeline definitions)                |
 | `internal/kubehelpers/` | Shared builder library for HelmRelease, Ingress, StatefulSet, etc. |
 | `internal/gitea/`       | Gitea API client for PR automation                                 |
@@ -137,7 +136,6 @@ Runs OPA/Rego policy validation against the generated charts in `dist/`.
 | `dist/`                 | Generated output (`.k8s.yaml` files)                               |
 | `imports/`              | Auto-generated Go CRD bindings                                     |
 | `crds/`                 | Custom CRD YAML files for cdk8s imports                            |
-| `cicd/`                 | Tekton pipeline definitions                                        |
 | `policies/`             | OPA/Rego policy rules for `conftest` validation                    |
 | `contrib/`              | Helper scripts                                                     |
 | `versions.yaml`         | Single source of truth for all versions                            |
