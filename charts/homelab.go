@@ -100,6 +100,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 
 		// redirections
 		charts_apps.NewLlamaChart,
+		charts_apps.NewMusicAssistantChart,
 
 		// my own apps
 		// charts_apps.NewGossipChart,
