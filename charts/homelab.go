@@ -46,7 +46,6 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_infra.NewCapacitorChart,
 		charts_infra.NewVeleroChart,
 		// charts_infra.NewLinkerdChart,
-		// charts_infra.NewTektonChart,
 		charts_infra.NewTemporalChart,
 		charts_infra.NewTraefikChart,
 
