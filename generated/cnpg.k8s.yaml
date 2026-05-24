@@ -9,6 +9,11 @@ metadata:
   name: postgres
   namespace: cnpg
 spec:
+  bootstrap:
+    initdb:
+      database: postgres
+      owner: postgres
+  enableSuperuserAccess: true
   instances: 2
   storage:
     size: 64Gi
