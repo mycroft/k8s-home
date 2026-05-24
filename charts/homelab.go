@@ -40,6 +40,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		// charts_storage.NewMariaDBChart,
 		charts_storage.NewGarage,
 		// charts_storage.NewOpenSearchChart,
+		charts_storage.NewCNPGOperator,
 
 		// misc infra charts
 		charts_infra.NewFluxCDChart,

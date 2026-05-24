@@ -150,6 +150,7 @@ Most important apps installed on the cluster:
 - [authentik](https://goauthentik.io/) — SSO authentication and authorization
 - [traefik-forward-auth](https://doc.traefik.io/traefik/middlewares/http/forwardauth/) — OAuth authn/authz firewall for apps not linked to dex-idp
 - [cert-manager](https://cert-manager.io/) — on-demand TLS certificate generation for ingresses
+- [CloudNative-PG](https://cloudnative-pg.io/) — PostgreSQL operator for cloud-native database instances
 - [PostgreSQL](https://www.postgresql.org/) operator — database instances
 - [NATS](https://nats.io/) — message queues
 - [kube-prometheus-stack](https://github.com/prometheus-operator/kube-prometheus) — metrics monitoring with [Grafana](https://grafana.com/grafana/)
