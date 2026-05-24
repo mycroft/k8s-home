@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cnpg-system
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: cnpg
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://cloudnative-pg.github.io/charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cnpg
+  namespace: cnpg-system
+spec:
+  chart:
+    spec:
+      chart: cloudnative-pg
+      sourceRef:
+        kind: HelmRepository
+        name: cnpg
+        namespace: flux-system
+      version: 0.28.2
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom: []
