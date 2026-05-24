@@ -41,6 +41,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_storage.NewGarage,
 		// charts_storage.NewOpenSearchChart,
 		charts_storage.NewCNPGOperator,
+		charts_storage.NewCNPGCluster,
 
 		// misc infra charts
 		charts_infra.NewFluxCDChart,
