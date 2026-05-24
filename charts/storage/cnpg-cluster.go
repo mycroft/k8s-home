@@ -22,7 +22,14 @@ func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				Name:      jsii.String("postgres"),
 			},
 			Spec: &cnpg_cluster_postgresqlcnpgio.ClusterSpec{
-				Instances: jsii.Number(2),
+				Bootstrap: &cnpg_cluster_postgresqlcnpgio.ClusterSpecBootstrap{
+					Initdb: &cnpg_cluster_postgresqlcnpgio.ClusterSpecBootstrapInitdb{
+						Owner:    jsii.String("postgres"),
+						Database: jsii.String("postgres"),
+					},
+				},
+				EnableSuperuserAccess: jsii.Bool(true),
+				Instances:             jsii.Number(2),
 				Storage: &cnpg_cluster_postgresqlcnpgio.ClusterSpecStorage{
 					StorageClass: jsii.String("longhorn-crypto-global"),
 					Size:         jsii.String("64Gi"),
