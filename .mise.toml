@@ -41,5 +41,5 @@ run = "golangci-lint run -c .golangci.yaml"
 [tasks.check-versions]
 description = "Find outdated helm charts & images"
 depends = ["build"]
-run = "./k8s-home check-versions {{arg(name='args', var=true, default='')}}"
+run = "./k8s-home check-versions $@"
 
