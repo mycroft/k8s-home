@@ -48,7 +48,7 @@ images:
   outlinewiki/outline: 1.8.0
   excalidraw/excalidraw: latest
   freshrss/freshrss: 1.29.1
-  ghcr.io/diced/zipline: 4.6.1
+  ghcr.io/diced/zipline: 4.6.2
   ghcr.io/gchq/cyberchef: 11.0.0
   ghcr.io/hoarder-app/hoarder: 0.32.0
   ghcr.io/open-webui/open-webui: 0.9.6
