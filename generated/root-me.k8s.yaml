@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: root-me
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: root-me
+  namespace: root-me
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: api
+      app.kubernetes.io/name: root-me
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: api
+        app.kubernetes.io/name: root-me
+    spec:
+      containers:
+        - image: registry.mkz.me/mycroft/scoreboard-api:0.0.1
+          imagePullPolicy: Always
+          name: root-me
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: api
+    app.kubernetes.io/name: root-me
+  name: root-me
+  namespace: root-me
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app.kubernetes.io/component: api
+    app.kubernetes.io/name: root-me
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: root-me
+  namespace: root-me
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: root-me.iop.cx
+      http:
+        paths:
+          - backend:
+              service:
+                name: root-me
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - root-me.iop.cx
+      secretName: secret-tls-www
