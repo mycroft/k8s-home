@@ -67,7 +67,7 @@ spec:
                 secretKeyRef:
                   key: dsn
                   name: postgres
-          image: neosmemo/memos:0.29.0
+          image: neosmemo/memos:0.29.1
           name: memos
 ---
 apiVersion: v1
