@@ -5,7 +5,7 @@ helmcharts:
   calibre-web/calibre-web: 21.18.0
   cnpg/cloudnative-pg: 0.28.2
   dex/dex: 0.24.1
-  external-secrets/external-secrets: 2.5.0
+  external-secrets/external-secrets: 2.6.0
   garage/garage: 2.3.3
   grafana/alloy: 1.8.2
   grafana/loki: 7.0.0
