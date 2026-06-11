@@ -30,13 +30,13 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	chart := builder.NewChart(namespace)
 
-	snapshotRetain := 1
-	snapshotConcurrency := 1
+	// snapshotRetain := 1
+	// snapshotConcurrency := 1
 
-	backupRetain := 3
-	backupConcurrency := 1
+	// backupRetain := 3
+	// backupConcurrency := 1
 
-	group := "k8s-home"
+	// group := "k8s-home"
 
 	// longhorn-crypto
 	bitnamicom.NewSealedSecret(
