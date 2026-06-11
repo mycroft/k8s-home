@@ -6,7 +6,6 @@ import (
 	"git.mkz.me/mycroft/k8s-home/imports/bitnamicom"
 	"git.mkz.me/mycroft/k8s-home/imports/certificates_certmanagerio"
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
-	"git.mkz.me/mycroft/k8s-home/imports/longhornio"
 	"git.mkz.me/mycroft/k8s-home/imports/servicemonitor_monitoringcoreoscom"
 	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
 
@@ -197,120 +196,120 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	)
 
 	// PV backups
-	longhornio.NewRecurringJobV1Beta2(
-		chart.Cdk8sChart,
-		jsii.String("longhorn-backups"),
-		&longhornio.RecurringJobV1Beta2Props{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Namespace: jsii.String(namespace),
-				Name:      jsii.String("longhorn-backups"),
-			},
-			Spec: &longhornio.RecurringJobV1Beta2Spec{
-				Cron: jsii.String("45 6 * * *"),
-				Groups: &[]*string{
-					jsii.String(group),
-				},
-				Retain:      jsii.Number(backupRetain),
-				Concurrency: jsii.Number(backupConcurrency),
-				Labels: &map[string]*string{
-					"job": jsii.String("daily-backup"),
-				},
-				Task: longhornio.RecurringJobV1Beta2SpecTask_BACKUP,
-			},
-		},
-	)
+	// longhornio.NewRecurringJobV1Beta2(
+	// 	chart.Cdk8sChart,
+	// 	jsii.String("longhorn-backups"),
+	// 	&longhornio.RecurringJobV1Beta2Props{
+	// 		Metadata: &cdk8s.ApiObjectMetadata{
+	// 			Namespace: jsii.String(namespace),
+	// 			Name:      jsii.String("longhorn-backups"),
+	// 		},
+	// 		Spec: &longhornio.RecurringJobV1Beta2Spec{
+	// 			Cron: jsii.String("45 6 * * *"),
+	// 			Groups: &[]*string{
+	// 				jsii.String(group),
+	// 			},
+	// 			Retain:      jsii.Number(backupRetain),
+	// 			Concurrency: jsii.Number(backupConcurrency),
+	// 			Labels: &map[string]*string{
+	// 				"job": jsii.String("daily-backup"),
+	// 			},
+	// 			Task: longhornio.RecurringJobV1Beta2SpecTask_BACKUP,
+	// 		},
+	// 	},
+	// )
 
-	longhornio.NewRecurringJobV1Beta2(
-		chart.Cdk8sChart,
-		jsii.String("longhorn-backups-disabled"),
-		&longhornio.RecurringJobV1Beta2Props{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Namespace: jsii.String(namespace),
-				Name:      jsii.String("longhorn-backups-disabled"),
-			},
-			Spec: &longhornio.RecurringJobV1Beta2Spec{
-				Cron: jsii.String("0 5 31 2 *"),
-				Groups: &[]*string{
-					jsii.String("disabled"),
-				},
-				Retain:      jsii.Number(backupRetain),
-				Concurrency: jsii.Number(backupConcurrency),
-				Labels: &map[string]*string{
-					"job": jsii.String("daily-backup"),
-				},
-				Task: longhornio.RecurringJobV1Beta2SpecTask_BACKUP,
-			},
-		},
-	)
+	// longhornio.NewRecurringJobV1Beta2(
+	// 	chart.Cdk8sChart,
+	// 	jsii.String("longhorn-backups-disabled"),
+	// 	&longhornio.RecurringJobV1Beta2Props{
+	// 		Metadata: &cdk8s.ApiObjectMetadata{
+	// 			Namespace: jsii.String(namespace),
+	// 			Name:      jsii.String("longhorn-backups-disabled"),
+	// 		},
+	// 		Spec: &longhornio.RecurringJobV1Beta2Spec{
+	// 			Cron: jsii.String("0 5 31 2 *"),
+	// 			Groups: &[]*string{
+	// 				jsii.String("disabled"),
+	// 			},
+	// 			Retain:      jsii.Number(backupRetain),
+	// 			Concurrency: jsii.Number(backupConcurrency),
+	// 			Labels: &map[string]*string{
+	// 				"job": jsii.String("daily-backup"),
+	// 			},
+	// 			Task: longhornio.RecurringJobV1Beta2SpecTask_BACKUP,
+	// 		},
+	// 	},
+	// )
 
-	longhornio.NewRecurringJobV1Beta2(
-		chart.Cdk8sChart,
-		jsii.String("longhorn-snapshots"),
-		&longhornio.RecurringJobV1Beta2Props{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Namespace: jsii.String(namespace),
-				Name:      jsii.String("longhorn-snapshots"),
-			},
-			Spec: &longhornio.RecurringJobV1Beta2Spec{
-				Cron: jsii.String("15 1,7,13,19 * * *"),
-				Groups: &[]*string{
-					jsii.String(group),
-				},
-				Retain:      jsii.Number(snapshotRetain),
-				Concurrency: jsii.Number(snapshotConcurrency),
-				Labels: &map[string]*string{
-					"job": jsii.String("multiple-snapshot"),
-				},
-				Task: longhornio.RecurringJobV1Beta2SpecTask_SNAPSHOT,
-			},
-		},
-	)
+	// longhornio.NewRecurringJobV1Beta2(
+	// 	chart.Cdk8sChart,
+	// 	jsii.String("longhorn-snapshots"),
+	// 	&longhornio.RecurringJobV1Beta2Props{
+	// 		Metadata: &cdk8s.ApiObjectMetadata{
+	// 			Namespace: jsii.String(namespace),
+	// 			Name:      jsii.String("longhorn-snapshots"),
+	// 		},
+	// 		Spec: &longhornio.RecurringJobV1Beta2Spec{
+	// 			Cron: jsii.String("15 1,7,13,19 * * *"),
+	// 			Groups: &[]*string{
+	// 				jsii.String(group),
+	// 			},
+	// 			Retain:      jsii.Number(snapshotRetain),
+	// 			Concurrency: jsii.Number(snapshotConcurrency),
+	// 			Labels: &map[string]*string{
+	// 				"job": jsii.String("multiple-snapshot"),
+	// 			},
+	// 			Task: longhornio.RecurringJobV1Beta2SpecTask_SNAPSHOT,
+	// 		},
+	// 	},
+	// )
 
-	longhornio.NewRecurringJobV1Beta2(
-		chart.Cdk8sChart,
-		jsii.String("longhorn-snapshots-disabled"),
-		&longhornio.RecurringJobV1Beta2Props{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Namespace: jsii.String(namespace),
-				Name:      jsii.String("longhorn-snapshots-disabled"),
-			},
-			Spec: &longhornio.RecurringJobV1Beta2Spec{
-				Cron: jsii.String("0 5 31 2 *"),
-				Groups: &[]*string{
-					jsii.String("disabled"),
-				},
-				Retain:      jsii.Number(snapshotRetain),
-				Concurrency: jsii.Number(snapshotConcurrency),
-				Labels: &map[string]*string{
-					"job": jsii.String("multiple-snapshot"),
-				},
-				Task: longhornio.RecurringJobV1Beta2SpecTask_SNAPSHOT,
-			},
-		},
-	)
+	// longhornio.NewRecurringJobV1Beta2(
+	// 	chart.Cdk8sChart,
+	// 	jsii.String("longhorn-snapshots-disabled"),
+	// 	&longhornio.RecurringJobV1Beta2Props{
+	// 		Metadata: &cdk8s.ApiObjectMetadata{
+	// 			Namespace: jsii.String(namespace),
+	// 			Name:      jsii.String("longhorn-snapshots-disabled"),
+	// 		},
+	// 		Spec: &longhornio.RecurringJobV1Beta2Spec{
+	// 			Cron: jsii.String("0 5 31 2 *"),
+	// 			Groups: &[]*string{
+	// 				jsii.String("disabled"),
+	// 			},
+	// 			Retain:      jsii.Number(snapshotRetain),
+	// 			Concurrency: jsii.Number(snapshotConcurrency),
+	// 			Labels: &map[string]*string{
+	// 				"job": jsii.String("multiple-snapshot"),
+	// 			},
+	// 			Task: longhornio.RecurringJobV1Beta2SpecTask_SNAPSHOT,
+	// 		},
+	// 	},
+	// )
 
-	longhornio.NewRecurringJobV1Beta2(
-		chart.Cdk8sChart,
-		jsii.String("longhorn-snapshots-daily"),
-		&longhornio.RecurringJobV1Beta2Props{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Namespace: jsii.String(namespace),
-				Name:      jsii.String("longhorn-snapshots-daily"),
-			},
-			Spec: &longhornio.RecurringJobV1Beta2Spec{
-				Cron: jsii.String("0 5 31 2 *"),
-				Groups: &[]*string{
-					jsii.String("daily"),
-				},
-				Retain:      jsii.Number(snapshotRetain),
-				Concurrency: jsii.Number(snapshotConcurrency),
-				Labels: &map[string]*string{
-					"job": jsii.String("multiple-daily"),
-				},
-				Task: longhornio.RecurringJobV1Beta2SpecTask_SNAPSHOT,
-			},
-		},
-	)
+	// longhornio.NewRecurringJobV1Beta2(
+	// 	chart.Cdk8sChart,
+	// 	jsii.String("longhorn-snapshots-daily"),
+	// 	&longhornio.RecurringJobV1Beta2Props{
+	// 		Metadata: &cdk8s.ApiObjectMetadata{
+	// 			Namespace: jsii.String(namespace),
+	// 			Name:      jsii.String("longhorn-snapshots-daily"),
+	// 		},
+	// 		Spec: &longhornio.RecurringJobV1Beta2Spec{
+	// 			Cron: jsii.String("0 5 31 2 *"),
+	// 			Groups: &[]*string{
+	// 				jsii.String("daily"),
+	// 			},
+	// 			Retain:      jsii.Number(snapshotRetain),
+	// 			Concurrency: jsii.Number(snapshotConcurrency),
+	// 			Labels: &map[string]*string{
+	// 				"job": jsii.String("multiple-daily"),
+	// 			},
+	// 			Task: longhornio.RecurringJobV1Beta2SpecTask_SNAPSHOT,
+	// 		},
+	// 	},
+	// )
 
 	// Adding service monitor
 	servicemonitor_monitoringcoreoscom.NewServiceMonitor(
