@@ -25,7 +25,7 @@ spec:
         kind: HelmRepository
         name: cnpg
         namespace: flux-system
-      version: 0.28.2
+      version: 0.28.3
   install:
     createNamespace: false
     skipCRDs: false
