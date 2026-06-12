@@ -136,6 +136,29 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
+  name: longhorn-system-es-moonstone-garage-c85a0a84
+  namespace: longhorn-system
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/longhorn-system/moonstone-garage
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: moonstone-garage
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
   name: longhorn-system-es-basic-auth-users-c8e97f64
   namespace: longhorn-system
 spec:
