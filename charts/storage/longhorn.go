@@ -112,6 +112,7 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	)
 
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "nas0-minio")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "moonstone-garage")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "basic-auth-users")
 
 	certificates_certmanagerio.NewCertificate(
