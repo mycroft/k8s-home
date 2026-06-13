@@ -223,6 +223,36 @@ spec:
   tls:
     secretName: secret-tls-www
 ---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: longhorn-daily-backup
+  namespace: longhorn-system
+spec:
+  concurrency: 1
+  cron: 30 3 * * *
+  groups:
+    - default
+  labels:
+    job: daily-backup
+  retain: 4
+  task: backup
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: longhorn-snapshot
+  namespace: longhorn-system
+spec:
+  concurrency: 3
+  cron: 15 1,7,13,19 * * *
+  groups:
+    - default
+  labels:
+    job: snapshot
+  retain: 8
+  task: snapshot
+---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
