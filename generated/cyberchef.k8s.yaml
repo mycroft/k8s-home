@@ -18,7 +18,7 @@ spec:
         app.kubernetes.io/name: cyberchef
     spec:
       containers:
-        - image: ghcr.io/gchq/cyberchef:11.0.0
+        - image: ghcr.io/gchq/cyberchef:11.1.0
           name: cyberchef
 ---
 apiVersion: v1
