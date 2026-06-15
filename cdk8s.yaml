@@ -15,6 +15,7 @@ imports:
   - externalsecrets:=https://raw.githubusercontent.com/external-secrets/external-secrets/v0.20.1/config/crds/bases/external-secrets.io_externalsecrets.yaml
   - podmonitor:=https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/refs/heads/main/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
   - servicemonitor:=https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/refs/heads/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
+  - scrapeconfig:=https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/refs/heads/main/example/prometheus-operator-crd/monitoring.coreos.com_scrapeconfigs.yaml
   - https://raw.githubusercontent.com/traefik/traefik/v2.10.7/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
   - https://raw.githubusercontent.com/zalando/postgres-operator/v1.15.1/manifests/postgresql.crd.yaml
   - https://raw.githubusercontent.com/vmware-tanzu/helm-charts/main/charts/velero/crds/schedules.yaml
