@@ -20,3 +20,4 @@ imports:
   - https://raw.githubusercontent.com/vmware-tanzu/helm-charts/main/charts/velero/crds/schedules.yaml
   - crds/longhorn-v1.9.0-crds.yaml
   - cnpg_cluster:=https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/refs/tags/v1.29.1/config/crd/bases/postgresql.cnpg.io_clusters.yaml
+  - cnpg_database:=https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/refs/tags/v1.29.1/config/crd/bases/postgresql.cnpg.io_databases.yaml
