@@ -60,6 +60,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_observability.NewTempoChart,
 		charts_observability.NewKarmaChart,
 		charts_observability.NewAlloyChart,
+		charts_observability.NewSmokepingProberChart,
 		// charts_observability.NewPromtailChart
 		// charts_observability.NewJaegerChart
 
