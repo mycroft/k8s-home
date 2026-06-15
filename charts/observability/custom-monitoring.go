@@ -29,6 +29,12 @@ func NewCustomMonitoring(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		Target:    "moonstone.lan.mkz.me:9100",
 	})
 
+	kubehelpers.CreateScrapeConfig(chart, kubehelpers.ScrapeTarget{
+		Name:      "moonstone-zml-smi-node-exporter",
+		Namespace: namespace,
+		Target:    "moonstone.lan.mkz.me:9101",
+	})
+
 	// Scrape glitter's node-exporter directly, since it isn't backed by a Kubernetes Service.
 	kubehelpers.CreateScrapeConfig(chart, kubehelpers.ScrapeTarget{
 		Name:      "glitter-node-exporter",
