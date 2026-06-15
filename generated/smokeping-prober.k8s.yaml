@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: smokeping-prober
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smokeping-prober-config-c85f5cd3
+  namespace: smokeping-prober
+data:
+  smokeping_prober.yml: |
+    ---
+    targets:
+    - hosts:
+      - moonstone.lan.mkz.me
+      - glitter.lan.mkz.me
+      interval: 5s
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smokeping-prober-deploy-c89b8e63
+  namespace: smokeping-prober
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: smokeping-prober
+  template:
+    metadata:
+      annotations:
+        configMapHash: b286e57c43d2763899f3d60da6d932e59a14b1d043bc35fceb8f50df9966876d
+      labels:
+        app.kubernetes.io/name: smokeping-prober
+    spec:
+      containers:
+        - args:
+            - --config.file=/etc/smokeping_prober/smokeping_prober.yml
+          image: quay.io/superq/smokeping-prober:v0.10.0
+          name: smokeping-prober
+          ports:
+            - containerPort: 9374
+              name: http
+          securityContext:
+            capabilities:
+              add:
+                - NET_RAW
+          volumeMounts:
+            - mountPath: /etc/smokeping_prober
+              name: config
+      volumes:
+        - configMap:
+            name: smokeping-prober-config-c85f5cd3
+          name: config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: smokeping-prober
+  name: smokeping-prober-svc-c88b89d4
+  namespace: smokeping-prober
+spec:
+  ports:
+    - name: http
+      port: 9374
+  selector:
+    app.kubernetes.io/name: smokeping-prober
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: prometheus
+  name: smokeping-prober-service-monitor-c8acc2b0
+  namespace: smokeping-prober
+spec:
+  endpoints:
+    - path: /metrics
+      port: http
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: smokeping-prober
