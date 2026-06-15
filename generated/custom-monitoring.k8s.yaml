@@ -62,6 +62,22 @@ kind: ScrapeConfig
 metadata:
   labels:
     release: prometheus
+  name: custom-monitoring-moonstone-zml-smi-node-exporter-c8cd5829
+  namespace: monitoring
+spec:
+  metricsPath: /metrics
+  scheme: http
+  staticConfigs:
+    - labels:
+        job: moonstone-zml-smi-node-exporter
+      targets:
+        - moonstone.lan.mkz.me:9101
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  labels:
+    release: prometheus
   name: custom-monitoring-glitter-node-exporter-c81cc47b
   namespace: monitoring
 spec:
