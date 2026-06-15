@@ -691,3 +691,46 @@ spec:
     - kind: ConfigMap
       name: kube-prometheus-stack-helm-val-prometheus-c840a4c5
       valuesKey: values.yaml
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: kube-prometheus-stack-es-garage-monitoring-c80c4c31
+  namespace: monitoring
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/monitoring/garage-monitoring
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: garage-monitoring
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  labels:
+    release: prometheus
+  name: kube-prometheus-stack-garage-monitoring-c8b1136b
+  namespace: monitoring
+spec:
+  authorization:
+    credentials:
+      key: metrics_token
+      name: garage-monitoring
+  metricsPath: /metrics
+  scheme: http
+  staticConfigs:
+    - labels:
+        job: garage-monitoring
+      targets:
+        - moonstone.lan.mkz.me:3903
