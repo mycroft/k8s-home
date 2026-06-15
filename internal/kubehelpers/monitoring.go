@@ -62,6 +62,8 @@ type ScrapeTargetBearerToken struct {
 type ScrapeTarget struct {
 	// Name is used as both the ScrapeConfig resource name and the "job" label.
 	Name string
+	// Namespace to insert the ScrapeConfig in
+	Namespace string
 	// Target is the host:port to scrape, e.g. "moonstone.lan.mkz.me:9100".
 	Target string
 	// Path is the HTTP path to scrape metrics from. Defaults to "/metrics".
@@ -103,7 +105,7 @@ func CreateScrapeConfig(chart *Chart, target ScrapeTarget) {
 		jsii.String(target.Name),
 		&scrapeconfig_monitoringcoreoscom.ScrapeConfigProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
-				Namespace: jsii.String(chart.Namespace),
+				Namespace: jsii.String(target.Namespace),
 				Labels: &map[string]*string{
 					"release": jsii.String("prometheus"),
 				},
