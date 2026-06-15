@@ -54,6 +54,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		// observability
 		charts_observability.NewGrafanaHelmRepositoryChart,
 		charts_observability.NewKubePrometheusStackChart,
+		charts_observability.NewCustomMonitoring,
 		charts_observability.NewBlackboxExporterChart,
 		charts_observability.NewLokiChart,
 		charts_observability.NewTempoChart,
