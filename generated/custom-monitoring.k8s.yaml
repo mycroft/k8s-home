@@ -27,7 +27,7 @@ metadata:
   labels:
     release: prometheus
   name: custom-monitoring-garage-monitoring-c8ce8794
-  namespace: ""
+  namespace: monitoring
 spec:
   authorization:
     credentials:
@@ -47,7 +47,7 @@ metadata:
   labels:
     release: prometheus
   name: custom-monitoring-moonstone-node-exporter-c878cfeb
-  namespace: ""
+  namespace: monitoring
 spec:
   metricsPath: /metrics
   scheme: http
