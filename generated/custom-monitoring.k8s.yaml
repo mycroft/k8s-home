@@ -1,0 +1,58 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: custom-monitoring-es-garage-monitoring-c8a4877f
+  namespace: monitoring
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/monitoring/garage-monitoring
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: garage-monitoring
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  labels:
+    release: prometheus
+  name: custom-monitoring-garage-monitoring-c8ce8794
+  namespace: ""
+spec:
+  authorization:
+    credentials:
+      key: metrics_token
+      name: garage-monitoring
+  metricsPath: /metrics
+  scheme: http
+  staticConfigs:
+    - labels:
+        job: garage-monitoring
+      targets:
+        - moonstone.lan.mkz.me:3903
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  labels:
+    release: prometheus
+  name: custom-monitoring-moonstone-node-exporter-c878cfeb
+  namespace: ""
+spec:
+  metricsPath: /metrics
+  scheme: http
+  staticConfigs:
+    - labels:
+        job: moonstone-node-exporter
+      targets:
+        - moonstone.lan.mkz.me:9100
