@@ -14,7 +14,7 @@ func NewSealedSecretsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	chart.CreateHelmRepository(
 		"sealed-secrets",
-		"https://bitnami-labs.github.io/sealed-secrets",
+		"https://bitnami.github.io/sealed-secrets",
 	)
 
 	values := map[string]*string{
