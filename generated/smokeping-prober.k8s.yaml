@@ -36,7 +36,7 @@ spec:
       containers:
         - args:
             - --config.file=/etc/smokeping_prober/smokeping_prober.yml
-          image: quay.io/superq/smokeping-prober:0.12.0
+          image: quay.io/superq/smokeping-prober:v0.12.0
           name: smokeping-prober
           ports:
             - containerPort: 9374
