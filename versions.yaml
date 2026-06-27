@@ -61,7 +61,7 @@ images:
   paperlessngx/paperless-ngx: 2.20.15
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: 2.0.4
-  quay.io/superq/smokeping-prober: 0.12.0
+  quay.io/superq/smokeping-prober: v0.12.0
   registry.gitlab.com/timvisee/send: v3.4.27
   registry.mkz.me/mycroft/whatismyip: 5
   registry.mkz.me/mycroft/useless: 0.0.16
