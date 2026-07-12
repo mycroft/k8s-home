@@ -60,7 +60,7 @@ images:
   paulbouwer/hello-kubernetes: 1.10.1
   paperlessngx/paperless-ngx: 2.20.15
   pawelmalak/snippet-box: latest
-  privatebin/nginx-fpm-alpine: 2.0.4
+  privatebin/nginx-fpm-alpine: 2.0.5
   quay.io/superq/smokeping-prober: v0.12.0
   registry.gitlab.com/timvisee/send: v3.4.27
   registry.mkz.me/mycroft/whatismyip: 5
