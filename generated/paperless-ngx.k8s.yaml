@@ -65,6 +65,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: paperless-ngx-es-secret-c85b38b0
+  namespace: paperless-ngx
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/paperless-ngx/secret
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: secret
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -196,6 +219,11 @@ spec:
               value: "true"
             - name: PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS
               value: "false"
+            - name: PAPERLESS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: key
+                  name: secret
           image: paperlessngx/paperless-ngx:3.0.0
           name: paperless-ngx
           volumeMounts:
