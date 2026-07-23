@@ -20,6 +20,7 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "sso")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "secret")
 
 	_, redisServiceName := chart.NewRedisStatefulset(namespace)
 
@@ -91,6 +92,15 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		{
 			Name:  jsii.String("PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS"),
 			Value: jsii.String("false"),
+		},
+		{
+			Name: jsii.String("PAPERLESS_SECRET_KEY"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Name: jsii.String("secret"),
+					Key:  jsii.String("key"),
+				},
+			},
 		},
 	}
 
