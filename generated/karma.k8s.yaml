@@ -59,7 +59,7 @@ spec:
         kind: HelmRepository
         name: wiremind
         namespace: flux-system
-      version: 2.12.2
+      version: 2.13.1
   install:
     createNamespace: false
     skipCRDs: false
