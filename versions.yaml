@@ -58,7 +58,7 @@ images:
   linuxserver/heimdall: v2.5.7-ls238
   neosmemo/memos: 0.29.1
   paulbouwer/hello-kubernetes: 1.10.1
-  paperlessngx/paperless-ngx: 3.0.0
+  paperlessngx/paperless-ngx: 3.0.2
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: 2.0.5
   quay.io/superq/smokeping-prober: v0.12.0
