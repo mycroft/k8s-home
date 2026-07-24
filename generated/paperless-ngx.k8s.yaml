@@ -224,7 +224,7 @@ spec:
                 secretKeyRef:
                   key: key
                   name: secret
-          image: paperlessngx/paperless-ngx:3.0.0
+          image: paperlessngx/paperless-ngx:3.0.2
           name: paperless-ngx
           volumeMounts:
             - mountPath: /usr/src/paperless/data
