@@ -17,6 +17,7 @@ type ConfigMapMount struct {
 type AppDeploymentOption struct {
 	Name            string
 	ImagePullPolicy string
+	SecretMounts    []SecretMount
 }
 
 func NewAppDeployment(
@@ -58,6 +59,21 @@ func NewAppDeployment(
 
 		if opt.ImagePullPolicy != "" {
 			imagePullPolicy = opt.ImagePullPolicy
+		}
+
+		for _, secret := range opt.SecretMounts {
+			volumes = append(volumes, &k8s.Volume{
+				Name: jsii.String(secret.Name),
+				Secret: &k8s.SecretVolumeSource{
+					SecretName: jsii.String(secret.Name),
+				},
+			})
+
+			volumeMounts = append(volumeMounts, &k8s.VolumeMount{
+				Name:      jsii.String(secret.Name),
+				MountPath: jsii.String(secret.MountPath),
+				ReadOnly:  jsii.Bool(true),
+			})
 		}
 	}
 
@@ -134,6 +150,7 @@ type Deployment struct {
 	Env        []EnvEntry
 	Commands   []string
 	ConfigMaps []ConfigMapMount
+	Secrets    []SecretMount
 }
 
 func (chart *Chart) NewDeployment(deployment *Deployment) {
@@ -153,6 +170,7 @@ func (chart *Chart) NewDeployment(deployment *Deployment) {
 		AppDeploymentOption{
 			Name:            deployment.Name,
 			ImagePullPolicy: deployment.ImagePullPolicy,
+			SecretMounts:    deployment.Secrets,
 		},
 	)
 }
