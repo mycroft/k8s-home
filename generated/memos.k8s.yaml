@@ -42,6 +42,26 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: memos-config
+  namespace: memos
+stringData:
+  memos-instance-setting-general.json: |
+    {
+      "key": "GENERAL",
+      "generalSetting": {
+        "disallowUserRegistration": false,
+        "disallowPasswordAuth": true,
+        "additionalScript": "",
+        "additionalStyle": "",
+        "weekStartDayOffset": 1,
+        "disallowChangeUsername": false,
+        "disallowChangeNickname": false
+      }
+    }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -69,6 +89,14 @@ spec:
                   name: postgres
           image: neosmemo/memos:0.30.0
           name: memos
+          volumeMounts:
+            - mountPath: /etc/secrets
+              name: memos-config
+              readOnly: true
+      volumes:
+        - name: memos-config
+          secret:
+            secretName: memos-config
 ---
 apiVersion: v1
 kind: Service
