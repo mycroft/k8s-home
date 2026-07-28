@@ -2,32 +2,38 @@
 
 backupsEnabled: true
 snapshotsEnabled: false
+deployNodeAgent: true
+
+nodeAgent:
+  containerSecurityContext:
+    privileged: true
 
 metrics:
   serviceMonitor:
     enabled: true
 
 configuration:
+  uploaderType: kopia
+  defaultVolumesToFsBackup: false
   backupStorageLocation:
     - provider: aws
       default: true
-      bucket: k8s-backup
-      prefix: velero-backup
+      bucket: velero
       config:
-        region: minio
-        s3Url: "http://nas0.lan.mkz.me:9000"
+        region: garage
+        s3Url: "http://moonstone.lan.mkz.me:3900"
         s3ForcePathStyle: true
 
 credentials:
-  existingSecret: nas0-minio
+  existingSecret: garage-credentials
 
 initContainers:
-- name: velero-plugin-for-aws
-  image: velero/velero-plugin-for-aws:v1.1.0
-  imagePullPolicy: IfNotPresent
-  volumeMounts:
-  - mountPath: /target
-    name: plugins
+  - name: velero-plugin-for-aws
+    image: velero/velero-plugin-for-aws:v1.13.1
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
 
 upgradeJobResources:
   requests:

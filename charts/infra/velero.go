@@ -17,7 +17,8 @@ func NewVeleroChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.NewNamespace(namespace)
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "nas0-minio")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "garage-credentials")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "velero-repo-credentials")
 
 	chart.CreateHelmRepository(
 		repositoryName,
@@ -45,6 +46,30 @@ func NewVeleroChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				Schedule: jsii.String("30 7 * * *"),
 				Template: &veleroio.ScheduleSpecTemplate{
 					Ttl: jsii.String("720h0m0s"),
+				},
+			},
+		},
+	)
+
+	// Back up the first selected stateful workloads using Kopia filesystem backups.
+	veleroio.NewSchedule(
+		chart.Cdk8sChart,
+		jsii.String("filesystem-backup-schedule"),
+		&veleroio.ScheduleProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Namespace: jsii.String(namespace),
+				Name:      jsii.String("filesystem-backup-schedule"),
+			},
+			Spec: &veleroio.ScheduleSpec{
+				Schedule: jsii.String("30 1 * * *"),
+				Template: &veleroio.ScheduleSpecTemplate{
+					DefaultVolumesToFsBackup: jsii.Bool(true),
+					IncludedNamespaces: &[]*string{
+						jsii.String("paperless-ngx"),
+						jsii.String("calibre-web"),
+					},
+					SnapshotVolumes: jsii.Bool(false),
+					Ttl:             jsii.String("720h0m0s"),
 				},
 			},
 		},
