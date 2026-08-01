@@ -68,13 +68,13 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: temporal-es-postgresql2-cnpg-c8ac9fe3
+  name: temporal-es-postgresql-cnpg-c869aa66
   namespace: temporal
 spec:
   dataFrom:
     - extract:
         conversionStrategy: Default
-        key: secret/namespaces/temporal/postgresql2-cnpg
+        key: secret/namespaces/temporal/postgresql-cnpg
   refreshInterval: 15m
   secretStoreRef:
     kind: SecretStore
@@ -83,7 +83,7 @@ spec:
     creationPolicy: Owner
     deletionPolicy: Delete
     immutable: false
-    name: postgresql2-cnpg
+    name: postgresql-cnpg
     template:
       engineVersion: v2
       type: Opaque
@@ -91,13 +91,13 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: temporal-es-postgresql-visibility2-cnpg-c87c01f0
+  name: temporal-es-postgresql-visibility-cnpg-c86f0efe
   namespace: temporal
 spec:
   dataFrom:
     - extract:
         conversionStrategy: Default
-        key: secret/namespaces/temporal/postgresql-visibility2-cnpg
+        key: secret/namespaces/temporal/postgresql-visibility-cnpg
   refreshInterval: 15m
   secretStoreRef:
     kind: SecretStore
@@ -106,7 +106,7 @@ spec:
     creationPolicy: Owner
     deletionPolicy: Delete
     immutable: false
-    name: postgresql-visibility2-cnpg
+    name: postgresql-visibility-cnpg
     template:
       engineVersion: v2
       type: Opaque

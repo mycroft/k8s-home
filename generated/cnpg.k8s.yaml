@@ -119,18 +119,18 @@ spec:
         disablePassword: false
         ensure: present
         login: true
-        name: temporal2
+        name: temporal
         passwordSecret:
-          name: postgres-temporal2
+          name: postgres-temporal
         superuser: false
       - createdb: false
         createrole: false
         disablePassword: false
         ensure: present
         login: true
-        name: temporal_visibility2
+        name: temporal_visibility
         passwordSecret:
-          name: postgres-temporal-visibility2
+          name: postgres-temporal-visibility
         superuser: false
   storage:
     size: 64Gi
@@ -982,7 +982,7 @@ spec:
 apiVersion: generators.external-secrets.io/v1alpha1
 kind: Password
 metadata:
-  name: postgres-temporal2
+  name: postgres-temporal
   namespace: cnpg
 spec:
   allowRepeat: true
@@ -994,7 +994,7 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: postgres-temporal2
+  name: postgres-temporal
   namespace: cnpg
 spec:
   dataFrom:
@@ -1002,65 +1002,65 @@ spec:
         generatorRef:
           apiVersion: generators.external-secrets.io/v1alpha1
           kind: Password
-          name: postgres-temporal2
+          name: postgres-temporal
   refreshInterval: "0"
   target:
     creationPolicy: Owner
     deletionPolicy: Retain
     immutable: false
-    name: postgres-temporal2
+    name: postgres-temporal
     template:
       data:
-        dbname: temporal2
+        dbname: temporal
         host: postgres-rw.cnpg
         password: "{{ .password }}"
-        url: postgres://temporal2:{{ .password }}@postgres-rw.cnpg/temporal2
-        username: temporal2
+        url: postgres://temporal:{{ .password }}@postgres-rw.cnpg/temporal
+        username: temporal
       engineVersion: v2
       type: kubernetes.io/basic-auth
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: postgres-temporal2
+  name: postgres-temporal
   namespace: cnpg
 spec:
   cluster:
     name: postgres
-  name: temporal2
-  owner: temporal2
+  name: temporal
+  owner: temporal
 ---
 apiVersion: external-secrets.io/v1alpha1
 kind: PushSecret
 metadata:
-  name: postgres-temporal2
+  name: postgres-temporal
   namespace: cnpg
 spec:
   data:
     - match:
         remoteRef:
           property: username
-          remoteKey: namespaces/temporal/postgresql2-cnpg
+          remoteKey: namespaces/temporal/postgresql-cnpg
         secretKey: username
     - match:
         remoteRef:
           property: password
-          remoteKey: namespaces/temporal/postgresql2-cnpg
+          remoteKey: namespaces/temporal/postgresql-cnpg
         secretKey: password
     - match:
         remoteRef:
           property: host
-          remoteKey: namespaces/temporal/postgresql2-cnpg
+          remoteKey: namespaces/temporal/postgresql-cnpg
         secretKey: host
     - match:
         remoteRef:
           property: dbname
-          remoteKey: namespaces/temporal/postgresql2-cnpg
+          remoteKey: namespaces/temporal/postgresql-cnpg
         secretKey: dbname
     - match:
         remoteRef:
           property: url
-          remoteKey: namespaces/temporal/postgresql2-cnpg
+          remoteKey: namespaces/temporal/postgresql-cnpg
         secretKey: url
   deletionPolicy: None
   refreshInterval: 1h
@@ -1069,13 +1069,13 @@ spec:
       name: secretstore-vault
   selector:
     secret:
-      name: postgres-temporal2
+      name: postgres-temporal
   updatePolicy: Replace
 ---
 apiVersion: generators.external-secrets.io/v1alpha1
 kind: Password
 metadata:
-  name: postgres-temporal-visibility2
+  name: postgres-temporal-visibility
   namespace: cnpg
 spec:
   allowRepeat: true
@@ -1087,7 +1087,7 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: postgres-temporal-visibility2
+  name: postgres-temporal-visibility
   namespace: cnpg
 spec:
   dataFrom:
@@ -1095,65 +1095,68 @@ spec:
         generatorRef:
           apiVersion: generators.external-secrets.io/v1alpha1
           kind: Password
-          name: postgres-temporal-visibility2
+          name: postgres-temporal-visibility
   refreshInterval: "0"
   target:
     creationPolicy: Owner
     deletionPolicy: Retain
     immutable: false
-    name: postgres-temporal-visibility2
+    name: postgres-temporal-visibility
     template:
       data:
-        dbname: temporal_visibility2
+        dbname: temporal_visibility
         host: postgres-rw.cnpg
         password: "{{ .password }}"
-        url: postgres://temporal_visibility2:{{ .password }}@postgres-rw.cnpg/temporal_visibility2
-        username: temporal_visibility2
+        url: postgres://temporal_visibility:{{ .password }}@postgres-rw.cnpg/temporal_visibility
+        username: temporal_visibility
       engineVersion: v2
       type: kubernetes.io/basic-auth
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: postgres-temporal-visibility2
+  name: postgres-temporal-visibility
   namespace: cnpg
 spec:
   cluster:
     name: postgres
-  name: temporal_visibility2
-  owner: temporal_visibility2
+  extensions:
+    - ensure: present
+      name: btree_gin
+  name: temporal_visibility
+  owner: temporal_visibility
 ---
 apiVersion: external-secrets.io/v1alpha1
 kind: PushSecret
 metadata:
-  name: postgres-temporal-visibility2
+  name: postgres-temporal-visibility
   namespace: cnpg
 spec:
   data:
     - match:
         remoteRef:
           property: username
-          remoteKey: namespaces/temporal/postgresql-visibility2-cnpg
+          remoteKey: namespaces/temporal/postgresql-visibility-cnpg
         secretKey: username
     - match:
         remoteRef:
           property: password
-          remoteKey: namespaces/temporal/postgresql-visibility2-cnpg
+          remoteKey: namespaces/temporal/postgresql-visibility-cnpg
         secretKey: password
     - match:
         remoteRef:
           property: host
-          remoteKey: namespaces/temporal/postgresql-visibility2-cnpg
+          remoteKey: namespaces/temporal/postgresql-visibility-cnpg
         secretKey: host
     - match:
         remoteRef:
           property: dbname
-          remoteKey: namespaces/temporal/postgresql-visibility2-cnpg
+          remoteKey: namespaces/temporal/postgresql-visibility-cnpg
         secretKey: dbname
     - match:
         remoteRef:
           property: url
-          remoteKey: namespaces/temporal/postgresql-visibility2-cnpg
+          remoteKey: namespaces/temporal/postgresql-visibility-cnpg
         secretKey: url
   deletionPolicy: None
   refreshInterval: 1h
@@ -1162,5 +1165,5 @@ spec:
       name: secretstore-vault
   selector:
     secret:
-      name: postgres-temporal-visibility2
+      name: postgres-temporal-visibility
   updatePolicy: Replace
