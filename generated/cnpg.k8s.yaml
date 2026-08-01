@@ -130,7 +130,7 @@ spec:
         login: true
         name: temporal_visibility2
         passwordSecret:
-          name: postgres-temporal_visibility2
+          name: postgres-temporal-visibility2
         superuser: false
   storage:
     size: 64Gi
@@ -1069,7 +1069,7 @@ spec:
 apiVersion: generators.external-secrets.io/v1alpha1
 kind: Password
 metadata:
-  name: postgres-temporal_visibility2
+  name: postgres-temporal-visibility2
   namespace: cnpg
 spec:
   allowRepeat: true
@@ -1081,7 +1081,7 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: postgres-temporal_visibility2
+  name: postgres-temporal-visibility2
   namespace: cnpg
 spec:
   dataFrom:
@@ -1089,13 +1089,13 @@ spec:
         generatorRef:
           apiVersion: generators.external-secrets.io/v1alpha1
           kind: Password
-          name: postgres-temporal_visibility2
+          name: postgres-temporal-visibility2
   refreshInterval: "0"
   target:
     creationPolicy: Owner
     deletionPolicy: Retain
     immutable: false
-    name: postgres-temporal_visibility2
+    name: postgres-temporal-visibility2
     template:
       data:
         dbname: temporal_visibility2
@@ -1109,7 +1109,7 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: postgres-temporal_visibility2
+  name: postgres-temporal-visibility2
   namespace: cnpg
 spec:
   cluster:
@@ -1120,7 +1120,7 @@ spec:
 apiVersion: external-secrets.io/v1alpha1
 kind: PushSecret
 metadata:
-  name: postgres-temporal_visibility2
+  name: postgres-temporal-visibility2
   namespace: cnpg
 spec:
   data:
@@ -1156,5 +1156,5 @@ spec:
       name: secretstore-vault
   selector:
     secret:
-      name: postgres-temporal_visibility2
+      name: postgres-temporal-visibility2
   updatePolicy: Replace
