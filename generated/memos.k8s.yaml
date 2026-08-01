@@ -108,8 +108,8 @@ spec:
             - name: MEMOS_DSN
               valueFrom:
                 secretKeyRef:
-                  key: dsn
-                  name: postgres
+                  key: url
+                  name: postgres-cnpg
           image: neosmemo/memos:0.30.0
           name: memos
           volumeMounts:

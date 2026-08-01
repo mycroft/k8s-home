@@ -129,18 +129,18 @@ data:
 
     externalPostgresql:
       ssl: false
-      host: postgres-instance.postgres
+      host: postgres-rw.cnpg
       port: 5432
       username: wikijs
       database: wikijs
-      existingSecret: postgresql
+      existingSecret: postgresql-cnpg
       existingSecretKey: password
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: f36cbc8d7f7cc32928df9cf2ee6926d477e0e90fc4125d2782211b40b10ab34f
+    configMapHash: 247e491dfacff657276d99efffd436f8db96fdffc6e07b215a8b3a69291c5778
   name: wiki
   namespace: wikijs
 spec:

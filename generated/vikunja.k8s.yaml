@@ -124,17 +124,17 @@ spec:
             - name: VIKUNJA_DATABASE_NAME
               value: vikunja
             - name: VIKUNJA_DATABASE_HOST
-              value: postgres-instance.postgres
+              value: postgres-rw.cnpg
             - name: VIKUNJA_DATABASE_USER
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: postgresql
+                  name: postgresql-cnpg
             - name: VIKUNJA_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: postgresql
+                  name: postgresql-cnpg
           image: vikunja/vikunja:2.4.0
           name: vikunja
           volumeMounts:
