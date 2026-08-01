@@ -50,11 +50,8 @@ func NewFreshRSS(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			}},
 		},
 		{
-			Name: jsii.String("FRESHRSS_DB_NAME"),
-			ValueFrom: &k8s.EnvVarSource{SecretKeyRef: &k8s.SecretKeySelector{
-				Name: jsii.String("postgresql-cnpg"),
-				Key:  jsii.String("dbname"),
-			}},
+			Name:  jsii.String("FRESHRSS_DB_NAME"),
+			Value: jsii.String("freshrss"),
 		},
 	}
 
