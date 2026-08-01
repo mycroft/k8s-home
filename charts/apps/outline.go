@@ -1,8 +1,5 @@
 package apps
 
-// Note that the "outline" user in postgres needs to CREATE EXTENSION. Therefore the user was set up with the following permission:
-// ALTER USER outline WITH SUPERUSER;
-
 import (
 	"fmt"
 
@@ -35,7 +32,7 @@ func NewOutlineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name: jsii.String("DATABASE_URL"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Name: jsii.String("postgres"),
+					Name: jsii.String("postgres-cnpg"),
 					Key:  jsii.String("url"),
 				},
 			},
