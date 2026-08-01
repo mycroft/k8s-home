@@ -3,6 +3,45 @@ kind: Namespace
 metadata:
   name: freshrss
 ---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: freshrss
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: freshrss-es-postgresql-cnpg-c860c2b4
+  namespace: freshrss
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/freshrss/postgresql-cnpg
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql-cnpg
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -40,6 +79,26 @@ spec:
               value: "1000"
             - name: TZ
               value: Etc/UTC
+            - name: FRESHRSS_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: host
+                  name: postgresql-cnpg
+            - name: FRESHRSS_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: postgresql-cnpg
+            - name: FRESHRSS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: postgresql-cnpg
+            - name: FRESHRSS_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: dbname
+                  name: postgresql-cnpg
           image: freshrss/freshrss:1.29.1
           name: freshrss
           volumeMounts:
@@ -101,6 +160,33 @@ spec:
           containers:
             - command:
                 - /var/www/FreshRSS/app/actualize_script.php
+              env:
+                - name: PUID
+                  value: "1000"
+                - name: PGID
+                  value: "1000"
+                - name: TZ
+                  value: Etc/UTC
+                - name: FRESHRSS_DB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      key: host
+                      name: postgresql-cnpg
+                - name: FRESHRSS_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      key: username
+                      name: postgresql-cnpg
+                - name: FRESHRSS_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: password
+                      name: postgresql-cnpg
+                - name: FRESHRSS_DB_NAME
+                  valueFrom:
+                    secretKeyRef:
+                      key: dbname
+                      name: postgresql-cnpg
               image: freshrss/freshrss:1.29.1
               name: updater
               volumeMounts:

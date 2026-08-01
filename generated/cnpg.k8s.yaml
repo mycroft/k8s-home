@@ -132,6 +132,15 @@ spec:
         passwordSecret:
           name: postgres-temporal-visibility
         superuser: false
+      - createdb: false
+        createrole: false
+        disablePassword: false
+        ensure: present
+        login: true
+        name: freshrss
+        passwordSecret:
+          name: postgres-freshrss
+        superuser: false
   storage:
     size: 64Gi
     storageClass: longhorn-crypto-global
@@ -1166,4 +1175,97 @@ spec:
   selector:
     secret:
       name: postgres-temporal-visibility
+  updatePolicy: Replace
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-freshrss
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-freshrss
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-freshrss
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-freshrss
+    template:
+      data:
+        dbname: freshrss
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://freshrss:{{ .password }}@postgres-rw.cnpg/freshrss
+        username: freshrss
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres-freshrss
+  namespace: cnpg
+spec:
+  cluster:
+    name: postgres
+  name: freshrss
+  owner: freshrss
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-freshrss
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: namespaces/freshrss/postgresql-cnpg
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: namespaces/freshrss/postgresql-cnpg
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: namespaces/freshrss/postgresql-cnpg
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: namespaces/freshrss/postgresql-cnpg
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: namespaces/freshrss/postgresql-cnpg
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-freshrss
   updatePolicy: Replace
