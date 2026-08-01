@@ -107,27 +107,27 @@ spec:
     - match:
         remoteRef:
           property: username
-          remoteKey: secret/namespaces/zipline/postgresql-cnpg
+          remoteKey: namespaces/zipline/postgresql-cnpg
         secretKey: username
     - match:
         remoteRef:
           property: password
-          remoteKey: secret/namespaces/zipline/postgresql-cnpg
+          remoteKey: namespaces/zipline/postgresql-cnpg
         secretKey: password
     - match:
         remoteRef:
           property: host
-          remoteKey: secret/namespaces/zipline/postgresql-cnpg
+          remoteKey: namespaces/zipline/postgresql-cnpg
         secretKey: host
     - match:
         remoteRef:
           property: dbname
-          remoteKey: secret/namespaces/zipline/postgresql-cnpg
+          remoteKey: namespaces/zipline/postgresql-cnpg
         secretKey: dbname
     - match:
         remoteRef:
           property: url
-          remoteKey: secret/namespaces/zipline/postgresql-cnpg
+          remoteKey: namespaces/zipline/postgresql-cnpg
         secretKey: url
   deletionPolicy: None
   refreshInterval: 1h
