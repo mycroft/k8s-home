@@ -73,12 +73,12 @@ envVars:
   - name: "POSTGRESQL_USERNAME"
     valueFrom:
       secretKeyRef:
-        name: "postgresql"
+        name: "postgresql-cnpg"
         key: "username"
   - name: "POSTGRESQL_PASSWORD"
     valueFrom:
       secretKeyRef:
-        name: "postgresql"
+        name: "postgresql-cnpg"
         key: "password"
 
 

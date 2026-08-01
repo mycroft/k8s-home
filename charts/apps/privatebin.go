@@ -70,7 +70,7 @@ func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name: jsii.String("POSTGRES_USERNAME"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Name: jsii.String("postgres"),
+					Name: jsii.String("postgres-cnpg"),
 					Key:  jsii.String("username"),
 				},
 			},
@@ -79,7 +79,7 @@ func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name: jsii.String("POSTGRES_PASSWORD"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Name: jsii.String("postgres"),
+					Name: jsii.String("postgres-cnpg"),
 					Key:  jsii.String("password"),
 				},
 			},

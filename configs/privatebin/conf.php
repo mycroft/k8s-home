@@ -41,7 +41,7 @@ batchsize = 10
 [model]
 class = Database
 [model_options]
-dsn = "pgsql:host=postgres-instance.postgres;dbname=privatebin"
+dsn = "pgsql:host=postgres-rw.cnpg;dbname=privatebin"
 tbl = "privatebin_"
 usr = "POSTGRES_USERNAME"
 pwd = "POSTGRES_PASSWORD"

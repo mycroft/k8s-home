@@ -30,7 +30,7 @@ func NewWallabagChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	env := []*k8s.EnvVar{
 		{Name: jsii.String("SYMFONY__ENV__DATABASE_DRIVER"), Value: jsii.String("pdo_pgsql")},
-		{Name: jsii.String("SYMFONY__ENV__DATABASE_HOST"), Value: jsii.String("postgres-instance.postgres")},
+		{Name: jsii.String("SYMFONY__ENV__DATABASE_HOST"), Value: jsii.String("postgres-rw.cnpg")},
 		{Name: jsii.String("SYMFONY__ENV__DATABASE_PORT"), Value: jsii.String("5432")},
 		{Name: jsii.String("SYMFONY__ENV__DATABASE_NAME"), Value: jsii.String("wallabag")},
 		{Name: jsii.String("POPULATE_DATABASE"), Value: jsii.String("True")},
@@ -38,7 +38,7 @@ func NewWallabagChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name: jsii.String("SYMFONY__ENV__DATABASE_USER"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Name: jsii.String("postgresql"),
+					Name: jsii.String("postgresql-cnpg"),
 					Key:  jsii.String("username"),
 				},
 			},
@@ -47,7 +47,7 @@ func NewWallabagChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name: jsii.String("SYMFONY__ENV__DATABASE_PASSWORD"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Name: jsii.String("postgresql"),
+					Name: jsii.String("postgresql-cnpg"),
 					Key:  jsii.String("password"),
 				},
 			},
