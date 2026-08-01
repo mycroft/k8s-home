@@ -42,6 +42,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: wikijs-es-postgresql-cnpg-c8e4afec
+  namespace: wikijs
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/wikijs/postgresql-cnpg
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql-cnpg
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
