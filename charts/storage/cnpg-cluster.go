@@ -25,8 +25,8 @@ var databases = []kubehelpers.CNPGDatabase{
 	{Name: "n8n", VaultEntry: "postgresql-cnpg", PasswordAliases: []string{"postgres-password"}},
 	{Name: "grafana", Namespace: "monitoring", VaultEntry: "grafana-postgres-cnpg"},
 	{Name: "dex", Namespace: "dex-idp", VaultEntry: "postgresql-cnpg"},
-	{Name: "temporal2", Namespace: "temporal", VaultEntry: "postgresql2-cnpg"},
-	{Name: "temporal_visibility2", Namespace: "temporal", VaultEntry: "postgresql-visibility2-cnpg"},
+	{Name: "temporal", VaultEntry: "postgresql-cnpg"},
+	{Name: "temporal_visibility", Namespace: "temporal", VaultEntry: "postgresql-visibility-cnpg", Extensions: []string{"btree_gin"}},
 }
 
 func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {

@@ -37,6 +37,7 @@ type CNPGDatabase struct {
 	Namespace       string
 	VaultEntry      string
 	PasswordAliases []string
+	Extensions      []string
 }
 
 // AppNamespace returns the namespace whose Vault path receives the credentials.
@@ -168,6 +169,18 @@ func NewCNPGDatabase(chart constructs.Construct, cfg CNPGDatabaseConfig) {
 		},
 	)
 
+	var extensions *[]*database.DatabaseSpecExtensions
+	if len(db.Extensions) > 0 {
+		items := make([]*database.DatabaseSpecExtensions, 0, len(db.Extensions))
+		for _, extension := range db.Extensions {
+			items = append(items, &database.DatabaseSpecExtensions{
+				Name:   jsii.String(extension),
+				Ensure: database.DatabaseSpecExtensionsEnsure_PRESENT,
+			})
+		}
+		extensions = &items
+	}
+
 	database.NewDatabase(
 		chart,
 		jsii.String(fmt.Sprintf("database-%s", db.Name)),
@@ -180,8 +193,9 @@ func NewCNPGDatabase(chart constructs.Construct, cfg CNPGDatabaseConfig) {
 				Cluster: &database.DatabaseSpecCluster{
 					Name: cfg.ClusterName,
 				},
-				Name:  jsii.String(db.Name),
-				Owner: jsii.String(db.Name),
+				Name:       jsii.String(db.Name),
+				Owner:      jsii.String(db.Name),
+				Extensions: extensions,
 			},
 		},
 	)

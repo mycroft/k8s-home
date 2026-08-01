@@ -16,8 +16,8 @@ func NewTemporalChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql2")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-visibility2")
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql2-cnpg")
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-visibility2-cnpg")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-cnpg")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-visibility-cnpg")
 
 	chart.CreateHelmRepository(
 		repositoryName,
