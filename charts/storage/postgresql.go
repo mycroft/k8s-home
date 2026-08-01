@@ -16,19 +16,10 @@ func NewPostgres(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.NewNamespace(namespace)
 
 	databases := []string{
-		"grafana",
 		"testaroo",
-		"wallabag",
 		"freshrss",
 		"paperlessngx",
-		"dex",
-		"temporal",
-		"temporal_visibility",
 		"authentik",
-		"temporal2",
-		"temporal_visibility2",
-		"privatebin",
-		"n8n",
 		"outline",
 	}
 
