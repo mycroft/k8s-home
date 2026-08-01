@@ -729,6 +729,7 @@ spec:
         dbname: n8n
         host: postgres-rw.cnpg
         password: "{{ .password }}"
+        postgres-password: "{{ .password }}"
         url: postgres://n8n:{{ .password }}@postgres-rw.cnpg/n8n
         username: n8n
       engineVersion: v2
@@ -777,6 +778,11 @@ spec:
           property: url
           remoteKey: namespaces/n8n/postgresql-cnpg
         secretKey: url
+    - match:
+        remoteRef:
+          property: postgres-password
+          remoteKey: namespaces/n8n/postgresql-cnpg
+        secretKey: postgres-password
   deletionPolicy: None
   refreshInterval: 1h
   secretStoreRefs:
