@@ -22,52 +22,6 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: temporal-es-postgresql2-c86e0251
-  namespace: temporal
-spec:
-  dataFrom:
-    - extract:
-        conversionStrategy: Default
-        key: secret/namespaces/temporal/postgresql2
-  refreshInterval: 15m
-  secretStoreRef:
-    kind: SecretStore
-    name: secretstore-vault
-  target:
-    creationPolicy: Owner
-    deletionPolicy: Delete
-    immutable: false
-    name: postgresql2
-    template:
-      engineVersion: v2
-      type: Opaque
----
-apiVersion: external-secrets.io/v1
-kind: ExternalSecret
-metadata:
-  name: temporal-es-postgresql-visibility2-c8980449
-  namespace: temporal
-spec:
-  dataFrom:
-    - extract:
-        conversionStrategy: Default
-        key: secret/namespaces/temporal/postgresql-visibility2
-  refreshInterval: 15m
-  secretStoreRef:
-    kind: SecretStore
-    name: secretstore-vault
-  target:
-    creationPolicy: Owner
-    deletionPolicy: Delete
-    immutable: false
-    name: postgresql-visibility2
-    template:
-      engineVersion: v2
-      type: Opaque
----
-apiVersion: external-secrets.io/v1
-kind: ExternalSecret
-metadata:
   name: temporal-es-postgresql-cnpg-c869aa66
   namespace: temporal
 spec:

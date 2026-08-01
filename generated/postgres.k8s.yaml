@@ -11,19 +11,10 @@ metadata:
 spec:
   databases:
     authentik: authentik-admin
-    dex: dex-admin
     freshrss: freshrss-admin
-    grafana: grafana-admin
-    n8n: n8n-admin
     outline: outline-admin
     paperlessngx: paperlessngx-admin
-    privatebin: privatebin-admin
-    temporal: temporal-admin
-    temporal2: temporal2-admin
-    temporal_visibility: temporal_visibility-admin
-    temporal_visibility2: temporal_visibility2-admin
     testaroo: testaroo-admin
-    wallabag: wallabag-admin
   env:
     - name: ALLOW_NOSSL
       value: "1"
@@ -36,20 +27,8 @@ spec:
     authentik-admin:
       - superuser
       - createdb
-    dex: []
-    dex-admin:
-      - superuser
-      - createdb
     freshrss: []
     freshrss-admin:
-      - superuser
-      - createdb
-    grafana: []
-    grafana-admin:
-      - superuser
-      - createdb
-    n8n: []
-    n8n-admin:
       - superuser
       - createdb
     outline: []
@@ -60,32 +39,8 @@ spec:
     paperlessngx-admin:
       - superuser
       - createdb
-    privatebin: []
-    privatebin-admin:
-      - superuser
-      - createdb
-    temporal: []
-    temporal-admin:
-      - superuser
-      - createdb
-    temporal2: []
-    temporal2-admin:
-      - superuser
-      - createdb
-    temporal_visibility: []
-    temporal_visibility-admin:
-      - superuser
-      - createdb
-    temporal_visibility2: []
-    temporal_visibility2-admin:
-      - superuser
-      - createdb
     testaroo: []
     testaroo-admin:
-      - superuser
-      - createdb
-    wallabag: []
-    wallabag-admin:
       - superuser
       - createdb
   volume:
