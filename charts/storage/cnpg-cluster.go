@@ -28,6 +28,9 @@ var databases = []kubehelpers.CNPGDatabase{
 	{Name: "temporal", VaultEntry: "postgresql-cnpg"},
 	{Name: "temporal_visibility", Namespace: "temporal", VaultEntry: "postgresql-visibility-cnpg", Extensions: []string{"btree_gin"}},
 	{Name: "freshrss", VaultEntry: "postgresql-cnpg"},
+	{Name: "outline", VaultEntry: "postgres-cnpg", Extensions: []string{"pg_trgm", "unaccent", "uuid-ossp"}},
+	{Name: "authentik", VaultEntry: "postgresql-cnpg"},
+	{Name: "paperlessngx", Namespace: "paperless-ngx", VaultEntry: "postgresql-cnpg"},
 }
 
 func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {
