@@ -45,29 +45,6 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: privatebin-es-postgres-c8d8facc
-  namespace: privatebin
-spec:
-  dataFrom:
-    - extract:
-        conversionStrategy: Default
-        key: secret/namespaces/privatebin/postgres
-  refreshInterval: 15m
-  secretStoreRef:
-    kind: SecretStore
-    name: secretstore-vault
-  target:
-    creationPolicy: Owner
-    deletionPolicy: Delete
-    immutable: false
-    name: postgres
-    template:
-      engineVersion: v2
-      type: Opaque
----
-apiVersion: external-secrets.io/v1
-kind: ExternalSecret
-metadata:
   name: privatebin-es-postgres-cnpg-c84f9598
   namespace: privatebin
 spec:

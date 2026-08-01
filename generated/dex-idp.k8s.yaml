@@ -337,29 +337,6 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: dex-idp-es-postgresql-c8fc46d7
-  namespace: dex-idp
-spec:
-  dataFrom:
-    - extract:
-        conversionStrategy: Default
-        key: secret/namespaces/dex-idp/postgresql
-  refreshInterval: 15m
-  secretStoreRef:
-    kind: SecretStore
-    name: secretstore-vault
-  target:
-    creationPolicy: Owner
-    deletionPolicy: Delete
-    immutable: false
-    name: postgresql
-    template:
-      engineVersion: v2
-      type: Opaque
----
-apiVersion: external-secrets.io/v1
-kind: ExternalSecret
-metadata:
   name: dex-idp-es-postgresql-cnpg-c808d552
   namespace: dex-idp
 spec:
