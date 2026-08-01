@@ -177,8 +177,24 @@ spec:
   schedule: 30 1 * * *
   template:
     defaultVolumesToFsBackup: true
-    includedNamespaces:
-      - paperless-ngx
-      - calibre-web
+    hooks:
+      resources:
+        - includedNamespaces:
+            - cnpg
+          includedResources:
+            - pods
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: postgres-dump
+          name: postgres-dump-ready
+          pre:
+            - exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - test -s /backup/latest/globals.sql && find -L /backup/latest -maxdepth 0 -type d -mmin -180 -print -quit | grep -q . && find -L /backup/latest -maxdepth 1 -type f -name '*.dump' -size +0c -print -quit | grep -q .
+                container: postgres-dump
+                onError: Fail
+                timeout: 1m
     snapshotVolumes: false
     ttl: 720h0m0s
