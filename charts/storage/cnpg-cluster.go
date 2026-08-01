@@ -27,6 +27,7 @@ var databases = []kubehelpers.CNPGDatabase{
 	{Name: "dex", Namespace: "dex-idp", VaultEntry: "postgresql-cnpg"},
 	{Name: "temporal", VaultEntry: "postgresql-cnpg"},
 	{Name: "temporal_visibility", Namespace: "temporal", VaultEntry: "postgresql-visibility-cnpg", Extensions: []string{"btree_gin"}},
+	{Name: "freshrss", VaultEntry: "postgresql-cnpg"},
 }
 
 func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {

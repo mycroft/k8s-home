@@ -17,6 +17,8 @@ func NewFreshRSS(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-cnpg")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -26,6 +28,34 @@ func NewFreshRSS(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		{Name: jsii.String("PUID"), Value: jsii.String("1000")},
 		{Name: jsii.String("PGID"), Value: jsii.String("1000")},
 		{Name: jsii.String("TZ"), Value: jsii.String("Etc/UTC")},
+		{
+			Name: jsii.String("FRESHRSS_DB_HOST"),
+			ValueFrom: &k8s.EnvVarSource{SecretKeyRef: &k8s.SecretKeySelector{
+				Name: jsii.String("postgresql-cnpg"),
+				Key:  jsii.String("host"),
+			}},
+		},
+		{
+			Name: jsii.String("FRESHRSS_DB_USER"),
+			ValueFrom: &k8s.EnvVarSource{SecretKeyRef: &k8s.SecretKeySelector{
+				Name: jsii.String("postgresql-cnpg"),
+				Key:  jsii.String("username"),
+			}},
+		},
+		{
+			Name: jsii.String("FRESHRSS_DB_PASSWORD"),
+			ValueFrom: &k8s.EnvVarSource{SecretKeyRef: &k8s.SecretKeySelector{
+				Name: jsii.String("postgresql-cnpg"),
+				Key:  jsii.String("password"),
+			}},
+		},
+		{
+			Name: jsii.String("FRESHRSS_DB_NAME"),
+			ValueFrom: &k8s.EnvVarSource{SecretKeyRef: &k8s.SecretKeySelector{
+				Name: jsii.String("postgresql-cnpg"),
+				Key:  jsii.String("dbname"),
+			}},
+		},
 	}
 
 	stsName, svcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
@@ -93,6 +123,7 @@ func NewFreshRSS(builder *kubehelpers.Builder) *kubehelpers.Chart {
 								Containers: &[]*k8s.Container{
 									{
 										Name: jsii.String("updater"),
+										Env:  &env,
 										Command: &[]*string{
 											jsii.String("/var/www/FreshRSS/app/actualize_script.php"),
 										},
