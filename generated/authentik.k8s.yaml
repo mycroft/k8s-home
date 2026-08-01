@@ -199,7 +199,7 @@ data:
         timeout: 30
         from: "Homelab's Authentik <authentik@mkz.me>"
       postgresql:
-        host: postgres-instance.postgres
+        host: postgres-rw.cnpg
         user: file:///postgres-creds/username
         password: file:///postgres-creds/password
       redis:
@@ -223,7 +223,7 @@ data:
       volumes:
         - name: postgres-creds
           secret:
-            secretName: postgresql
+            secretName: postgresql-cnpg
         - name: authentik-secret
           secret:
             secretName: authentik-secret
@@ -249,7 +249,7 @@ data:
       volumes:
         - name: postgres-creds
           secret:
-            secretName: postgresql
+            secretName: postgresql-cnpg
         - name: authentik-secret
           secret:
             secretName: authentik-secret
@@ -275,7 +275,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 08cb8602b8dfe3589e661ac985e10bbc95f7a0c483cd6f9922bdb10b3a8300c8
+    configMapHash: f52d003822508bec7196ea64a83f4a2ee156f22e8705122ecfee2a276746abdd
   name: authentik
   namespace: authentik
 spec:
