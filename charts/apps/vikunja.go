@@ -22,10 +22,10 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	}
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-cnpg")
 	// kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "openid")
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "config") // key: config.yml
+	// Vikunja's config.yml is managed in Vault; configs/vikunja/config.yaml is reference-only.
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "config")
 
 	env := []*k8s.EnvVar{
 		{

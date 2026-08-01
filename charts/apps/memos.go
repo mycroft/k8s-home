@@ -34,7 +34,6 @@ func NewMemosChart(builder *kube.Builder) *kube.Chart {
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
 	chart.CreateSecretStore(namespace)
-	chart.CreateExternalSecret(namespace, "postgres")
 	chart.CreateExternalSecret(namespace, "postgres-cnpg")
 
 	const configFile = "memos-instance-setting-general.json"
