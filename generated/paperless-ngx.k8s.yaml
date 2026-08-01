@@ -206,7 +206,7 @@ spec:
             - name: PAPERLESS_DBENGINE
               value: postgresql
             - name: PAPERLESS_DBHOST
-              value: postgres-instance.postgres
+              value: postgres-rw.cnpg
             - name: PAPERLESS_DBPORT
               value: "5432"
             - name: PAPERLESS_DBNAME
@@ -215,12 +215,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: postgresql
+                  name: postgresql-cnpg
             - name: PAPERLESS_DBPASS
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: postgresql
+                  name: postgresql-cnpg
             - name: PAPERLESS_URL
               value: https://paperless.services.mkz.me
             - name: PAPERLESS_MEDIA_ROOT
