@@ -8,26 +8,26 @@ server:
           driver: "sql"
           sql:
             pluginName: "postgres12"
-            connectAddr: "postgres-instance.postgres:5432"
+            connectAddr: "postgres-rw.cnpg:5432"
             connectProtocol: tcp
-            user: temporal2
-            databaseName: temporal2
+            user: temporal
+            databaseName: temporal
             maxConns: 20
             maxConnLifetime: "1h"
-            existingSecret: postgresql2
+            existingSecret: postgresql-cnpg
             createDatabase: false
             manageSchema: false
         visibility:
           driver: "sql"
           sql:
             pluginName: "postgres12"
-            connectAddr: "postgres-instance.postgres:5432"
+            connectAddr: "postgres-rw.cnpg:5432"
             connectProtocol: tcp
-            user: temporal_visibility2
-            databaseName: temporal_visibility2
+            user: temporal_visibility
+            databaseName: temporal_visibility
             maxConns: 20
             maxConnLifetime: "1h"
-            existingSecret: postgresql-visibility2
+            existingSecret: postgresql-visibility-cnpg
             createDatabase: false
             manageSchema: false
 
