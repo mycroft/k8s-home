@@ -1,5 +1,6 @@
 dist/
 imports/
 k8s-home
+/backups/
 .vscode
 /.claude

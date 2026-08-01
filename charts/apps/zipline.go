@@ -21,8 +21,6 @@ func NewZiplineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	}
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-v4")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-cnpg")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "core")
 
@@ -42,15 +40,6 @@ func NewZiplineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				SecretKeyRef: &k8s.SecretKeySelector{
 					Key:  jsii.String("url"),
 					Name: jsii.String("postgresql-cnpg"),
-				},
-			},
-		},
-		{
-			Name: jsii.String("CORE_DATABASE_URL"),
-			ValueFrom: &k8s.EnvVarSource{
-				SecretKeyRef: &k8s.SecretKeySelector{
-					Key:  jsii.String("url"),
-					Name: jsii.String("postgresql"),
 				},
 			},
 		},

@@ -28,8 +28,6 @@ func NewPostgres(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"authentik",
 		"memos",
 		"vikunja",
-		"zipline",
-		"zipline_v4",
 		"temporal2",
 		"temporal_visibility2",
 		"privatebin",
