@@ -138,7 +138,7 @@ data:
     [model]
     class = Database
     [model_options]
-    dsn = "pgsql:host=postgres-instance.postgres;dbname=privatebin"
+    dsn = "pgsql:host=postgres-rw.cnpg;dbname=privatebin"
     tbl = "privatebin_"
     usr = "POSTGRES_USERNAME"
     pwd = "POSTGRES_PASSWORD"
@@ -190,12 +190,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: postgres
+                  name: postgres-cnpg
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: postgres
+                  name: postgres-cnpg
             - name: CONFIG_PATH
               value: /run/cfg
           image: privatebin/nginx-fpm-alpine:2.0.5

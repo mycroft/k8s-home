@@ -149,11 +149,11 @@ data:
       port: 6379
 
     externalPostgresql:
-      host: postgres-instance.postgres
+      host: postgres-rw.cnpg
       port: 5432
       username: n8n
       database: n8n
-      existingSecret: postgresql
+      existingSecret: postgresql-cnpg
 
     ingress:
       enabled: true
@@ -181,7 +181,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 60a6ef763a0c16a96046750abc2d1644742d2bda12d8693deadbd56ec763a897
+    configMapHash: b0b99ead46b36c27e5ea3e60c521d2db830b198679fa925dfb2895effcbfeee2
   name: n8n
   namespace: n8n
 spec:

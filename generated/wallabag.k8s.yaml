@@ -107,7 +107,7 @@ spec:
             - name: SYMFONY__ENV__DATABASE_DRIVER
               value: pdo_pgsql
             - name: SYMFONY__ENV__DATABASE_HOST
-              value: postgres-instance.postgres
+              value: postgres-rw.cnpg
             - name: SYMFONY__ENV__DATABASE_PORT
               value: "5432"
             - name: SYMFONY__ENV__DATABASE_NAME
@@ -118,12 +118,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: postgresql
+                  name: postgresql-cnpg
             - name: SYMFONY__ENV__DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: postgresql
+                  name: postgresql-cnpg
             - name: SYMFONY__ENV__DOMAIN_NAME
               value: https://wallabag.services.mkz.me
             - name: SYMFONY__ENV__MAILER_USER

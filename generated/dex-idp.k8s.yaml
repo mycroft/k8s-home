@@ -110,12 +110,12 @@ data:
       - name: "POSTGRESQL_USERNAME"
         valueFrom:
           secretKeyRef:
-            name: "postgresql"
+            name: "postgresql-cnpg"
             key: "username"
       - name: "POSTGRESQL_PASSWORD"
         valueFrom:
           secretKeyRef:
-            name: "postgresql"
+            name: "postgresql-cnpg"
             key: "password"
 
 
@@ -154,7 +154,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 928fe3b9ed4baab9bcc71d7aa2fb8672a16c744ad52595fe94e450b76b35cd16
+    configMapHash: 7349fde60fef05693bbb1da8fbe47cd4124031e300a4563d61d83db736e7b6c7
   name: dex
   namespace: dex-idp
 spec:
@@ -207,7 +207,7 @@ stringData:
     storage:
       type: postgres
       config:
-        host: postgres-instance.postgres
+        host: postgres-rw.cnpg
         port: 5432
         database: dex
         user: "{{ .Env.POSTGRESQL_USERNAME }}"
