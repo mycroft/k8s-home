@@ -141,6 +141,33 @@ spec:
         passwordSecret:
           name: postgres-freshrss
         superuser: false
+      - createdb: false
+        createrole: false
+        disablePassword: false
+        ensure: present
+        login: true
+        name: outline
+        passwordSecret:
+          name: postgres-outline
+        superuser: false
+      - createdb: false
+        createrole: false
+        disablePassword: false
+        ensure: present
+        login: true
+        name: authentik
+        passwordSecret:
+          name: postgres-authentik
+        superuser: false
+      - createdb: false
+        createrole: false
+        disablePassword: false
+        ensure: present
+        login: true
+        name: paperlessngx
+        passwordSecret:
+          name: postgres-paperlessngx
+        superuser: false
   storage:
     size: 64Gi
     storageClass: longhorn-crypto-global
@@ -1268,4 +1295,290 @@ spec:
   selector:
     secret:
       name: postgres-freshrss
+  updatePolicy: Replace
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-outline
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-outline
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-outline
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-outline
+    template:
+      data:
+        dbname: outline
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://outline:{{ .password }}@postgres-rw.cnpg/outline
+        username: outline
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres-outline
+  namespace: cnpg
+spec:
+  cluster:
+    name: postgres
+  extensions:
+    - ensure: present
+      name: pg_trgm
+    - ensure: present
+      name: unaccent
+    - ensure: present
+      name: uuid-ossp
+  name: outline
+  owner: outline
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-outline
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: namespaces/outline/postgres-cnpg
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: namespaces/outline/postgres-cnpg
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: namespaces/outline/postgres-cnpg
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: namespaces/outline/postgres-cnpg
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: namespaces/outline/postgres-cnpg
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-outline
+  updatePolicy: Replace
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-authentik
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-authentik
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-authentik
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-authentik
+    template:
+      data:
+        dbname: authentik
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://authentik:{{ .password }}@postgres-rw.cnpg/authentik
+        username: authentik
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres-authentik
+  namespace: cnpg
+spec:
+  cluster:
+    name: postgres
+  name: authentik
+  owner: authentik
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-authentik
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: namespaces/authentik/postgresql-cnpg
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: namespaces/authentik/postgresql-cnpg
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: namespaces/authentik/postgresql-cnpg
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: namespaces/authentik/postgresql-cnpg
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: namespaces/authentik/postgresql-cnpg
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-authentik
+  updatePolicy: Replace
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-paperlessngx
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-paperlessngx
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-paperlessngx
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-paperlessngx
+    template:
+      data:
+        dbname: paperlessngx
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://paperlessngx:{{ .password }}@postgres-rw.cnpg/paperlessngx
+        username: paperlessngx
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres-paperlessngx
+  namespace: cnpg
+spec:
+  cluster:
+    name: postgres
+  name: paperlessngx
+  owner: paperlessngx
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-paperlessngx
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: namespaces/paperless-ngx/postgresql-cnpg
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: namespaces/paperless-ngx/postgresql-cnpg
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: namespaces/paperless-ngx/postgresql-cnpg
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: namespaces/paperless-ngx/postgresql-cnpg
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: namespaces/paperless-ngx/postgresql-cnpg
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-paperlessngx
   updatePolicy: Replace
