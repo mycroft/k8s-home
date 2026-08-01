@@ -22,6 +22,7 @@ func NewWikiJsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	chart.CreateSecretStore(namespace)
 	chart.CreateExternalSecret(namespace, "postgresql")
+	chart.CreateExternalSecret(namespace, "postgresql-cnpg")
 
 	traefikio.NewMiddleware(
 		chart.Cdk8sChart,

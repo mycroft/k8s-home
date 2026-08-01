@@ -17,6 +17,9 @@ import (
 // moved over, and the application picks the cluster up on its next restart.
 var databases = []kubehelpers.CNPGDatabase{
 	{Name: "zipline", VaultEntry: "postgresql-cnpg"},
+	{Name: "memos", VaultEntry: "postgres-cnpg"},
+	{Name: "vikunja", VaultEntry: "postgresql-cnpg"},
+	{Name: "wikijs", VaultEntry: "postgresql-cnpg"},
 }
 
 func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {
