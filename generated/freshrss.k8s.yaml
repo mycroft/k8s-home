@@ -95,10 +95,7 @@ spec:
                   key: password
                   name: postgresql-cnpg
             - name: FRESHRSS_DB_NAME
-              valueFrom:
-                secretKeyRef:
-                  key: dbname
-                  name: postgresql-cnpg
+              value: freshrss
           image: freshrss/freshrss:1.29.1
           name: freshrss
           volumeMounts:
@@ -183,10 +180,7 @@ spec:
                       key: password
                       name: postgresql-cnpg
                 - name: FRESHRSS_DB_NAME
-                  valueFrom:
-                    secretKeyRef:
-                      key: dbname
-                      name: postgresql-cnpg
+                  value: freshrss
               image: freshrss/freshrss:1.29.1
               name: updater
               volumeMounts:
