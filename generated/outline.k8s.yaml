@@ -228,7 +228,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: url
-                  name: postgres
+                  name: postgres-cnpg
             - name: REDIS_URL
               value: redis://outline-redis-svc-c88604a7:6379
             - name: SECRET_KEY
