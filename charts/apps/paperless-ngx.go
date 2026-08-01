@@ -32,14 +32,14 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Value: jsii.String(fmt.Sprintf("redis://%s:6379", redisServiceName)),
 		},
 		{Name: jsii.String("PAPERLESS_DBENGINE"), Value: jsii.String("postgresql")},
-		{Name: jsii.String("PAPERLESS_DBHOST"), Value: jsii.String("postgres-instance.postgres")},
+		{Name: jsii.String("PAPERLESS_DBHOST"), Value: jsii.String("postgres-rw.cnpg")},
 		{Name: jsii.String("PAPERLESS_DBPORT"), Value: jsii.String("5432")},
 		{Name: jsii.String("PAPERLESS_DBNAME"), Value: jsii.String("paperlessngx")},
 		{
 			Name: jsii.String("PAPERLESS_DBUSER"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Name: jsii.String("postgresql"),
+					Name: jsii.String("postgresql-cnpg"),
 					Key:  jsii.String("username"),
 				},
 			},
@@ -48,7 +48,7 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name: jsii.String("PAPERLESS_DBPASS"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
-					Name: jsii.String("postgresql"),
+					Name: jsii.String("postgresql-cnpg"),
 					Key:  jsii.String("password"),
 				},
 			},
