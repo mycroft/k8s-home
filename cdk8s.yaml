@@ -13,6 +13,8 @@ imports:
   - https://raw.githubusercontent.com/bitnami-labs/sealed-secrets/v0.20.2/helm/sealed-secrets/crds/bitnami.com_sealedsecrets.yaml
   - secretstore:=https://raw.githubusercontent.com/external-secrets/external-secrets/v0.20.1/config/crds/bases/external-secrets.io_secretstores.yaml
   - externalsecrets:=https://raw.githubusercontent.com/external-secrets/external-secrets/v0.20.1/config/crds/bases/external-secrets.io_externalsecrets.yaml
+  - pushsecret:=https://raw.githubusercontent.com/external-secrets/external-secrets/v2.8.0/config/crds/bases/external-secrets.io_pushsecrets.yaml
+  - password:=https://raw.githubusercontent.com/external-secrets/external-secrets/v2.8.0/config/crds/bases/generators.external-secrets.io_passwords.yaml
   - podmonitor:=https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/refs/heads/main/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
   - servicemonitor:=https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/refs/heads/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
   - scrapeconfig:=https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/refs/heads/main/example/prometheus-operator-crd/monitoring.coreos.com_scrapeconfigs.yaml

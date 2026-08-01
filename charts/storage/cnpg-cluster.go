@@ -2,28 +2,37 @@ package storage
 
 import (
 	"git.mkz.me/mycroft/k8s-home/imports/cnpg_cluster_postgresqlcnpgio"
-	database "git.mkz.me/mycroft/k8s-home/imports/cnpg_database_postgresqlcnpgio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
 )
 
+// databases hosted on the CloudNativePG cluster. Adding one is a single entry:
+// the database, its owning role, a generated password and the Vault credentials
+// the application reads are all derived from it. Namespace only needs to be set
+// when the application namespace differs from the database name.
+//
+// zipline still runs on the Zalando operator, so its credentials are staged on a
+// separate Vault secret. Drop the VaultEntry override once its data has been
+// moved over, and the application picks the cluster up on its next restart.
+var databases = []kubehelpers.CNPGDatabase{
+	{Name: "zipline", VaultEntry: "postgresql-cnpg"},
+}
+
 func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "cnpg"
+	clusterName := "postgres"
+	clusterHost := clusterName + "-rw." + namespace
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
 
-	managedRoles := []*cnpg_cluster_postgresqlcnpgio.ClusterSpecManagedRoles{
-		{
-			Name:            jsii.String("zipline"),
-			Ensure:          cnpg_cluster_postgresqlcnpgio.ClusterSpecManagedRolesEnsure_PRESENT,
-			Createdb:        jsii.Bool(false),
-			Createrole:      jsii.Bool(false),
-			DisablePassword: jsii.Bool(false),
-			Login:           jsii.Bool(true),
-			Superuser:       jsii.Bool(false),
-		},
+	// The PushSecret publishing credentials to Vault runs from this namespace.
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+
+	managedRoles := make([]*cnpg_cluster_postgresqlcnpgio.ClusterSpecManagedRoles, 0, len(databases))
+	for _, db := range databases {
+		managedRoles = append(managedRoles, kubehelpers.NewCNPGManagedRole(db))
 	}
 
 	cluster := cnpg_cluster_postgresqlcnpgio.NewCluster(
@@ -32,7 +41,7 @@ func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		&cnpg_cluster_postgresqlcnpgio.ClusterProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Namespace: jsii.String(namespace),
-				Name:      jsii.String("postgres"),
+				Name:      jsii.String(clusterName),
 			},
 			Spec: &cnpg_cluster_postgresqlcnpgio.ClusterSpec{
 				Bootstrap: &cnpg_cluster_postgresqlcnpgio.ClusterSpecBootstrap{
@@ -54,23 +63,14 @@ func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	)
 
-	database.NewDatabase(
-		chart.Cdk8sChart,
-		jsii.String("zipline"),
-		&database.DatabaseProps{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Namespace: jsii.String(namespace),
-				Name:      jsii.Sprintf("postgres-zipline"),
-			},
-			Spec: &database.DatabaseSpec{
-				Cluster: &database.DatabaseSpecCluster{
-					Name: cluster.Name(),
-				},
-				Name:  jsii.String("zipline"),
-				Owner: jsii.String("zipline"),
-			},
-		},
-	)
+	for _, db := range databases {
+		kubehelpers.NewCNPGDatabase(chart.Cdk8sChart, kubehelpers.CNPGDatabaseConfig{
+			Namespace:   namespace,
+			ClusterName: cluster.Name(),
+			Host:        clusterHost,
+			Database:    db,
+		})
+	}
 
 	return chart
 }
