@@ -82,5 +82,18 @@ func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		})
 	}
 
+	kubehelpers.NewPostgresDumpCronJob(chart.Cdk8sChart, kubehelpers.PostgresDumpCronJobConfig{
+		Namespace:   namespace,
+		Name:        "postgres-dump",
+		Image:       builder.RegisterContainerImage("ghcr.io/cloudnative-pg/postgresql"),
+		Schedule:    "30 0 * * *",
+		ClaimName:   "postgres-dumps",
+		StorageSize: "20Gi",
+		Host:        clusterHost,
+		Port:        "5432",
+		SecretName:  clusterName + "-superuser",
+		Retention:   30,
+	})
+
 	return chart
 }

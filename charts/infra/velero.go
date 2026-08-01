@@ -33,6 +33,33 @@ func NewVeleroChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		kubehelpers.WithDefaultConfigFile(),
 	)
 
+	postgresDumpHooks := []*veleroio.ScheduleSpecTemplateHooksResources{
+		{
+			Name:               jsii.String("postgres-dump-ready"),
+			IncludedNamespaces: &[]*string{jsii.String("cnpg")},
+			IncludedResources:  &[]*string{jsii.String("pods")},
+			LabelSelector: &veleroio.ScheduleSpecTemplateHooksResourcesLabelSelector{
+				MatchLabels: &map[string]*string{
+					"app.kubernetes.io/name": jsii.String("postgres-dump"),
+				},
+			},
+			Pre: &[]*veleroio.ScheduleSpecTemplateHooksResourcesPre{
+				{
+					Exec: &veleroio.ScheduleSpecTemplateHooksResourcesPreExec{
+						Container: jsii.String("postgres-dump"),
+						Command: &[]*string{
+							jsii.String("/bin/sh"),
+							jsii.String("-c"),
+							jsii.String(`test -s /backup/latest/globals.sql && find -L /backup/latest -maxdepth 0 -type d -mmin -180 -print -quit | grep -q . && find -L /backup/latest -maxdepth 1 -type f -name '*.dump' -size +0c -print -quit | grep -q .`),
+						},
+						OnError: veleroio.ScheduleSpecTemplateHooksResourcesPreExecOnError_FAIL,
+						Timeout: jsii.String("1m"),
+					},
+				},
+			},
+		},
+	}
+
 	// Create a default backup
 	veleroio.NewSchedule(
 		chart.Cdk8sChart,
@@ -51,7 +78,8 @@ func NewVeleroChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	)
 
-	// Back up the first selected stateful workloads using Kopia filesystem backups.
+	// Back up every mounted persistent volume using Kopia. This includes the
+	// timestamped logical PostgreSQL dumps produced in the cnpg namespace.
 	veleroio.NewSchedule(
 		chart.Cdk8sChart,
 		jsii.String("filesystem-backup-schedule"),
@@ -64,9 +92,8 @@ func NewVeleroChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				Schedule: jsii.String("30 1 * * *"),
 				Template: &veleroio.ScheduleSpecTemplate{
 					DefaultVolumesToFsBackup: jsii.Bool(true),
-					IncludedNamespaces: &[]*string{
-						jsii.String("paperless-ngx"),
-						jsii.String("calibre-web"),
+					Hooks: &veleroio.ScheduleSpecTemplateHooks{
+						Resources: &postgresDumpHooks,
 					},
 					SnapshotVolumes: jsii.Bool(false),
 					Ttl:             jsii.String("720h0m0s"),
