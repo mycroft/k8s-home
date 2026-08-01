@@ -11,7 +11,7 @@ authentik:
     timeout: 30
     from: "Homelab's Authentik <authentik@mkz.me>"
   postgresql:
-    host: postgres-instance.postgres
+    host: postgres-rw.cnpg
     user: file:///postgres-creds/username
     password: file:///postgres-creds/password
   redis:
@@ -35,7 +35,7 @@ server:
   volumes:
     - name: postgres-creds
       secret:
-        secretName: postgresql
+        secretName: postgresql-cnpg
     - name: authentik-secret
       secret:
         secretName: authentik-secret
@@ -61,7 +61,7 @@ worker:
   volumes:
     - name: postgres-creds
       secret:
-        secretName: postgresql
+        secretName: postgresql-cnpg
     - name: authentik-secret
       secret:
         secretName: authentik-secret
