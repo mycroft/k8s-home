@@ -22,7 +22,7 @@ var databases = []kubehelpers.CNPGDatabase{
 	{Name: "wikijs", VaultEntry: "postgresql-cnpg"},
 	{Name: "wallabag", VaultEntry: "postgresql-cnpg"},
 	{Name: "privatebin", VaultEntry: "postgres-cnpg"},
-	{Name: "n8n", VaultEntry: "postgresql-cnpg"},
+	{Name: "n8n", VaultEntry: "postgresql-cnpg", PasswordAliases: []string{"postgres-password"}},
 	{Name: "grafana", Namespace: "monitoring", VaultEntry: "grafana-postgres-cnpg"},
 	{Name: "dex", Namespace: "dex-idp", VaultEntry: "postgresql-cnpg"},
 	{Name: "temporal2", Namespace: "temporal", VaultEntry: "postgresql2-cnpg"},

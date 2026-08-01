@@ -33,9 +33,10 @@ var cnpgCredentialsKeys = []string{"username", "password", "host", "dbname", "ur
 // defaults to postgresql; point it elsewhere while migrating so the credentials
 // of a still-running application are not overwritten.
 type CNPGDatabase struct {
-	Name       string
-	Namespace  string
-	VaultEntry string
+	Name            string
+	Namespace       string
+	VaultEntry      string
+	PasswordAliases []string
 }
 
 // AppNamespace returns the namespace whose Vault path receives the credentials.
@@ -185,10 +186,12 @@ func NewCNPGDatabase(chart constructs.Construct, cfg CNPGDatabaseConfig) {
 		},
 	)
 
-	pushSecretData := make([]*pushsecret.PushSecretSpecData, 0, len(cnpgCredentialsKeys))
+	credentialKeys := append([]string{}, cnpgCredentialsKeys...)
+	credentialKeys = append(credentialKeys, db.PasswordAliases...)
+	pushSecretData := make([]*pushsecret.PushSecretSpecData, 0, len(credentialKeys))
 	vaultKey := db.VaultKey()
 
-	for _, key := range cnpgCredentialsKeys {
+	for _, key := range credentialKeys {
 		pushSecretData = append(pushSecretData, &pushsecret.PushSecretSpecData{
 			Match: &pushsecret.PushSecretSpecDataMatch{
 				SecretKey: jsii.String(key),
@@ -237,11 +240,17 @@ func NewCNPGDatabase(chart constructs.Construct, cfg CNPGDatabaseConfig) {
 func cnpgCredentialsTemplate(cfg CNPGDatabaseConfig) *map[string]*string {
 	name := cfg.Database.Name
 
-	return &map[string]*string{
+	credentials := map[string]*string{
 		"username": jsii.String(name),
 		"password": jsii.String("{{ .password }}"),
 		"host":     jsii.String(cfg.Host),
 		"dbname":   jsii.String(name),
 		"url":      jsii.String(fmt.Sprintf("postgres://%s:{{ .password }}@%s/%s", name, cfg.Host, name)),
 	}
+
+	for _, alias := range cfg.Database.PasswordAliases {
+		credentials[alias] = jsii.String("{{ .password }}")
+	}
+
+	return &credentials
 }
