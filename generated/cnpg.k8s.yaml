@@ -3,6 +3,22 @@ kind: Namespace
 metadata:
   name: cnpg
 ---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: cnpg
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -23,10 +39,52 @@ spec:
         ensure: present
         login: true
         name: zipline
+        passwordSecret:
+          name: postgres-zipline
         superuser: false
   storage:
     size: 64Gi
     storageClass: longhorn-crypto-global
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-zipline
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-zipline
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-zipline
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-zipline
+    template:
+      data:
+        dbname: zipline
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://zipline:{{ .password }}@postgres-rw.cnpg/zipline
+        username: zipline
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
@@ -38,3 +96,45 @@ spec:
     name: postgres
   name: zipline
   owner: zipline
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-zipline
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: secret/namespaces/zipline/postgresql-cnpg
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: secret/namespaces/zipline/postgresql-cnpg
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: secret/namespaces/zipline/postgresql-cnpg
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: secret/namespaces/zipline/postgresql-cnpg
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: secret/namespaces/zipline/postgresql-cnpg
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-zipline
+  updatePolicy: Replace
