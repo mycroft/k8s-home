@@ -19,7 +19,6 @@ func NewOutlineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.NewNamespace(namespace)
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgres")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgres-cnpg")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "secret")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "oidc")

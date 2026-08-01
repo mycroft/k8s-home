@@ -18,7 +18,6 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.NewNamespace(namespace)
 
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-cnpg")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "sso")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "secret")

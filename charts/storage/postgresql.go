@@ -15,11 +15,7 @@ func NewPostgres(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
 
-	databases := []string{
-		"paperlessngx",
-		"authentik",
-		"outline",
-	}
+	databases := []string{}
 
 	databaseSpecs := map[string]*string{}
 	databaseUsers := map[string]*[]acidzalando.PostgresqlSpecUsers{}
