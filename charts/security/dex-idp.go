@@ -59,7 +59,6 @@ func NewDexIdpChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "gitea")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "grafana-oidc-client")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "traefik-forward-auth-oidc")
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-cnpg")
 
 	return chart

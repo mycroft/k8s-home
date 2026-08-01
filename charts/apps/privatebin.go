@@ -22,7 +22,6 @@ func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "garage")
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgres")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgres-cnpg")
 
 	labels := map[string]*string{

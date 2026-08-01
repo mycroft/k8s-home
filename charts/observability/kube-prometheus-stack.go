@@ -26,7 +26,6 @@ func NewKubePrometheusStackChart(builder *kubehelpers.Builder) *kubehelpers.Char
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "grafana-oidc-client")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "grafana-authentik-oidc-client")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "alertmanager-config")
-	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "grafana-postgres")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "grafana-postgres-cnpg")
 
 	configMaps := []kubehelpers.HelmReleaseConfigMap{

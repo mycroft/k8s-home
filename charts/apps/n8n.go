@@ -15,7 +15,6 @@ func NewN8nChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.NewNamespace(namespace)
 
 	chart.CreateSecretStore(namespace)
-	chart.CreateExternalSecret(namespace, "postgresql")
 	chart.CreateExternalSecret(namespace, "postgresql-cnpg")
 
 	_, redisServiceName := chart.NewRedisStatefulset(namespace)
