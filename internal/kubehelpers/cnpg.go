@@ -2,6 +2,7 @@ package kubehelpers
 
 import (
 	"fmt"
+	"strings"
 
 	"git.mkz.me/mycroft/k8s-home/imports/cnpg_cluster_postgresqlcnpgio"
 	database "git.mkz.me/mycroft/k8s-home/imports/cnpg_database_postgresqlcnpgio"
@@ -64,7 +65,7 @@ func (db CNPGDatabase) VaultKey() string {
 // from the database name itself so it cannot collide with the cluster's own
 // secrets.
 func (db CNPGDatabase) resourceName() string {
-	return fmt.Sprintf("postgres-%s", db.Name)
+	return fmt.Sprintf("postgres-%s", strings.ReplaceAll(db.Name, "_", "-"))
 }
 
 // CNPGDatabaseConfig describes where a database is provisioned.
