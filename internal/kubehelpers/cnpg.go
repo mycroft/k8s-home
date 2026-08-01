@@ -46,14 +46,18 @@ func (db CNPGDatabase) AppNamespace() string {
 	return db.Name
 }
 
-// VaultKey is the Vault path the credentials are published to.
+// VaultKey is the Vault path the credentials are published to, relative to the
+// KV mount. Unlike ExternalSecret keys, which are written with the leading
+// secret/ mount prefix and have it stripped on read, PushSecret uses the remote
+// ref verbatim: keeping the prefix here would nest the credentials under
+// secret/secret/namespaces/, where the application never looks for them.
 func (db CNPGDatabase) VaultKey() string {
 	secret := db.VaultEntry
 	if secret == "" {
 		secret = "postgresql"
 	}
 
-	return fmt.Sprintf("secret/namespaces/%s/%s", db.AppNamespace(), secret)
+	return fmt.Sprintf("namespaces/%s/%s", db.AppNamespace(), secret)
 }
 
 // resourceName is the shared name of the per-database resources, kept distinct
