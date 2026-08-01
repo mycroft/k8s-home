@@ -69,6 +69,69 @@ spec:
         passwordSecret:
           name: postgres-wikijs
         superuser: false
+      - createdb: false
+        createrole: false
+        disablePassword: false
+        ensure: present
+        login: true
+        name: wallabag
+        passwordSecret:
+          name: postgres-wallabag
+        superuser: false
+      - createdb: false
+        createrole: false
+        disablePassword: false
+        ensure: present
+        login: true
+        name: privatebin
+        passwordSecret:
+          name: postgres-privatebin
+        superuser: false
+      - createdb: false
+        createrole: false
+        disablePassword: false
+        ensure: present
+        login: true
+        name: n8n
+        passwordSecret:
+          name: postgres-n8n
+        superuser: false
+      - createdb: false
+        createrole: false
+        disablePassword: false
+        ensure: present
+        login: true
+        name: grafana
+        passwordSecret:
+          name: postgres-grafana
+        superuser: false
+      - createdb: false
+        createrole: false
+        disablePassword: false
+        ensure: present
+        login: true
+        name: dex
+        passwordSecret:
+          name: postgres-dex
+        superuser: false
+      - createdb: false
+        createrole: false
+        disablePassword: false
+        ensure: present
+        login: true
+        name: temporal2
+        passwordSecret:
+          name: postgres-temporal2
+        superuser: false
+      - createdb: false
+        createrole: false
+        disablePassword: false
+        ensure: present
+        login: true
+        name: temporal_visibility2
+        passwordSecret:
+          name: postgres-temporal_visibility2
+        superuser: false
   storage:
     size: 64Gi
     storageClass: longhorn-crypto-global
@@ -443,4 +506,655 @@ spec:
   selector:
     secret:
       name: postgres-wikijs
+  updatePolicy: Replace
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-wallabag
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-wallabag
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-wallabag
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-wallabag
+    template:
+      data:
+        dbname: wallabag
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://wallabag:{{ .password }}@postgres-rw.cnpg/wallabag
+        username: wallabag
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres-wallabag
+  namespace: cnpg
+spec:
+  cluster:
+    name: postgres
+  name: wallabag
+  owner: wallabag
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-wallabag
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: namespaces/wallabag/postgresql-cnpg
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: namespaces/wallabag/postgresql-cnpg
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: namespaces/wallabag/postgresql-cnpg
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: namespaces/wallabag/postgresql-cnpg
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: namespaces/wallabag/postgresql-cnpg
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-wallabag
+  updatePolicy: Replace
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-privatebin
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-privatebin
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-privatebin
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-privatebin
+    template:
+      data:
+        dbname: privatebin
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://privatebin:{{ .password }}@postgres-rw.cnpg/privatebin
+        username: privatebin
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres-privatebin
+  namespace: cnpg
+spec:
+  cluster:
+    name: postgres
+  name: privatebin
+  owner: privatebin
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-privatebin
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: namespaces/privatebin/postgres-cnpg
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: namespaces/privatebin/postgres-cnpg
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: namespaces/privatebin/postgres-cnpg
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: namespaces/privatebin/postgres-cnpg
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: namespaces/privatebin/postgres-cnpg
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-privatebin
+  updatePolicy: Replace
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-n8n
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-n8n
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-n8n
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-n8n
+    template:
+      data:
+        dbname: n8n
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://n8n:{{ .password }}@postgres-rw.cnpg/n8n
+        username: n8n
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres-n8n
+  namespace: cnpg
+spec:
+  cluster:
+    name: postgres
+  name: n8n
+  owner: n8n
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-n8n
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: namespaces/n8n/postgresql-cnpg
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: namespaces/n8n/postgresql-cnpg
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: namespaces/n8n/postgresql-cnpg
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: namespaces/n8n/postgresql-cnpg
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: namespaces/n8n/postgresql-cnpg
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-n8n
+  updatePolicy: Replace
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-grafana
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-grafana
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-grafana
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-grafana
+    template:
+      data:
+        dbname: grafana
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://grafana:{{ .password }}@postgres-rw.cnpg/grafana
+        username: grafana
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres-grafana
+  namespace: cnpg
+spec:
+  cluster:
+    name: postgres
+  name: grafana
+  owner: grafana
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-grafana
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: namespaces/monitoring/grafana-postgres-cnpg
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: namespaces/monitoring/grafana-postgres-cnpg
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: namespaces/monitoring/grafana-postgres-cnpg
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: namespaces/monitoring/grafana-postgres-cnpg
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: namespaces/monitoring/grafana-postgres-cnpg
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-grafana
+  updatePolicy: Replace
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-dex
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-dex
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-dex
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-dex
+    template:
+      data:
+        dbname: dex
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://dex:{{ .password }}@postgres-rw.cnpg/dex
+        username: dex
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres-dex
+  namespace: cnpg
+spec:
+  cluster:
+    name: postgres
+  name: dex
+  owner: dex
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-dex
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: namespaces/dex-idp/postgresql-cnpg
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: namespaces/dex-idp/postgresql-cnpg
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: namespaces/dex-idp/postgresql-cnpg
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: namespaces/dex-idp/postgresql-cnpg
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: namespaces/dex-idp/postgresql-cnpg
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-dex
+  updatePolicy: Replace
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-temporal2
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-temporal2
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-temporal2
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-temporal2
+    template:
+      data:
+        dbname: temporal2
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://temporal2:{{ .password }}@postgres-rw.cnpg/temporal2
+        username: temporal2
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres-temporal2
+  namespace: cnpg
+spec:
+  cluster:
+    name: postgres
+  name: temporal2
+  owner: temporal2
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-temporal2
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: namespaces/temporal/postgresql2-cnpg
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: namespaces/temporal/postgresql2-cnpg
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: namespaces/temporal/postgresql2-cnpg
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: namespaces/temporal/postgresql2-cnpg
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: namespaces/temporal/postgresql2-cnpg
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-temporal2
+  updatePolicy: Replace
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-temporal_visibility2
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-temporal_visibility2
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-temporal_visibility2
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-temporal_visibility2
+    template:
+      data:
+        dbname: temporal_visibility2
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://temporal_visibility2:{{ .password }}@postgres-rw.cnpg/temporal_visibility2
+        username: temporal_visibility2
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres-temporal_visibility2
+  namespace: cnpg
+spec:
+  cluster:
+    name: postgres
+  name: temporal_visibility2
+  owner: temporal_visibility2
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-temporal_visibility2
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: namespaces/temporal/postgresql-visibility2-cnpg
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: namespaces/temporal/postgresql-visibility2-cnpg
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: namespaces/temporal/postgresql-visibility2-cnpg
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: namespaces/temporal/postgresql-visibility2-cnpg
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: namespaces/temporal/postgresql-visibility2-cnpg
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-temporal_visibility2
   updatePolicy: Replace

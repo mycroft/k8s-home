@@ -143,6 +143,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: kube-prometheus-stack-es-grafana-postgres-cnpg-c8ee5837
+  namespace: monitoring
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/monitoring/grafana-postgres-cnpg
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: grafana-postgres-cnpg
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
