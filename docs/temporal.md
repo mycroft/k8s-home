@@ -14,13 +14,18 @@ It seems like Temporal does not automatically upgrade its schema. Therefore it m
 $ git clone https://github.com/temporalio/temporal.git
 $ cd temporalio/
 $ make temporal-sql-tool
-$ ./temporal-sql-tool --ep localhost -p 5432 -u temporal-admin -pw (kubectl get secret -n postgres temporal-admin.postgres-instance.credentials.postgresql.acid.zalan.do -o yaml | yq .data.password | base64 -d) --pl postgres12 --db temporal update-schema -d ./schema/postgresql/v12/temporal/versioned/
+$ kubectl -n cnpg port-forward service/postgres-rw 5432:5432
+$ TEMPORAL_USER=$(kubectl get secret -n temporal postgresql-cnpg -o jsonpath='{.data.username}' | base64 -d)
+$ TEMPORAL_PASSWORD=$(kubectl get secret -n temporal postgresql-cnpg -o jsonpath='{.data.password}' | base64 -d)
+$ ./temporal-sql-tool --ep localhost -p 5432 -u "$TEMPORAL_USER" -pw "$TEMPORAL_PASSWORD" --pl postgres12 --db temporal update-schema -d ./schema/postgresql/v12/temporal/versioned/
 2024-06-06T16:23:58.529+0200	INFO	UpdateSchemaTask started	{"config": {"DBName":"","TargetVersion":"","SchemaDir":"./schema/postgresql/v12/temporal/versioned/","SchemaName":"","IsDryRun":false}, "logging-call-at": "updatetask.go:105"}
 2024-06-06T16:23:58.538+0200	DEBUG	Schema Dirs: []	{"logging-call-at": "updatetask.go:213"}
 2024-06-06T16:23:58.538+0200	DEBUG	found zero updates from current version 1.12	{"logging-call-at": "updatetask.go:135"}
 2024-06-06T16:23:58.538+0200	INFO	UpdateSchemaTask done	{"logging-call-at": "updatetask.go:128"}
 
-$ ./temporal-sql-tool --ep localhost -p 5432 -u temporal_visibility-admin -pw (kubectl get secret -n postgres temporal-visibility-admin.postgres-instance.credentials.postgresql.acid.zalan.do -o yaml | yq .data.password | base64 -d) --pl postgres12 --db temporal_visibility update-schema -d ./schema/postgresql/v12/visibility/versioned/
+$ TEMPORAL_VISIBILITY_USER=$(kubectl get secret -n temporal postgresql-visibility-cnpg -o jsonpath='{.data.username}' | base64 -d)
+$ TEMPORAL_VISIBILITY_PASSWORD=$(kubectl get secret -n temporal postgresql-visibility-cnpg -o jsonpath='{.data.password}' | base64 -d)
+$ ./temporal-sql-tool --ep localhost -p 5432 -u "$TEMPORAL_VISIBILITY_USER" -pw "$TEMPORAL_VISIBILITY_PASSWORD" --pl postgres12 --db temporal_visibility update-schema -d ./schema/postgresql/v12/visibility/versioned/
 2024-06-06T16:24:47.090+0200	INFO	UpdateSchemaTask started	{"config": {"DBName":"","TargetVersion":"","SchemaDir":"./schema/postgresql/v12/visibility/versioned/","SchemaName":"","IsDryRun":false}, "logging-call-at": "updatetask.go:105"}
 2024-06-06T16:24:47.100+0200	DEBUG	Schema Dirs: [v1.6]	{"logging-call-at": "updatetask.go:213"}
 2024-06-06T16:24:47.100+0200	INFO	Processing schema file: v1.6/fix_root_workflow_info.sql	{"logging-call-at": "updatetask.go:257"}

@@ -250,7 +250,7 @@ func NewCNPGDatabase(chart constructs.Construct, cfg CNPGDatabaseConfig) {
 
 // cnpgCredentialsTemplate builds the fields published for a database. The url is
 // assembled here so applications keep consuming a single ready-made DSN, exactly
-// as they did with the Zalando operator.
+// as they did with the previous PostgreSQL operator.
 func cnpgCredentialsTemplate(cfg CNPGDatabaseConfig) *map[string]*string {
 	name := cfg.Database.Name
 

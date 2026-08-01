@@ -314,23 +314,10 @@ Warning: Do not forget the namespace and secret name. SealedSecret is strict abo
 
 ### Creating PostgreSQL Storage
 
-1. In `postgresql.go`, add a record to the list. Commit and push to spawn the database and create secrets in the `postgres` namespace.
-2. When the database is ready, connect with psql to grant table creation:
-
-```sh
-k exec -ti -n postgres postgres-instance-0 -- psql -U dex-admin dex
-dex=# GRANT CREATE ON SCHEMA public TO PUBLIC;
-```
-
-3. Retrieve credentials from the `Secret` in the `postgres` namespace:
-
-```sh
-k get secret -n postgres dex-admin.postgres-instance.credentials.postgresql.acid.zalan.do -o yaml | yq -r .data.username | base64 -d
-k get secret -n postgres dex-admin.postgres-instance.credentials.postgresql.acid.zalan.do -o yaml | yq -r .data.password | base64 -d
-```
-
-4. Create a record in Vault (e.g., `namespaces/<namespace>/postgresql`) with `username` and `password` keys.
-5. In the target namespace, create an `ExternalSecretStore` and an `ExternalSecret`. Examples exist throughout the repository.
+1. Add a `CNPGDatabase` entry to `charts/storage/cnpg-cluster.go`.
+2. Add an `ExternalSecret` in the application chart for the configured Vault entry.
+3. Commit and push. CloudNativePG creates the database and role, while External Secrets publishes the generated credentials to Vault.
+4. Read the synchronized Secret from the application workload. It provides `host`, `dbname`, `username`, `password`, and `url` keys.
 
 ### Install whatismyip
 

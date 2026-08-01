@@ -11,10 +11,6 @@ import (
 // the database, its owning role, a generated password and the Vault credentials
 // the application reads are all derived from it. Namespace only needs to be set
 // when the application namespace differs from the database name.
-//
-// zipline still runs on the Zalando operator, so its credentials are staged on a
-// separate Vault secret. Drop the VaultEntry override once its data has been
-// moved over, and the application picks the cluster up on its next restart.
 var databases = []kubehelpers.CNPGDatabase{
 	{Name: "zipline", VaultEntry: "postgresql-cnpg"},
 	{Name: "memos", VaultEntry: "postgres-cnpg"},
