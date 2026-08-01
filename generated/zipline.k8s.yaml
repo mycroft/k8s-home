@@ -68,6 +68,29 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
+  name: zipline-es-postgresql-cnpg-c8d5d872
+  namespace: zipline
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/zipline/postgresql-cnpg
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql-cnpg
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
   name: zipline-es-core-c86a0e29
   namespace: zipline
 spec:
@@ -128,7 +151,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: url
-                  name: postgresql-v4
+                  name: postgresql-cnpg
             - name: CORE_DATABASE_URL
               valueFrom:
                 secretKeyRef:
