@@ -38,14 +38,14 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 		{
 			Name:  jsii.String("VIKUNJA_DATABASE_HOST"),
-			Value: jsii.String("postgres-instance.postgres"),
+			Value: jsii.String("postgres-rw.cnpg"),
 		},
 		{
 			Name: jsii.String("VIKUNJA_DATABASE_USER"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
 					Key:  jsii.String("username"),
-					Name: jsii.String("postgresql"),
+					Name: jsii.String("postgresql-cnpg"),
 				},
 			},
 		},
@@ -54,7 +54,7 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
 					Key:  jsii.String("password"),
-					Name: jsii.String("postgresql"),
+					Name: jsii.String("postgresql-cnpg"),
 				},
 			},
 		},

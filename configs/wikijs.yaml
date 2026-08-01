@@ -36,9 +36,9 @@ postgresql:
 
 externalPostgresql:
   ssl: false
-  host: postgres-instance.postgres
+  host: postgres-rw.cnpg
   port: 5432
   username: wikijs
   database: wikijs
-  existingSecret: postgresql
+  existingSecret: postgresql-cnpg
   existingSecretKey: password

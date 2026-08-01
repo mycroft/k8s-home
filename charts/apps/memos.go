@@ -26,8 +26,8 @@ func NewMemosChart(builder *kube.Builder) *kube.Chart {
 		{Name: "MEMOS_DRIVER", Value: kube.EnvValue{Value: "postgres"}},
 		{Name: "MEMOS_PORT", Value: kube.EnvValue{Value: "5230"}},
 		{Name: "MEMOS_DSN", Value: kube.EnvValue{ValueFromSecret: kube.EnvValueFromSecret{
-			Key:  "dsn",
-			Name: "postgres",
+			Key:  "url",
+			Name: "postgres-cnpg",
 		}}},
 	}
 
