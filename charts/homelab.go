@@ -30,7 +30,6 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		// storage charts
 		charts_storage.NewLonghornChart,
 		charts_storage.NewPostgresOperator,
-		charts_storage.NewPostgres,
 		// charts_storage.NewMinioOperator,
 		// charts_storage.NewMinio,
 		// charts_storage.NewScyllaOperatorChart,
