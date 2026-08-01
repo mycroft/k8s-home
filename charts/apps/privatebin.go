@@ -23,6 +23,7 @@ func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "garage")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgres")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgres-cnpg")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),

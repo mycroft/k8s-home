@@ -20,6 +20,13 @@ var databases = []kubehelpers.CNPGDatabase{
 	{Name: "memos", VaultEntry: "postgres-cnpg"},
 	{Name: "vikunja", VaultEntry: "postgresql-cnpg"},
 	{Name: "wikijs", VaultEntry: "postgresql-cnpg"},
+	{Name: "wallabag", VaultEntry: "postgresql-cnpg"},
+	{Name: "privatebin", VaultEntry: "postgres-cnpg"},
+	{Name: "n8n", VaultEntry: "postgresql-cnpg"},
+	{Name: "grafana", Namespace: "monitoring", VaultEntry: "grafana-postgres-cnpg"},
+	{Name: "dex", Namespace: "dex-idp", VaultEntry: "postgresql-cnpg"},
+	{Name: "temporal2", Namespace: "temporal", VaultEntry: "postgresql2-cnpg"},
+	{Name: "temporal_visibility2", Namespace: "temporal", VaultEntry: "postgresql-visibility2-cnpg"},
 }
 
 func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {

@@ -25,6 +25,7 @@ func NewWallabagChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	}
 
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-cnpg")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "mailrelay")
 
 	env := []*k8s.EnvVar{
