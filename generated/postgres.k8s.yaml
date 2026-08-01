@@ -14,7 +14,6 @@ spec:
     dex: dex-admin
     freshrss: freshrss-admin
     grafana: grafana-admin
-    memos: memos-admin
     n8n: n8n-admin
     outline: outline-admin
     paperlessngx: paperlessngx-admin
@@ -24,9 +23,7 @@ spec:
     temporal_visibility: temporal_visibility-admin
     temporal_visibility2: temporal_visibility2-admin
     testaroo: testaroo-admin
-    vikunja: vikunja-admin
     wallabag: wallabag-admin
-    wikijs: wikijs-admin
   env:
     - name: ALLOW_NOSSL
       value: "1"
@@ -49,10 +46,6 @@ spec:
       - createdb
     grafana: []
     grafana-admin:
-      - superuser
-      - createdb
-    memos: []
-    memos-admin:
       - superuser
       - createdb
     n8n: []
@@ -91,16 +84,8 @@ spec:
     testaroo-admin:
       - superuser
       - createdb
-    vikunja: []
-    vikunja-admin:
-      - superuser
-      - createdb
     wallabag: []
     wallabag-admin:
-      - superuser
-      - createdb
-    wikijs: []
-    wikijs-admin:
       - superuser
       - createdb
   volume:
