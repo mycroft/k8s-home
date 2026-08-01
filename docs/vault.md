@@ -33,19 +33,46 @@ Sealed          false
 ...
 ```
 
+## Log in to the container
+
+Unlike the init and unseal steps above, every `vault` command that follows runs
+from inside the Vault pod and needs an authenticated session:
+
+```sh
+> kubectl exec -ti -n vault vault-0 -- /bin/sh
+/ $ vault login
+Token (will be hidden):
+```
+
+The root token is stored in the [pass(1)](https://www.passwordstore.org/)
+password manager.
+
+The policy files live in `contrib/` in this repository and are not present in
+the container, so copy them over before applying them:
+
+```sh
+> kubectl cp contrib/external-secrets.vault.hcl vault/vault-0:/tmp/
+> kubectl cp contrib/external-secrets-ui.vault.hcl vault/vault-0:/tmp/
+```
+
 ## Prepare the secret/namespaces/ & create a policy and a token for it:
 
 ```sh
 > vault secrets enable -path=secret kv-v2
 Success! Enabled the kv-v2 secrets engine at: secret/
 
-> vault policy write external-secrets ./external-secrets.vault.hcl
+> vault policy write external-secrets /tmp/external-secrets.vault.hcl
 Success! Uploaded policy: external-secrets
 
-> vault policy write external-secrets-ui ./external-secrets-ui.vault.hcl
+> vault policy write external-secrets-ui /tmp/external-secrets-ui.vault.hcl
 Success! Uploaded policy: external-secrets-ui
 
 ```
+
+Re-run `vault policy write` the same way whenever a policy in `contrib/`
+changes: the files are not managed by Flux, so nothing applies them for you.
+Because tokens refer to policies by name, the updated rules apply to existing
+tokens immediately.
 
 ## Enable kubernetes based authentication
 

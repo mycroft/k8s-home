@@ -363,4 +363,5 @@ See [traefik values.yaml](https://github.com/traefik/traefik-helm-chart/blob/mas
 - [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) — Encrypted Kubernetes secrets
 - [Traefik Helm Chart Values](https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml) — Traefik configuration reference
 - [docs/vault.md](docs/vault.md) — Vault setup, initialization, and unsealing
+- [docs/cnpg.md](docs/cnpg.md) — CloudNativePG databases and their credentials
 - [docs/temporal.md](docs/temporal.md) — Temporal workflow setup and configuration
