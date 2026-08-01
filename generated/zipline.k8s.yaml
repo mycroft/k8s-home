@@ -22,52 +22,6 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: zipline-es-postgresql-c8b62318
-  namespace: zipline
-spec:
-  dataFrom:
-    - extract:
-        conversionStrategy: Default
-        key: secret/namespaces/zipline/postgresql
-  refreshInterval: 15m
-  secretStoreRef:
-    kind: SecretStore
-    name: secretstore-vault
-  target:
-    creationPolicy: Owner
-    deletionPolicy: Delete
-    immutable: false
-    name: postgresql
-    template:
-      engineVersion: v2
-      type: Opaque
----
-apiVersion: external-secrets.io/v1
-kind: ExternalSecret
-metadata:
-  name: zipline-es-postgresql-v4-c8a234ce
-  namespace: zipline
-spec:
-  dataFrom:
-    - extract:
-        conversionStrategy: Default
-        key: secret/namespaces/zipline/postgresql-v4
-  refreshInterval: 15m
-  secretStoreRef:
-    kind: SecretStore
-    name: secretstore-vault
-  target:
-    creationPolicy: Owner
-    deletionPolicy: Delete
-    immutable: false
-    name: postgresql-v4
-    template:
-      engineVersion: v2
-      type: Opaque
----
-apiVersion: external-secrets.io/v1
-kind: ExternalSecret
-metadata:
   name: zipline-es-postgresql-cnpg-c8d5d872
   namespace: zipline
 spec:
@@ -152,11 +106,6 @@ spec:
                 secretKeyRef:
                   key: url
                   name: postgresql-cnpg
-            - name: CORE_DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  key: url
-                  name: postgresql
           image: ghcr.io/diced/zipline:4.6.5
           name: zipline
           volumeMounts:
