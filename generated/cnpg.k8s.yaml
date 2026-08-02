@@ -1647,12 +1647,12 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       key: username
-                      name: postgres-superuser
+                      name: postgres-app
                 - name: PGPASSWORD
                   valueFrom:
                     secretKeyRef:
                       key: password
-                      name: postgres-superuser
+                      name: postgres-app
               image: ghcr.io/cloudnative-pg/postgresql:18.3-system-trixie
               name: postgres-dump
               volumeMounts:
