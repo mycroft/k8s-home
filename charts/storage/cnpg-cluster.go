@@ -91,7 +91,7 @@ func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		StorageSize: "20Gi",
 		Host:        clusterHost,
 		Port:        "5432",
-		SecretName:  clusterName + "-superuser",
+		SecretName:  clusterName + "-app",
 		Retention:   30,
 	})
 
