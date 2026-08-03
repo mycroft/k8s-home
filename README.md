@@ -10,12 +10,14 @@ This project uses Go code to programmatically define and generate Flux CD `HelmR
 - **Version management** — Single `versions.yaml` file tracks all Helm chart and container image versions with optional regex filters
 - **Automated PR creation** — CLI commands check for outdated versions and create pull requests on Gitea
 - **GitOps deployment** — Gitea Actions pipeline builds charts on merge to `main`, Flux CD applies them to the cluster
+- **Managed PostgreSQL** — CloudNativePG provisions application databases, roles, extensions, and Vault credentials
+- **Layered backups** — Velero/Kopia protects persistent volumes and daily logical PostgreSQL dumps
 
 ## Getting Started
 
 ### Prerequisites
 
-- Go 1.23+ (toolchain go1.24.2)
+- Go 1.25+ (`mise` currently installs Go 1.26.1)
 - [mise](https://mise.jdx.dev/) task runner
 - [golangci-lint](https://golangci-lint.run/) for linting
 - [cdk8s](https://cdk8s.io/) CLI for importing CRDs
@@ -128,7 +130,7 @@ Runs OPA/Rego policy validation against the generated charts in `dist/`.
 | `charts/infra/`         | Infrastructure charts (Flux CD, Traefik, Velero, Temporal, etc.)   |
 | `charts/observability/` | Monitoring charts (Grafana, Prometheus, Loki, Tempo, etc.)         |
 | `charts/security/`      | Security charts (Vault, cert-manager, Dex, Authentik, etc.)        |
-| `charts/storage/`       | Storage charts (Longhorn, PostgreSQL, NATS, Garage, etc.)          |
+| `charts/storage/`       | Storage charts (Longhorn, CloudNativePG, NATS, Garage, etc.)        |
 | `charts/static/`        | Static YAML manifests (Tekton pipeline definitions)                |
 | `internal/kubehelpers/` | Shared builder library for HelmRelease, Ingress, StatefulSet, etc. |
 | `internal/gitea/`       | Gitea API client for PR automation                                 |
@@ -150,8 +152,7 @@ Most important apps installed on the cluster:
 - [authentik](https://goauthentik.io/) — SSO authentication and authorization
 - [traefik-forward-auth](https://doc.traefik.io/traefik/middlewares/http/forwardauth/) — OAuth authn/authz firewall for apps not linked to dex-idp
 - [cert-manager](https://cert-manager.io/) — on-demand TLS certificate generation for ingresses
-- [CloudNative-PG](https://cloudnative-pg.io/) — PostgreSQL operator for cloud-native database instances
-- [PostgreSQL](https://www.postgresql.org/) operator — database instances
+- [CloudNativePG](https://cloudnative-pg.io/) — PostgreSQL operator and shared application database cluster
 - [NATS](https://nats.io/) — message queues
 - [kube-prometheus-stack](https://github.com/prometheus-operator/kube-prometheus) — metrics monitoring with [Grafana](https://grafana.com/grafana/)
 - [blackbox-exporter](https://github.com/prometheus/blackbox_exporter) — blackbox probing
@@ -318,6 +319,26 @@ Warning: Do not forget the namespace and secret name. SealedSecret is strict abo
 2. Add an `ExternalSecret` in the application chart for the configured Vault entry.
 3. Commit and push. CloudNativePG creates the database and role, while External Secrets publishes the generated credentials to Vault.
 4. Read the synchronized Secret from the application workload. It provides `host`, `dbname`, `username`, `password`, and `url` keys.
+
+See [docs/cnpg.md](docs/cnpg.md) for field definitions, credential flow,
+backup verification, and restore guidance. The removed Zalando PostgreSQL
+operator is no longer part of the deployment.
+
+### Checking Backups
+
+PostgreSQL logical dumps run at `00:30` and the cluster-wide Velero/Kopia
+filesystem backup runs at `01:30`. Kubernetes CronJobs use UTC unless a
+`timeZone` is configured.
+
+```sh
+kubectl get cronjob,job -n cnpg -l app.kubernetes.io/name=postgres-dump
+kubectl get backups.velero.io -n velero --sort-by=.metadata.creationTimestamp
+```
+
+While the dump pod is active, the Velero filesystem backup validates that its
+logical dump is complete and fresh before copying the PVC. Check both the dump
+Job and Velero backup; see [docs/cnpg.md](docs/cnpg.md#backups) for the manual
+verification and recovery procedure.
 
 ### Install whatismyip
 
