@@ -68,7 +68,7 @@ images:
   registry.mkz.me/mycroft/scoreboard-api: 0.0.1
   requarks/wiki: 2.5.314
   redis: 8.10.0
-  sissbruecker/linkding: 1.45.0
+  sissbruecker/linkding: 1.46.0
   thomseddon/traefik-forward-auth: 2.2.0
   vaultwarden/server: 1.37.1
   vikunja/vikunja: 2.5.0
