@@ -50,7 +50,7 @@ images:
   ghcr.io/cloudnative-pg/postgresql: 18.4
   ghcr.io/diced/zipline: 4.6.5
   ghcr.io/gchq/cyberchef: 11.3.0
-  ghcr.io/hoarder-app/hoarder: 0.33.1
+  ghcr.io/hoarder-app/hoarder: 0.33.2
   ghcr.io/open-webui/open-webui: 0.11.0
   ghcr.io/thomiceli/opengist: 1.15.1
   jhaals/yopass: 14.8.0
