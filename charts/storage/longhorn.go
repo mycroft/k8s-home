@@ -224,6 +224,57 @@ func NewLonghornChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	// We keep 8 last snapshots, running 3 snapshots at a time, 4 times a day.
 	CreateRecurringJob(chart.Cdk8sChart, namespace, longhornio.RecurringJobV1Beta2SpecTask_SNAPSHOT, "15 1,7,13,19 * * *", "snapshot", 8, 3)
 
+	// Since chart 1.12.1, the longhorn-manager network policy is gated on
+	// networkPolicies.restrictInternalTraffic (default true) instead of
+	// networkPolicies.enabled (default false), so it ships whether we want it or
+	// not. It only admits same-namespace longhorn pods, which blocks Prometheus'
+	// scrape of longhorn-backend:9500 and fires TargetDown. Ingress rules are
+	// additive across policies, so this re-opens the metrics port to Prometheus.
+	k8s.NewKubeNetworkPolicy(
+		chart.Cdk8sChart,
+		jsii.String("allow-metrics-scraping"),
+		&k8s.KubeNetworkPolicyProps{
+			Metadata: &k8s.ObjectMeta{
+				Name:      jsii.String("allow-metrics-scraping"),
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &k8s.NetworkPolicySpec{
+				PodSelector: &k8s.LabelSelector{
+					MatchLabels: &map[string]*string{
+						"app": jsii.String("longhorn-manager"),
+					},
+				},
+				PolicyTypes: &[]*string{
+					jsii.String("Ingress"),
+				},
+				Ingress: &[]*k8s.NetworkPolicyIngressRule{
+					{
+						From: &[]*k8s.NetworkPolicyPeer{
+							{
+								NamespaceSelector: &k8s.LabelSelector{
+									MatchLabels: &map[string]*string{
+										"kubernetes.io/metadata.name": jsii.String("monitoring"),
+									},
+								},
+								PodSelector: &k8s.LabelSelector{
+									MatchLabels: &map[string]*string{
+										"app.kubernetes.io/name": jsii.String("prometheus"),
+									},
+								},
+							},
+						},
+						Ports: &[]*k8s.NetworkPolicyPort{
+							{
+								Port:     k8s.IntOrString_FromNumber(jsii.Number(9500)),
+								Protocol: jsii.String("TCP"),
+							},
+						},
+					},
+				},
+			},
+		},
+	)
+
 	// Adding service monitor
 	servicemonitor_monitoringcoreoscom.NewServiceMonitor(
 		chart.Cdk8sChart,
