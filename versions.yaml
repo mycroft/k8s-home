@@ -47,7 +47,7 @@ images:
   outlinewiki/outline: 1.9.2
   excalidraw/excalidraw: latest
   freshrss/freshrss: 1.29.1
-  ghcr.io/cloudnative-pg/postgresql: 18.4
+  ghcr.io/cloudnative-pg/postgresql: 18.6.0
   ghcr.io/diced/zipline: 4.6.5
   ghcr.io/gchq/cyberchef: 11.3.0
   ghcr.io/hoarder-app/hoarder: 0.33.2
@@ -76,6 +76,7 @@ images:
 patterns:
   images:
     freshrss/freshrss: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+    ghcr.io/cloudnative-pg/postgresql: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     ghcr.io/open-webui/open-webui: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     ghcr.io/diced/zipline: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     neosmemo/memos: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
