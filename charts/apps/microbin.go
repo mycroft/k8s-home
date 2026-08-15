@@ -13,8 +13,7 @@ func NewMicrobinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := appName
 	appIngress := "bin.iop.cx"
 
-	// appImage := builder.RegisterContainerImage("danielszabo99/microbin")
-	appImage := "ghcr.io/zhaobenny/microbin:latest"
+	appImage := builder.RegisterContainerImage("danielszabo99/microbin")
 	appPort := uint(8080)
 
 	chart := builder.NewChart(appName)
