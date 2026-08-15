@@ -74,19 +74,19 @@ spec:
       containers:
         - env:
             - name: MICROBIN_LIST_SERVER
-              value: "FALSE"
+              value: "false"
             - name: MICROBIN_ENABLE_BURN_AFTER
-              value: "TRUE"
+              value: "true"
             - name: MICROBIN_GC_DAYS
               value: "0"
             - name: MICROBIN_PRIVATE
-              value: "TRUE"
+              value: "true"
             - name: MICROBIN_ENCRYPTION_CLIENT_SIDE
-              value: "FALSE"
+              value: "false"
             - name: MICROBIN_ENCRYPTION_SERVER_SIDE
-              value: "TRUE"
+              value: "true"
             - name: MICROBIN_WIDE
-              value: "TRUE"
+              value: "true"
             - name: MICROBIN_PUBLIC_PATH
               value: https://bin.iop.cx/
             - name: MICROBIN_ADMIN_USERNAME
