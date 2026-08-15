@@ -112,7 +112,7 @@ func CreateDockerConfigJSONSecret(chart constructs.Construct, namespace, name, r
 						EngineVersion: externalsecrets_externalsecretsio.ExternalSecretSpecTargetTemplateEngineVersion_V2,
 						Type:          jsii.String("kubernetes.io/dockerconfigjson"),
 						Data: &map[string]*string{
-".dockerconfigjson": jsii.String(fmt.Sprintf(`{
+							".dockerconfigjson": jsii.String(fmt.Sprintf(`{
   "auths": {
     "%s": {
       "username": "{{ .username }}",
