@@ -99,7 +99,7 @@ spec:
                 secretKeyRef:
                   key: password
                   name: admin
-          image: ghcr.io/zhaobenny/microbin:latest
+          image: danielszabo99/microbin:2.1.4
           name: microbin
           volumeMounts:
             - mountPath: /app/microbin_data
