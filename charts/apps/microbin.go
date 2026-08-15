@@ -27,13 +27,13 @@ func NewMicrobinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	}
 
 	env := []*k8s.EnvVar{
-		{Name: jsii.String("MICROBIN_LIST_SERVER"), Value: jsii.Sprintf("FALSE")},
-		{Name: jsii.String("MICROBIN_ENABLE_BURN_AFTER"), Value: jsii.Sprintf("TRUE")},
+		{Name: jsii.String("MICROBIN_LIST_SERVER"), Value: jsii.Sprintf("false")},
+		{Name: jsii.String("MICROBIN_ENABLE_BURN_AFTER"), Value: jsii.Sprintf("true")},
 		{Name: jsii.String("MICROBIN_GC_DAYS"), Value: jsii.String("0")},
-		{Name: jsii.String("MICROBIN_PRIVATE"), Value: jsii.String("TRUE")},
-		{Name: jsii.Sprintf("MICROBIN_ENCRYPTION_CLIENT_SIDE"), Value: jsii.String("FALSE")},
-		{Name: jsii.Sprintf("MICROBIN_ENCRYPTION_SERVER_SIDE"), Value: jsii.String("TRUE")},
-		{Name: jsii.Sprintf("MICROBIN_WIDE"), Value: jsii.String("TRUE")},
+		{Name: jsii.String("MICROBIN_PRIVATE"), Value: jsii.String("true")},
+		{Name: jsii.Sprintf("MICROBIN_ENCRYPTION_CLIENT_SIDE"), Value: jsii.String("false")},
+		{Name: jsii.Sprintf("MICROBIN_ENCRYPTION_SERVER_SIDE"), Value: jsii.String("true")},
+		{Name: jsii.Sprintf("MICROBIN_WIDE"), Value: jsii.String("true")},
 		{Name: jsii.String("MICROBIN_PUBLIC_PATH"), Value: jsii.String(fmt.Sprintf("https://%s/", appIngress))},
 		{
 			Name: jsii.String("MICROBIN_ADMIN_USERNAME"),
