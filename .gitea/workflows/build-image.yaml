@@ -1,0 +1,35 @@
+name: Build CI image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "contrib/build-image/**"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Log in to container registry
+        uses: docker/login-action@v2
+        with:
+          registry: registry.mkz.me
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push CI image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./contrib/build-image
+          file: ./contrib/build-image/Dockerfile
+          pull: true
+          push: true
+          no-cache: true
+          tags: |
+            registry.mkz.me/mycroft/golang-cdk8s:latest
+            registry.mkz.me/mycroft/golang-cdk8s:build-${{ gitea.run_id }}
