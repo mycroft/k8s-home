@@ -1653,7 +1653,7 @@ spec:
                     secretKeyRef:
                       key: password
                       name: postgres-app
-              image: ghcr.io/cloudnative-pg/postgresql:18.6.0
+              image: ghcr.io/cloudnative-pg/postgresql:18.6
               name: postgres-dump
               volumeMounts:
                 - mountPath: /backup
