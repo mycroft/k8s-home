@@ -29,7 +29,7 @@ helmcharts:
   onechart/onechart: 0.73.0
   opensearch/opensearch: 2.12.0
   opensearch/opensearch-dashboards: 2.10.0
-  prometheus-community/kube-prometheus-stack: 88.4.0
+  prometheus-community/kube-prometheus-stack: 88.5.0
   prometheus-community/prometheus-blackbox-exporter: 11.17.2
   redmine/redmine: 27.1.0
   requarks/wiki: 3.0.0
