@@ -49,7 +49,7 @@ images:
   freshrss/freshrss: 1.29.1
   ghcr.io/cloudnative-pg/postgresql: 18.6
   ghcr.io/diced/zipline: 4.7.0
-  ghcr.io/gchq/cyberchef: 11.3.0
+  ghcr.io/gchq/cyberchef: 11.4.0
   ghcr.io/hoarder-app/hoarder: 0.33.2
   ghcr.io/open-webui/open-webui: 0.11.0
   ghcr.io/thomiceli/opengist: 1.15.1
