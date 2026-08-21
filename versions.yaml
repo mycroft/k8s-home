@@ -35,7 +35,7 @@ helmcharts:
   requarks/wiki: 3.0.0
   temporal/temporal: 1.6.0
   scylla/scylla-operator: v1.20.0
-  sealed-secrets/sealed-secrets: 2.19.2
+  sealed-secrets/sealed-secrets: 2.19.3
   vmware-tanzu/velero: 12.1.0
   wiremind/karma: 2.13.1
 images:
