@@ -16,6 +16,7 @@ func NewMemosChart(builder *kube.Builder) *kube.Chart {
 	port := uint(5230)
 	ingresses := []string{
 		fmt.Sprintf("%s.services.mkz.me", name),
+		fmt.Sprintf("%s.iop.cx", name),
 	}
 
 	labels := map[string]string{
