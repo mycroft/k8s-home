@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app-sample
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: mycroft
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://mycroft.github.io/helm-charts
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-sample-helm-val-app-sample-c8250b73
+  namespace: app-sample
+data:
+  values.yaml: |
+    ingress:
+      enabled: true
+      className: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts:
+        - host: app-sample.services.mkz.me
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - app-sample.services.mkz.me
+          secretName: secret-tls-app-sample
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: e65eb8cbb2931833fa2a1633ce19f3573237d2b7317ca41f5f132b8c33642dce
+  name: app-sample
+  namespace: app-sample
+spec:
+  chart:
+    spec:
+      chart: app
+      sourceRef:
+        kind: HelmRepository
+        name: mycroft
+        namespace: flux-system
+      version: 0.1.1
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: app-sample-helm-val-app-sample-c8250b73
+      valuesKey: values.yaml
