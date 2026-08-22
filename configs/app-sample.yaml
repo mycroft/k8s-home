@@ -1,0 +1,14 @@
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: app-sample.services.mkz.me
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - app-sample.services.mkz.me
+      secretName: secret-tls-app-sample
