@@ -132,7 +132,18 @@ spec:
                   name: http
             path: /
             pathType: Prefix
+    - host: memos.iop.cx
+      http:
+        paths:
+          - backend:
+              service:
+                name: memos
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
   tls:
     - hosts:
         - memos.services.mkz.me
+        - memos.iop.cx
       secretName: secret-tls-www
