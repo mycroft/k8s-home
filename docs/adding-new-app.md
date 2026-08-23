@@ -138,7 +138,7 @@ image := builder.RegisterContainerImage("myorg/myapp")
 ## Generating the manifest
 
 ```sh
-mise run generate
+mise run generate-charts
 ```
 
 This compiles the Go code and synthesizes `dist/<name>.k8s.yaml`. Inspect the output to verify the generated resources look correct before committing.
