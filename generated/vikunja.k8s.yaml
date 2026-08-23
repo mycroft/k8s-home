@@ -158,7 +158,18 @@ spec:
                   name: http
             path: /
             pathType: Prefix
+    - host: todo.iop.cx
+      http:
+        paths:
+          - backend:
+              service:
+                name: vikunja-vikunja-svc-c82a993d
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
   tls:
     - hosts:
         - vikunja.services.mkz.me
+        - todo.iop.cx
       secretName: secret-tls-www
