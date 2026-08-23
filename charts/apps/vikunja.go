@@ -1,6 +1,8 @@
 package apps
 
 import (
+	"strings"
+
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -30,7 +32,21 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	// Vikunja's config.yml is managed in Vault; configs/vikunja/config.yaml is reference-only.
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "config")
 
+	// Vikunja appends service.publicurl to cors.origins on its own, but every
+	// other hostname has to be listed or the browser's XHRs get no
+	// Access-Control-Allow-Origin. Setting this replaces the upstream default,
+	// so the localhost entries the desktop app relies on are repeated here.
+	// viper reads list values from the environment space-separated.
+	corsOrigins := []string{"http://127.0.0.1:*", "http://localhost:*"}
+	for _, host := range appIngresses {
+		corsOrigins = append(corsOrigins, "https://"+host)
+	}
+
 	env := []*k8s.EnvVar{
+		{
+			Name:  jsii.String("VIKUNJA_CORS_ORIGINS"),
+			Value: jsii.String(strings.Join(corsOrigins, " ")),
+		},
 		{
 			Name:  jsii.String("VIKUNJA_DATABASE_TYPE"),
 			Value: jsii.String("postgres"),
