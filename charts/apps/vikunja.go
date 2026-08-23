@@ -12,7 +12,10 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := appName
 	appImage := builder.RegisterContainerImage("vikunja/vikunja")
 	appPort := uint(3456)
-	appIngress := "vikunja.services.mkz.me"
+	appIngresses := []string{
+		"vikunja.services.mkz.me",
+		"todo.iop.cx",
+	}
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
@@ -103,13 +106,13 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		FsGroup: 1000,
 	})
 
-	kubehelpers.NewAppIngress(
+	kubehelpers.NewAppIngresses(
 		builder.Context,
 		chart.Cdk8sChart,
 		labels,
 		appName,
 		appPort,
-		appIngress,
+		appIngresses,
 		svcName,
 		map[string]string{},
 	)
