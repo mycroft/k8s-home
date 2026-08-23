@@ -96,6 +96,8 @@ spec:
     spec:
       containers:
         - env:
+            - name: VIKUNJA_CORS_ORIGINS
+              value: http://127.0.0.1:* http://localhost:* https://vikunja.services.mkz.me https://todo.iop.cx
             - name: VIKUNJA_DATABASE_TYPE
               value: postgres
             - name: VIKUNJA_DATABASE_NAME
