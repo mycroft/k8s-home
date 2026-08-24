@@ -1,5 +1,9 @@
 # https://github.com/truecharts/charts/blob/master/charts/stable/calibre-web/values.yaml
 
+image:
+  repository: linuxserver/calibre-web
+  tag: "0.6.27-ls398"
+
 persistence:
   config:
     enabled: true
