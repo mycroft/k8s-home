@@ -1,6 +1,9 @@
 package kubehelpers_test
 
 import (
+	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
@@ -30,6 +33,24 @@ func TestLatestMatchingVersion(t *testing.T) {
 				t.Errorf("LatestMatchingVersion() = %q, want %q", got, tc.want)
 			}
 		})
+	}
+}
+
+func TestGetRepoIndexNon200(t *testing.T) {
+	t.Parallel()
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.NotFound(w, r)
+	}))
+	defer srv.Close()
+
+	_, err := kubehelpers.GetRepoIndex(srv.URL)
+	if err == nil {
+		t.Fatal("GetRepoIndex() expected error for 404, got nil")
+	}
+
+	if !strings.Contains(err.Error(), "404") {
+		t.Errorf("GetRepoIndex() error = %q, want mention of 404", err)
 	}
 }
 

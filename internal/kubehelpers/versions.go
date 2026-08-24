@@ -43,12 +43,22 @@ type Versions struct {
 	Patterns   Patterns          `yaml:"patterns"`
 }
 
+// registryTimeout bounds a single registry or index fetch. check-versions
+// runs unattended, so a hung endpoint must not hang the cron.
+const registryTimeout = 30 * time.Second
+
+var httpClient = &http.Client{Timeout: registryTimeout}
+
 func GetRepoIndex(url string) ([]byte, error) {
-	resp, err := http.Get(url)
+	resp, err := httpClient.Get(url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("GET %s: unexpected status %s", url, resp.Status)
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -292,7 +302,10 @@ func OciChartTags(repoURL, chartName string) ([]string, error) {
 		return nil, err
 	}
 
-	return remote.List(ref.Context(), remote.WithContext(context.Background()))
+	ctx, cancel := context.WithTimeout(context.Background(), registryTimeout)
+	defer cancel()
+
+	return remote.List(ref.Context(), remote.WithContext(ctx))
 }
 
 // GetImageUpdates checks Docker images for newer versions.
@@ -427,7 +440,10 @@ func GetLastImageTag(debug bool, image, version, pattern string) []string {
 		panic(err)
 	}
 
-	tags, err := remote.List(ref.Context(), remote.WithContext(context.Background()))
+	ctx, cancel := context.WithTimeout(context.Background(), registryTimeout)
+	defer cancel()
+
+	tags, err := remote.List(ref.Context(), remote.WithContext(ctx))
 	if err != nil {
 		panic(err)
 	}
