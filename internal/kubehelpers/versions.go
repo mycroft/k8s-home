@@ -71,24 +71,49 @@ func GetEntriesFromIndex(body []byte) (map[string][]*Entry, error) {
 func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]string, error) {
 	versions := builder.Versions
 
-	// Collect unique repo URLs to fetch, validating that all repos are known.
-	repoURLs := make(map[string]string) // repoName -> URL
+	// Collect the work: unique repo indexes to fetch and unique OCI charts
+	// to list tags for.
+	repoURLs := make(map[string]string)  // repoName -> URL
+	ociCharts := make(map[string]string) // "repoURL chart" -> repoURL
+
+	type releaseCheck struct {
+		repoName string
+		chart    HelmChartVersion
+	}
+
+	var checks []releaseCheck
 
 	for _, helmRelease := range helmChartVersions {
 		if _, ok := builder.HelmRepositories[helmRelease.RepositoryName]; !ok {
 			panic(fmt.Sprintf("Unknown repo %s", helmRelease.RepositoryName))
 		}
 
+		chartName := fmt.Sprintf("%s/%s", helmRelease.RepositoryName, helmRelease.ChartName)
+
+		if filter != "" && !strings.Contains(chartName, filter) {
+			if debug {
+				log.Printf("skipping helm chart check: %s", chartName)
+			}
+
+			continue
+		}
+
 		repoURL := builder.HelmRepositories[helmRelease.RepositoryName]
-		if !strings.HasPrefix(repoURL, "oci://") {
+
+		checks = append(checks, releaseCheck{repoName: helmRelease.RepositoryName, chart: helmRelease})
+
+		if strings.HasPrefix(repoURL, "oci://") {
+			ociCharts[repoURL+"/"+helmRelease.ChartName] = repoURL
+		} else {
 			repoURLs[helmRelease.RepositoryName] = repoURL
 		}
 	}
 
-	// Fetch all repo indexes concurrently.
+	// Fetch all repo indexes and OCI tag lists concurrently.
 	var mu sync.Mutex
 
 	repoEntries := make(map[string]map[string][]*Entry) // repoURL -> entries
+	ociTags := make(map[string][]string)                // "repoURL chart" -> tags
 
 	var wg sync.WaitGroup
 
@@ -114,99 +139,72 @@ func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]st
 		}(repoURL)
 	}
 
+	for ociChart := range ociCharts {
+		wg.Add(1)
+
+		go func(key string) {
+			defer wg.Done()
+
+			repoURL := ociCharts[key]
+			chartName := strings.TrimPrefix(key, repoURL+"/")
+
+			tags, err := OciChartTags(repoURL, chartName)
+			if err != nil {
+				panic(fmt.Sprintf("listing OCI chart %s: %s", key, err))
+			}
+
+			mu.Lock()
+			ociTags[key] = tags
+			mu.Unlock()
+		}(ociChart)
+	}
+
 	wg.Wait()
 
-	// Process each chart against the cached indexes.
+	// Process each chart against the cached indexes / tag lists.
 	retVersions := make(map[string]string)
 
-	for _, helmRelease := range helmChartVersions {
-		chartName := fmt.Sprintf("%s/%s", helmRelease.RepositoryName, helmRelease.ChartName)
+	for _, check := range checks {
+		chartName := fmt.Sprintf("%s/%s", check.repoName, check.chart.ChartName)
 
-		if filter != "" && !strings.Contains(chartName, filter) {
-			if debug {
-				log.Printf("skipping helm chart check: %s", chartName)
-			}
+		repositoryURL := builder.HelmRepositories[check.repoName]
 
-			continue
-		}
-
-		repositoryURL := builder.HelmRepositories[helmRelease.RepositoryName]
+		var candidates []string
 
 		if strings.HasPrefix(repositoryURL, "oci://") {
-			if debug {
-				log.Printf("skipped %s as oci:// is not supported", repositoryURL)
-			}
-
-			continue
-		}
-
-		entries, ok := repoEntries[repositoryURL]
-		if !ok {
-			continue
-		}
-
-		// find entries for this chart
-		if _, ok = entries[helmRelease.ChartName]; !ok {
-			panic(fmt.Sprintf("No chart for name %s", helmRelease.ChartName))
-		}
-
-		foundVersions := []string{}
-		for _, chartVersion := range entries[helmRelease.ChartName] {
-			if _, ok = chartVersion.Annotations["artifacthub.io/prerelease"]; ok {
-				if chartVersion.Annotations["artifacthub.io/prerelease"] == "true" {
-					continue
-				}
-			}
-
-			pattern := ".+"
-			if _, ok = versions.Patterns.HelmCharts[chartName]; ok {
-				pattern = versions.Patterns.HelmCharts[chartName]
-			}
-
-			matched, err := regexp.MatchString(pattern, chartVersion.Version)
-			if err != nil {
-				panic(err)
-			}
-
-			if !matched {
+			candidates = OciPrereleaseTags(ociTags[repositoryURL+"/"+check.chart.ChartName])
+		} else {
+			entries := repoEntries[repositoryURL]
+			if entries == nil {
 				continue
 			}
 
-			foundVersions = append(foundVersions, chartVersion.Version)
-		}
-
-		hasVPrefix := false
-
-		semvers := make([]*semver.Version, len(foundVersions))
-		for i, version := range foundVersions {
-			if version[0] == 'v' {
-				version = version[1:]
-				hasVPrefix = true
+			// find entries for this chart
+			if _, ok := entries[check.chart.ChartName]; !ok {
+				panic(fmt.Sprintf("No chart for name %s", check.chart.ChartName))
 			}
 
-			v, err := semver.NewVersion(version)
-			if err != nil {
-				panic(fmt.Sprintf("Invalid version %s: %s", version, err))
-			}
+			for _, chartVersion := range entries[check.chart.ChartName] {
+				if chartVersion.Annotations["artifacthub.io/prerelease"] == "true" {
+					continue
+				}
 
-			semvers[i] = v
+				candidates = append(candidates, chartVersion.Version)
+			}
 		}
 
-		if len(semvers) == 0 {
+		pattern := ".+"
+		if p, ok := versions.Patterns.HelmCharts[chartName]; ok {
+			pattern = p
+		}
+
+		lastVersion := LatestMatchingVersion(candidates, pattern)
+		if lastVersion == "" {
 			continue
 		}
 
-		sort.Sort(sort.Reverse(semver.Collection(semvers)))
-
-		lastVersion := ""
-		if hasVPrefix {
-			lastVersion = "v" + semvers[0].Original()
-		} else {
-			lastVersion = semvers[0].Original()
-		}
-
-		if lastVersion != helmRelease.Version {
-			retVersions[chartName] = fmt.Sprintf("%s;%s", helmRelease.Version, lastVersion)
+		if lastVersion != check.chart.Version {
+			retVersions[chartName] = fmt.Sprintf("%s;%s", check.chart.Version, lastVersion)
 		}
 	}
 
