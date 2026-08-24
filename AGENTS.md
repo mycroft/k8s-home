@@ -121,9 +121,8 @@ There is essentially no graceful error handling in the chart layer — misconfig
 
 Beyond `helmcharts:` and `images:`, there is a `patterns:` section holding a per-chart/per-image regex that constrains which upstream tags are considered. It exists to filter out non-semver and variant tags (`^[0-9]+\.[0-9]+(\.[0-9]+)?$` excludes things like `1.2.3-alpine`). Default when unlisted is `.+`. If `check-versions` proposes a nonsense version for something, a pattern here is the fix.
 
-Version resolution in `internal/kubehelpers/versions.go` fetches Helm repo indexes and registry tag lists concurrently, then picks the highest semver. Its blind spots, all deliberate — together with unregistered images above, this is why `check-versions` does not cover everything:
+Version resolution in `internal/kubehelpers/versions.go` fetches Helm repo indexes and registry tag lists concurrently, then picks the highest semver. `oci://` Helm repositories are handled the same way, with chart versions listed as registry tags; they carry no `artifacthub.io/prerelease` annotation, so prereleases are excluded by semver instead (tags with a prerelease component are dropped). The remaining blind spots, all deliberate — together with unregistered images above, this is why `check-versions` does not cover everything:
 
-- `oci://` Helm repositories are skipped entirely.
 - An image pinned to `latest` (or empty) returns no candidates.
 - Chart versions annotated `artifacthub.io/prerelease: "true"` are skipped.
 - `linuxserver/*` images are special-cased to `v`-prefixed tags only.
