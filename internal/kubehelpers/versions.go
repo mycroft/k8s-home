@@ -213,6 +213,90 @@ func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]st
 	return retVersions, nil
 }
 
+// LatestMatchingVersion returns the highest semver among candidates that
+// match pattern, with a v prefix restored when the candidates used one.
+// Returns "" when no candidate matches.
+func LatestMatchingVersion(candidates []string, pattern string) string {
+	foundVersions := []string{}
+
+	for _, version := range candidates {
+		matched, err := regexp.MatchString(pattern, version)
+		if err != nil {
+			panic(err)
+		}
+
+		if !matched {
+			continue
+		}
+
+		foundVersions = append(foundVersions, version)
+	}
+
+	if len(foundVersions) == 0 {
+		return ""
+	}
+
+	hasVPrefix := false
+
+	semvers := make([]*semver.Version, len(foundVersions))
+	for i, version := range foundVersions {
+		if version[0] == 'v' {
+			version = version[1:]
+			hasVPrefix = true
+		}
+
+		v, err := semver.NewVersion(version)
+		if err != nil {
+			panic(fmt.Sprintf("Invalid version %s: %s", version, err))
+		}
+
+		semvers[i] = v
+	}
+
+	sort.Sort(sort.Reverse(semver.Collection(semvers)))
+
+	if hasVPrefix {
+		return "v" + semvers[0].Original()
+	}
+
+	return semvers[0].Original()
+}
+
+// OciPrereleaseTags drops tags that are semver prereleases (rc, alpha, beta,
+// ...). OCI registries do not expose the artifacthub.io/prerelease annotation
+// that chart indexes do, so this is how the no-prerelease rule is enforced
+// for OCI repositories. Non-semver tags are dropped here too.
+func OciPrereleaseTags(tags []string) []string {
+	ret := []string{}
+
+	for _, tag := range tags {
+		v, err := semver.NewVersion(tag)
+		if err != nil {
+			continue
+		}
+
+		if v.Prerelease() != "" {
+			continue
+		}
+
+		ret = append(ret, tag)
+	}
+
+	return ret
+}
+
+// OciChartTags lists the version tags of a chart in an OCI Helm repository.
+// repoURL is of the form oci://registry/namespace and the chart is stored as
+// the image registry/namespace/<chartName>.
+func OciChartTags(repoURL, chartName string) ([]string, error) {
+	ref, err := name.ParseReference(strings.TrimPrefix(repoURL, "oci://") + "/" + chartName)
+	if err != nil {
+		return nil, err
+	}
+
+	return remote.List(ref.Context(), remote.WithContext(context.Background()))
+}
+
 // GetImageUpdates checks Docker images for newer versions.
 // Returns a map from image name to "currentVersion;latestVersion".
 func (builder *Builder) GetImageUpdates(debug bool, filter string) (map[string]string, error) {
