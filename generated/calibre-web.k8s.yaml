@@ -22,6 +22,10 @@ data:
   values.yaml: |-
     # https://github.com/truecharts/charts/blob/master/charts/stable/calibre-web/values.yaml
 
+    image:
+      repository: linuxserver/calibre-web
+      tag: "0.6.27-ls398"
+
     persistence:
       config:
         enabled: true
@@ -62,7 +66,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: a9400d096875d189d1e555c37e20e6d4d66721f70706aac4a55245d85deb0ff1
+    configMapHash: 71f6e0212f10fc1c1d0ebd3a0bef6762a57510f1dad702bdd6beaf4f343c2a63
   name: calibre-web
   namespace: calibre-web
 spec:
