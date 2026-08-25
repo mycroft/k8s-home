@@ -151,6 +151,12 @@ metadata:
 data:
   values.yaml: |
     # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+    #
+    # This file is rendered as a Go template at synth time (see
+    # kubehelpers.CreateHelmValuesConfig). The Prometheus alert rules below
+    # contain their own template actions (double-brace syntax), which must be
+    # escaped per the examples in the annotations so they reach the chart
+    # verbatim.
 
     crds:
       upgradeJob:
@@ -669,7 +675,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: b9c94e0672258edbf1ec26f3f70a36ab3445a6761c813f9b2104d2c51e15db40
+    configMapHash: e1f5aff37b8e66d0f2ed11f455b608ab3e47a28c4363c8e91dea3ca2f01ce171
   name: prometheus
   namespace: monitoring
 spec:

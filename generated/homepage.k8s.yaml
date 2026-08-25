@@ -29,7 +29,7 @@ data:
         data:
           config.yaml: |
             # This CM is not used at all. It is only be maintained to force deployment restart after configuration change.
-            version: "67ff63f99f561eca3125cb22c17885386414939696bbe1046d34294edc753f93"
+            version: "b1c9f40d4490d90b33e17294febf195db5a9d468eb13578aa866ceadc29ccdd0"
 
     config:
       settings:
@@ -267,7 +267,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: e3129ce2641e203f3971f58089fd955d1bf35640d4e40c401a42c3452d1272ff
+    configMapHash: cd8a25182188f0f4dbfcacd0a14d2450f75f35a60db5726f9f1e3ac16cd3a728
   name: homepage
   namespace: homepage
 spec:
