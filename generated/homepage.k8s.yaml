@@ -21,7 +21,7 @@ data:
   values.yaml: |
     image:
       repository: ghcr.io/gethomepage/homepage
-      tag: 2.1.2
+      tag: v2.1.2
 
     configMaps:
       config:
@@ -267,7 +267,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: ae6879606f9e1178968fc6a2b63b52680eb0e5f62f128b75167478a04516baf4
+    configMapHash: 0b6a9260cdd6c81980dc351a103040259b24bf54d13a3e5220b4d2023401a103
   name: homepage
   namespace: homepage
 spec:
