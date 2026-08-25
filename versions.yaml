@@ -75,7 +75,7 @@ images:
   sissbruecker/linkding: 1.46.2
   thomseddon/traefik-forward-auth: 2.2.0
   vaultwarden/server: 1.37.2
-  velero/velero-plugin-for-aws: v1.13.1
+  velero/velero-plugin-for-aws: 1.14.2
   vikunja/vikunja: 2.5.0
   wallabag/wallabag: 2.6.14
 patterns:
