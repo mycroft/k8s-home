@@ -23,13 +23,18 @@ data:
       repository: ghcr.io/gethomepage/homepage
       tag: v2.1.2
 
+    # Required since homepage v2: reject requests whose Host header is not in this list
+    env:
+      - name: HOMEPAGE_ALLOWED_HOSTS
+        value: home.iop.cx
+
     configMaps:
       config:
         enabled: true
         data:
           config.yaml: |
             # This CM is not used at all. It is only be maintained to force deployment restart after configuration change.
-            version: "b1c9f40d4490d90b33e17294febf195db5a9d468eb13578aa866ceadc29ccdd0"
+            version: "e01403eb4de8ab7f19de681b5c94f6815307f37a50e58ed3477e5ca26f1972dc"
 
     config:
       settings:
@@ -267,7 +272,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 0b6a9260cdd6c81980dc351a103040259b24bf54d13a3e5220b4d2023401a103
+    configMapHash: 6467f4393da100da67352b3a5323b4c5635919e05e3a9e2c0bee5272141d378f
   name: homepage
   namespace: homepage
 spec:
