@@ -458,10 +458,6 @@ func GetLastImageTag(debug bool, image, version, pattern string) []string {
 	}
 
 	for _, tag := range tags {
-		if strings.HasPrefix(image, "linuxserver") && !strings.HasPrefix(tag, "v") {
-			continue
-		}
-
 		matched, err := regexp.MatchString(pattern, tag)
 		if err != nil {
 			panic(err)

@@ -125,8 +125,7 @@ Version resolution in `internal/kubehelpers/versions.go` fetches Helm repo index
 
 - An image pinned to `latest` (or empty) returns no candidates.
 - Chart versions annotated `artifacthub.io/prerelease: "true"` are skipped.
-- `linuxserver/*` images are special-cased to `v`-prefixed tags only.
-- For Helm charts a `v` prefix is stripped for comparison and restored in the output. Image tags are emitted **verbatim as found in the registry** — the normalized semver form can point at a tag that does not exist (v-prefixed-only registries), which would break the pull. `linuxserver/*` additionally only *considers* `v`-prefixed tags (vendor special-case; see the `tagPrefix` backlog item).
+- For Helm charts a `v` prefix is stripped for comparison and restored in the output. Image tags are emitted **verbatim as found in the registry** — the normalized semver form can point at a tag that does not exist (v-prefixed-only registries), which would break the pull. `linuxserver/*` images pin a `^v.+` pattern to stay on the v-prefixed (immutable `-lsNNN` build) tag family; other registries with unusual tag schemes get their own pattern.
 
 `check-versions` prints `name;oldVersion;newVersion` on stdout, and that line is the contract `contrib/create-pr.sh -f` parses. `create-prs` never reads stdout — it calls `GetHelmUpdates`/`GetImageUpdates` in-process and hands the map to `gitea.CreateVersionBumpPRs`, reusing the same `old;new` encoding in the map values.
 
