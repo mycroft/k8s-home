@@ -33,7 +33,7 @@ Task runner is `mise` (see `.mise.toml`). Tasks that invoke `./k8s-home` depend 
 | `mise run generate-charts` | Build + synth charts to `dist/*.k8s.yaml` |
 | `mise run synth` | `cdk8s synth` — same output via the cdk8s CLI (what CI runs) |
 | `mise run lint` | `golangci-lint run -c .golangci.yaml` |
-| `mise run conftest` | Generate charts, then run OPA policy checks against `dist/` |
+| `mise run conftest` | Generate charts, then run OPA policy checks against `dist/` (enforced in the lint CI) |
 | `mise run check-versions` | Build + find outdated Helm charts & images |
 | `mise run import` | `cdk8s import` — regenerates `imports/`. ⚠️ Rewrites `cdk8s.yaml`; revert it |
 | `mise run diff` | `git diff remotes/origin/generated:generated dist` — quick in-place diff |
@@ -165,7 +165,7 @@ A typical chart Go file produces a `dist/<name>.k8s.yaml` containing:
 - **`versions.yaml`** — single source of truth for all Helm chart and container image versions
 - **`imports/`** — auto-generated Go CRD bindings. Gitignored; **do not edit or commit.** Regenerate with `mise run import`. Excluded from linting.
 - **`dist/`** — generated output. Gitignored on `main`; CI copies to `generated` branch.
-- **`policies/`** — OPA/Rego policies for `conftest` validation
+- **`policies/`** — OPA/Rego policies for `conftest` validation. Rules are hard `deny`; legitimate exceptions live in `policies/exemptions.yaml`, keyed by resource name, each with a `reason`. Fix the issue, delete the entry — the policy applies again automatically. New apps must either comply (pinned tag, `runAsNonRoot`) or carry a reasoned exemption; CI (lint workflow) fails on any unexempted violation.
 - **`cdk8s.yaml`** — cdk8s config declaring CRD imports and `dist` output path. Rewritten by `cdk8s import`
 
 ## Never

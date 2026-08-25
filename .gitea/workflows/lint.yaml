@@ -48,6 +48,21 @@ jobs:
           git checkout cdk8s.yaml
           cdk8s synth
 
+      - name: Install conftest
+        run: |
+          if ! command -v conftest &> /dev/null; then
+            echo "Installing conftest..."
+            go install github.com/open-policy-agent/conftest@latest
+          fi
+          export PATH=$PATH:$(go env GOPATH)/bin
+          conftest --version
+
+      - name: Run conftest policies
+        run: |
+          echo "Running conftest policies on generated charts..."
+          export PATH=$PATH:$(go env GOPATH)/bin
+          conftest test --policy policies --data policies/exemptions.yaml ./dist
+
       - name: Run golangci-lint
         run: |
           echo "Running golangci-lint on Go code..."

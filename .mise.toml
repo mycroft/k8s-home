@@ -32,7 +32,7 @@ run = "git diff remotes/origin/generated:generated dist"
 description = "Run conftest against generated charts"
 depends = ["generate-charts"]
 sources = ["dist/*.k8s.yaml"]
-run = "conftest test --policy policies ./dist"
+run = "conftest test --policy policies --data policies/exemptions.yaml ./dist"
 
 [tasks.lint]
 description = "Run lint against golang code"

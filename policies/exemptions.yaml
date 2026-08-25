@@ -1,0 +1,83 @@
+# Conftest policy exemptions.
+#
+# Keyed by namespace (= app/chart name in this fleet). `rules` lists the
+# policy rule IDs the app is exempt from (see images.rego / deployment.rego).
+# Every entry needs a reason. Fixing the underlying issue means deleting the
+# entry — the policies apply again automatically.
+#
+# conftest loads this file via --data and merges its top-level keys into the
+# rego data bundle, so the `exemptions:` wrapper is load-bearing: policies
+# read data.exemptions[<resource>].
+
+exemptions:
+  excalidraw:
+    rules: [latest, run-as-root]
+    reason: "upstream only publishes :latest (see AGENTS.md); container runs as root"
+
+  hello-kubernetes:
+    rules: [run-as-root]
+    reason: "demo workload (paulbouwer/hello-kubernetes); upstream image runs as root"
+
+  hoarder:
+    rules: [run-as-root]
+    reason: "zenika alpine-chrome and hoarder node containers run as root"
+
+  happy-urls:
+    rules: [latest, run-as-root]
+    reason: "self-built image; pipeline publishes :latest; runs as root"
+
+  hey:
+    rules: [latest, run-as-root]
+    reason: "self-built image; pipeline publishes :latest; runs as root"
+
+  it-tools:
+    rules: [run-as-root]
+    reason: "upstream image (corentinth/it-tools) runs as root"
+
+  memos:
+    rules: [run-as-root]
+    reason: "upstream image (neosmemo/memos) runs as root by default"
+
+  privatebin:
+    rules: [run-as-root]
+    reason: "nginx-fpm master process runs as root"
+
+  root-me:
+    rules: [run-as-root]
+    reason: "self-built image (scoreboard-api); runs as root"
+
+  send:
+    rules: [run-as-root]
+    reason: "upstream image (timvisee/send) runs as root"
+
+  smokeping-prober:
+    rules: [run-as-root]
+    reason: "upstream image (superq/smokeping-prober) runs as root"
+
+  snippetbox:
+    rules: [latest, run-as-root]
+    reason: "only :latest is used (sparse upstream releases); runs as root"
+
+  traefik-forward-auth:
+    rules: [run-as-root]
+    reason: "upstream image (thomseddon/traefik-forward-auth) runs as root"
+
+  urls:
+    rules: [latest, run-as-root]
+    reason: "self-built image; pipeline publishes :latest; runs as root"
+
+  useless:
+    rules: [run-as-root]
+    reason: "self-built image (useless); runs as root"
+
+  wallabag:
+    rules: [run-as-root]
+    reason: "upstream entrypoint (wallabag/wallabag) runs as root"
+
+  yopass:
+    rules: [run-as-root]
+    reason: "upstream image (jhaals/yopass) runs as root"
+
+  cyberchef:
+    rules: [run-as-root]
+    reason: "upstream nginx-based image (gchq/cyberchef) runs as root"
