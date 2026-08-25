@@ -480,11 +480,10 @@ func GetLastImageTag(debug bool, image, version, pattern string) []string {
 		}
 
 		if v2.GreaterThan(v) {
-			if strings.HasPrefix(image, "linuxserver") {
-				retVersions = append(retVersions, tag)
-			} else {
-				retVersions = append(retVersions, v2.String())
-			}
+			// Emit the tag verbatim: the normalized semver form can point at a
+			// tag that does not exist (v-prefixed-only registries, e.g.
+			// ghcr.io/gethomepage/homepage), which would break the pull.
+			retVersions = append(retVersions, tag)
 		}
 	}
 
