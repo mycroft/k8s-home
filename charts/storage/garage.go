@@ -54,11 +54,11 @@ func NewGarage(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	)
 
 	configMaps := []kubehelpers.HelmReleaseConfigMap{
-		kubehelpers.CreateHelmValuesConfig(
-			chart.Cdk8sChart,
+		chart.CreateHelmValuesConfig(
 			namespace,
 			releaseName,
 			"garage.yaml",
+			nil,
 		),
 	}
 

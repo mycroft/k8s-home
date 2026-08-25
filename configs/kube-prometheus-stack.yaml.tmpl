@@ -1,4 +1,10 @@
 # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+#
+# This file is rendered as a Go template at synth time (see
+# kubehelpers.CreateHelmValuesConfig). The Prometheus alert rules below
+# contain their own template actions (double-brace syntax), which must be
+# escaped per the examples in the annotations so they reach the chart
+# verbatim.
 
 crds:
   upgradeJob:
@@ -6,7 +12,7 @@ crds:
     kubectl:
       registry: registry.k8s.io
       repository: kubectl
-      tag: v1.31.4
+      tag: {{ ImageTag "registry.k8s.io/kubectl" }}
 
 prometheus:
   prometheusSpec:
@@ -222,7 +228,7 @@ additionalPrometheusRulesMap:
             service: flux
             severity: warning
           annotations:
-            summary: "Flux resource `{{$labels.kind}}/{{$labels.name}}` is suspended"
+            summary: "Flux resource `{{"{{"}}$labels.kind{{"}}"}}/{{"{{"}}$labels.name{{"}}"}}` is suspended"
             description: "The resource was manually suspended. You should resume it"
         - alert: FailingReconcile
           expr: gotk_reconcile_condition{status="False"} == 1
@@ -231,7 +237,7 @@ additionalPrometheusRulesMap:
             service: flux
             severity: critical
           annotations:
-            summary: "Flux resource `{{$labels.kind}}/{{$labels.name}}` is failing"
+            summary: "Flux resource `{{"{{"}}$labels.kind{{"}}"}}/{{"{{"}}$labels.name{{"}}"}}` is failing"
             description: "Reconciliation could not succeed. This requires investigation"
         - alert: FailingHelmReleaseReconcile
           expr: gotk_resource_info{customresource_kind="HelmRelease", ready="False"} == 1
@@ -240,8 +246,8 @@ additionalPrometheusRulesMap:
             service: flux
             severity: critical
           annotations:
-            summary: "Flux resource `{{$labels.customresource_kind}}/{{$labels.chart_name}}` is failing"
-            description: "Reconciliation in namespace `{{$labels.exported_namespace}}` could not succeed. This requires investigation"
+            summary: "Flux resource `{{"{{"}}$labels.customresource_kind{{"}}"}}/{{"{{"}}$labels.chart_name{{"}}"}}` is failing"
+            description: "Reconciliation in namespace `{{"{{"}}$labels.exported_namespace{{"}}"}}` could not succeed. This requires investigation"
 
   vault-alerts:
     groups:
@@ -254,8 +260,8 @@ additionalPrometheusRulesMap:
             service: vault
             severity: critical
           annotations:
-            summary: "Vault instance `{{$labels.instance}}` is down"
-            description: "The Vault instance at `{{$labels.instance}}` has been down for the last 10m"
+            summary: "Vault instance `{{"{{"}}$labels.instance{{"}}"}}` is down"
+            description: "The Vault instance at `{{"{{"}}$labels.instance{{"}}"}}` has been down for the last 10m"
 
         - alert: VaultUninitialized
           expr: avg by(instance) (vault_initialized) != 1
@@ -264,8 +270,8 @@ additionalPrometheusRulesMap:
             service: vault
             severity: critical
           annotations:
-            summary: "Vault instance `{{$labels.instance}}` is uninitialized"
-            description: "The Vault instance at `{{$labels.instance}}` has been uninitialized for the last 10m"
+            summary: "Vault instance `{{"{{"}}$labels.instance{{"}}"}}` is uninitialized"
+            description: "The Vault instance at `{{"{{"}}$labels.instance{{"}}"}}` has been uninitialized for the last 10m"
 
         - alert: VaultSealed
           expr: avg by(instance) (vault_sealed) != 0
@@ -274,8 +280,8 @@ additionalPrometheusRulesMap:
             service: vault
             severity: critical
           annotations:
-            summary: "Vault instance `{{$labels.instance}}` is sealed"
-            description: "The Vault instance at `{{$labels.instance}}` has been sealed for the last 10m"
+            summary: "Vault instance `{{"{{"}}$labels.instance{{"}}"}}` is sealed"
+            description: "The Vault instance at `{{"{{"}}$labels.instance{{"}}"}}` has been sealed for the last 10m"
 
         - alert: VaultStandby
           expr: count(avg by(instance) (vault_standby) == 0) != 1
@@ -284,8 +290,8 @@ additionalPrometheusRulesMap:
             service: vault
             severity: critical
           annotations:
-            summary: "There are {{ $value }} active Vault instance(s)"
-            description: "The Vault instance at `{{$labels.instance}}` has been Standby for the last 10m"
+            summary: "There are {{"{{"}} $value {{"}}"}} active Vault instance(s)"
+            description: "The Vault instance at `{{"{{"}}$labels.instance{{"}}"}}` has been Standby for the last 10m"
 
 defaultRules:
   disabled:

@@ -6,7 +6,7 @@
 image:
   repository: requarks/wiki
   imagePullPolicy: IfNotPresent
-  tag: {{ .CustomValues.Image.Tag }}
+  tag: {{ ImageTag "requarks/wiki" }}
 
 ingress:
   enabled: true

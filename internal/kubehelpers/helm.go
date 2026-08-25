@@ -113,8 +113,7 @@ func WithConfigMaps(configMaps []HelmReleaseConfigMap) HelmReleaseOption {
 // ex:
 // - helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.9.1 --set installCRDs=true
 func internalCreateHelmRelease(
-	chart constructs.Construct,
-	versions *Versions,
+	chart *Chart,
 	namespace, repoName, chartName, releaseName string,
 	opts ...HelmReleaseOption,
 ) helmtoolkitfluxcdio.HelmRelease {
@@ -133,16 +132,16 @@ func internalCreateHelmRelease(
 	}
 
 	if helmReleaseOptions.Versions == nil {
-		helmReleaseOptions.Versions = versions
+		helmReleaseOptions.Versions = &chart.Builder.Versions
 	}
 
 	if helmReleaseOptions.UseSameNameConfigFile {
 		configMaps = append(configMaps,
-			CreateHelmValuesConfig(
-				chart,
+			chart.CreateHelmValuesConfig(
 				namespace,
 				releaseName,
 				fmt.Sprintf("%s.yaml", releaseName),
+				nil,
 			),
 		)
 	}
@@ -180,7 +179,7 @@ func internalCreateHelmRelease(
 	}
 
 	return helmtoolkitfluxcdio.NewHelmRelease(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String(fmt.Sprintf("helm-rel-%s", releaseName)),
 		&helmtoolkitfluxcdio.HelmReleaseProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
@@ -221,25 +220,38 @@ func (chart *Chart) CreateHelmRelease(
 	opts = append(opts, WithVersions(&chart.Builder.Versions))
 
 	return internalCreateHelmRelease(
-		chart.Cdk8sChart,
-		&chart.Builder.Versions,
+		chart,
 		namespace, repoName, chartName, releaseName,
 		opts...,
 	)
 }
 
-func CreateHelmValuesTemplatedConfig(
-	chart constructs.Construct,
+// CreateHelmValuesConfig reads the release's Helm values into a ConfigMap.
+// If configs/<filename>.tmpl exists it is executed as a Go template; the
+// data provides .Hash (sha256 of the raw file) and .CustomValues (as
+// passed by the chart), and the template functions are:
+//
+//	Image "org/app"    -> org/app:<version> from versions.yaml
+//	ImageTag "org/app" -> <version> only
+//
+// Both register the image for version checking, so image pins that live
+// only in a config file stay visible to check-versions. A plain .yaml
+// file is used verbatim, template actions included.
+func (chart *Chart) CreateHelmValuesConfig(
 	namespace, releaseName, filename string,
-	useCustomTemplate bool,
 	customValues interface{},
 ) HelmReleaseConfigMap {
-	var doc bytes.Buffer
-
-	filepath := filepath.Join("configs", filename)
-	contents, err := os.ReadFile(filepath)
+	contents, err := os.ReadFile(filepath.Join("configs", filename+".tmpl"))
+	isTemplate := true
 	if err != nil {
-		panic(err)
+		if !os.IsNotExist(err) {
+			panic(err)
+		}
+		contents, err = os.ReadFile(filepath.Join("configs", filename))
+		if err != nil {
+			panic(err)
+		}
+		isTemplate = false
 	}
 
 	constructName := "helm-values"
@@ -251,17 +263,30 @@ func CreateHelmValuesTemplatedConfig(
 
 	renderedContents := string(contents)
 
-	if useCustomTemplate {
-		// Apply custom templating, starting with sha256 of config file
+	if isTemplate {
+		var doc bytes.Buffer
+
+		// sha256 of the raw config file, so templates can force a restart
+		// when it changes (e.g. the homepage self-restart widget)
 		h := sha256.New()
-		h.Write([]byte(renderedContents))
+		h.Write(contents)
 
 		values := TemplateValues{
 			Hash:         fmt.Sprintf("%x", h.Sum(nil)),
 			CustomValues: customValues,
 		}
 
-		tmpl, err := template.New("config").Parse(renderedContents)
+		tmpl, err := template.New("config").Funcs(template.FuncMap{
+			"Image": chart.Builder.RegisterContainerImage,
+			"ImageTag": func(image string) string {
+				ref := chart.Builder.RegisterContainerImage(image)
+				idx := strings.LastIndex(ref, ":")
+				if idx < 0 {
+					panic(fmt.Sprintf("image %s has no version in versions.yaml", image))
+				}
+				return ref[idx+1:]
+			},
+		}).Parse(renderedContents)
 		if err != nil {
 			panic(err)
 		}
@@ -275,7 +300,7 @@ func CreateHelmValuesTemplatedConfig(
 	}
 
 	cm := k8s.NewKubeConfigMap(
-		chart,
+		chart.Cdk8sChart,
 		jsii.String(constructName),
 		&k8s.KubeConfigMapProps{
 			Metadata: &k8s.ObjectMeta{
@@ -292,18 +317,4 @@ func CreateHelmValuesTemplatedConfig(
 		KeyName:       "values.yaml",
 		ConfigMapHash: ComputeConfigMapHash(cm),
 	}
-}
-
-func CreateHelmValuesConfig(
-	chart constructs.Construct,
-	namespace, releaseName, filename string,
-) HelmReleaseConfigMap {
-	return CreateHelmValuesTemplatedConfig(
-		chart,
-		namespace,
-		releaseName,
-		filename,
-		false,
-		nil,
-	)
 }

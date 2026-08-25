@@ -25,12 +25,10 @@ func NewN8nChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	)
 
 	configMaps := []kubehelpers.HelmReleaseConfigMap{
-		kubehelpers.CreateHelmValuesTemplatedConfig(
-			chart.Cdk8sChart,
+		chart.CreateHelmValuesConfig(
 			namespace,
 			repositoryName,
 			"n8n.yaml",
-			true,
 			map[string]interface{}{
 				"Redis": redisServiceName,
 			},

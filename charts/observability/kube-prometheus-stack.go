@@ -29,11 +29,11 @@ func NewKubePrometheusStackChart(builder *kubehelpers.Builder) *kubehelpers.Char
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "grafana-postgres-cnpg")
 
 	configMaps := []kubehelpers.HelmReleaseConfigMap{
-		kubehelpers.CreateHelmValuesConfig(
-			chart.Cdk8sChart,
+		chart.CreateHelmValuesConfig(
 			namespace,
 			releaseName,
 			"kube-prometheus-stack.yaml",
+			nil,
 		),
 	}
 

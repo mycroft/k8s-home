@@ -18,11 +18,11 @@ func NewCapacitorChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	)
 
 	configMaps := []kubehelpers.HelmReleaseConfigMap{
-		kubehelpers.CreateHelmValuesConfig(
-			chart.Cdk8sChart,
+		chart.CreateHelmValuesConfig(
 			namespace,
 			repositoryName,
 			"capacitor.yaml",
+			nil,
 		),
 	}
 
