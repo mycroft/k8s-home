@@ -112,7 +112,7 @@ data:
 
     initContainers:
       - name: velero-plugin-for-aws
-        image: velero/velero-plugin-for-aws:1.14.2
+        image: velero/velero-plugin-for-aws:v1.9.2
         imagePullPolicy: IfNotPresent
         volumeMounts:
           - mountPath: /target
@@ -135,7 +135,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: c5ead23b181f1831af6f01185c0e49a10398662ae5810fe8260c7747e1cca444
+    configMapHash: 226e0b8657c6686a68449709938e71a5d6aecfac9cebfe738d2fea151bcf5cfa
   name: velero
   namespace: velero
 spec:
