@@ -54,7 +54,7 @@ images:
   ghcr.io/gethomepage/homepage: v2.1.2
   ghcr.io/gimlet-io/capacitor: v0.4.2
   ghcr.io/hoarder-app/hoarder: 0.33.2
-  ghcr.io/open-webui/open-webui: 0.11.0
+  ghcr.io/open-webui/open-webui: 0.11.1
   ghcr.io/thomiceli/opengist: 1.15.1
   jhaals/yopass: 14.9.0
   linuxserver/bookstack: v25.12.8-ls249
