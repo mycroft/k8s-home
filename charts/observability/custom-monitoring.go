@@ -1,6 +1,9 @@
 package observability
 
-import "git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
+import (
+	"git.mkz.me/mycroft/k8s-home/imports/scrapeconfig_monitoringcoreoscom"
+	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
+)
 
 func NewCustomMonitoring(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "monitoring"
@@ -19,6 +22,21 @@ func NewCustomMonitoring(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		BearerToken: &kubehelpers.ScrapeTargetBearerToken{
 			SecretName: "garage-monitoring",
 			SecretKey:  "metrics_token",
+		},
+	})
+
+	// Scrape llama-server's metrics endpoint, which is external to the cluster and
+	// not backed by a Kubernetes Service with endpoints (ExternalName alias).
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "llama-server-api")
+	kubehelpers.CreateScrapeConfig(chart, kubehelpers.ScrapeTarget{
+		Name:      "llama-server",
+		Namespace: namespace,
+		Target:    "llm-api.iop.cx:443",
+		Path:      "/llama.cpp/metrics",
+		Scheme:    scrapeconfig_monitoringcoreoscom.ScrapeConfigSpecScheme_HTTPS,
+		BearerToken: &kubehelpers.ScrapeTargetBearerToken{
+			SecretName: "llama-server-api",
+			SecretKey:  "token",
 		},
 	})
 
