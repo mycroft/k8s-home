@@ -30,13 +30,17 @@ exemptions:
     rules: [latest, run-as-root]
     reason: "self-built image; pipeline publishes :latest; runs as root"
 
+  dex-idp:
+    rules: [inline-secret]
+    reason: "dex chart requires its config as a Secret; the file holds only {{ .Env.* }} placeholders, real credentials arrive via env from Vault (ExternalSecret)"
+
   it-tools:
     rules: [run-as-root]
     reason: "upstream image (corentinth/it-tools) runs as root"
 
   memos:
-    rules: [run-as-root]
-    reason: "upstream image (neosmemo/memos) runs as root by default"
+    rules: [run-as-root, inline-secret]
+    reason: "upstream image (neosmemo/memos) runs as root by default; chart also requires instance settings in a Secret (content is non-sensitive)"
 
   privatebin:
     rules: [run-as-root]
