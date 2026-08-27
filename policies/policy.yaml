@@ -1,0 +1,13 @@
+# Policy configuration data (loaded via conftest --data, alongside
+# exemptions.yaml).
+#
+# allowed_domain_suffixes: the Ingress hostnames in this fleet must end
+# with one of these (or be exactly this suffix), on a label boundary.
+# See policies/ingress.rego, rule ingress-domain. Domains in use:
+#   *.services.mkz.me  internal services (default)
+#   *.iop.cx           public-facing hostnames
+#   *.lan.mkz.me       LAN-only hosts
+allowed_domain_suffixes:
+  - services.mkz.me
+  - iop.cx
+  - lan.mkz.me

@@ -61,7 +61,7 @@ jobs:
         run: |
           echo "Running conftest policies on generated charts..."
           export PATH=$PATH:$(go env GOPATH)/bin
-          conftest test --policy policies --data policies/exemptions.yaml ./dist
+          conftest test --policy policies --data policies/exemptions.yaml --data policies/policy.yaml ./dist
 
       - name: Run golangci-lint
         run: |
