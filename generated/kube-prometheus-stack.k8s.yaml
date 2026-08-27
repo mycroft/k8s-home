@@ -164,7 +164,7 @@ data:
         kubectl:
           registry: registry.k8s.io
           repository: kubectl
-          tag: 1.36.4
+          tag: v1.37.0
 
     prometheus:
       prometheusSpec:
@@ -675,7 +675,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 1b025d9a7ce35566acf6b370423f29eaa5e11cbe4aee5a062061dbd49ff8ede3
+    configMapHash: ab184c3fdd4969dc01c37f3a406333c1b78d36b51d67319ad91db24a416425e8
   name: prometheus
   namespace: monitoring
 spec:
