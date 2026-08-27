@@ -41,6 +41,49 @@ spec:
       targets:
         - moonstone.lan.mkz.me:3903
 ---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: custom-monitoring-es-llama-server-api-c85c96d5
+  namespace: monitoring
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/monitoring/llama-server-api
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: llama-server-api
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  labels:
+    release: prometheus
+  name: custom-monitoring-llama-server-c84d9d31
+  namespace: monitoring
+spec:
+  authorization:
+    credentials:
+      key: token
+      name: llama-server-api
+  metricsPath: /llama.cpp/metrics
+  scheme: https
+  staticConfigs:
+    - labels:
+        job: llama-server
+      targets:
+        - llm-api.iop.cx:443
+---
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: ScrapeConfig
 metadata:
