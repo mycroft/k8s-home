@@ -11,3 +11,7 @@ allowed_domain_suffixes:
   - services.mkz.me
   - iop.cx
   - lan.mkz.me
+
+# storage_class: the only storage class fleet data may use (encrypted
+# Longhorn). See policies/storage.rego, rule storage-class.
+storage_class: longhorn-crypto-global
