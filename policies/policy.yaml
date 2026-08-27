@@ -15,3 +15,10 @@ allowed_domain_suffixes:
 # storage_class: the only storage class fleet data may use (encrypted
 # Longhorn). See policies/storage.rego, rule storage-class.
 storage_class: longhorn-crypto-global
+
+# denied_service_types: Service types that open node/cluster-level
+# exposure and are therefore forbidden (exposure goes through Traefik).
+# See policies/services.rego, rule no-nodeport.
+denied_service_types:
+  - NodePort
+  - LoadBalancer
