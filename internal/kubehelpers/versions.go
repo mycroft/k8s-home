@@ -490,10 +490,6 @@ func GetLastImageTag(debug bool, image, version, pattern string) []string {
 func ReadVersions(versionsFile string) (Versions, error) {
 	var versions Versions
 
-	if len(versions.Images) != 0 || len(versions.HelmCharts) != 0 {
-		return Versions{}, nil
-	}
-
 	body, err := os.ReadFile(versionsFile)
 	if err != nil {
 		return Versions{}, fmt.Errorf("could not open versions.yaml: %s", err.Error())
