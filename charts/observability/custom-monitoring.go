@@ -60,5 +60,12 @@ func NewCustomMonitoring(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		Target:    "glitter.lan.mkz.me:9100",
 	})
 
+	// Scrape everyday's node-exporter directly, since it isn't backed by a Kubernetes Service.
+	kubehelpers.CreateScrapeConfig(chart, kubehelpers.ScrapeTarget{
+		Name:      "everyday-node-exporter",
+		Namespace: namespace,
+		Target:    "everyday.lan.mkz.me:9100",
+	})
+
 	return chart
 }
