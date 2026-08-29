@@ -67,5 +67,13 @@ func NewCustomMonitoring(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		Target:    "everyday.lan.mkz.me:9100",
 	})
 
+	// Scrape everyday's Pi-hole metrics exporter directly, since it isn't backed by a
+	// Kubernetes Service.
+	kubehelpers.CreateScrapeConfig(chart, kubehelpers.ScrapeTarget{
+		Name:      "everyday-pihole",
+		Namespace: namespace,
+		Target:    "everyday.lan.mkz.me:9617",
+	})
+
 	return chart
 }
