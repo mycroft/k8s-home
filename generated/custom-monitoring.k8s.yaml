@@ -131,3 +131,19 @@ spec:
         job: glitter-node-exporter
       targets:
         - glitter.lan.mkz.me:9100
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  labels:
+    release: prometheus
+  name: custom-monitoring-everyday-node-exporter-c8e05f8e
+  namespace: monitoring
+spec:
+  metricsPath: /metrics
+  scheme: http
+  staticConfigs:
+    - labels:
+        job: everyday-node-exporter
+      targets:
+        - everyday.lan.mkz.me:9100
