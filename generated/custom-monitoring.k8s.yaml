@@ -147,3 +147,19 @@ spec:
         job: everyday-node-exporter
       targets:
         - everyday.lan.mkz.me:9100
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  labels:
+    release: prometheus
+  name: custom-monitoring-everyday-pihole-c880bfab
+  namespace: monitoring
+spec:
+  metricsPath: /metrics
+  scheme: http
+  staticConfigs:
+    - labels:
+        job: everyday-pihole
+      targets:
+        - everyday.lan.mkz.me:9617
