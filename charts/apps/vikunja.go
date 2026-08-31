@@ -29,7 +29,7 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-cnpg")
 	// kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "openid")
-	// Vikunja's config.yml is managed in Vault; configs/vikunja/config.yaml is reference-only.
+	// Vikunja's config.yml is managed in Vault, mounted from the `config` secret below.
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "config")
 
 	// Vikunja appends service.publicurl to cors.origins on its own, but every
@@ -78,24 +78,6 @@ func NewVikunjaChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			},
 		},
 	}
-
-	// config, err := os.ReadFile("configs/vikunja/config.yaml")
-	// if err != nil {
-	// 	log.Fatalf("Could not read privatebin configuration file: %s", err.Error())
-	// }
-
-	// configMap := k8s.NewKubeConfigMap(
-	// 	chart.Cdk8sChart,
-	// 	jsii.String("config"),
-	// 	&k8s.KubeConfigMapProps{
-	// 		Metadata: &k8s.ObjectMeta{
-	// 			Namespace: jsii.String(namespace),
-	// 		},
-	// 		Data: &map[string]*string{
-	// 			"config.yml": jsii.String(string(config)),
-	// 		},
-	// 	},
-	// )
 
 	secrets := []kubehelpers.SecretMount{
 		{

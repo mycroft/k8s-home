@@ -134,7 +134,7 @@ Runs OPA/Rego policy validation against the generated charts in `dist/`.
 | `charts/static/`        | Static YAML manifests (Tekton pipeline definitions)                |
 | `internal/kubehelpers/` | Shared builder library for HelmRelease, Ingress, StatefulSet, etc. |
 | `internal/gitea/`       | Gitea API client for PR automation                                 |
-| `configs/`              | Helm values YAML files, injected as ConfigMaps                     |
+| `configs/`              | Helm values per release (flat `<release>.yaml`), injected as ConfigMaps; `configs/<app>/` holds an app's own native config files |
 | `dist/`                 | Generated output (`.k8s.yaml` files)                               |
 | `imports/`              | Auto-generated Go CRD bindings                                     |
 | `crds/`                 | Custom CRD YAML files for cdk8s imports                            |

@@ -35,7 +35,7 @@ func NewDexIdpChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	// Create configuration
 	// The configuration is stored in a secret, and secrets used are fetched from Vault using ExternalSecrets
-	contents, err := os.ReadFile("configs/dex-config.yaml")
+	contents, err := os.ReadFile("configs/dex/config.yaml")
 	if err != nil {
 		log.Fatalf("Could not read config file for dex-idp: %v", err)
 	}

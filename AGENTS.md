@@ -133,6 +133,13 @@ Version resolution in `internal/kubehelpers/versions.go` fetches Helm repo index
 
 Helm values live in `configs/<release>.yaml` (or `configs/<release>.yaml.tmpl`), not inline in Go. `chart.CreateHelmValuesConfig` reads that file into a ConfigMap under key `values.yaml`, and the HelmRelease references it via `valuesFrom` rather than embedding the values.
 
+`configs/` holds two categories of file, with different resolution rules — keep new files in the right one:
+
+- **Flat `configs/<release>.yaml[.tmpl]` — Helm values.** The filename *is* the lookup key: `WithDefaultConfigFile()` derives it from the release name, so these must stay at the top level, one per release, named exactly after the release.
+- **`configs/<app>/<file>` — the app's own native config**, in whatever format the app wants (JSON, PHP, YAML). Read with an explicit `os.ReadFile` in the chart and placed into a ConfigMap or Secret; not keyed by release name, and an app may have several. See `charts/apps/memos.go` (`configs/memos/*.json`), `charts/apps/privatebin.go` (`configs/privatebin/conf.php`) and `charts/security/dex-idp.go` (`configs/dex/config.yaml`).
+
+An app can have both — `dex` has Helm values in `configs/dex.yaml` and its own config in `configs/dex/config.yaml`.
+
 Because Flux won't notice a ConfigMap edit on its own, `ComputeConfigMapHash` (sha256 over the ConfigMap's data *values*, iterated in sorted key order for stability — key names never enter the digest) is stamped onto the HelmRelease as a `configMapHash` annotation. Editing `configs/<release>.yaml` changes the annotation, which changes the HelmRelease, which is what makes Flux re-reconcile. The same helper is used for Deployment pod templates to force pod restarts on config change (see `charts/observability/smokeping-prober.go`).
 
 A `configs/<release>.yaml.tmpl` file is executed as a Go `text/template` before it becomes the ConfigMap data (a plain `.yaml` is used verbatim — template actions in it, e.g. Prometheus alert rules in `kube-prometheus-stack`, are left alone). The template data provides `.Hash` (sha256 of the raw file) and `.CustomValues` (whatever the chart passed), plus two template functions that resolve images from `versions.yaml` **and register them for version checking** — this is how image pins that only live in a config file become visible to `check-versions`:
@@ -161,7 +168,7 @@ A typical chart Go file produces a `dist/<name>.k8s.yaml` containing:
 - **`charts/{apps,infra,observability,security,storage}/`** — one `.go` file per deployed app/namespace
 - **`internal/kubehelpers/`** — shared builder library (HelmRelease, Ingress, StatefulSet helpers, etc.)
 - **`internal/gitea/`** — Gitea API client behind the `create-prs` / `list-prs` / `merge-pr` subcommands
-- **`configs/`** — Helm values YAML per release, injected as ConfigMap into each HelmRelease
+- **`configs/`** — per-release Helm values (flat `<release>.yaml`), injected as ConfigMap into each HelmRelease; plus per-app native config files in `configs/<app>/` subdirectories. See the two categories above.
 - **`versions.yaml`** — single source of truth for all Helm chart and container image versions
 - **`imports/`** — auto-generated Go CRD bindings. Gitignored; **do not edit or commit.** Regenerate with `mise run import`. Excluded from linting.
 - **`dist/`** — generated output. Gitignored on `main`; CI copies to `generated` branch.
