@@ -114,7 +114,7 @@ spec:
                 secretKeyRef:
                   key: password
                   name: postgresql-cnpg
-          image: vikunja/vikunja:2.5.0
+          image: vikunja/vikunja:2.6.0
           name: vikunja
           volumeMounts:
             - mountPath: /app/vikunja/files
