@@ -21,7 +21,7 @@ data:
   values.yaml: |
     image:
       repository: ghcr.io/gethomepage/homepage
-      tag: v2.1.2
+      tag: v2.2
 
     # Required since homepage v2: reject requests whose Host header is not in this list
     env:
@@ -272,7 +272,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 6467f4393da100da67352b3a5323b4c5635919e05e3a9e2c0bee5272141d378f
+    configMapHash: eb993fe3ed101eef1fc616d0dcab66998194784ee26ee9829f4e4f98b7b60c94
   name: homepage
   namespace: homepage
 spec:
