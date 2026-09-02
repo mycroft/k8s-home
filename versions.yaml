@@ -70,7 +70,7 @@ images:
   registry.mkz.me/mycroft/whatismyip: 5
   registry.mkz.me/mycroft/useless: 0.0.16
   registry.mkz.me/mycroft/scoreboard-api: 0.0.1
-  requarks/wiki: 2.5.314
+  requarks/wiki: 3.0.0-beta.540
   redis: 8.10.1
   sissbruecker/linkding: 1.46.2
   thomseddon/traefik-forward-auth: 2.2.0
