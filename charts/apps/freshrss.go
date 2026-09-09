@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -87,7 +85,7 @@ func NewFreshRSS(builder *kubehelpers.Builder) *kubehelpers.Chart {
 								Key:      jsii.String("statefulset.kubernetes.io/pod-name"),
 								Operator: jsii.String("In"),
 								Values: &[]*string{
-									jsii.String(fmt.Sprintf("%s-0", stsName)),
+									jsii.String(stsName + "-0"),
 								},
 							},
 						},
@@ -138,7 +136,7 @@ func NewFreshRSS(builder *kubehelpers.Builder) *kubehelpers.Chart {
 									{
 										Name: jsii.String("data"),
 										PersistentVolumeClaim: &k8s.PersistentVolumeClaimVolumeSource{
-											ClaimName: jsii.String(fmt.Sprintf("data-%s-0", stsName)),
+											ClaimName: jsii.String("data-" + stsName + "-0"),
 										},
 									},
 								},

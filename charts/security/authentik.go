@@ -1,8 +1,6 @@
 package security
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 )
 
@@ -20,8 +18,7 @@ func NewAuthentikChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "authentik-secret")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "mailrelay")
 
-	_, redisServiceName := chart.NewRedisStatefulset(namespace)
-	_ = fmt.Sprintf("redis://%s:6379", redisServiceName)
+	chart.NewRedisStatefulset(namespace)
 
 	chart.CreateHelmRepository(
 		repositoryName,

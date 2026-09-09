@@ -1,8 +1,6 @@
 package security
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/certmanagerio"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/constructs-go/constructs/v10"
@@ -13,7 +11,7 @@ import (
 func createClusterIssueur(chart constructs.Construct, name, server string) certmanagerio.ClusterIssuer {
 	return certmanagerio.NewClusterIssuer(
 		chart,
-		jsii.String(fmt.Sprintf("cluster-issueur-%s", name)),
+		jsii.String("cluster-issueur-"+name),
 		&certmanagerio.ClusterIssuerProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name: jsii.String(name),

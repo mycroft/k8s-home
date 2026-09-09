@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/certificates_certmanagerio"
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
@@ -31,7 +29,7 @@ func NewBookstackChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	}
 
 	env := []*k8s.EnvVar{
-		{Name: jsii.String("APP_URL"), Value: jsii.String(fmt.Sprintf("https://%s", appIngress))},
+		{Name: jsii.String("APP_URL"), Value: jsii.String("https://" + appIngress)},
 		{Name: jsii.String("PUID"), Value: jsii.String("1000")},
 		{Name: jsii.String("PGID"), Value: jsii.String("1000")},
 		{Name: jsii.String("TZ"), Value: jsii.String("Etc/UTC")},

@@ -1,7 +1,6 @@
 package kubehelpers
 
 import (
-	"fmt"
 	"strings"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -65,8 +64,8 @@ type StatefulSetConfig struct {
 // NewStatefulSet creates a new statefulset and returns its name and its service name
 func NewStatefulSet(chart cdk8s.Chart, cfg StatefulSetConfig) (string, string) {
 	// Warning: Changing statefulSet object names will rename PVCs
-	serviceObjectName := fmt.Sprintf("%s-svc", cfg.AppName)
-	statefulSetObjectName := fmt.Sprintf("%s-sts", cfg.AppName)
+	serviceObjectName := cfg.AppName + "-svc"
+	statefulSetObjectName := cfg.AppName + "-sts"
 
 	svc := k8s.NewKubeService(
 		chart,

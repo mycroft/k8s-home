@@ -1,8 +1,6 @@
 package kubehelpers
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/certificates_certmanagerio"
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/traefikio"
@@ -25,10 +23,10 @@ func (builder *Builder) NewExternalApplicationChart(config ExternalApplicationCo
 	chart := builder.NewChart(config.Name)
 	chart.NewNamespace(config.Name)
 
-	tlsSecretName := fmt.Sprintf("%s-redirect-tls", config.Name)
+	tlsSecretName := config.Name + "-redirect-tls"
 	certificateID := config.CertificateID
 	if certificateID == "" {
-		certificateID = fmt.Sprintf("%s-cert", config.Name)
+		certificateID = config.Name + "-cert"
 	}
 
 	certificates_certmanagerio.NewCertificate(
@@ -74,7 +72,7 @@ func (builder *Builder) NewExternalApplicationChart(config ExternalApplicationCo
 
 	traefikio.NewIngressRoute(
 		chart.Cdk8sChart,
-		jsii.String(fmt.Sprintf("%s-ingress", config.Name)),
+		jsii.String(config.Name+"-ingress"),
 		&traefikio.IngressRouteProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Namespace: jsii.String(config.Name),
@@ -87,7 +85,7 @@ func (builder *Builder) NewExternalApplicationChart(config ExternalApplicationCo
 				Routes: &[]*traefikio.IngressRouteSpecRoutes{
 					{
 						Kind:  traefikio.IngressRouteSpecRoutesKind_RULE,
-						Match: jsii.String(fmt.Sprintf("Host(`%s`)", config.Hostname)),
+						Match: jsii.String("Host(`" + config.Hostname + "`)"),
 						Services: &[]*traefikio.IngressRouteSpecRoutesServices{
 							{
 								Name: service.Name(),

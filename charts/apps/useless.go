@@ -2,6 +2,7 @@ package apps
 
 import (
 	"fmt"
+	"strconv"
 
 	kube "git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 )
@@ -30,7 +31,7 @@ func NewUselessChart(builder *kube.Builder) *kube.Chart {
 
 	env := []kube.EnvEntry{
 		{Name: "REDIS_HOST", Value: kube.EnvValue{Value: fmt.Sprintf("%s.%s", redisServiceName, namespace)}},
-		{Name: "REDIS_PORT", Value: kube.EnvValue{Value: fmt.Sprintf("%d", redisPort)}},
+		{Name: "REDIS_PORT", Value: kube.EnvValue{Value: strconv.Itoa(redisPort)}},
 	}
 
 	chart.NewDeployment(&kube.Deployment{

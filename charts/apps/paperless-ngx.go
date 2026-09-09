@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -28,7 +26,7 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		// XXX fix url here
 		{
 			Name:  jsii.String("PAPERLESS_REDIS"),
-			Value: jsii.String(fmt.Sprintf("redis://%s:6379", redisServiceName)),
+			Value: jsii.String("redis://" + redisServiceName + ":6379"),
 		},
 		{Name: jsii.String("PAPERLESS_DBENGINE"), Value: jsii.String("postgresql")},
 		{Name: jsii.String("PAPERLESS_DBHOST"), Value: jsii.String("postgres-rw.cnpg")},
@@ -54,7 +52,7 @@ func NewPaperlessNGXChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 		{
 			Name:  jsii.String("PAPERLESS_URL"),
-			Value: jsii.String(fmt.Sprintf("https://%s", appIngress)),
+			Value: jsii.String("https://" + appIngress),
 		},
 		{
 			Name:  jsii.String("PAPERLESS_MEDIA_ROOT"),

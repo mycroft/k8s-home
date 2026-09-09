@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -34,7 +32,7 @@ func NewMicrobinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		{Name: jsii.Sprintf("MICROBIN_ENCRYPTION_CLIENT_SIDE"), Value: jsii.String("false")},
 		{Name: jsii.Sprintf("MICROBIN_ENCRYPTION_SERVER_SIDE"), Value: jsii.String("true")},
 		{Name: jsii.Sprintf("MICROBIN_WIDE"), Value: jsii.String("true")},
-		{Name: jsii.String("MICROBIN_PUBLIC_PATH"), Value: jsii.String(fmt.Sprintf("https://%s/", appIngress))},
+		{Name: jsii.String("MICROBIN_PUBLIC_PATH"), Value: jsii.String("https://" + appIngress + "/")},
 		{
 			Name: jsii.String("MICROBIN_ADMIN_USERNAME"),
 			ValueFrom: &k8s.EnvVarSource{

@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -51,7 +49,7 @@ func NewWallabagChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				},
 			},
 		},
-		{Name: jsii.String("SYMFONY__ENV__DOMAIN_NAME"), Value: jsii.String(fmt.Sprintf("https://%s", appIngress))},
+		{Name: jsii.String("SYMFONY__ENV__DOMAIN_NAME"), Value: jsii.String("https://" + appIngress)},
 		{
 			Name: jsii.String("SYMFONY__ENV__MAILER_USER"),
 			ValueFrom: &k8s.EnvVarSource{

@@ -2,7 +2,7 @@ package kubehelpers
 
 import (
 	"crypto/sha256"
-	"fmt"
+	"encoding/hex"
 	"sort"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -39,5 +39,5 @@ func ComputeConfigMapHash(configMaps ...k8s.KubeConfigMap) string {
 		}
 	}
 
-	return fmt.Sprintf("%x", h.Sum(nil))
+	return hex.EncodeToString(h.Sum(nil))
 }

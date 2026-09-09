@@ -45,7 +45,7 @@ func (chart *Chart) CreateSecretStore(namespace string) {
 func CreateExternalSecret(chart constructs.Construct, namespace, name string) {
 	externalsecrets_externalsecretsio.NewExternalSecret(
 		chart,
-		jsii.String(fmt.Sprintf("es-%s", name)),
+		jsii.String("es-"+name),
 		&externalsecrets_externalsecretsio.ExternalSecretProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Namespace: jsii.String(namespace),
@@ -84,7 +84,7 @@ func CreateDockerConfigJSONSecret(chart constructs.Construct, namespace, name, r
 
 	externalsecrets_externalsecretsio.NewExternalSecret(
 		chart,
-		jsii.String(fmt.Sprintf("es-%s", name)),
+		jsii.String("es-"+name),
 		&externalsecrets_externalsecretsio.ExternalSecretProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Namespace: jsii.String(namespace),

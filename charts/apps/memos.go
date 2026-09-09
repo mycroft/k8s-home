@@ -1,7 +1,6 @@
 package apps
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -15,8 +14,8 @@ func NewMemosChart(builder *kube.Builder) *kube.Chart {
 	namespace := name
 	port := uint(5230)
 	ingresses := []string{
-		fmt.Sprintf("%s.services.mkz.me", name),
-		fmt.Sprintf("%s.iop.cx", name),
+		name + ".services.mkz.me",
+		name + ".iop.cx",
 	}
 
 	labels := map[string]string{

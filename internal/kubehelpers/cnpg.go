@@ -67,7 +67,7 @@ func (db CNPGDatabase) VaultKey() string {
 // from the database name itself so it cannot collide with the cluster's own
 // secrets.
 func (db CNPGDatabase) resourceName() string {
-	return fmt.Sprintf("postgres-%s", strings.ReplaceAll(db.Name, "_", "-"))
+	return "postgres-" + strings.ReplaceAll(db.Name, "_", "-")
 }
 
 // CNPGDatabaseConfig describes where a database is provisioned.
@@ -114,7 +114,7 @@ func NewCNPGDatabase(chart constructs.Construct, cfg CNPGDatabaseConfig) {
 
 	password.NewPassword(
 		chart,
-		jsii.String(fmt.Sprintf("password-%s", db.Name)),
+		jsii.String("password-"+db.Name),
 		&password.PasswordProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Namespace: jsii.String(cfg.Namespace),
@@ -135,7 +135,7 @@ func NewCNPGDatabase(chart constructs.Construct, cfg CNPGDatabaseConfig) {
 	// The secret is retained so deleting this ExternalSecret cannot drop it.
 	externalsecrets_externalsecretsio.NewExternalSecret(
 		chart,
-		jsii.String(fmt.Sprintf("es-%s", db.Name)),
+		jsii.String("es-"+db.Name),
 		&externalsecrets_externalsecretsio.ExternalSecretProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Namespace: jsii.String(cfg.Namespace),
@@ -183,7 +183,7 @@ func NewCNPGDatabase(chart constructs.Construct, cfg CNPGDatabaseConfig) {
 
 	database.NewDatabase(
 		chart,
-		jsii.String(fmt.Sprintf("database-%s", db.Name)),
+		jsii.String("database-"+db.Name),
 		&database.DatabaseProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Namespace: jsii.String(cfg.Namespace),
@@ -221,7 +221,7 @@ func NewCNPGDatabase(chart constructs.Construct, cfg CNPGDatabaseConfig) {
 	// this path and losing it would break a running application.
 	pushsecret.NewPushSecret(
 		chart,
-		jsii.String(fmt.Sprintf("push-%s", db.Name)),
+		jsii.String("push-"+db.Name),
 		&pushsecret.PushSecretProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Namespace: jsii.String(cfg.Namespace),

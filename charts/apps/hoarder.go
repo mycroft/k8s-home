@@ -1,7 +1,6 @@
 package apps
 
 import (
-	"fmt"
 	"strings"
 
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
@@ -92,7 +91,7 @@ func NewHoarderChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	})
 
 	env := []*k8s.EnvVar{
-		{Name: jsii.String("NEXTAUTH_URL"), Value: jsii.String(fmt.Sprintf("https://%s", appIngress))},
+		{Name: jsii.String("NEXTAUTH_URL"), Value: jsii.String("https://" + appIngress)},
 		{
 			Name: jsii.String("NEXTAUTH_SECRET"),
 			ValueFrom: &k8s.EnvVarSource{
@@ -104,9 +103,9 @@ func NewHoarderChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 
 		{Name: jsii.String("DATA_DIR"), Value: jsii.String("/data")},
-		{Name: jsii.String("BROWSER_WEB_URL"), Value: jsii.String(fmt.Sprintf("http://%s:9222", *chromiumSvcName.Name()))},
+		{Name: jsii.String("BROWSER_WEB_URL"), Value: jsii.String("http://" + *chromiumSvcName.Name() + ":9222")},
 		{Name: jsii.String("MAX_ASSET_SIZE_MB"), Value: jsii.String("16")},
-		{Name: jsii.String("MEILI_ADDR"), Value: jsii.String(fmt.Sprintf("http://%s:7700", meiliSvcName))},
+		{Name: jsii.String("MEILI_ADDR"), Value: jsii.String("http://" + meiliSvcName + ":7700")},
 		{
 			Name: jsii.String("OPENAI_API_KEY"),
 			ValueFrom: &k8s.EnvVarSource{

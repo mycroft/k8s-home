@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -11,7 +9,7 @@ import (
 func NewOutlineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "outline"
 	namespace := appName
-	appIngress := fmt.Sprintf("%s.iop.cx", appName)
+	appIngress := appName + ".iop.cx"
 
 	outlineImage := builder.RegisterContainerImage("outlinewiki/outline")
 
@@ -38,7 +36,7 @@ func NewOutlineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 		{
 			Name:  jsii.String("REDIS_URL"),
-			Value: jsii.String(fmt.Sprintf("redis://%s:6379", redisServiceName)),
+			Value: jsii.String("redis://" + redisServiceName + ":6379"),
 		},
 		{
 			Name: jsii.String("SECRET_KEY"),
@@ -60,11 +58,11 @@ func NewOutlineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 		{
 			Name:  jsii.String("URL"),
-			Value: jsii.String(fmt.Sprintf("https://%s", appIngress)),
+			Value: jsii.String("https://" + appIngress),
 		},
 		{
 			Name:  jsii.String("COLLABORATION_URL"),
-			Value: jsii.String(fmt.Sprintf("https://%s", appIngress)),
+			Value: jsii.String("https://" + appIngress),
 		},
 		{
 			Name: jsii.String("OIDC_CLIENT_ID"),

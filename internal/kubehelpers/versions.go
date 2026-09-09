@@ -95,7 +95,7 @@ func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]st
 
 	for _, helmRelease := range helmChartVersions {
 		if _, ok := builder.HelmRepositories[helmRelease.RepositoryName]; !ok {
-			panic(fmt.Sprintf("Unknown repo %s", helmRelease.RepositoryName))
+			panic("Unknown repo " + helmRelease.RepositoryName)
 		}
 
 		chartName := fmt.Sprintf("%s/%s", helmRelease.RepositoryName, helmRelease.ChartName)
@@ -133,7 +133,7 @@ func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]st
 		go func(url string) {
 			defer wg.Done()
 
-			body, err := GetRepoIndex(fmt.Sprintf("%s/index.yaml", url))
+			body, err := GetRepoIndex(url + "/index.yaml")
 			if err != nil {
 				panic(err)
 			}
@@ -191,7 +191,7 @@ func (builder *Builder) GetHelmUpdates(debug bool, filter string) (map[string]st
 
 			// find entries for this chart
 			if _, ok := entries[check.chart.ChartName]; !ok {
-				panic(fmt.Sprintf("No chart for name %s", check.chart.ChartName))
+				panic("No chart for name " + check.chart.ChartName)
 			}
 
 			for _, chartVersion := range entries[check.chart.ChartName] {
@@ -435,7 +435,7 @@ func GetLastImageTag(debug bool, image, version, pattern string) []string {
 	imageName := image
 
 	// Create a new registry client
-	ref, err := name.ParseReference(fmt.Sprintf("%s:%s", imageName, "latest"))
+	ref, err := name.ParseReference(imageName + ":latest")
 	if err != nil {
 		panic(err)
 	}

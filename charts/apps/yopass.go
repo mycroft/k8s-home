@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/servicemonitor_monitoringcoreoscom"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
@@ -21,7 +19,7 @@ func NewYopassChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.NewNamespace(namespace)
 
 	_, redisServiceName := chart.NewRedisStatefulset(namespace)
-	redisURL := fmt.Sprintf("redis://%s:6379", redisServiceName)
+	redisURL := "redis://" + redisServiceName + ":6379"
 
 	yopassLabels := map[string]*string{
 		"app.kubernetes.io/component": jsii.String("yopass"),
@@ -35,7 +33,7 @@ func NewYopassChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		yopassLabels,
 		[]*k8s.EnvVar{},
 		[]string{
-			fmt.Sprintf("/yopass-server --database redis --metrics-port 1338 --port 1337 --redis %s", redisURL),
+			"/yopass-server --database redis --metrics-port 1338 --port 1337 --redis " + redisURL,
 		},
 		[]kubehelpers.ConfigMapMount{},
 	)

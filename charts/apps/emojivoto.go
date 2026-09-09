@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -19,7 +17,7 @@ func NewEmojivotoChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	k8s.NewKubeNamespace(
 		chart.Cdk8sChart,
-		jsii.String(fmt.Sprintf("ns-%s", namespace)),
+		jsii.String("ns-"+namespace),
 		&k8s.KubeNamespaceProps{
 			Metadata: &k8s.ObjectMeta{
 				Name: jsii.String(namespace),
@@ -39,7 +37,7 @@ func NewEmojivotoChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	for _, saName := range sa {
 		k8s.NewKubeServiceAccount(
 			chart.Cdk8sChart,
-			jsii.String(fmt.Sprintf("%s-sa", saName)),
+			jsii.String(saName+"-sa"),
 			&k8s.KubeServiceAccountProps{
 				Metadata: &k8s.ObjectMeta{
 					Name:      jsii.String(saName),

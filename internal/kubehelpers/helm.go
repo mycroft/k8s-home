@@ -3,6 +3,7 @@ package kubehelpers
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"os"
@@ -46,7 +47,7 @@ func CreateHelmRepository(chart constructs.Construct, name, url string) sourceto
 
 	return sourcetoolkitfluxcdio.NewHelmRepository(
 		chart,
-		jsii.String(fmt.Sprintf("helm-repo-%s", name)),
+		jsii.String("helm-repo-"+name),
 		&sourcetoolkitfluxcdio.HelmRepositoryProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name:      jsii.String(name),
@@ -140,7 +141,7 @@ func internalCreateHelmRelease(
 			chart.CreateHelmValuesConfig(
 				namespace,
 				releaseName,
-				fmt.Sprintf("%s.yaml", releaseName),
+				releaseName+".yaml",
 				nil,
 			),
 		)
@@ -180,7 +181,7 @@ func internalCreateHelmRelease(
 
 	return helmtoolkitfluxcdio.NewHelmRelease(
 		chart.Cdk8sChart,
-		jsii.String(fmt.Sprintf("helm-rel-%s", releaseName)),
+		jsii.String("helm-rel-"+releaseName),
 		&helmtoolkitfluxcdio.HelmReleaseProps{
 			Metadata: &cdk8s.ApiObjectMetadata{
 				Name:        jsii.String(releaseName),
@@ -256,7 +257,7 @@ func (chart *Chart) CreateHelmValuesConfig(
 
 	constructName := "helm-values"
 	if releaseName != "" {
-		constructName = fmt.Sprintf("helm-val-%s", releaseName)
+		constructName = "helm-val-" + releaseName
 	} else {
 		log.Printf("WARNING: HelmValues in ns:%s is still using legacy name", namespace)
 	}
@@ -272,7 +273,7 @@ func (chart *Chart) CreateHelmValuesConfig(
 		h.Write(contents)
 
 		values := TemplateValues{
-			Hash:         fmt.Sprintf("%x", h.Sum(nil)),
+			Hash:         hex.EncodeToString(h.Sum(nil)),
 			CustomValues: customValues,
 		}
 
@@ -282,7 +283,7 @@ func (chart *Chart) CreateHelmValuesConfig(
 				ref := chart.Builder.RegisterContainerImage(image)
 				idx := strings.LastIndex(ref, ":")
 				if idx < 0 {
-					panic(fmt.Sprintf("image %s has no version in versions.yaml", image))
+					panic("image " + image + " has no version in versions.yaml")
 				}
 				return ref[idx+1:]
 			},

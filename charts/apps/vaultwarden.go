@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -25,7 +23,7 @@ func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	env := []*k8s.EnvVar{
 		{
 			Name:  jsii.String("DOMAIN"),
-			Value: jsii.String(fmt.Sprintf("https://%s", appIngress)),
+			Value: jsii.String("https://" + appIngress),
 		},
 	}
 

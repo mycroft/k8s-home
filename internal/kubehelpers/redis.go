@@ -1,7 +1,6 @@
 package kubehelpers
 
 import (
-	"fmt"
 	"maps"
 
 	"github.com/aws/jsii-runtime-go"
@@ -58,7 +57,7 @@ func (chart *Chart) NewRedisStatefulsetWithOpts(namespace string, opts RedisOpts
 		AppPort:   appPort,
 		Labels:    redisLabels,
 		Commands: []string{
-			fmt.Sprintf("redis-server --save 60 1 --loglevel %s", logLevel),
+			"redis-server --save 60 1 --loglevel " + logLevel,
 		},
 		Storages: []StatefulSetVolume{
 			{

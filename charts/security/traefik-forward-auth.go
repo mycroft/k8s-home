@@ -25,7 +25,7 @@ func NewTraefikForwardAuth(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	}
 
 	domainName := "mkz.me"
-	ingressHost := fmt.Sprintf("forward-auth.services.%s", domainName)
+	ingressHost := "forward-auth.services." + domainName
 
 	env := &[]*k8s.EnvVar{
 		{

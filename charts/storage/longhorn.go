@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 
 	"git.mkz.me/mycroft/k8s-home/imports/bitnamicom"
@@ -27,7 +25,7 @@ const (
 )
 
 func CreateRecurringJob(chart constructs.Construct, namespace string, task longhornio.RecurringJobV1Beta2SpecTask, cron, job string, retain, concurrency int) longhornio.RecurringJobV1Beta2 {
-	name := fmt.Sprintf("longhorn-%s", job)
+	name := "longhorn-" + job
 
 	return longhornio.NewRecurringJobV1Beta2(
 		chart,

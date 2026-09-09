@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -15,7 +13,7 @@ const (
 func NewUrlsChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "urls"
 	appName := namespace
-	ingressHost := fmt.Sprintf("%s.services.mkz.me", appName)
+	ingressHost := appName + ".services.mkz.me"
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)

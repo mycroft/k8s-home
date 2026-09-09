@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"fmt"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/imports/servicemonitor_monitoringcoreoscom"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
@@ -19,8 +17,8 @@ func NewHeyChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := namespace
 	appPort := uint(3000)
 	ingressHosts := []string{
-		fmt.Sprintf("%s.services.mkz.me", appName),
-		fmt.Sprintf("%s.iop.cx", appName),
+		appName + ".services.mkz.me",
+		appName + ".iop.cx",
 	}
 
 	chart := builder.NewChart(namespace)
