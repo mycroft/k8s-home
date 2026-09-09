@@ -96,7 +96,7 @@ spec:
                   name: postgresql-cnpg
             - name: FRESHRSS_DB_NAME
               value: freshrss
-          image: freshrss/freshrss:1.29.1
+          image: freshrss/freshrss:1.30.0
           name: freshrss
           volumeMounts:
             - mountPath: /var/www/FreshRSS/data
@@ -181,7 +181,7 @@ spec:
                       name: postgresql-cnpg
                 - name: FRESHRSS_DB_NAME
                   value: freshrss
-              image: freshrss/freshrss:1.29.1
+              image: freshrss/freshrss:1.30.0
               name: updater
               volumeMounts:
                 - mountPath: /var/www/FreshRSS/data
