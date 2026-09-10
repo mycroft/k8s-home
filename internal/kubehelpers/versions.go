@@ -432,6 +432,14 @@ func (builder *Builder) CheckVersions(debug bool, filter string) {
 
 func GetLastImageTag(debug bool, image, version, pattern string) []string {
 	retVersions := []string{}
+
+	// An image pinned to :latest, or one with no version in versions.yaml,
+	// has nothing to compare candidate tags against. Bail out before the
+	// registry round-trip rather than listing tags we are going to discard.
+	if version == "latest" || version == "" {
+		return retVersions
+	}
+
 	imageName := image
 
 	// Create a new registry client
@@ -446,10 +454,6 @@ func GetLastImageTag(debug bool, image, version, pattern string) []string {
 	tags, err := remote.List(ref.Context(), remote.WithContext(ctx))
 	if err != nil {
 		panic(err)
-	}
-
-	if version == "latest" || version == "" {
-		return retVersions
 	}
 
 	v, err := semver.NewVersion(version)
