@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: registry.mkz.me/mycroft/golang-cdk8s:latest
+      image: registry.mkz.me/mycroft/golang-cdk8s@sha256:df68b2ff94a286e691c903093327936fde0f4cbe881d07cacbbac8bf1a9e0454 # build-2521
       pull: always
 
     steps:

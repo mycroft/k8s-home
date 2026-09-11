@@ -207,7 +207,10 @@ See `docs/adding-new-app.md` for worked examples (stateless app, env vars + Vaul
 - **Check versions** (`.gitea/workflows/check-versions.yaml`): daily cron + manual dispatch; runs `check-versions` then `create-prs`
 - **Build CI image** (`.gitea/workflows/build-image.yaml`): on changes to `contrib/build-image/**`; rebuilds and pushes the CI container image — no cdk8s involved
 - The three cdk8s workflows above each do `cdk8s import` → `git checkout cdk8s.yaml` → `cdk8s synth`
-- CI container image: `registry.mkz.me/mycroft/golang-cdk8s:latest`
+- CI container image: `registry.mkz.me/mycroft/golang-cdk8s`, pinned by digest in the three
+  workflows that use it (currently `build-2521`). `build-image.yaml` publishes both `:latest`
+  and an immutable `build-<run_id>` tag; after rebuilding it, update the digest in
+  `lint.yaml`, `deploy.yaml` and `check-versions.yaml` or the rebuild has no effect.
 - Env vars needed for PR operations: `GITEA_TOKEN` (primary) or `GITHUB_TOKEN` (fallback)
 
 ## Conventions

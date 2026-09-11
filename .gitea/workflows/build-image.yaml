@@ -22,6 +22,8 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
+      # Consumers (lint, deploy, check-versions) pin this image by digest,
+      # so a rebuild does not reach them until those pins are updated.
       - name: Build and push CI image
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         with:
