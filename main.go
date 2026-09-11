@@ -87,10 +87,25 @@ func GenerateYamlCharts(versionsFile string) {
 	)
 
 	if *debug {
-		log.Println("syntheizing yamls...")
+		log.Println("synthesizing yamls...")
 	}
 
 	builder.App.Synth()
+}
+
+// mustGetToken returns the Gitea API token from GITEA_TOKEN, falling back to
+// GITHUB_TOKEN, and exits if neither is set.
+func mustGetToken() string {
+	token := os.Getenv("GITEA_TOKEN")
+	if token == "" {
+		token = os.Getenv("GITHUB_TOKEN")
+	}
+
+	if token == "" {
+		log.Fatal("GITEA_TOKEN or GITHUB_TOKEN environment variable must be set")
+	}
+
+	return token
 }
 
 var createPRsCmd = &cobra.Command{
@@ -104,14 +119,7 @@ var createPRsCmd = &cobra.Command{
 func runCreatePRs(command *cobra.Command) {
 	ctx := context.Background()
 
-	token := os.Getenv("GITEA_TOKEN")
-	if token == "" {
-		token = os.Getenv("GITHUB_TOKEN")
-	}
-
-	if token == "" {
-		log.Fatal("GITEA_TOKEN or GITHUB_TOKEN environment variable must be set")
-	}
+	token := mustGetToken()
 
 	builder := charts.HomelabBuildApp(
 		context.WithValue(ctx, kubehelpers.ValueKey, kubehelpers.ContextValues{Debug: *debug}),
@@ -146,14 +154,7 @@ var mergePRCmd = &cobra.Command{
 	Run: func(_ *cobra.Command, args []string) {
 		ctx := context.Background()
 
-		token := os.Getenv("GITEA_TOKEN")
-		if token == "" {
-			token = os.Getenv("GITHUB_TOKEN")
-		}
-
-		if token == "" {
-			log.Fatal("GITEA_TOKEN or GITHUB_TOKEN environment variable must be set")
-		}
+		token := mustGetToken()
 
 		var number int
 		if _, err := fmt.Sscan(args[0], &number); err != nil {
@@ -176,14 +177,7 @@ var listPRsCmd = &cobra.Command{
 	Run: func(_ *cobra.Command, _ []string) {
 		ctx := context.Background()
 
-		token := os.Getenv("GITEA_TOKEN")
-		if token == "" {
-			token = os.Getenv("GITHUB_TOKEN")
-		}
-
-		if token == "" {
-			log.Fatal("GITEA_TOKEN or GITHUB_TOKEN environment variable must be set")
-		}
+		token := mustGetToken()
 
 		client := gitea.NewClient(*giteaURL, token, *owner, *repo)
 
@@ -211,7 +205,7 @@ func init() {
 	rootCmd.AddCommand(listPRsCmd)
 	rootCmd.AddCommand(mergePRCmd)
 
-	rootCmd.PersistentFlags().String("versions", "versions.yaml", "versions.yaml file to user")
+	rootCmd.PersistentFlags().String("versions", "versions.yaml", "versions.yaml file to use")
 
 	debug = rootCmd.PersistentFlags().Bool("debug", false, "enable debug")
 	filter = checkVersionCmd.Flags().String("filter", "", "filter to apply when checking helm/container images")
