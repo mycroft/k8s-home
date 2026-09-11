@@ -30,8 +30,8 @@ jobs:
 
       - name: Push to generated branch
         run: |
-          git config user.name "mycroft"
-          git config user.email "pm@mkz.me"
+          git config user.name "k8s-home-ci"
+          git config user.email "k8s-home-ci@noreply.git.mkz.me"
           git fetch origin +refs/heads/generated
           git checkout generated
           git rm generated/*.yaml

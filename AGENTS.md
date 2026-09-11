@@ -204,6 +204,12 @@ See `docs/adding-new-app.md` for worked examples (stateless app, env vars + Vaul
 
 - **Lint** (`.gitea/workflows/lint.yaml`): runs on PRs to `main`, skipped for `versions.yaml`-only changes
 - **Deploy** (`.gitea/workflows/deploy.yaml`): on merge to `main`, runs `cdk8s import` + `cdk8s synth`, pushes `dist/` to `generated` branch, then pushes an OCI artifact
+- **Flux reconciles from the `generated` branch, not the OCI artifact.** The one `flux-system`
+  Kustomization has `sourceRef: {kind: GitRepository, name: flux-system}` and `path: ./generated`.
+  Deploy also publishes an OCI artifact, mirrored by `OCIRepository/flux-system` (defined in
+  `charts/infra/fluxcd.go`) — it stays Ready but no Kustomization consumes it, so it is a prepared
+  alternative rather than a live path. `docs/flux.md` holds the migration procedure. The
+  Kustomization itself is created by `flux bootstrap` and is not in this repo.
 - **Check versions** (`.gitea/workflows/check-versions.yaml`): daily cron + manual dispatch; runs `check-versions` then `create-prs`
 - **Build CI image** (`.gitea/workflows/build-image.yaml`): on changes to `contrib/build-image/**`; rebuilds and pushes the CI container image — no cdk8s involved
 - The three cdk8s workflows above each do `cdk8s import` → `git checkout cdk8s.yaml` → `cdk8s synth`

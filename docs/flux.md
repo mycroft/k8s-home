@@ -8,7 +8,9 @@ Flux CD is the GitOps engine that reconciles the cluster state with manifests. T
 
 1. Go code in `charts/` synthesizes YAML manifests into `dist/`
 2. On merge to `main`, Gitea Actions pushes `dist/` to the `generated` branch and publishes an OCI artifact
-3. Flux CD polls the source (Git or OCI) every 2 minutes and applies changes
+3. Flux CD polls the `generated` branch every 2 minutes and applies changes. The OCI artifact
+   is published on every deploy but is not currently consumed by any Kustomization — see
+   [Migrate from Git to OCI](#migrate-from-git-to-oci)
 
 The `flux-system` namespace contains the Flux controllers. A `PodMonitor` in `charts/infra/fluxcd.go` exposes metrics to Prometheus.
 
