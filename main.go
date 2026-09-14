@@ -208,14 +208,14 @@ func init() {
 	rootCmd.PersistentFlags().String("versions", "versions.yaml", "versions.yaml file to use")
 
 	debug = rootCmd.PersistentFlags().Bool("debug", false, "enable debug")
-	filter = checkVersionCmd.Flags().String("filter", "", "filter to apply when checking helm/container images")
+	filter = checkVersionCmd.Flags().String("filter", "", "substring matched against helm chart (repo/chart) and container image names")
 
 	giteaURL = rootCmd.PersistentFlags().String("gitea-url", "https://git.mkz.me", "Gitea instance base URL")
 	owner = rootCmd.PersistentFlags().String("owner", "mycroft", "repository owner")
 	repo = rootCmd.PersistentFlags().String("repo", "k8s-home", "repository name")
 	baseBranch = createPRsCmd.Flags().String("base-branch", "main", "base branch for pull requests")
 	dryRun = createPRsCmd.Flags().Bool("dry-run", false, "print what would be done without creating PRs")
-	prFilter = createPRsCmd.Flags().String("filter", "", "filter to apply when checking helm/container images")
+	prFilter = createPRsCmd.Flags().String("filter", "", "substring matched against helm chart (repo/chart) and container image names")
 	prBranchOverride = createPRsCmd.Flags().String("branch", "", "override the generated branch name (requires exactly one update)")
 }
 
