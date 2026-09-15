@@ -44,8 +44,6 @@ jobs:
           echo "cdk8s version:"
           cdk8s --version
           cdk8s import
-          git diff
-          git checkout cdk8s.yaml
           cdk8s synth
 
       - name: Install conftest

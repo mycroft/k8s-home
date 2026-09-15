@@ -20,8 +20,6 @@ jobs:
           cdk8s --version
           ls -l
           cdk8s import
-          git diff
-          git checkout cdk8s.yaml
           cdk8s synth
       - name: Build k8s-home binary
         run: |

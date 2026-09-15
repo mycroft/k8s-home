@@ -1,5 +1,4 @@
 output: dist
-pluginsDirectory: /home/mycroft/.cdk8s/plugins
 language: go
 app: go run .
 imports:

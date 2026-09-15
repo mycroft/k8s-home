@@ -14,12 +14,11 @@ cdk8s-based GitOps CLI for a homelab k3s cluster. Go code synthesizes Flux CD `H
 `imports/` is **gitignored** — it does not exist after a clone, and nothing builds without it:
 
 ```sh
-mise run import          # generates imports/ ; then revert cdk8s.yaml (see below)
-git checkout cdk8s.yaml
+mise run import          # generates imports/
 mise run build
 ```
 
-`cdk8s import` rewrites `cdk8s.yaml` (it pins resolved import versions). Every CI workflow follows it with `git checkout cdk8s.yaml`, so **always revert that file after importing** and never commit the rewrite.
+`cdk8s import` reads the `imports:` list in `cdk8s.yaml` and writes only `imports/`; it does not modify `cdk8s.yaml`. (Older cdk8s rewrote the file with resolved pins, which is why the workflows used to follow it with `git checkout cdk8s.yaml` — that step was removed, see #1555. `cdk8s import <spec>` with an explicit argument does still append to the file.)
 
 ## Commands
 
@@ -35,7 +34,7 @@ Task runner is `mise` (see `.mise.toml`). Tasks that invoke `./k8s-home` depend 
 | `mise run lint` | `golangci-lint run -c .golangci.yaml` |
 | `mise run conftest` | Generate charts, then run OPA policy checks against `dist/` (enforced in the lint CI) |
 | `mise run check-versions` | Build + find outdated Helm charts & images |
-| `mise run import` | `cdk8s import` — regenerates `imports/`. ⚠️ Rewrites `cdk8s.yaml`; revert it |
+| `mise run import` | `cdk8s import` — regenerates `imports/` from the `imports:` list in `cdk8s.yaml` |
 | `mise run diff` | `git diff remotes/origin/generated:generated dist` — quick in-place diff |
 | `sh contrib/diff.sh` | Recursive `diff -r` of `dist/` vs the `generated` branch. ⚠️ Fetches, checks out `generated/` into the working tree, then `rm -fr generated/` |
 | `go test ./...` | Runs the test suite |
@@ -173,12 +172,12 @@ A typical chart Go file produces a `dist/<name>.k8s.yaml` containing:
 - **`imports/`** — auto-generated Go CRD bindings. Gitignored; **do not edit or commit.** Regenerate with `mise run import`. Excluded from linting.
 - **`dist/`** — generated output. Gitignored on `main`; CI copies to `generated` branch.
 - **`policies/`** — OPA/Rego policies for `conftest` validation. Rules are hard `deny`; legitimate exceptions live in `policies/exemptions.yaml`, keyed by resource name, each with a `reason`. Fix the issue, delete the entry — the policy applies again automatically. New apps must either comply (pinned tag, `runAsNonRoot`) or carry a reasoned exemption; CI (lint workflow) fails on any unexempted violation.
-- **`cdk8s.yaml`** — cdk8s config declaring CRD imports and `dist` output path. Rewritten by `cdk8s import`
+- **`cdk8s.yaml`** — cdk8s config declaring CRD imports and `dist` output path. Hand-maintained; bare `cdk8s import` does not touch it
 
 ## Never
 
 - Hand-edit `dist/` or the `generated` branch — CI overwrites both from Go source
-- Commit `imports/`, the `k8s-home` binary, or the `cdk8s.yaml` rewrite `cdk8s import` produces
+- Commit `imports/` or the `k8s-home` binary
 - Update to release candidate, alpha, or beta versions
 
 ## Adding a new app
@@ -212,7 +211,7 @@ See `docs/adding-new-app.md` for worked examples (stateless app, env vars + Vaul
   Kustomization itself is created by `flux bootstrap` and is not in this repo.
 - **Check versions** (`.gitea/workflows/check-versions.yaml`): daily cron + manual dispatch; runs `check-versions` then `create-prs`
 - **Build CI image** (`.gitea/workflows/build-image.yaml`): on changes to `contrib/build-image/**`; rebuilds and pushes the CI container image — no cdk8s involved
-- The three cdk8s workflows above each do `cdk8s import` → `git checkout cdk8s.yaml` → `cdk8s synth`
+- The three cdk8s workflows above each do `cdk8s import` → `cdk8s synth`
 - CI container image: `registry.mkz.me/mycroft/golang-cdk8s`, pinned by digest in the three
   workflows that use it (currently `build-2521`). `build-image.yaml` publishes both `:latest`
   and an immutable `build-<run_id>` tag; after rebuilding it, update the digest in
