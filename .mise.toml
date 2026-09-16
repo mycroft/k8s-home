@@ -1,6 +1,6 @@
 [tools]
 golang = "1.27.1"
-golangci-lint = { version = "2.12.2", depends = "golang" }
+golangci-lint = { version = "2.13.2", depends = "golang" }
 node = "22"
 "npm:cdk8s-cli" = { version = "2.207.54", depends = "node", trust_policy_excludes = ["jsii@5.9.52"] }
 
