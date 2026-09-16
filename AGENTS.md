@@ -52,6 +52,14 @@ The binary has native subcommands for this, and **CI uses these** — prefer the
 
 All of these need `GITEA_TOKEN` (or `GITHUB_TOKEN` as fallback). Defaults: `--gitea-url https://git.mkz.me --owner mycroft --repo k8s-home`.
 
+`--versions-file` (persistent, default `versions.yaml`) points the version-reading commands at a
+different manifest — chart generation, `check-versions` and `create-prs` all honour it. Its use is
+synthesising a speculative bump without touching `versions.yaml`: pair it with `CDK8S_OUTDIR=<dir>`
+to write the manifests elsewhere, then diff the two trees. Caveat for `create-prs`: the flag only
+picks the file it *reads* to decide what is outdated; `internal/gitea/updates.go` always edits
+`versions.yaml` on the remote branch, so aiming it elsewhere fails the substitution — after the
+branch has already been created.
+
 `contrib/create-pr.sh` is the older shell path. It additionally requires `tea` and `just` (its `-f` mode shells out to `just check-versions`), and it is destructive: it runs `git checkout versions.yaml` (**discarding uncommitted edits to that file**), creates and force-pushes a branch, and with `-M` auto-merges the PR straight to `main`.
 
 | Command | What it does |

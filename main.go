@@ -16,6 +16,7 @@ import (
 
 var (
 	debug            *bool
+	versionsFile     *string
 	filter           *string
 	giteaURL         *string
 	owner            *string
@@ -29,8 +30,8 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "k8s-home",
 	Short: "k8s-home is the yaml charts generator for my homelab",
-	Run: func(command *cobra.Command, _ []string) {
-		GenerateYamlCharts(command.Flags().Lookup("versions").Value.String())
+	Run: func(_ *cobra.Command, _ []string) {
+		GenerateYamlCharts(*versionsFile)
 	},
 }
 
@@ -40,15 +41,15 @@ var GenerateYamlChartsCmd = &cobra.Command{
 	Long:    "generates Yaml charts for all the helm charts used in my homelab",
 	Example: "k8s-home generate-yaml-charts",
 	Aliases: []string{"generate-yaml"},
-	Run: func(command *cobra.Command, _ []string) {
-		GenerateYamlCharts(command.Flags().Lookup("versions").Value.String())
+	Run: func(_ *cobra.Command, _ []string) {
+		GenerateYamlCharts(*versionsFile)
 	},
 }
 
 var checkVersionCmd = &cobra.Command{
 	Use:   "check-versions",
 	Short: "check versions of declared helm charts & docker images",
-	Run: func(command *cobra.Command, _ []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		if *debug {
 			log.Println("preparing charts...")
 		}
@@ -61,7 +62,7 @@ var checkVersionCmd = &cobra.Command{
 					Debug: *debug,
 				},
 			),
-			command.Flags().Lookup("versions").Value.String(),
+			*versionsFile,
 		)
 
 		if *debug {
@@ -111,19 +112,19 @@ func mustGetToken() string {
 var createPRsCmd = &cobra.Command{
 	Use:   "create-prs",
 	Short: "create pull requests for all outdated helm charts and container images",
-	Run: func(command *cobra.Command, _ []string) {
-		runCreatePRs(command)
+	Run: func(_ *cobra.Command, _ []string) {
+		runCreatePRs()
 	},
 }
 
-func runCreatePRs(command *cobra.Command) {
+func runCreatePRs() {
 	ctx := context.Background()
 
 	token := mustGetToken()
 
 	builder := charts.HomelabBuildApp(
 		context.WithValue(ctx, kubehelpers.ValueKey, kubehelpers.ContextValues{Debug: *debug}),
-		command.Flags().Lookup("versions").Value.String(),
+		*versionsFile,
 	)
 
 	helmUpdates, err := builder.GetHelmUpdates(*debug, *prFilter)
@@ -205,9 +206,10 @@ func init() {
 	rootCmd.AddCommand(listPRsCmd)
 	rootCmd.AddCommand(mergePRCmd)
 
-	rootCmd.PersistentFlags().String("versions", "versions.yaml", "versions.yaml file to use")
-
 	debug = rootCmd.PersistentFlags().Bool("debug", false, "enable debug")
+	versionsFile = rootCmd.PersistentFlags().String(
+		"versions-file", "versions.yaml", "path to the versions file to read chart and image versions from",
+	)
 	filter = checkVersionCmd.Flags().String("filter", "", "substring matched against helm chart (repo/chart) and container image names")
 
 	giteaURL = rootCmd.PersistentFlags().String("gitea-url", "https://git.mkz.me", "Gitea instance base URL")

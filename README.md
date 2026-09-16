@@ -114,13 +114,13 @@ Runs OPA/Rego policy validation against the generated charts in `dist/`.
 
 ### CLI Flags
 
-| Flag          | Default              | Description               |
-| ------------- | -------------------- | ------------------------- |
-| `--versions`  | `versions.yaml`      | Path to the versions file |
-| `--debug`     | `false`              | Enable debug logging      |
-| `--gitea-url` | `https://git.mkz.me` | Gitea instance URL        |
-| `--owner`     | `mycroft`            | Repository owner          |
-| `--repo`      | `k8s-home`           | Repository name           |
+| Flag              | Default              | Description               |
+| ----------------- | -------------------- | ------------------------- |
+| `--versions-file` | `versions.yaml`      | Path to the versions file |
+| `--debug`         | `false`              | Enable debug logging      |
+| `--gitea-url`     | `https://git.mkz.me` | Gitea instance URL        |
+| `--owner`         | `mycroft`            | Repository owner          |
+| `--repo`          | `k8s-home`           | Repository name           |
 
 ## Project Structure
 
