@@ -20,7 +20,10 @@ spec:
         app.kubernetes.io/name: root-me
     spec:
       containers:
-        - image: registry.mkz.me/mycroft/scoreboard-api:0.0.1
+        - env:
+            - name: REFRESH_INTERVAL
+              value: 1440m
+          image: registry.mkz.me/mycroft/scoreboard-api:0.0.1
           imagePullPolicy: Always
           name: root-me
 ---
