@@ -21,9 +21,14 @@ func NewRootMeChart(builder *kube.Builder) *kube.Chart {
 		"app.kubernetes.io/component": "api",
 	}
 
+	env := []kube.EnvEntry{
+		{Name: "REFRESH_INTERVAL", Value: kube.EnvValue{Value: "1440m"}},
+	}
+
 	chart.NewDeployment(&kube.Deployment{
 		Name:            name,
 		Labels:          labels,
+		Env:             env,
 		Image:           appImage,
 		ImagePullPolicy: "Always",
 	})
