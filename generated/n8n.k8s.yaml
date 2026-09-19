@@ -152,7 +152,6 @@ data:
 
     webhook:
       mode: regular
-      url: "https://n8n.iop.cx"
 
     taskRunners:
       mode: external
@@ -160,12 +159,23 @@ data:
     nodes:
       python:
         enabled: true
+
+    binaryData:
+      mode: filesystem
+
+    # Explicit values to silence n8n startup deprecation warnings and pin current
+    # defaults ahead of future breaking-default changes.
+    extraEnvVars:
+      N8N_WEBHOOK_URL: "https://n8n.iop.cx"
+      N8N_UNVERIFIED_PACKAGES_ENABLED: "false"
+      N8N_COMPRESSION_NODE_MAX_DECOMPRESSED_SIZE_BYTES: "2147483648"
+      N8N_COMPRESSION_NODE_MAX_ZIP_ENTRIES: "5000"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: a236173f69aac8e76c82a3e90e4d239760f952d2cc4bb6268cf5c7066a93e05b
+    configMapHash: a3d405c7a8f9b82e765cc5c07a53fa30d7e7eeea616ecb3c93a8554619e7a883
   name: n8n
   namespace: n8n
 spec:
