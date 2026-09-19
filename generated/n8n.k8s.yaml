@@ -153,12 +153,19 @@ data:
     webhook:
       mode: regular
       url: "https://n8n.iop.cx"
+
+    taskRunners:
+      mode: external
+
+    nodes:
+      python:
+        enabled: true
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: b0b99ead46b36c27e5ea3e60c521d2db830b198679fa925dfb2895effcbfeee2
+    configMapHash: a236173f69aac8e76c82a3e90e4d239760f952d2cc4bb6268cf5c7066a93e05b
   name: n8n
   namespace: n8n
 spec:
