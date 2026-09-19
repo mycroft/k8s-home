@@ -33,7 +33,6 @@ worker:
 
 webhook:
   mode: regular
-  url: "https://n8n.iop.cx"
 
 taskRunners:
   mode: external
@@ -41,3 +40,14 @@ taskRunners:
 nodes:
   python:
     enabled: true
+
+binaryData:
+  mode: filesystem
+
+# Explicit values to silence n8n startup deprecation warnings and pin current
+# defaults ahead of future breaking-default changes.
+extraEnvVars:
+  N8N_WEBHOOK_URL: "https://n8n.iop.cx"
+  N8N_UNVERIFIED_PACKAGES_ENABLED: "false"
+  N8N_COMPRESSION_NODE_MAX_DECOMPRESSED_SIZE_BYTES: "2147483648"
+  N8N_COMPRESSION_NODE_MAX_ZIP_ENTRIES: "5000"
