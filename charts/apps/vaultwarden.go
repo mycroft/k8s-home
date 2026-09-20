@@ -17,6 +17,7 @@ func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.NewNamespace(namespace)
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "admin")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "mail")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -36,6 +37,36 @@ func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				},
 			},
 		},
+		{
+			Name: jsii.String("SMTP_HOST"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Name: jsii.String("mail"),
+					Key:  jsii.String("hostname"),
+				},
+			},
+		},
+		{
+			Name: jsii.String("SMTP_USERNAME"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Name: jsii.String("mail"),
+					Key:  jsii.String("username"),
+				},
+			},
+		},
+		{
+			Name: jsii.String("SMTP_PASSWORD"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Name: jsii.String("mail"),
+					Key:  jsii.String("password"),
+				},
+			},
+		},
+		{Name: jsii.String("SMTP_PORT"), Value: jsii.String("587")},
+		{Name: jsii.String("SMTP_SECURITY"), Value: jsii.String("starttls")},
+		{Name: jsii.String("SMTP_FROM"), Value: jsii.String("vaultwarden@mkz.me")},
 	}
 
 	_, svcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
