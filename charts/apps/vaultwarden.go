@@ -15,6 +15,8 @@ func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
+	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "admin")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -24,6 +26,15 @@ func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		{
 			Name:  jsii.String("DOMAIN"),
 			Value: jsii.String("https://" + appIngress),
+		},
+		{
+			Name: jsii.String("ADMIN_TOKEN"),
+			ValueFrom: &k8s.EnvVarSource{
+				SecretKeyRef: &k8s.SecretKeySelector{
+					Name: jsii.String("admin"),
+					Key:  jsii.String("token"),
+				},
+			},
 		},
 	}
 
