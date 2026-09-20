@@ -106,7 +106,7 @@ Success! Data written to: auth/kubernetes/role/external-secrets
 > vault auth enable userpass
 Success! Enabled userpass auth method at: userpass/
 
-> vault write auth/userpass/users/mycroft policies=default,external-secrets-ui password=IghoPoh9eech/aca
+> vault write auth/userpass/users/mycroft policies=default,external-secrets-ui password=some-password
 Success! Data written to: auth/userpass/users/mycroft
 
 ```
