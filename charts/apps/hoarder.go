@@ -16,7 +16,10 @@ func NewHoarderChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := namespace
 	appImage := builder.RegisterContainerImage("ghcr.io/hoarder-app/hoarder")
 	appPort := uint(3000)
-	appIngress := "hoarder.services.mkz.me"
+	appIngresses := []string{
+		"hoarder.services.mkz.me",
+		"karakeep.iop.cx",
+	}
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
@@ -91,7 +94,7 @@ func NewHoarderChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	})
 
 	env := []*k8s.EnvVar{
-		{Name: jsii.String("NEXTAUTH_URL"), Value: jsii.String("https://" + appIngress)},
+		{Name: jsii.String("NEXTAUTH_URL"), Value: jsii.String("https://" + appIngresses[0])},
 		{
 			Name: jsii.String("NEXTAUTH_SECRET"),
 			ValueFrom: &k8s.EnvVarSource{
@@ -165,13 +168,13 @@ func NewHoarderChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	})
 
-	kubehelpers.NewAppIngress(
+	kubehelpers.NewAppIngresses(
 		builder.Context,
 		chart.Cdk8sChart,
 		labels,
 		appName,
 		appPort,
-		appIngress,
+		appIngresses,
 		svcName,
 		map[string]string{},
 	)
