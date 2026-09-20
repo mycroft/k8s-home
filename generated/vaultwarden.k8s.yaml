@@ -42,6 +42,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: vaultwarden-es-mail-c8dc63de
+  namespace: vaultwarden
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/vaultwarden/mail
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: mail
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -80,6 +103,27 @@ spec:
                 secretKeyRef:
                   key: token
                   name: admin
+            - name: SMTP_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: hostname
+                  name: mail
+            - name: SMTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: mail
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: mail
+            - name: SMTP_PORT
+              value: "587"
+            - name: SMTP_SECURITY
+              value: starttls
+            - name: SMTP_FROM
+              value: vaultwarden@mkz.me
           image: vaultwarden/server:1.37.3
           name: vaultwarden
           volumeMounts:
