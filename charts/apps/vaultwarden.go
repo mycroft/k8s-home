@@ -67,6 +67,7 @@ func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		{Name: jsii.String("SMTP_PORT"), Value: jsii.String("587")},
 		{Name: jsii.String("SMTP_SECURITY"), Value: jsii.String("starttls")},
 		{Name: jsii.String("SMTP_FROM"), Value: jsii.String("vaultwarden@mkz.me")},
+		{Name: jsii.String("SIGNUPS_ALLOWED"), Value: jsii.String("false")},
 	}
 
 	_, svcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
