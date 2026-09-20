@@ -3,6 +3,45 @@ kind: Namespace
 metadata:
   name: vaultwarden
 ---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: vaultwarden
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: vaultwarden-es-admin-c8233001
+  namespace: vaultwarden
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/vaultwarden/admin
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: admin
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -36,6 +75,11 @@ spec:
         - env:
             - name: DOMAIN
               value: https://vaultwarden.services.mkz.me
+            - name: ADMIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: token
+                  name: admin
           image: vaultwarden/server:1.37.3
           name: vaultwarden
           volumeMounts:

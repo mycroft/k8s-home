@@ -308,7 +308,18 @@ spec:
                   name: http
             path: /
             pathType: Prefix
+    - host: karakeep.iop.cx
+      http:
+        paths:
+          - backend:
+              service:
+                name: hoarder-hoarder-svc-c8a900e1
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
   tls:
     - hosts:
         - hoarder.services.mkz.me
+        - karakeep.iop.cx
       secretName: secret-tls-www
