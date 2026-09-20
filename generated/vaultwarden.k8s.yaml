@@ -124,6 +124,8 @@ spec:
               value: starttls
             - name: SMTP_FROM
               value: vaultwarden@mkz.me
+            - name: SIGNUPS_ALLOWED
+              value: "false"
           image: vaultwarden/server:1.37.3
           name: vaultwarden
           volumeMounts:
