@@ -87,7 +87,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_apps.NewPrivatebinChart,
 		// charts_apps.NewRedmineChart,
 		charts_apps.NewSendChart,
-		charts_apps.NewSnippetBoxChart,
+		// charts_apps.NewSnippetBoxChart,
 		charts_apps.NewUrlsChart,
 		charts_apps.NewVaultWardenChart,
 		charts_apps.NewVikunjaChart,
