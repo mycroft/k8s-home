@@ -76,7 +76,7 @@ spec:
         kind: HelmRepository
         name: nats
         namespace: flux-system
-      version: 2.14.6
+      version: 2.15.0
   install:
     createNamespace: false
     skipCRDs: false
