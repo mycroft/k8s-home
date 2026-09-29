@@ -4,7 +4,7 @@ helmcharts:
   authentik/authentik: 2026.8.3
   calibre-web/calibre-web: 22.10.0
   cnpg/cloudnative-pg: 0.29.1
-  dex/dex: 0.24.1
+  dex/dex: 0.25.2
   external-secrets/external-secrets: 2.11.0
   garage/garage: 2.4.2
   grafana/alloy: 1.13.0
