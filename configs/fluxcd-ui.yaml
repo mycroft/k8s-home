@@ -1,0 +1,13 @@
+# https://git.mkz.me/mycroft/fluxcd-ui/src/branch/main/charts/fluxcd-ui/values.yaml
+# The ingress is created in charts/infra/fluxcd-ui.go, behind the authentik
+# outpost that sets the headers below.
+actions:
+  enabled: true
+
+auth:
+  userHeader: X-authentik-username
+  groupsHeader: X-authentik-groups
+  groupsSeparator: "|"
+
+authorization:
+  mode: rbac
