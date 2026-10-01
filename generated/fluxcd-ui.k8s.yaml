@@ -1,0 +1,125 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fluxcd-ui
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: mycroft-oci
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  type: oci
+  url: oci://registry.mkz.me/mycroft/charts
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluxcd-ui-helm-val-fluxcd-ui-c88fd385
+  namespace: fluxcd-ui
+data:
+  values.yaml: |
+    # https://git.mkz.me/mycroft/fluxcd-ui/src/branch/main/charts/fluxcd-ui/values.yaml
+    # The ingress is created in charts/infra/fluxcd-ui.go, behind the authentik
+    # outpost that sets the headers below.
+    actions:
+      enabled: true
+
+    auth:
+      userHeader: X-authentik-username
+      groupsHeader: X-authentik-groups
+      groupsSeparator: "|"
+
+    authorization:
+      mode: rbac
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  annotations:
+    configMapHash: d230b927839888d676b9aad3796836680bb6c0fd14f6a5fcc54653bf300acaa8
+  name: fluxcd-ui
+  namespace: fluxcd-ui
+spec:
+  chart:
+    spec:
+      chart: fluxcd-ui
+      sourceRef:
+        kind: HelmRepository
+        name: mycroft-oci
+        namespace: flux-system
+      version: 0.1.0
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: fluxcd-ui-helm-val-fluxcd-ui-c88fd385
+      valuesKey: values.yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: fluxcd-ui-operators
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: fluxcd-ui-operator
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: fluxcd-ui:authentik Admins
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: fluxcd-ui
+  namespace: fluxcd-ui
+spec:
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+      ports:
+        - port: 8080
+          protocol: TCP
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: fluxcd-ui
+      app.kubernetes.io/name: fluxcd-ui
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: authentik-ak-outpost-outpost-for-fluxcd-ui@kubernetescrd
+  name: fluxcd-ui
+  namespace: fluxcd-ui
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: flux.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: fluxcd-ui
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - flux.services.mkz.me
+      secretName: secret-tls-www
