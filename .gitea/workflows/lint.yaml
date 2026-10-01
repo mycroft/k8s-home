@@ -12,7 +12,7 @@ jobs:
     name: Run golangci-lint
     runs-on: ubuntu-latest
     container:
-      image: registry.mkz.me/mycroft/golang-cdk8s@sha256:df68b2ff94a286e691c903093327936fde0f4cbe881d07cacbbac8bf1a9e0454 # build-2521
+      image: registry.mkz.me/mycroft/golang-cdk8s@sha256:b45fc7cef9a021d24da23d90594b20bc6c085e40c6219d2774e92906c8a75fea # build-2721
       pull: always
 
     steps:
@@ -69,7 +69,7 @@ jobs:
       - name: Report status
         if: ${{ always() }}
         run: |
-          if [ "${{ job.status }}" == "failure" ]; then
+          if [ "${{ job.status }}" = "failure" ]; then
             echo "❌ golangci-lint found issues that need to be fixed."
             echo "Please fix the issues before merging to main."
             exit 1

@@ -10,7 +10,7 @@ jobs:
   check-versions:
     runs-on: ubuntu-latest
     container:
-      image: registry.mkz.me/mycroft/golang-cdk8s@sha256:df68b2ff94a286e691c903093327936fde0f4cbe881d07cacbbac8bf1a9e0454 # build-2521
+      image: registry.mkz.me/mycroft/golang-cdk8s@sha256:b45fc7cef9a021d24da23d90594b20bc6c085e40c6219d2774e92906c8a75fea # build-2721
       pull: always
     steps:
       - name: Check out repository code
