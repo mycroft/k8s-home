@@ -49,7 +49,7 @@ spec:
         kind: HelmRepository
         name: mycroft-oci
         namespace: flux-system
-      version: 0.3.0
+      version: 0.4.0
   install:
     createNamespace: false
     skipCRDs: false
