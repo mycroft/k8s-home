@@ -21,9 +21,10 @@ func NewFluxCDUIChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	releaseName := "fluxcd-ui"
 	appIngress := "flux.services.mkz.me"
 
-	// authentik group allowed to suspend, resume and reconcile. The UI
-	// prefixes group names with "fluxcd-ui:" before checking RBAC.
-	operatorGroup := "authentik Admins"
+	// authentik group bound to the fluxcd-ui-operator role: suspend, resume,
+	// reconcile and inspect Helm releases. The UI prefixes group names with
+	// "fluxcd-ui:" before checking RBAC.
+	operatorGroup := "Flux Admins"
 
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
