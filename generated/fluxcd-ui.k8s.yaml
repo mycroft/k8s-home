@@ -16,6 +16,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: fluxcd-ui-helm-val-fluxcd-ui-c88fd385
   namespace: fluxcd-ui
 data:
@@ -45,8 +47,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: 5b8ebde9f3d890c03ed999ae31ba2c06c5f50c612f268c5338706753624625d1
   name: fluxcd-ui
   namespace: fluxcd-ui
 spec:

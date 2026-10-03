@@ -15,6 +15,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: vault-helm-val-vault-c826ee21
   namespace: vault
 data:
@@ -107,8 +109,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: 8feede43ff870b2b267ad69aab66b2d9bf6be898b1bb6b2c2275dc3f7154ec34
   name: vault
   namespace: vault
 spec:

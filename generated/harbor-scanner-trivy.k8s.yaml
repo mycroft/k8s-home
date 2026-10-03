@@ -113,6 +113,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: harbor-scanner-trivy-helm-val-harbor-scanner-trivy-c8369a47
   namespace: harbor-scanner-trivy
 data:
@@ -126,8 +128,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: 8b161f727c30e142149e2b5da4049a8e45185fb448dce5a8f475a2e0f1379488
   name: harbor-scanner-trivy
   namespace: harbor-scanner-trivy
 spec:

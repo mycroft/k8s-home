@@ -77,6 +77,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: temporal-helm-val-temporal-c860c230
   namespace: temporal
 data:
@@ -137,8 +139,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: c246b518adc9d32b78805802819d21ad049e4ad235558a2d69a8dec54306e00c
   name: temporal
   namespace: temporal
 spec:

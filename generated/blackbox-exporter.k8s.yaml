@@ -1,6 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: blackbox-exporter-helm-val-blackbox-exporter-c870357d
   namespace: monitoring
 data:
@@ -24,8 +26,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: b02c0d8fdfb923f2c68d29507c5872afc88d696bafee62eeaa71ed423414f106
   name: blackbox-exporter
   namespace: monitoring
 spec:

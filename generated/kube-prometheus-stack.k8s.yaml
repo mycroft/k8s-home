@@ -146,6 +146,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: kube-prometheus-stack-helm-val-prometheus-c840a4c5
   namespace: monitoring
 data:
@@ -674,8 +676,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: 077e758527cef233586f4ead4d7d05c41b6077ea35f5c15d791f8664c18752d6
   name: prometheus
   namespace: monitoring
 spec:

@@ -16,6 +16,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: calibre-web-helm-val-calibre-web-c8a0bd39
   namespace: calibre-web
 data:
@@ -65,8 +67,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: 71f6e0212f10fc1c1d0ebd3a0bef6762a57510f1dad702bdd6beaf4f343c2a63
   name: calibre-web
   namespace: calibre-web
 spec:

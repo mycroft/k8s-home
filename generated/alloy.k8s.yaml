@@ -6,6 +6,8 @@ metadata:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: alloy-helm-val-alloy-c88c2f34
   namespace: alloy
 data:
@@ -109,8 +111,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: f19ed9ab9cdc3bc410a5cc0e0435dab53eac33821b04e4697aeaf6e72f744ba1
   name: alloy
   namespace: alloy
 spec:

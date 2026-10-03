@@ -22,6 +22,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: tempo-helm-val-tempo-c8fe2297
   namespace: tempo
 data:
@@ -46,8 +48,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: 8cbc3ccc0aa6ed6a3dbdb598f82769385bd655f65541eb2ff7455125372c8706
   name: tempo
   namespace: tempo
 spec:

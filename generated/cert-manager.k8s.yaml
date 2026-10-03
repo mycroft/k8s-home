@@ -15,6 +15,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: cert-manager-helm-val-cert-manager-c8bc2bb8
   namespace: cert-manager
 data:
@@ -32,8 +34,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: 9844c7f3175011e97d33d8e0054c3f33d0a9fb943aa1319f2d80219cd4c6111a
   name: cert-manager
   namespace: cert-manager
 spec:

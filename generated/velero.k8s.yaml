@@ -77,6 +77,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: velero-helm-val-velero-c8a297a5
   namespace: velero
 data:
@@ -134,8 +136,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: 2a7f9bc54eceb14aaf90b57f2b16d9d7d3a3d6e02febbe6a28d3728656ed70fe
   name: velero
   namespace: velero
 spec:

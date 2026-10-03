@@ -15,6 +15,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: app-sample-helm-val-app-sample-c8250b73
   namespace: app-sample
 data:
@@ -37,8 +39,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: e65eb8cbb2931833fa2a1633ce19f3573237d2b7317ca41f5f132b8c33642dce
   name: app-sample
   namespace: app-sample
 spec:

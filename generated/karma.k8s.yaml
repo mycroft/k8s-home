@@ -10,6 +10,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: karma-helm-val-karma-c88a1da8
   namespace: monitoring
 data:
@@ -47,8 +49,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: e99cf2768a8b3c135097a6fe253956e220fa631e03b02dc66b0b833762d67a7f
   name: karma
   namespace: monitoring
 spec:

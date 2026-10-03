@@ -45,6 +45,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: loki-helm-val-loki-c8d03bab
   namespace: loki
 data:
@@ -114,8 +116,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: b14fd9d280c6028c530e5e8ebfa9693af051cec7ce0e0527a9d4b26075864182
   name: loki
   namespace: loki
 spec:

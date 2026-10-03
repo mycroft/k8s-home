@@ -159,6 +159,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: authentik-helm-val-authentik-c839b94a
   namespace: authentik
 data:
@@ -251,8 +253,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: f52d003822508bec7196ea64a83f4a2ee156f22e8705122ecfee2a276746abdd
   name: authentik
   namespace: authentik
 spec:

@@ -35,6 +35,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: garage-helm-val-garage-c86fe7af
   namespace: garage
 data:
@@ -77,8 +79,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: 2cbc602e49921991088124b66abc16485d6f7fd0ebfcc32effe5c4805f8c3118
   name: garage
   namespace: garage
 spec:

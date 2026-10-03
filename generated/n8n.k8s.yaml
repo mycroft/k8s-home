@@ -113,6 +113,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
   name: n8n-helm-val-helm-charts-c847bfa7
   namespace: n8n
 data:
@@ -174,8 +176,6 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  annotations:
-    configMapHash: a3d405c7a8f9b82e765cc5c07a53fa30d7e7eeea616ecb3c93a8554619e7a883
   name: n8n
   namespace: n8n
 spec:
