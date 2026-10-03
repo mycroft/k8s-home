@@ -33,12 +33,17 @@ data:
 
     authorization:
       mode: rbac
+      # authentik groups as sent in X-authentik-groups; the chart adds the
+      # "fluxcd-ui:" subject prefix.
+      bindings:
+        - role: operator # suspend, resume, reconcile and inspect Helm releases
+          groups: ["Flux Admins"]
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: d230b927839888d676b9aad3796836680bb6c0fd14f6a5fcc54653bf300acaa8
+    configMapHash: 9a46f490726a51dd9af51e05d45416ad0c5e836a37f8d3d4857866745890f763
   name: fluxcd-ui
   namespace: fluxcd-ui
 spec:
@@ -49,7 +54,7 @@ spec:
         kind: HelmRepository
         name: mycroft-oci
         namespace: flux-system
-      version: 0.4.0
+      version: 0.5.0
   install:
     createNamespace: false
     skipCRDs: false
@@ -60,19 +65,6 @@ spec:
     - kind: ConfigMap
       name: fluxcd-ui-helm-val-fluxcd-ui-c88fd385
       valuesKey: values.yaml
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: fluxcd-ui-operators
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: fluxcd-ui-operator
-subjects:
-  - apiGroup: rbac.authorization.k8s.io
-    kind: Group
-    name: fluxcd-ui:Flux Admins
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
