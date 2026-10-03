@@ -21,11 +21,6 @@ func NewFluxCDUIChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	releaseName := "fluxcd-ui"
 	appIngress := "flux.services.mkz.me"
 
-	// authentik group bound to the fluxcd-ui-operator role: suspend, resume,
-	// reconcile and inspect Helm releases. The UI prefixes group names with
-	// "fluxcd-ui:" before checking RBAC.
-	operatorGroup := "Flux Admins"
-
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
 
@@ -40,29 +35,6 @@ func NewFluxCDUIChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		chartName,
 		releaseName,
 		kubehelpers.WithDefaultConfigFile(),
-	)
-
-	// fluxcd-ui-operator is created by the helm chart.
-	k8s.NewKubeClusterRoleBinding(
-		chart.Cdk8sChart,
-		jsii.String("operators"),
-		&k8s.KubeClusterRoleBindingProps{
-			Metadata: &k8s.ObjectMeta{
-				Name: jsii.String("fluxcd-ui-operators"),
-			},
-			Subjects: &[]*k8s.Subject{
-				{
-					ApiGroup: jsii.String("rbac.authorization.k8s.io"),
-					Kind:     jsii.String("Group"),
-					Name:     jsii.String("fluxcd-ui:" + operatorGroup),
-				},
-			},
-			RoleRef: &k8s.RoleRef{
-				ApiGroup: jsii.String("rbac.authorization.k8s.io"),
-				Kind:     jsii.String("ClusterRole"),
-				Name:     jsii.String("fluxcd-ui-operator"),
-			},
-		},
 	)
 
 	// The UI trusts the user and groups headers set by the outpost: only

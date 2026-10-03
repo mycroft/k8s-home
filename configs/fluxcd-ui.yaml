@@ -11,3 +11,8 @@ auth:
 
 authorization:
   mode: rbac
+  # authentik groups as sent in X-authentik-groups; the chart adds the
+  # "fluxcd-ui:" subject prefix.
+  bindings:
+    - role: operator # suspend, resume, reconcile and inspect Helm releases
+      groups: ["Flux Admins"]
