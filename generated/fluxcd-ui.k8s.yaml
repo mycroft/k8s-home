@@ -30,6 +30,9 @@ data:
       userHeader: X-authentik-username
       groupsHeader: X-authentik-groups
       groupsSeparator: "|"
+      # Linked next to the user's name. The outpost keeps a user's groups for
+      # its session: signing out picks up group changes made in authentik.
+      signOutURL: /outpost.goauthentik.io/sign_out
 
     authorization:
       mode: rbac
@@ -43,7 +46,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   annotations:
-    configMapHash: 9a46f490726a51dd9af51e05d45416ad0c5e836a37f8d3d4857866745890f763
+    configMapHash: 5b8ebde9f3d890c03ed999ae31ba2c06c5f50c612f268c5338706753624625d1
   name: fluxcd-ui
   namespace: fluxcd-ui
 spec:
