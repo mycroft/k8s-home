@@ -64,9 +64,8 @@ func (chart *Chart) CreateHelmRepository(name, url string) sourcetoolkitfluxcdio
 }
 
 type HelmReleaseConfigMap struct {
-	Name          string // ConfigMap name
-	KeyName       string // key name
-	ConfigMapHash string // The Hash of the configmap content
+	Name    string // ConfigMap name
+	KeyName string // key name
 }
 
 type helmReleaseOption struct {
@@ -176,7 +175,6 @@ func internalCreateHelmRelease(
 			Name:      jsii.String(configMap.Name),
 			ValuesKey: jsii.String(configMap.KeyName),
 		})
-		annotations["configMapHash"] = jsii.String(configMap.ConfigMapHash)
 	}
 
 	return helmtoolkitfluxcdio.NewHelmRelease(
@@ -306,6 +304,11 @@ func (chart *Chart) CreateHelmValuesConfig(
 		&k8s.KubeConfigMapProps{
 			Metadata: &k8s.ObjectMeta{
 				Namespace: jsii.String(namespace),
+				// helm-controller watches labeled ConfigMaps, and upgrades the
+				// HelmReleases taking values from them as soon as they change.
+				Labels: &map[string]*string{
+					"reconcile.fluxcd.io/watch": jsii.String("Enabled"),
+				},
 			},
 			Data: &map[string]*string{
 				"values.yaml": jsii.String(renderedContents),
@@ -314,8 +317,7 @@ func (chart *Chart) CreateHelmValuesConfig(
 	)
 
 	return HelmReleaseConfigMap{
-		Name:          *cm.Name(),
-		KeyName:       "values.yaml",
-		ConfigMapHash: ComputeConfigMapHash(cm),
+		Name:    *cm.Name(),
+		KeyName: "values.yaml",
 	}
 }

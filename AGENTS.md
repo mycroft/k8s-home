@@ -147,7 +147,9 @@ Helm values live in `configs/<release>.yaml` (or `configs/<release>.yaml.tmpl`),
 
 An app can have both — `dex` has Helm values in `configs/dex.yaml` and its own config in `configs/dex/config.yaml`.
 
-Because Flux won't notice a ConfigMap edit on its own, `ComputeConfigMapHash` (sha256 over the ConfigMap's data *values*, iterated in sorted key order for stability — key names never enter the digest) is stamped onto the HelmRelease as a `configMapHash` annotation. Editing `configs/<release>.yaml` changes the annotation, which changes the HelmRelease, which is what makes Flux re-reconcile. The same helper is used for Deployment pod templates to force pod restarts on config change (see `charts/observability/smokeping-prober.go`).
+The values ConfigMap keeps its name across edits (cdk8s derives it from the construct path), so editing it never changes the HelmRelease's spec — and helm-controller only reacts to spec changes and explicit reconcile requests, not to annotations. `CreateHelmValuesConfig` therefore labels the ConfigMap `reconcile.fluxcd.io/watch: Enabled`: helm-controller (Flux ≥ 2.4) watches labeled ConfigMaps and upgrades the HelmReleases using them in `valuesFrom` as soon as they change. Without the label, an edit waits for the release's `interval` (10m). The `values-watch` rule in `policies/helmrelease.rego` enforces the label on every ConfigMap with a `values.yaml` key.
+
+For Deployments, `ComputeConfigMapHash` (sha256 over the ConfigMap's data *values*, iterated in sorted key order for stability — key names never enter the digest) is stamped onto the pod template as a `configMapHash` annotation, forcing a rollout on config change (see `charts/observability/smokeping-prober.go`).
 
 A `configs/<release>.yaml.tmpl` file is executed as a Go `text/template` before it becomes the ConfigMap data (a plain `.yaml` is used verbatim — template actions in it, e.g. Prometheus alert rules in `kube-prometheus-stack`, are left alone). The template data provides `.Hash` (sha256 of the raw file) and `.CustomValues` (whatever the chart passed), plus two template functions that resolve images from `versions.yaml` **and register them for version checking** — this is how image pins that only live in a config file become visible to `check-versions`:
 
@@ -161,7 +163,7 @@ A `configs/<release>.yaml.tmpl` file is executed as a Go `text/template` before 
 A typical chart Go file produces a `dist/<name>.k8s.yaml` containing:
 1. `Namespace`
 2. `HelmRepository` (Flux source CRD) — always created in the **`flux-system`** namespace, not the chart's own
-3. `ConfigMap` with Helm values, hashed into the `configMapHash` annotation as above
+3. `ConfigMap` with Helm values, labeled for helm-controller to watch as above
 4. `HelmRelease` referencing the above, in the chart's namespace
 5. Supporting CRDs as needed (ClusterIssuer, ExternalSecret, SecretStore, PodMonitor, etc.)
 
