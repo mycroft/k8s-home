@@ -75,7 +75,7 @@ images:
   redis: 8.10.2
   sissbruecker/linkding: 1.47.0
   thomseddon/traefik-forward-auth: 2.2.0
-  vaultwarden/server: 1.37.3
+  vaultwarden/server: 1.37.4
   velero/velero-plugin-for-aws: v1.14.4
   vikunja/vikunja: 2.7.0
   wallabag/wallabag: 2.6.14
