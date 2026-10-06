@@ -126,7 +126,7 @@ spec:
               value: vaultwarden@mkz.me
             - name: SIGNUPS_ALLOWED
               value: "false"
-          image: vaultwarden/server:1.37.3
+          image: vaultwarden/server:1.37.4
           name: vaultwarden
           volumeMounts:
             - mountPath: /data
