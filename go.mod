@@ -1,6 +1,6 @@
 module git.mkz.me/mycroft/k8s-home
 
-go 1.25.0
+go 1.27.0
 
 require (
 	github.com/Masterminds/semver v1.5.0

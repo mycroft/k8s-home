@@ -17,7 +17,7 @@ This project uses Go code to programmatically define and generate Flux CD `HelmR
 
 ### Prerequisites
 
-- Go 1.25+ (`mise` currently installs Go 1.26.1)
+- Go 1.27+ (`mise` currently installs Go 1.27.1)
 - [mise](https://mise.jdx.dev/) task runner
 - [golangci-lint](https://golangci-lint.run/) for linting
 - [cdk8s](https://cdk8s.io/) CLI for importing CRDs
