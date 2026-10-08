@@ -134,7 +134,6 @@ Runs OPA/Rego policy validation against the generated charts in `dist/`.
 | `charts/observability/` | Monitoring charts (Grafana, Prometheus, Loki, Tempo, etc.)         |
 | `charts/security/`      | Security charts (Vault, cert-manager, Dex, Authentik, etc.)        |
 | `charts/storage/`       | Storage charts (Longhorn, CloudNativePG, NATS, Garage, etc.)        |
-| `charts/static/`        | Static YAML manifests (Tekton pipeline definitions)                |
 | `internal/kubehelpers/` | Shared builder library for HelmRelease, Ingress, StatefulSet, etc. |
 | `internal/gitea/`       | Gitea API client for PR automation                                 |
 | `configs/`              | Helm values per release (flat `<release>.yaml`), injected as ConfigMaps; `configs/<app>/` holds an app's own native config files |
