@@ -17,12 +17,11 @@ This project uses Go code to programmatically define and generate Flux CD `HelmR
 
 ### Prerequisites
 
-- Go 1.27+ (`mise` currently installs Go 1.27.1)
-- [mise](https://mise.jdx.dev/) task runner
-- [golangci-lint](https://golangci-lint.run/) for linting
-- [cdk8s](https://cdk8s.io/) CLI for importing CRDs
+- [mise](https://mise.jdx.dev/) task runner — installs Go 1.27.1, golangci-lint, node and the cdk8s CLI (managed in `.mise.toml`)
+- [conftest](https://www.conftest.dev/) — required for `mise run conftest`, installed outside of mise
 - kubectl configured against the target k3s cluster
 - Environment variables: `GITEA_TOKEN` or `GITHUB_TOKEN`
+- (Optional, only for the legacy `contrib/create-pr.sh`): `tea` and `just`
 
 ### Installation
 
@@ -114,13 +113,17 @@ Runs OPA/Rego policy validation against the generated charts in `dist/`.
 
 ### CLI Flags
 
-| Flag              | Default              | Description               |
-| ----------------- | -------------------- | ------------------------- |
-| `--versions-file` | `versions.yaml`      | Path to the versions file |
-| `--debug`         | `false`              | Enable debug logging      |
-| `--gitea-url`     | `https://git.mkz.me` | Gitea instance URL        |
-| `--owner`         | `mycroft`            | Repository owner          |
-| `--repo`          | `k8s-home`           | Repository name           |
+| Flag            | Default            | Description                                                                       |
+| --------------- | ------------------ | --------------------------------------------------------------------------------- |
+| `--versions-file` | `versions.yaml` | Path to the versions file                                                         |
+| `--debug`         | `false`            | Enable debug logging                                                              |
+| `--gitea-url`     | `https://git.mkz.me` | Gitea instance URL                                                              |
+| `--owner`         | `mycroft`          | Repository owner                                                                  |
+| `--repo`          | `k8s-home`         | Repository name                                                                   |
+| `--filter`        | *(empty)*          | Substring matched against chart and image names (`check-versions`, `create-prs`)  |
+| `--dry-run`       | `false`            | `create-prs`: print the PRs that would be created without creating them           |
+| `--branch`        | *(empty)*          | `create-prs`: override the generated branch name (requires exactly one update)    |
+| `--base-branch`   | `main`             | `create-prs`: base branch for the PRs                                             |
 
 ## Project Structure
 
@@ -162,7 +165,7 @@ Most important apps installed on the cluster:
 - [Karma](https://github.com/prymitive/karma) — Prometheus alert dashboard
 - [Garage](https://garagehq.deuxfleurs.fr/) — S3-compatible object storage
 - [Velero](https://velero.io/) — cluster backup and restore
-- [Capacitor](https://capacitor.l5d.io/) — in-cluster CI/CD
+- [Capacitor](https://capacitor.l5d.io/) — in-cluster CI/CD (currently disabled)
 
 ### User Apps
 
@@ -171,17 +174,18 @@ Most important apps installed on the cluster:
 - [privatebin](https://privatebin.info/) — secure pastebin
 - [paperless-ngx](https://docs.paperless-ngx.com/) — document management
 - [yopass](https://yopass.se/) — secure secret sharing
-- [bookstack](https://www.bookstackapp.com/) — information organization platform
+- [bookstack](https://www.bookstackapp.com/) — information organization platform (currently disabled)
 - [IT-Tools](https://it-tools.tech/) — handy tools for engineers
 - [vaultwarden](https://github.com/dani-garcia/vaultwarden) — Bitwarden-compatible password manager
 - [send](https://gitlab.com/timvisee/send) — simple, private file sharing
-- [snippetbox](https://github.com/pawelmalak/snippet-box) — code snippet portal
+- [snippetbox](https://github.com/pawelmalak/snippet-box) — code snippet portal (currently disabled)
 - [excalidraw](https://excalidraw.com/) — virtual collaborative whiteboard
 - [wikijs](https://js.wiki/) — wiki platform
-- [redmine](https://www.redmine.org/) — project management
+- [redmine](https://www.redmine.org/) — project management (currently disabled)
 - [microbin](https://microbin.eu/) — lightweight pastebin
 - [memos](https://www.usememos.com/) — note taking
 - [opengist](https://github.com/thomiceli/opengist) — GitHub Gist clone
+- [Outline](https://www.getoutline.com/) — team knowledge base
 - [Hoarder](https://github.com/hoarder-app/hoarder) — bookmark manager
 - [Vikunja](https://vikunja.io/) — task management
 - [Open WebUI](https://open-webui.com/) — AI chat interface
@@ -192,6 +196,14 @@ Most important apps installed on the cluster:
 - [Happy-Urls](https://github.com/awesome-selfhosted/happy-urls) — URL shortener
 - [Linkding](https://github.com/sissbruecker/linkding) — bookmark manager
 - [n8n](https://n8n.io/) — workflow automation
+
+### Toys & Redirections
+
+- Llama — ExternalName ingress redirecting `llm-api.iop.cx` to a self-hosted LLM API
+- Music Assistant — ExternalName ingress redirecting `music-assistant.iop.cx` to a self-hosted server
+- Useless — collection of useless web pages
+- Root Me — toy scoreboard at `root-me.iop.cx`
+- URLs — curated list of useful links
 
 ## Deployment
 
