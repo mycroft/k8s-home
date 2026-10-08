@@ -6,6 +6,12 @@ on:
       - main
   workflow_dispatch:
 
+# One deploy at a time: a newer push waits instead of racing on the
+# generated branch. Only the latest pending run is kept.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
