@@ -297,6 +297,13 @@ defaultRules:
   disabled:
     CPUThrottlingHigh: true
 
+customRules:
+  # Longhorn wakes ~40 threads every 5.000s; the kernel samples load every
+  # 5.001s, so the two align every ~6h57m and node_load1 spikes for ~20m
+  # with idle CPUs. A 30m hold rides out that artifact.
+  NodeSystemSaturation:
+    for: 30m
+
 # https://github.com/fluxcd/flux2-monitoring-example/blob/main/monitoring/controllers/kube-prometheus-stack/kube-state-metrics-config.yaml
 kube-state-metrics:
   # collectors: [ ]
