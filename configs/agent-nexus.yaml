@@ -1,0 +1,35 @@
+# https://git.mkz.me/mycroft/agent-nexus/src/branch/main/charts/agent-nexus/values.yaml
+# The ingress is created in charts/apps/agent-nexus.go.
+
+# Synced from Vault secret/namespaces/agent-nexus/agent-nexus by the
+# ExternalSecret of the same name.
+existingSecret: agent-nexus
+
+# llama-server, behind the nginx at llm-api.iop.cx under /llama.cpp/. The
+# bearer token is llm-api-key in the Vault secret.
+llm:
+  baseURL: https://llm-api.iop.cx/llama.cpp/v1
+  # As listed by /llama.cpp/v1/models.
+  model: Swift Uncensored Qwen 3.8
+  # Per-slot context (/llama.cpp/props n_ctx), set so startup does not
+  # depend on llama-server. Update it if llama-server's -c or --parallel
+  # change.
+  contextTokens: 196608
+  # llama-server runs a single slot.
+  concurrency: 1
+
+gitea:
+  enabled: true
+  url: https://git.mkz.me
+  user: agent-nexus
+
+allowedOwners:
+  - mycroft
+
+persistence:
+  storageClass: longhorn-crypto-global
+
+serviceMonitor:
+  enabled: true
+  labels:
+    release: prometheus

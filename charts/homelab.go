@@ -43,6 +43,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 
 		// misc infra charts
 		charts_infra.NewFluxCDChart,
+		charts_infra.NewHomelabOCIHelmRepositoryChart,
 		charts_infra.NewFluxCDUIChart,
 		// charts_infra.NewCapacitorChart,
 		charts_infra.NewVeleroChart,
@@ -64,6 +65,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		// charts_observability.NewJaegerChart
 
 		// apps
+		charts_apps.NewAgentNexusChart,
 		charts_apps.NewAppSampleChart,
 		// charts_apps.NewBookstackChart,
 		charts_apps.NewCalibreWebChart,

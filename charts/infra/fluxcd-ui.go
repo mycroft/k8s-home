@@ -16,7 +16,7 @@ import (
 // it exists, Traefik refuses the route.
 func NewFluxCDUIChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "fluxcd-ui"
-	repositoryName := "mycroft-oci"
+	repositoryName := "homelab-oci"
 	chartName := "fluxcd-ui"
 	releaseName := "fluxcd-ui"
 	appIngress := "flux.services.mkz.me"
@@ -24,11 +24,7 @@ func NewFluxCDUIChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart := builder.NewChart(namespace)
 	chart.NewNamespace(namespace)
 
-	chart.CreateHelmRepository(
-		repositoryName,
-		"oci://registry.mkz.me/mycroft/charts",
-	)
-
+	// repositoryName is declared by NewHomelabOCIHelmRepositoryChart.
 	chart.CreateHelmRelease(
 		namespace,
 		repositoryName,
