@@ -26,6 +26,16 @@ gitea:
 allowedOwners:
   - mycroft
 
+# How reviews are submitted. verdict: approve, comment or request changes;
+# comment (the default for other repositories): a plain comment. A rule
+# naming a repository wins over the repository's own .agent-nexus.yaml.
+review:
+  modes:
+    - repo: mycroft/k8s-home
+      mode: verdict
+    - repo: mycroft/agent-nexus
+      mode: verdict
+
 persistence:
   storageClass: longhorn-crypto-global
 

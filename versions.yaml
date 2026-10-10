@@ -13,7 +13,7 @@ helmcharts:
   grafana/tempo: 1.24.4
   hashicorp/vault: 0.34.1
   helm-charts/n8n: 1.24.43
-  homelab-oci/agent-nexus: 0.1.0
+  homelab-oci/agent-nexus: 0.1.1
   homelab-oci/fluxcd-ui: 0.5.0
   jaegertracing/jaeger: 0.71.2
   jameswynn/homepage: 2.1.0
