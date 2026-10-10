@@ -18,6 +18,11 @@ llm:
   # llama-server runs a single slot.
   concurrency: 1
 
+# Tool-calling turns per review (chart default 30). Kept below what fits in
+# the 30m jobTimeout: a timeout drops the review, while the turn limit still
+# ends in a written review.
+agentMaxTurns: 24
+
 gitea:
   enabled: true
   url: https://git.mkz.me
