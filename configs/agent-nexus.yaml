@@ -1,5 +1,6 @@
 # https://git.mkz.me/mycroft/agent-nexus/src/branch/main/charts/agent-nexus/values.yaml
-# The ingress is created in charts/apps/agent-nexus.go.
+# The ingresses (the API, and the jobs UI behind authentik) and the
+# NetworkPolicy are created in charts/apps/agent-nexus.go.
 
 # Synced from Vault secret/namespaces/agent-nexus/agent-nexus by the
 # ExternalSecret of the same name.

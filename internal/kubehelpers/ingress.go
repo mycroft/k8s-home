@@ -60,6 +60,10 @@ func NewAppService(
 type AppIngressOption struct {
 	Name     string
 	PortName string
+	// CertificateName names the TLS secret, and the Certificate cert-manager
+	// creates for the ingress; "secret-tls-www" by default. A second ingress
+	// in a namespace needs its own: each one owns its Certificate.
+	CertificateName string
 }
 
 // NewAppIngresses creates one or more Ingress resources for the application.
@@ -83,9 +87,13 @@ func NewAppIngresses(
 	}
 
 	portName := "http"
+	certificateName := "secret-tls-www"
 	for _, opt := range opts {
 		if opt.PortName != "" {
 			portName = opt.PortName
+		}
+		if opt.CertificateName != "" {
+			certificateName = opt.CertificateName
 		}
 	}
 
@@ -144,9 +152,16 @@ func NewAppIngresses(
 		}
 	}
 
+	// A chart's first ingress keeps the "ingress" construct ID; further
+	// named ones are told apart by their name.
+	constructID := "ingress"
+	if chart.Node().TryFindChild(jsii.String(constructID)) != nil && metadatas.Name != nil {
+		constructID += "-" + *metadatas.Name
+	}
+
 	k8sIngress := k8s.NewKubeIngress(
 		chart,
-		jsii.String("ingress"),
+		jsii.String(constructID),
 		&k8s.KubeIngressProps{
 			Metadata: &metadatas,
 			Spec: &k8s.IngressSpec{
@@ -155,7 +170,7 @@ func NewAppIngresses(
 				Tls: &[]*k8s.IngressTls{
 					{
 						Hosts:      &hosts,
-						SecretName: jsii.String("secret-tls-www"),
+						SecretName: jsii.String(certificateName),
 					},
 				},
 			},
@@ -198,7 +213,11 @@ type Ingress struct {
 	Ingresses   []string
 	Labels      map[string]string
 	ServiceName string
-	Annotations map[string]string
+	// PortName is the service port to route to; "http" when empty.
+	PortName string
+	// CertificateName is the TLS secret; see AppIngressOption.
+	CertificateName string
+	Annotations     map[string]string
 }
 
 // NewIngress creates an ingress attached to deployment name/port
@@ -240,7 +259,9 @@ func (chart *Chart) NewIngress(ingress *Ingress) (string, string) {
 		ingress.ServiceName,
 		ingress.Annotations,
 		AppIngressOption{
-			Name: ingress.Name,
+			Name:            ingress.Name,
+			PortName:        ingress.PortName,
+			CertificateName: ingress.CertificateName,
 		},
 	)
 
