@@ -1,0 +1,447 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zulip
+---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: zulip
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: zulip-es-postgresql-c892b15c
+  namespace: zulip
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/zulip/postgresql
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: zulip-es-mailrelay-c839940a
+  namespace: zulip
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/zulip/mailrelay
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: mailrelay
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: secret-key
+  namespace: zulip
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: secret-key
+  namespace: zulip
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: secret-key
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: secret-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: redis
+  name: zulip-redis-svc-c8f33629
+  namespace: zulip
+spec:
+  ports:
+    - name: http
+      port: 6379
+  selector:
+    app.kubernetes.io/component: redis
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zulip-redis-sts-c8191e7f
+  namespace: zulip
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: redis
+  serviceName: zulip-redis-svc-c8f33629
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: redis
+    spec:
+      containers:
+        - command:
+            - redis-server
+            - --save
+            - "60"
+            - "1"
+            - --loglevel
+            - warning
+          env: []
+          image: redis:8.10.2
+          name: redis
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      securityContext:
+        fsGroup: 0
+      volumes: []
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/component: redis
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: rabbitmq
+  namespace: zulip
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: rabbitmq
+  namespace: zulip
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: rabbitmq
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: rabbitmq
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: rabbitmq
+  name: zulip-rabbitmq-svc-c821ec07
+  namespace: zulip
+spec:
+  ports:
+    - name: http
+      port: 5672
+  selector:
+    app.kubernetes.io/component: rabbitmq
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zulip-rabbitmq-sts-c86a0ddf
+  namespace: zulip
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: rabbitmq
+  serviceName: zulip-rabbitmq-svc-c821ec07
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: rabbitmq
+    spec:
+      containers:
+        - env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: zulip
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: rabbitmq
+          image: rabbitmq:4.3.6
+          name: rabbitmq
+          volumeMounts:
+            - mountPath: /var/lib/rabbitmq
+              name: data
+      securityContext:
+        fsGroup: 0
+      volumes: []
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/component: rabbitmq
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: memcached
+  name: zulip-memcached-svc-c8658752
+  namespace: zulip
+spec:
+  ports:
+    - name: http
+      port: 11211
+  selector:
+    app.kubernetes.io/component: memcached
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zulip-memcached-sts-c83ca37c
+  namespace: zulip
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: memcached
+  serviceName: zulip-memcached-svc-c8658752
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: memcached
+    spec:
+      containers:
+        - command:
+            - memcached
+            - --memory-limit=256
+          env: []
+          image: memcached:1.6.45
+          name: memcached
+          volumeMounts: []
+      securityContext:
+        fsGroup: 0
+      volumes: []
+  volumeClaimTemplates: []
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: zulip
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  type: oci
+  url: oci://ghcr.io/zulip/helm-charts
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+  name: zulip-helm-val-zulip-c87ee783
+  namespace: zulip
+data:
+  values.yaml: |
+    # https://github.com/zulip/docker-zulip/blob/main/helm/zulip/values.yaml
+    # Settings: https://zulip.readthedocs.io/projects/docker/en/latest/reference/environment-vars.html
+    # The ingress, Redis, RabbitMQ and memcached are created in
+    # charts/apps/zulip.go, which fills in the .CustomValues below.
+
+    zulip:
+      environment:
+        SETTING_EXTERNAL_HOST: "zulip.services.mkz.me"
+        SETTING_ZULIP_ADMINISTRATOR: pm@mkz.me
+        SECRETS_secret_key:
+          valueFrom:
+            secretKeyRef:
+              name: secret-key
+              key: password
+        # Traefik reaches Zulip from the pod network (k3s cluster-cidr); Zulip
+        # only trusts X-Forwarded-* headers from these addresses.
+        LOADBALANCER_IPS: 10.42.0.0/16
+        # The database is in the daily postgres-dump of the CNPG cluster, and the
+        # data volume (uploads, generated secrets) in Velero's filesystem backups.
+        AUTO_BACKUP_ENABLED: "False"
+
+        # Outgoing email, through the same relay as authentik.
+        SETTING_EMAIL_HOST: mail.mkz.me
+        SETTING_EMAIL_PORT: "587"
+        SETTING_EMAIL_USE_TLS: "True"
+        SETTING_EMAIL_HOST_USER:
+          valueFrom:
+            secretKeyRef:
+              name: mailrelay
+              key: username
+        SECRETS_email_password:
+          valueFrom:
+            secretKeyRef:
+              name: mailrelay
+              key: password
+        # A single fixed sender: by default Zulip adds a random token to it.
+        SETTING_NOREPLY_EMAIL_ADDRESS: zulip@mkz.me
+        SETTING_ADD_TOKENS_TO_NOREPLY_ADDRESS: "False"
+
+      persistence:
+        storageClass: longhorn-crypto-global
+        size: 10Gi
+
+    # Zulip only answers once its container is configured and every database
+    # migration has run, which on the first start takes several minutes. Allow 10
+    # instead of the chart's 5, so the probe cannot kill a migration in progress.
+    # The HelmRelease timeout in charts/apps/zulip.go covers it.
+    startupProbe:
+      failureThreshold: 60
+
+    postgresql:
+      enabled: false
+    externalPostgresql:
+      host: postgres-rw.cnpg
+      port: 5432
+      database: zulip
+      user: zulip
+      password:
+        valueFrom:
+          secretKeyRef:
+            name: postgresql
+            key: password
+
+    rabbitmq:
+      enabled: false
+    externalRabbitmq:
+      host: "zulip-rabbitmq-svc-c821ec07"
+      port: 5672
+      user: zulip
+      password:
+        valueFrom:
+          secretKeyRef:
+            name: rabbitmq
+            key: password
+
+    # Neither has a password; Zulip then skips authentication.
+    memcached:
+      enabled: false
+    externalMemcached:
+      host: "zulip-memcached-svc-c8658752"
+      port: 11211
+      password: ""
+
+    redis:
+      enabled: false
+    externalRedis:
+      host: "zulip-redis-svc-c8f33629"
+      port: 6379
+      password: ""
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: zulip
+  namespace: zulip
+spec:
+  chart:
+    spec:
+      chart: zulip
+      sourceRef:
+        kind: HelmRepository
+        name: zulip
+        namespace: flux-system
+      version: 2.3.0
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 15m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: zulip-helm-val-zulip-c87ee783
+      valuesKey: values.yaml
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: zulip
+  namespace: zulip
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: zulip.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: zulip
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - zulip.services.mkz.me
+      secretName: secret-tls-www
