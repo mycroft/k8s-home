@@ -23,11 +23,22 @@ import (
 // Vault at secret/namespaces/zulip/mailrelay (username, password).
 //
 // Besides email and password, users log in through authentik (OIDC). The
-// authentik side is set up by hand: an OAuth2/OpenID provider with client ID
-// zulip and redirect URI
-// https://zulip.services.mkz.me/complete/oidc/, and an application with slug
-// zulip. The provider's client secret is in Vault at
-// secret/namespaces/zulip/oidc (client_secret).
+// authentik side is set up by hand:
+//
+//   - an OAuth2/OpenID provider with client ID zulip, redirect URI
+//     https://zulip.services.mkz.me/complete/oidc/, and a Signing Key.
+//     Without one, authentik signs tokens with HS256 and publishes no key,
+//     and Zulip fails to verify them (KeyError: 'keys');
+//   - in that provider's scopes, a custom scope mapping for the email scope
+//     instead of authentik's default one, returning
+//     {"email": request.user.email, "email_verified": True}. The default
+//     sends email_verified False, and Zulip rejects unverified emails. Zulip
+//     then trusts whatever email authentik holds, so users must not be able
+//     to change their own there;
+//   - an application with slug zulip, using that provider.
+//
+// The provider's client secret is in Vault at secret/namespaces/zulip/oidc
+// (client_secret).
 func NewZulipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "zulip"
 	repositoryName := "zulip"
