@@ -169,7 +169,9 @@ data:
     authentik:
       log_level: info
       email:
-        host: mail.mkz.me
+        # The relay's certificate is for maki.mkz.me: STARTTLS to mail.mkz.me,
+        # the same server, fails verification.
+        host: maki.mkz.me
         port: 587
         username: file:///mailrelay/username
         password: file:///mailrelay/password
