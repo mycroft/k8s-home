@@ -82,8 +82,23 @@ data:
       url: https://git.mkz.me
       user: agent-nexus
 
+    # Also the owners whose repositories may be discussed on Zulip.
     allowedOwners:
       - mycroft
+
+    # Answers questions asked on Zulip (chart 0.1.9 and later) to the outgoing
+    # webhook bot agent-nexus. Its endpoint URL is the public API ingress,
+    # https://agent-nexus.services.mkz.me/v1/events/zulip: Zulip's Smokescreen
+    # proxy refuses private addresses, and Traefik is what the NetworkPolicy
+    # lets in. Its zuliprc's key and token are zulip-bot-api-key and
+    # zulip-webhook-token in the Vault secret; the pod does not start without
+    # them.
+    zulip:
+      enabled: true
+      url: https://zulip.services.mkz.me
+      # Zulip names a bot <short name>-bot@<host>: the bot's short name is
+      # agent-nexus.
+      botEmail: agent-nexus-bot@zulip.services.mkz.me
 
     # How reviews are submitted. verdict: approve, comment or request changes;
     # comment (the default for other repositories): a plain comment. A rule
@@ -116,7 +131,7 @@ spec:
         kind: HelmRepository
         name: homelab-oci
         namespace: flux-system
-      version: 0.1.8
+      version: 0.1.9
   install:
     createNamespace: false
     skipCRDs: false
