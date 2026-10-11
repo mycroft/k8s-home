@@ -65,6 +65,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: zulip-es-oidc-c8ee246f
+  namespace: zulip
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/zulip/oidc
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: oidc
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: generators.external-secrets.io/v1alpha1
 kind: Password
 metadata:
@@ -327,8 +350,10 @@ data:
         # data volume (uploads, generated secrets) in Velero's filesystem backups.
         AUTO_BACKUP_ENABLED: "False"
 
-        # Outgoing email, through the same relay as authentik.
-        SETTING_EMAIL_HOST: mail.mkz.me
+        # Outgoing email, through the same relay as authentik. The relay's
+        # certificate is for maki.mkz.me: STARTTLS to mail.mkz.me, the same
+        # server, fails verification.
+        SETTING_EMAIL_HOST: maki.mkz.me
         SETTING_EMAIL_PORT: "587"
         SETTING_EMAIL_USE_TLS: "True"
         SETTING_EMAIL_HOST_USER:
@@ -344,6 +369,31 @@ data:
         # A single fixed sender: by default Zulip adds a random token to it.
         SETTING_NOREPLY_EMAIL_ADDRESS: zulip@mkz.me
         SETTING_ADD_TOKENS_TO_NOREPLY_ADDRESS: "False"
+
+        # Login through authentik (OIDC), besides email and password; the
+        # authentik provider and application are described in
+        # charts/apps/zulip.go. The IdP setting is Python, appended as is to
+        # Zulip's settings.py, where get_secret reads the secret below.
+        # auto_signup creates the Zulip account on a first authentik login.
+        ZULIP_AUTH_BACKENDS: EmailAuthBackend,GenericOpenIdConnectBackend
+        SETTING_SOCIAL_AUTH_OIDC_ENABLED_IDPS: |-
+          {
+              "authentik": {
+                  "oidc_url": "https://auth.services.mkz.me/application/o/zulip/",
+                  "display_name": "authentik",
+                  "display_icon": None,
+                  "client_id": "zulip",
+                  "secret": get_secret("social_auth_oidc_secret"),
+                  "auto_signup": True,
+              }
+          }
+        # Names come from authentik, and cannot be changed in Zulip.
+        SETTING_SOCIAL_AUTH_OIDC_FULL_NAME_VALIDATED: "True"
+        SECRETS_social_auth_oidc_secret:
+          valueFrom:
+            secretKeyRef:
+              name: oidc
+              key: client_secret
 
       persistence:
         storageClass: longhorn-crypto-global
