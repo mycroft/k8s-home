@@ -1,14 +1,12 @@
-FROM docker.io/golang:1.27.1-trixie
+FROM docker.io/node:24.21.0-trixie-slim AS node
 
-ENV DEBIAN_FRONTEND noninteractive
+FROM docker.io/golang:1.27.2-trixie
 
-RUN apt-get update && \
-    apt-get install --no-install-recommends -y \
-        ca-certificates=20250419 \
-        curl=8.14.1-2+deb13u5 \
-        nodejs=20.19.2+dfsg-1+deb13u2 \
-        npm=9.2.0~ds1-3 && \
-    apt-get clean && \
-    rm -fr /var/lib/apt/lists/*
+# Debian trixie only packages Node 20 (EOL), so Node comes from the official
+# image instead; both are trixie-based, so the binary matches this glibc.
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+    ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
 
-RUN npm install -g cdk8s-cli@2.206.10
+RUN npm install -g cdk8s-cli@2.207.65

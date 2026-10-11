@@ -17,7 +17,7 @@ This project uses Go code to programmatically define and generate Flux CD `HelmR
 
 ### Prerequisites
 
-- [mise](https://mise.jdx.dev/) task runner — installs Go 1.27.1, golangci-lint, node and the cdk8s CLI (managed in `.mise.toml`)
+- [mise](https://mise.jdx.dev/) task runner — installs Go 1.27.2, golangci-lint, node and the cdk8s CLI (managed in `.mise.toml`)
 - [conftest](https://www.conftest.dev/) — required for `mise run conftest`, installed outside of mise
 - kubectl configured against the target k3s cluster
 - Environment variables: `GITEA_TOKEN` or `GITHUB_TOKEN`

@@ -1,8 +1,8 @@
 [tools]
-golang = "1.27.1"
-golangci-lint = { version = "2.13.2", depends = "golang" }
-node = "22"
-"npm:cdk8s-cli" = { version = "2.207.54", depends = "node", trust_policy_excludes = ["jsii@5.9.52"] }
+golang = "1.27.2"
+golangci-lint = { version = "2.14.0", depends = "golang" }
+node = "24"
+"npm:cdk8s-cli" = { version = "2.207.65", depends = "node", trust_policy_excludes = ["jsii@5.9.55"] }
 
 [tasks.import]
 description = "cdk8s import"
