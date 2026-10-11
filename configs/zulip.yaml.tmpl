@@ -19,8 +19,10 @@ zulip:
     # data volume (uploads, generated secrets) in Velero's filesystem backups.
     AUTO_BACKUP_ENABLED: "False"
 
-    # Outgoing email, through the same relay as authentik.
-    SETTING_EMAIL_HOST: mail.mkz.me
+    # Outgoing email, through the same relay as authentik. The relay's
+    # certificate is for maki.mkz.me: STARTTLS to mail.mkz.me, the same
+    # server, fails verification.
+    SETTING_EMAIL_HOST: maki.mkz.me
     SETTING_EMAIL_PORT: "587"
     SETTING_EMAIL_USE_TLS: "True"
     SETTING_EMAIL_HOST_USER:

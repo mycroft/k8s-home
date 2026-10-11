@@ -19,7 +19,7 @@ import (
 //   - Redis: the shared Redis helper;
 //   - RabbitMQ and memcached: single-replica StatefulSets below.
 //
-// Outgoing email goes through the mail.mkz.me relay, with credentials in
+// Outgoing email goes through the maki.mkz.me relay, with credentials in
 // Vault at secret/namespaces/zulip/mailrelay (username, password).
 func NewZulipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "zulip"
