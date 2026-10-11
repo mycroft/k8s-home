@@ -27,6 +27,7 @@ var databases = []kubehelpers.CNPGDatabase{
 	{Name: "outline", VaultEntry: "postgres-cnpg", Extensions: []string{"pg_trgm", "unaccent", "uuid-ossp"}},
 	{Name: "authentik", VaultEntry: "postgresql-cnpg"},
 	{Name: "paperlessngx", Namespace: "paperless-ngx", VaultEntry: "postgresql-cnpg"},
+	{Name: "zulip"},
 }
 
 func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {

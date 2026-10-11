@@ -7,19 +7,10 @@ import (
 	"git.mkz.me/mycroft/k8s-home/imports/cnpg_cluster_postgresqlcnpgio"
 	database "git.mkz.me/mycroft/k8s-home/imports/cnpg_database_postgresqlcnpgio"
 	"git.mkz.me/mycroft/k8s-home/imports/externalsecrets_externalsecretsio"
-	password "git.mkz.me/mycroft/k8s-home/imports/password_generatorsexternalsecretsio"
 	pushsecret "git.mkz.me/mycroft/k8s-home/imports/pushsecret_externalsecretsio"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 	"github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2"
-)
-
-const (
-	// Passwords are generated without symbols so they stay safe to embed in a DSN.
-	cnpgPasswordLength = 32
-	cnpgPasswordDigits = 6
-
-	cnpgPasswordGeneratorAPIVersion = "generators.external-secrets.io/v1alpha1"
 )
 
 // cnpgCredentialsKeys is the ordered list of fields published for every database.
@@ -112,23 +103,7 @@ func NewCNPGDatabase(chart constructs.Construct, cfg CNPGDatabaseConfig) {
 	db := cfg.Database
 	name := db.resourceName()
 
-	password.NewPassword(
-		chart,
-		jsii.String("password-"+db.Name),
-		&password.PasswordProps{
-			Metadata: &cdk8s.ApiObjectMetadata{
-				Namespace: jsii.String(cfg.Namespace),
-				Name:      jsii.String(name),
-			},
-			Spec: &password.PasswordSpec{
-				Length:      jsii.Number(cnpgPasswordLength),
-				Digits:      jsii.Number(cnpgPasswordDigits),
-				Symbols:     jsii.Number(0),
-				NoUpper:     jsii.Bool(false),
-				AllowRepeat: jsii.Bool(true),
-			},
-		},
-	)
+	newPasswordGenerator(chart, "password-"+db.Name, cfg.Namespace, name)
 
 	// refreshInterval 0 pins the generated password: without it every refresh
 	// would mint a new one and lock the application out until it restarts.
@@ -147,7 +122,7 @@ func NewCNPGDatabase(chart constructs.Construct, cfg CNPGDatabaseConfig) {
 					{
 						SourceRef: &externalsecrets_externalsecretsio.ExternalSecretSpecDataFromSourceRef{
 							GeneratorRef: &externalsecrets_externalsecretsio.ExternalSecretSpecDataFromSourceRefGeneratorRef{
-								ApiVersion: jsii.String(cnpgPasswordGeneratorAPIVersion),
+								ApiVersion: jsii.String(passwordGeneratorAPIVersion),
 								Kind:       externalsecrets_externalsecretsio.ExternalSecretSpecDataFromSourceRefGeneratorRefKind_PASSWORD,
 								Name:       jsii.String(name),
 							},

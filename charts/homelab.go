@@ -99,6 +99,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		// charts_apps.NewHeimdallChart,
 		charts_apps.NewOpenWebuiChart,
 		charts_apps.NewZiplineChart,
+		charts_apps.NewZulipChart,
 		charts_apps.NewUselessChart,
 		charts_apps.NewRootMeChart,
 

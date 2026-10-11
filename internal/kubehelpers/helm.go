@@ -74,6 +74,7 @@ type helmReleaseOption struct {
 	Annotations           map[string]*string
 	ConfigMaps            []HelmReleaseConfigMap
 	Versions              *Versions
+	Timeout               string
 }
 
 type HelmReleaseOption func(*helmReleaseOption)
@@ -99,6 +100,15 @@ func WithHelmValues(values map[string]*string) HelmReleaseOption {
 func WithAnnotations(annotations map[string]*string) HelmReleaseOption {
 	return func(opts *helmReleaseOption) {
 		opts.Annotations = annotations
+	}
+}
+
+// WithTimeout sets how long helm-controller waits for the release's resources
+// to become ready (5m0s by default). An install exceeding it fails, and is not
+// retried until the HelmRelease changes.
+func WithTimeout(timeout string) HelmReleaseOption {
+	return func(opts *helmReleaseOption) {
+		opts.Timeout = timeout
 	}
 }
 
@@ -155,6 +165,11 @@ func internalCreateHelmRelease(
 		annotations = map[string]*string{}
 	}
 
+	timeout := helmReleaseOptions.Timeout
+	if timeout == "" {
+		timeout = "5m0s"
+	}
+
 	if version, exists := helmReleaseOptions.Versions.HelmCharts[fmt.Sprintf("%s/%s", repoName, chartName)]; exists {
 		cachedVersion = version
 	} else {
@@ -203,7 +218,7 @@ func internalCreateHelmRelease(
 					},
 				},
 				Interval:   jsii.String("10m0s"),
-				Timeout:    jsii.String("5m0s"),
+				Timeout:    jsii.String(timeout),
 				Values:     helmValues,
 				ValuesFrom: &valuesFrom,
 			},

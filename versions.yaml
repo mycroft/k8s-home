@@ -41,6 +41,7 @@ helmcharts:
   sealed-secrets/sealed-secrets: 2.20.0
   vmware-tanzu/velero: 12.2.1
   wiremind/karma: 2.13.1
+  zulip/zulip: 2.3.0
 images:
   corentinth/it-tools: 2024.10.22-7ca5933
   danielszabo99/microbin: 2.1.4
@@ -61,12 +62,14 @@ images:
   jhaals/yopass: 15.0.0
   linuxserver/bookstack: v25.12.8-ls249
   linuxserver/heimdall: v2.5.7-ls238
+  memcached: 1.6.45
   neosmemo/memos: 0.31.0
   paulbouwer/hello-kubernetes: 1.10.1
   paperlessngx/paperless-ngx: 3.3.0
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: 2.0.6
   quay.io/superq/smokeping-prober: v0.12.0
+  rabbitmq: 4.3.6
   registry.gitlab.com/timvisee/send: v3.4.27
   registry.k8s.io/kubectl: v1.37.1
   registry.mkz.me/mycroft/whatismyip: 5
@@ -90,8 +93,10 @@ patterns:
     ghcr.io/gethomepage/homepage: "^v[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     linuxserver/bookstack: "^v.+"
     linuxserver/heimdall: "^v.+"
+    memcached: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     paperlessngx/paperless-ngx: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     privatebin/nginx-fpm-alpine: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+    rabbitmq: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     redis: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     registry.k8s.io/kubectl: "^v[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     requarks/wiki: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
