@@ -52,7 +52,8 @@ metadata:
 data:
   values.yaml: |
     # https://git.mkz.me/mycroft/agent-nexus/src/branch/main/charts/agent-nexus/values.yaml
-    # The ingress is created in charts/apps/agent-nexus.go.
+    # The ingresses (the API, and the jobs UI behind authentik) and the
+    # NetworkPolicy are created in charts/apps/agent-nexus.go.
 
     # Synced from Vault secret/namespaces/agent-nexus/agent-nexus by the
     # ExternalSecret of the same name.
@@ -151,3 +152,65 @@ spec:
     - hosts:
         - agent-nexus.services.mkz.me
       secretName: secret-tls-www
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: authentik-ak-outpost-outpost-for-agent-nexus@kubernetescrd
+  name: agent-nexus-ui
+  namespace: agent-nexus
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: agent-nexus-ui.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: agent-nexus
+                port:
+                  name: ui
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - agent-nexus-ui.services.mkz.me
+      secretName: agent-nexus-ui-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: agent-nexus
+  namespace: agent-nexus
+spec:
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+      ports:
+        - port: 8080
+          protocol: TCP
+        - port: 8081
+          protocol: TCP
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - port: 9090
+          protocol: TCP
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: agent-nexus
+      app.kubernetes.io/name: agent-nexus
+  policyTypes:
+    - Ingress
