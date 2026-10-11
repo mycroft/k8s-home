@@ -39,6 +39,31 @@ zulip:
     SETTING_NOREPLY_EMAIL_ADDRESS: zulip@mkz.me
     SETTING_ADD_TOKENS_TO_NOREPLY_ADDRESS: "False"
 
+    # Login through authentik (OIDC), besides email and password; the
+    # authentik provider and application are described in
+    # charts/apps/zulip.go. The IdP setting is Python, appended as is to
+    # Zulip's settings.py, where get_secret reads the secret below.
+    # auto_signup creates the Zulip account on a first authentik login.
+    ZULIP_AUTH_BACKENDS: EmailAuthBackend,GenericOpenIdConnectBackend
+    SETTING_SOCIAL_AUTH_OIDC_ENABLED_IDPS: |-
+      {
+          "authentik": {
+              "oidc_url": "https://auth.services.mkz.me/application/o/zulip/",
+              "display_name": "authentik",
+              "display_icon": None,
+              "client_id": "zulip",
+              "secret": get_secret("social_auth_oidc_secret"),
+              "auto_signup": True,
+          }
+      }
+    # Names come from authentik, and cannot be changed in Zulip.
+    SETTING_SOCIAL_AUTH_OIDC_FULL_NAME_VALIDATED: "True"
+    SECRETS_social_auth_oidc_secret:
+      valueFrom:
+        secretKeyRef:
+          name: oidc
+          key: client_secret
+
   persistence:
     storageClass: longhorn-crypto-global
     size: 10Gi

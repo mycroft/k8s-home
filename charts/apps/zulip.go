@@ -21,6 +21,13 @@ import (
 //
 // Outgoing email goes through the maki.mkz.me relay, with credentials in
 // Vault at secret/namespaces/zulip/mailrelay (username, password).
+//
+// Besides email and password, users log in through authentik (OIDC). The
+// authentik side is set up by hand: an OAuth2/OpenID provider with client ID
+// zulip and redirect URI
+// https://zulip.services.mkz.me/complete/oidc/, and an application with slug
+// zulip. The provider's client secret is in Vault at
+// secret/namespaces/zulip/oidc (client_secret).
 func NewZulipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "zulip"
 	repositoryName := "zulip"
@@ -34,6 +41,7 @@ func NewZulipChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "mailrelay")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "oidc")
 	// Django's SECRET_KEY, which the chart requires. Pinned once generated:
 	// changing it logs everyone out.
 	kubehelpers.CreateGeneratedPasswordSecret(chart.Cdk8sChart, namespace, "secret-key")
