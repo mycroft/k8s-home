@@ -8,9 +8,9 @@ import (
 
 // NewKubernetesMCPServerChart deploys kubernetes-mcp-server
 // (https://github.com/containers/kubernetes-mcp-server), through which
-// agent-nexus reads the live state of the cluster. Values, including its
-// read-only configuration and its ClusterRole (everything but Secrets), are
-// in configs/kubernetes-mcp-server.yaml.tmpl.
+// agent-nexus reads the live state of the cluster. Its ServiceAccount, created
+// by the chart, reads everything but Secrets. Values, including its read-only
+// configuration, are in configs/kubernetes-mcp-server.yaml.tmpl.
 //
 // Upstream publishes every release as chart 0.1.0, re-pushed over the
 // previous one: updates come through the image version in versions.yaml.
@@ -39,6 +39,8 @@ func NewKubernetesMCPServerChart(builder *kubehelpers.Builder) *kubehelpers.Char
 		releaseName,
 		kubehelpers.WithDefaultConfigFile(),
 	)
+
+	chart.NewReadAllButSecretsClusterRole(releaseName) // the chart names its ServiceAccount after the release
 
 	newKubernetesMCPServerNetworkPolicy(chart, namespace, releaseName)
 
