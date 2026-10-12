@@ -1,0 +1,35 @@
+# https://github.com/grafana-community/helm-charts/blob/main/charts/grafana-mcp/values.yaml
+# The ExternalSecret and the NetworkPolicy are created in
+# charts/apps/mcp-grafana.go.
+
+# The chart would name it mcp-grafana-grafana-mcp.
+fullnameOverride: mcp-grafana
+
+grafana:
+  # kube-prometheus-stack's Grafana.
+  url: http://prometheus-grafana.monitoring.svc
+  # A token of the Grafana service account mcp-grafana, Viewer role.
+  apiKeySecret:
+    name: mcp-grafana
+    key: grafana-token
+
+disableWrite: true
+
+# Appended to the image's entrypoint, which sets --transport sse: the last
+# value wins.
+extraArgs:
+  - --transport=streamable-http
+  # The datasources and features in use here.
+  - --enabled-tools=search,datasource,prometheus,loki,tempo,alerting,dashboard,annotations,navigation
+  # Requests with another Host header are refused: the URL agent-nexus calls.
+  - --allowed-hosts=mcp-grafana.mcp-grafana.svc:8000
+
+# Callers must send it as a bearer token.
+envValueFrom:
+  MCP_GRAFANA_SERVER_TOKEN:
+    secretKeyRef:
+      name: mcp-grafana
+      key: server-token
+
+# It calls Grafana only, never the Kubernetes API.
+automountServiceAccountToken: false

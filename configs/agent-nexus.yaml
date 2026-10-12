@@ -88,6 +88,34 @@ mcp:
         - search_flux_docs
         - trace_kubernetes_resource
       jobs: [chat]
+    # charts/apps/mcp-grafana.go: read-only, as a Viewer of Grafana. Its
+    # NetworkPolicy admits this pod, which also sends the server's token,
+    # mcp-grafana-token in the Vault secret.
+    - name: grafana
+      url: http://mcp-grafana.mcp-grafana.svc:8000/mcp
+      description: Prometheus metrics and alert rules, Loki logs, Tempo traces and the dashboards, through Grafana, read-only
+      # Its read tools, but get_dashboard_by_uid, which returns a whole
+      # dashboard: up to ~90 KB here. The summary, property and panel
+      # queries tools read them in parts.
+      tools:
+        - "*loki*"
+        - "*prometheus*"
+        - "*tempo*"
+        - alerting_rules_read
+        - alerting_silences_read
+        - generate_deeplink
+        - get_annotation_tags
+        - get_annotations
+        - get_dashboard_panel_queries
+        - get_dashboard_property
+        - get_dashboard_summary
+        - get_datasource
+        - list_datasources
+        - search_dashboards
+      jobs: [chat]
+      # Range queries over Loki can take a while.
+      timeout: 2m
+      tokenKey: mcp-grafana-token
 
 # How reviews are submitted. verdict: approve, comment or request changes;
 # comment (the default for other repositories): a plain comment. A rule
