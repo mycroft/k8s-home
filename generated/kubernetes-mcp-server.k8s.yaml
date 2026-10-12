@@ -23,7 +23,8 @@ metadata:
 data:
   values.yaml: |
     # https://github.com/containers/kubernetes-mcp-server/blob/main/charts/kubernetes-mcp-server/values.yaml
-    # The NetworkPolicy is created in charts/apps/kubernetes-mcp-server.go.
+    # The ClusterRole and the NetworkPolicy are created in
+    # charts/apps/kubernetes-mcp-server.go.
 
     image:
       # The chart defaults to latest.
@@ -32,94 +33,6 @@ data:
     # Only agent-nexus calls it, from inside the cluster.
     ingress:
       enabled: false
-
-    # Read access to everything but Secrets. RBAC cannot subtract, so the rules
-    # list what is granted:
-    # - the core group by name, leaving out secrets and the subresources that
-    #   reach into pods and nodes (exec, attach, portforward, proxy), which a
-    #   "*" would grant with get;
-    # - the other groups with "*": none of them has such a subresource. Leaves
-    #   out generators.external-secrets.io, whose generatorstates hold generated
-    #   credentials. A newly installed API group stays unreadable until added
-    #   here (kubectl api-resources --verbs=list -o name lists them).
-    rbac:
-      extraClusterRoles:
-        - name: read-all-but-secrets
-          rules:
-            - apiGroups: [""]
-              resources:
-                - componentstatuses
-                - configmaps
-                - endpoints
-                - events
-                - limitranges
-                - namespaces
-                - nodes
-                - persistentvolumeclaims
-                - persistentvolumes
-                - pods
-                - pods/log
-                - podtemplates
-                - replicationcontrollers
-                - resourcequotas
-                - serviceaccounts
-                - services
-              verbs: [get, list, watch]
-            - apiGroups:
-                - acme.cert-manager.io
-                - admissionregistration.k8s.io
-                - apiextensions.k8s.io
-                - apiregistration.k8s.io
-                - apps
-                - aquasecurity.github.io
-                - autoscaling
-                - batch
-                - bitnami.com
-                - certificates.k8s.io
-                - cert-manager.io
-                - configuration.konghq.com
-                - coordination.k8s.io
-                - deuxfleurs.fr
-                - discovery.k8s.io
-                - events.k8s.io
-                - external-secrets.io
-                - flowcontrol.apiserver.k8s.io
-                - gateway.networking.k8s.io
-                - helm.cattle.io
-                - helm.toolkit.fluxcd.io
-                - hub.traefik.io
-                - infra.mkz.me
-                - k3s.cattle.io
-                - k8s.mkz.me
-                - kustomize.toolkit.fluxcd.io
-                - kyverno.io
-                - longhorn.io
-                - metrics.k8s.io
-                - mkz.me
-                - monitoring.coreos.com
-                - monitoring.grafana.com
-                - networking.k8s.io
-                - node.k8s.io
-                - notification.toolkit.fluxcd.io
-                - policy
-                - postgresql.cnpg.io
-                - rbac.authorization.k8s.io
-                - resource.k8s.io
-                - rollout-operator.grafana.com
-                - scheduling.k8s.io
-                - scylla.scylladb.com
-                - snapshot.storage.k8s.io
-                - source.toolkit.fluxcd.io
-                - storage.k8s.io
-                - traefik.io
-                - velero.io
-                - wgpolicyk8s.io
-              resources: ["*"]
-              verbs: [get, list, watch]
-      extraClusterRoleBindings:
-        - name: read-all-but-secrets
-          roleRef:
-            name: read-all-but-secrets
 
     # config.toml. The server refuses Secrets on its own too, and only offers
     # read-only tools; helm is left out, as it reads releases from Secrets.
@@ -161,6 +74,103 @@ spec:
     - kind: ConfigMap
       name: kubernetes-mcp-server-helm-val-kubernetes-mcp-server-c8afe846
       valuesKey: values.yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: read-all-but-secrets-kubernetes-mcp-server
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - componentstatuses
+      - configmaps
+      - endpoints
+      - events
+      - limitranges
+      - namespaces
+      - nodes
+      - persistentvolumeclaims
+      - persistentvolumes
+      - pods
+      - pods/log
+      - podtemplates
+      - replicationcontrollers
+      - resourcequotas
+      - serviceaccounts
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - acme.cert-manager.io
+      - admissionregistration.k8s.io
+      - apiextensions.k8s.io
+      - apiregistration.k8s.io
+      - apps
+      - aquasecurity.github.io
+      - autoscaling
+      - batch
+      - bitnami.com
+      - certificates.k8s.io
+      - cert-manager.io
+      - configuration.konghq.com
+      - coordination.k8s.io
+      - deuxfleurs.fr
+      - discovery.k8s.io
+      - events.k8s.io
+      - external-secrets.io
+      - flowcontrol.apiserver.k8s.io
+      - gateway.networking.k8s.io
+      - helm.cattle.io
+      - helm.toolkit.fluxcd.io
+      - hub.traefik.io
+      - infra.mkz.me
+      - k3s.cattle.io
+      - k8s.mkz.me
+      - kustomize.toolkit.fluxcd.io
+      - kyverno.io
+      - longhorn.io
+      - metrics.k8s.io
+      - mkz.me
+      - monitoring.coreos.com
+      - monitoring.grafana.com
+      - networking.k8s.io
+      - node.k8s.io
+      - notification.toolkit.fluxcd.io
+      - policy
+      - postgresql.cnpg.io
+      - rbac.authorization.k8s.io
+      - resource.k8s.io
+      - rollout-operator.grafana.com
+      - scheduling.k8s.io
+      - scylla.scylladb.com
+      - snapshot.storage.k8s.io
+      - source.toolkit.fluxcd.io
+      - storage.k8s.io
+      - traefik.io
+      - velero.io
+      - wgpolicyk8s.io
+    resources:
+      - "*"
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: read-all-but-secrets-kubernetes-mcp-server
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: read-all-but-secrets-kubernetes-mcp-server
+subjects:
+  - kind: ServiceAccount
+    name: kubernetes-mcp-server
+    namespace: kubernetes-mcp-server
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

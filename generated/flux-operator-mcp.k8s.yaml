@@ -1,0 +1,162 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: flux-operator-mcp
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: controlplaneio-fluxcd
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  type: oci
+  url: oci://ghcr.io/controlplaneio-fluxcd/charts
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+  name: flux-operator-mcp-helm-val-flux-operator-mcp-c8791ae3
+  namespace: flux-operator-mcp
+data:
+  values.yaml: |
+    # https://github.com/controlplaneio-fluxcd/charts/blob/main/charts/flux-operator-mcp/values.yaml
+    # The ClusterRole is created in charts/apps/flux-operator-mcp.go.
+
+    # Leaves out the tools that reconcile, suspend, resume, apply, patch or
+    # delete.
+    readonly: true
+
+    # The chart's own binds the ServiceAccount to cluster-admin.
+    rbac:
+      create: false
+
+    # Port 9090, from this namespace and agent-nexus's.
+    networkPolicy:
+      ingress:
+        namespaces:
+          - agent-nexus
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: flux-operator-mcp
+  namespace: flux-operator-mcp
+spec:
+  chart:
+    spec:
+      chart: flux-operator-mcp
+      sourceRef:
+        kind: HelmRepository
+        name: controlplaneio-fluxcd
+        namespace: flux-system
+      version: 0.61.0
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: flux-operator-mcp-helm-val-flux-operator-mcp-c8791ae3
+      valuesKey: values.yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: read-all-but-secrets-flux-operator-mcp
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - componentstatuses
+      - configmaps
+      - endpoints
+      - events
+      - limitranges
+      - namespaces
+      - nodes
+      - persistentvolumeclaims
+      - persistentvolumes
+      - pods
+      - pods/log
+      - podtemplates
+      - replicationcontrollers
+      - resourcequotas
+      - serviceaccounts
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - acme.cert-manager.io
+      - admissionregistration.k8s.io
+      - apiextensions.k8s.io
+      - apiregistration.k8s.io
+      - apps
+      - aquasecurity.github.io
+      - autoscaling
+      - batch
+      - bitnami.com
+      - certificates.k8s.io
+      - cert-manager.io
+      - configuration.konghq.com
+      - coordination.k8s.io
+      - deuxfleurs.fr
+      - discovery.k8s.io
+      - events.k8s.io
+      - external-secrets.io
+      - flowcontrol.apiserver.k8s.io
+      - gateway.networking.k8s.io
+      - helm.cattle.io
+      - helm.toolkit.fluxcd.io
+      - hub.traefik.io
+      - infra.mkz.me
+      - k3s.cattle.io
+      - k8s.mkz.me
+      - kustomize.toolkit.fluxcd.io
+      - kyverno.io
+      - longhorn.io
+      - metrics.k8s.io
+      - mkz.me
+      - monitoring.coreos.com
+      - monitoring.grafana.com
+      - networking.k8s.io
+      - node.k8s.io
+      - notification.toolkit.fluxcd.io
+      - policy
+      - postgresql.cnpg.io
+      - rbac.authorization.k8s.io
+      - resource.k8s.io
+      - rollout-operator.grafana.com
+      - scheduling.k8s.io
+      - scylla.scylladb.com
+      - snapshot.storage.k8s.io
+      - source.toolkit.fluxcd.io
+      - storage.k8s.io
+      - traefik.io
+      - velero.io
+      - wgpolicyk8s.io
+    resources:
+      - "*"
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: read-all-but-secrets-flux-operator-mcp
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: read-all-but-secrets-flux-operator-mcp
+subjects:
+  - kind: ServiceAccount
+    name: flux-operator-mcp
+    namespace: flux-operator-mcp
