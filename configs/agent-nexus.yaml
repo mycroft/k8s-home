@@ -70,6 +70,24 @@ mcp:
         - resources_list
       # Zulip answers only: PR text could steer what reviews read and post.
       jobs: [chat]
+    # charts/apps/flux-operator-mcp.go: read-only, the same ClusterRole, and
+    # its NetworkPolicy admits this namespace.
+    - name: flux
+      url: http://flux-operator-mcp.flux-operator-mcp.svc:9090/mcp
+      description: Flux CD, read-only - which Kustomization or HelmRelease deploys a resource and from which source, reconciliation state, and the Flux documentation
+      # Its read-only tools, but get_flux_instance, which reads the
+      # FluxInstance of flux-operator (Flux here comes from flux bootstrap),
+      # and diff_kubernetes_manifest, whose server-side dry run needs patch.
+      tools:
+        - get_kubernetes_api_versions
+        - get_kubernetes_events
+        - get_kubernetes_logs
+        - get_kubernetes_metrics
+        - get_kubernetes_resources
+        - read_flux_doc
+        - search_flux_docs
+        - trace_kubernetes_resource
+      jobs: [chat]
 
 # How reviews are submitted. verdict: approve, comment or request changes;
 # comment (the default for other repositories): a plain comment. A rule

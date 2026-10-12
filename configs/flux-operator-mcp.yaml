@@ -1,0 +1,16 @@
+# https://github.com/controlplaneio-fluxcd/charts/blob/main/charts/flux-operator-mcp/values.yaml
+# The ClusterRole is created in charts/apps/flux-operator-mcp.go.
+
+# Leaves out the tools that reconcile, suspend, resume, apply, patch or
+# delete.
+readonly: true
+
+# The chart's own binds the ServiceAccount to cluster-admin.
+rbac:
+  create: false
+
+# Port 9090, from this namespace and agent-nexus's.
+networkPolicy:
+  ingress:
+    namespaces:
+      - agent-nexus
