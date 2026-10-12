@@ -47,6 +47,30 @@ zulip:
   # agent-nexus.
   botEmail: agent-nexus-bot@zulip.services.mkz.me
 
+# MCP servers whose tools the agent may call (chart 0.1.10 and later).
+mcp:
+  servers:
+    # charts/apps/kubernetes-mcp-server.go: read-only, and its ClusterRole
+    # reads everything but Secrets. The NetworkPolicy there admits this pod.
+    - name: k8s
+      url: http://kubernetes-mcp-server.kubernetes-mcp-server.svc:8080/mcp
+      description: the live state of the home Kubernetes cluster, read-only
+      # Its read-only tools, but nodes_log and nodes_stats_summary: they go
+      # through nodes/proxy, which the ClusterRole does not grant.
+      tools:
+        - events_list
+        - namespaces_list
+        - nodes_top
+        - pods_get
+        - pods_list
+        - pods_list_in_namespace
+        - pods_log
+        - pods_top
+        - resources_get
+        - resources_list
+      # Zulip answers only: PR text could steer what reviews read and post.
+      jobs: [chat]
+
 # How reviews are submitted. verdict: approve, comment or request changes;
 # comment (the default for other repositories): a plain comment. A rule
 # naming a repository wins over the repository's own .agent-nexus.yaml.

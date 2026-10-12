@@ -13,12 +13,13 @@ helmcharts:
   grafana/tempo: 1.24.4
   hashicorp/vault: 0.34.1
   helm-charts/n8n: 1.24.43
-  homelab-oci/agent-nexus: 0.1.9
+  homelab-oci/agent-nexus: 0.1.10
   homelab-oci/fluxcd-ui: 0.5.0
   jaegertracing/jaeger: 0.71.2
   jameswynn/homepage: 2.1.0
   jetstack/cert-manager: v1.21.2
   jitsi/jitsi-meet: v1.3.7
+  kubernetes-mcp-server/kubernetes-mcp-server: 0.1.0
   kyverno/kyverno: v3.0.5
   kyverno/kyverno-policies: v3.0.4
   linkerd/linkerd-crds: 1.8.0
@@ -68,6 +69,7 @@ images:
   paperlessngx/paperless-ngx: 3.3.0
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: 2.0.6
+  quay.io/containers/kubernetes_mcp_server: v0.0.67
   quay.io/superq/smokeping-prober: v0.12.0
   rabbitmq: 4.3.6
   registry.gitlab.com/timvisee/send: v3.4.27
@@ -96,6 +98,7 @@ patterns:
     memcached: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     paperlessngx/paperless-ngx: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     privatebin/nginx-fpm-alpine: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+    quay.io/containers/kubernetes_mcp_server: "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
     rabbitmq: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     redis: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     registry.k8s.io/kubectl: "^v[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
