@@ -42,6 +42,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: n8n-es-oidc-c84715ed
+  namespace: n8n
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/n8n/oidc
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: oidc
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -185,6 +208,18 @@ data:
       N8N_COMPRESSION_NODE_MAX_DECOMPRESSED_SIZE_BYTES: "2147483648"
       N8N_COMPRESSION_NODE_MAX_ZIP_ENTRIES: "5000"
       N8N_DEV_UNLOCK_ALL_FEATURES: "true"
+      # SSO via authentik (application slug "n8n"). Client ID and secret come
+      # from the "oidc" secret below. Managed by env: n8n reapplies these on
+      # every start and locks the SSO settings in the UI.
+      N8N_SSO_MANAGED_BY_ENV: "true"
+      N8N_SSO_OIDC_LOGIN_ENABLED: "true"
+      N8N_SSO_OIDC_DISCOVERY_ENDPOINT: "https://auth.services.mkz.me/application/o/n8n/.well-known/openid-configuration"
+
+    # Only the main pod serves the SSO login. The top-level key is deprecated
+    # in the chart, hence main.*.
+    main:
+      extraSecretNamesForEnvFrom:
+        - oidc
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
