@@ -120,6 +120,14 @@ metadata:
 data:
   values.yaml: |
     # https://github.com/community-charts/helm-charts/blob/main/charts/n8n/values.yaml
+
+    # Test build, applies to main, worker and webhook pods (not task runners).
+    # The tag is mutable, so always re-pull on pod restart.
+    image:
+      repository: registry.mkz.me/mycroft/n8n
+      tag: dev-unlock
+      pullPolicy: Always
+
     db:
       type: postgresdb
 
@@ -157,6 +165,10 @@ data:
 
     taskRunners:
       mode: external
+      external:
+        image:
+          # Must match the n8n version of the test image above (2.44.0).
+          tag: "2.44.0"
 
     nodes:
       python:
@@ -172,6 +184,7 @@ data:
       N8N_UNVERIFIED_PACKAGES_ENABLED: "false"
       N8N_COMPRESSION_NODE_MAX_DECOMPRESSED_SIZE_BYTES: "2147483648"
       N8N_COMPRESSION_NODE_MAX_ZIP_ENTRIES: "5000"
+      N8N_DEV_UNLOCK_ALL_FEATURES: "true"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
