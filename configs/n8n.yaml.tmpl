@@ -64,3 +64,12 @@ extraEnvVars:
   N8N_COMPRESSION_NODE_MAX_DECOMPRESSED_SIZE_BYTES: "2147483648"
   N8N_COMPRESSION_NODE_MAX_ZIP_ENTRIES: "5000"
   N8N_DEV_UNLOCK_ALL_FEATURES: "true"
+  # SSO via authentik (application slug "n8n"). Client ID and secret come
+  # from the "oidc" secret below. Managed by env: n8n reapplies these on
+  # every start and locks the SSO settings in the UI.
+  N8N_SSO_MANAGED_BY_ENV: "true"
+  N8N_SSO_OIDC_LOGIN_ENABLED: "true"
+  N8N_SSO_OIDC_DISCOVERY_ENDPOINT: "https://auth.services.mkz.me/application/o/n8n/.well-known/openid-configuration"
+
+extraSecretNamesForEnvFrom:
+  - oidc

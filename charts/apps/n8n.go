@@ -16,6 +16,8 @@ func NewN8nChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	chart.CreateSecretStore(namespace)
 	chart.CreateExternalSecret(namespace, "postgresql-cnpg")
+	// Keys are the env var names: N8N_SSO_OIDC_CLIENT_ID, N8N_SSO_OIDC_CLIENT_SECRET.
+	chart.CreateExternalSecret(namespace, "oidc")
 
 	_, redisServiceName := chart.NewRedisStatefulset(namespace)
 
