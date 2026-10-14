@@ -71,5 +71,8 @@ extraEnvVars:
   N8N_SSO_OIDC_LOGIN_ENABLED: "true"
   N8N_SSO_OIDC_DISCOVERY_ENDPOINT: "https://auth.services.mkz.me/application/o/n8n/.well-known/openid-configuration"
 
-extraSecretNamesForEnvFrom:
-  - oidc
+# Only the main pod serves the SSO login. The top-level key is deprecated
+# in the chart, hence main.*.
+main:
+  extraSecretNamesForEnvFrom:
+    - oidc
