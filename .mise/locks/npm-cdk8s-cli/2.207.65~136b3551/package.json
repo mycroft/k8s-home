@@ -1,0 +1,7 @@
+{
+  "name": "mise-npm-install",
+  "private": true,
+  "dependencies": {
+    "cdk8s-cli": "2.207.65"
+  }
+}

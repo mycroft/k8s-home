@@ -26,6 +26,17 @@ Task runner is `mise` (see `.mise.toml`). Tasks that invoke `./k8s-home` depend 
 
 `.mise.toml` manages Go, golangci-lint, node and cdk8s-cli only. `conftest`, `tea` and `just` are **external prerequisites**, installed outside mise.
 
+`mise.lock` (plus `.mise/locks/`, which holds cdk8s-cli's full npm dependency graph) pins the
+local toolchain to what the CI image contains. Without it, mise re-resolves cdk8s-cli's
+transitive deps on every fresh install: each new `jsii` patch release then differs from the
+image and trips mise's npm trust policy (`trust downgrade for jsii@…`), so no mise task can
+run. After bumping a version in `.mise.toml` and rebuilding the CI image, re-lock against the
+image's creation time so both resolve the same graph:
+
+```sh
+mise lock --bump --minimum-release-age "$(skopeo inspect docker://registry.mkz.me/mycroft/golang-cdk8s:build-<id> | jq -r .Created)"
+```
+
 | Command | What it does |
 |---------|-------------|
 | `mise run build` | Compiles `k8s-home` binary |
@@ -223,9 +234,10 @@ See `docs/adding-new-app.md` for worked examples (stateless app, env vars + Vaul
 - **Build CI image** (`.gitea/workflows/build-image.yaml`): on changes to `contrib/build-image/**`; rebuilds and pushes the CI container image — no cdk8s involved
 - The three cdk8s workflows above each do `cdk8s import` → `cdk8s synth`
 - CI container image: `registry.mkz.me/mycroft/golang-cdk8s`, pinned by digest in the three
-  workflows that use it (currently `build-2721`). `build-image.yaml` publishes both `:latest`
+  workflows that use it (currently `build-3178`). `build-image.yaml` publishes both `:latest`
   and an immutable `build-<run_id>` tag; after rebuilding it, update the digest in
-  `lint.yaml`, `deploy.yaml` and `check-versions.yaml` or the rebuild has no effect.
+  `lint.yaml`, `deploy.yaml` and `check-versions.yaml` or the rebuild has no effect — and
+  re-lock mise against it (see Commands).
 - Env vars needed for PR operations: `GITEA_TOKEN` (primary) or `GITHUB_TOKEN` (fallback)
 
 ## Conventions
