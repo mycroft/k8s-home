@@ -175,8 +175,6 @@ spec:
           volumeMounts:
             - mountPath: /meili_data
               name: data
-      securityContext:
-        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:
@@ -271,8 +269,6 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: data
-      securityContext:
-        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:

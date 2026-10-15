@@ -154,8 +154,6 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: data
-      securityContext:
-        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:
@@ -282,7 +280,7 @@ spec:
             - mountPath: /var/lib/outline/data
               name: data
       securityContext:
-        fsGroup: 0
+        fsGroup: 1001
       volumes: []
   volumeClaimTemplates:
     - metadata:

@@ -131,8 +131,6 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: data
-      securityContext:
-        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:
@@ -231,8 +229,6 @@ spec:
               name: data
             - mountPath: /usr/src/paperless/media
               name: media
-      securityContext:
-        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:

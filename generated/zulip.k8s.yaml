@@ -162,8 +162,6 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: data
-      securityContext:
-        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:
@@ -252,8 +250,6 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/rabbitmq
               name: data
-      securityContext:
-        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:
@@ -305,8 +301,6 @@ spec:
           image: memcached:1.6.45
           name: memcached
           volumeMounts: []
-      securityContext:
-        fsGroup: 0
       volumes: []
   volumeClaimTemplates: []
 ---

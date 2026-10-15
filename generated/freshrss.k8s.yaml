@@ -103,8 +103,6 @@ spec:
               name: data
             - mountPath: /var/www/FreshRSS/extensions
               name: extensions
-      securityContext:
-        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:

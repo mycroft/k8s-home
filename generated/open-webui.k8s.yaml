@@ -157,8 +157,6 @@ spec:
           volumeMounts:
             - mountPath: /open-webui
               name: open-webui
-      securityContext:
-        fsGroup: 0
       volumes: []
   volumeClaimTemplates:
     - metadata:
