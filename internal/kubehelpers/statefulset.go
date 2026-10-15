@@ -166,6 +166,16 @@ func NewStatefulSet(chart cdk8s.Chart, cfg StatefulSetConfig) (string, string) {
 		}
 	}
 
+	// fsGroup makes the kubelet chown and chmod g+rw every file of the volumes
+	// on each mount, which breaks apps that check their own file modes: on its
+	// first restart, RabbitMQ refused its now group-readable .erlang.cookie.
+	var securityContext *k8s.PodSecurityContext
+	if cfg.FsGroup != 0 {
+		securityContext = &k8s.PodSecurityContext{
+			FsGroup: jsii.Number(cfg.FsGroup),
+		}
+	}
+
 	sts := k8s.NewKubeStatefulSet(
 		chart,
 		jsii.String(statefulSetObjectName),
@@ -186,10 +196,8 @@ func NewStatefulSet(chart cdk8s.Chart, cfg StatefulSetConfig) (string, string) {
 						Containers: &[]*k8s.Container{
 							&container,
 						},
-						SecurityContext: &k8s.PodSecurityContext{
-							FsGroup: jsii.Number(cfg.FsGroup),
-						},
-						Volumes: &volumes,
+						SecurityContext: securityContext,
+						Volumes:         &volumes,
 					},
 				},
 				VolumeClaimTemplates: &pvcspecs,

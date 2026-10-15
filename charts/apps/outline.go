@@ -186,6 +186,8 @@ func NewOutlineChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				StorageSize: "16Gi",
 			},
 		},
+		// The image runs as nodejs (1001), which needs the volume writable.
+		FsGroup: 1001,
 	})
 
 	kubehelpers.NewAppIngress(
