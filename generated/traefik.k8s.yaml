@@ -12,6 +12,16 @@ spec:
   secretName: secret-tls-www
 ---
 apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-dashboard-redirect
+  namespace: kube-system
+spec:
+  redirectRegex:
+    regex: ^(https?://[^/]+)/$
+    replacement: ${1}/dashboard/
+---
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-dashboard
@@ -22,6 +32,13 @@ spec:
       match: Host(`traefik.services.mkz.me`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       middlewares:
         - name: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+      services:
+        - kind: TraefikService
+          name: api@internal
+    - kind: Rule
+      match: Host(`traefik.services.mkz.me`) && Path(`/`)
+      middlewares:
+        - name: traefik-dashboard-redirect
       services:
         - kind: TraefikService
           name: api@internal
