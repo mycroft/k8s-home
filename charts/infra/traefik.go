@@ -35,6 +35,23 @@ func NewTraefikChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	)
 
+	redirectMiddleware := traefikio.NewMiddleware(
+		chart.Cdk8sChart,
+		jsii.String("traefik-dashboard-redirect"),
+		&traefikio.MiddlewareProps{
+			Metadata: &cdk8s.ApiObjectMetadata{
+				Name:      jsii.String("traefik-dashboard-redirect"),
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &traefikio.MiddlewareSpec{
+				RedirectRegex: &traefikio.MiddlewareSpecRedirectRegex{
+					Regex:       jsii.String("^(https?://[^/]+)/$"),
+					Replacement: jsii.String("${1}/dashboard/"),
+				},
+			},
+		},
+	)
+
 	traefikio.NewIngressRoute(
 		chart.Cdk8sChart,
 		jsii.String("traefik-dashboard"),
@@ -57,6 +74,23 @@ func NewTraefikChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 						Middlewares: &[]*traefikio.IngressRouteSpecRoutesMiddlewares{
 							{
 								Name: jsii.String("traefik-forward-auth-traefik-forward-auth@kubernetescrd"),
+							},
+						},
+					},
+					// Bare host: send to the dashboard, which then goes through forward-auth.
+					// The service is never reached, the middleware answers with the redirect.
+					{
+						Match: jsii.String("Host(`" + ingressHost + "`) && Path(`/`)"),
+						Kind:  traefikio.IngressRouteSpecRoutesKind_RULE,
+						Services: &[]*traefikio.IngressRouteSpecRoutesServices{
+							{
+								Name: jsii.String("api@internal"),
+								Kind: traefikio.IngressRouteSpecRoutesServicesKind_TRAEFIK_SERVICE,
+							},
+						},
+						Middlewares: &[]*traefikio.IngressRouteSpecRoutesMiddlewares{
+							{
+								Name: redirectMiddleware.Name(),
 							},
 						},
 					},
