@@ -15,6 +15,12 @@ operator:
   clusterComplianceEnabled: false
   exposedSecretScannerEnabled: false
 
+trivyOperator:
+  # Velero creates a maintenance Job per backup repository, ~114 a day, each
+  # scanned as a new workload. The Velero Deployment lacks the label and is
+  # still scanned.
+  skipResourceByLabels: "velero.io/repo-name"
+
 trivy:
   ignoreUnfixed: true
   # The server's DB is a cache: emptyDir rather than a Longhorn volume.
