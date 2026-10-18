@@ -18,6 +18,12 @@ type AppDeploymentOption struct {
 	Name            string
 	ImagePullPolicy string
 	SecretMounts    []SecretMount
+	// Args are passed to the image's entrypoint, unlike the commands
+	// parameter, which replaces it.
+	Args []string
+	// RunAsNonRoot sets the pod-level runAsNonRoot, which the run-as-root
+	// policy requires. The image must run as a numeric non-root user.
+	RunAsNonRoot bool
 }
 
 func NewAppDeployment(
@@ -30,6 +36,8 @@ func NewAppDeployment(
 	opts ...AppDeploymentOption,
 ) {
 	imagePullPolicy := ""
+	args := []*string{}
+	runAsNonRoot := false
 
 	volumes := []*k8s.Volume{}
 	volumeMounts := []*k8s.VolumeMount{}
@@ -59,6 +67,14 @@ func NewAppDeployment(
 
 		if opt.ImagePullPolicy != "" {
 			imagePullPolicy = opt.ImagePullPolicy
+		}
+
+		for _, arg := range opt.Args {
+			args = append(args, jsii.String(arg))
+		}
+
+		if opt.RunAsNonRoot {
+			runAsNonRoot = true
 		}
 
 		for _, secret := range opt.SecretMounts {
@@ -109,6 +125,10 @@ func NewAppDeployment(
 		}
 	}
 
+	if len(args) > 0 {
+		container.Args = &args
+	}
+
 	podTemplateSpec := k8s.PodTemplateSpec{
 		Metadata: &k8s.ObjectMeta{
 			Labels: &labels,
@@ -122,6 +142,12 @@ func NewAppDeployment(
 
 	if len(volumes) > 0 {
 		podTemplateSpec.Spec.Volumes = &volumes
+	}
+
+	if runAsNonRoot {
+		podTemplateSpec.Spec.SecurityContext = &k8s.PodSecurityContext{
+			RunAsNonRoot: jsii.Bool(true),
+		}
 	}
 
 	k8s.NewKubeDeployment(

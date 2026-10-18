@@ -1,8 +1,6 @@
 package apps
 
 import (
-	"strings"
-
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -43,27 +41,38 @@ func NewHoarderChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"app.kubernetes.io/components": jsii.String("chromium"),
 	}
 
+	// https://docs.karakeep.app/administration/chrome-image-migration
+	// Hardcoded rather than in versions.yaml: tags look like 154.0.8037.57-r1,
+	// which is not semver, and check-versions panics on a pinned version it
+	// cannot parse. Bump by hand from
+	// https://github.com/karakeep-app/karakeep/pkgs/container/karakeep-chrome
+	chromiumImage := "ghcr.io/karakeep-app/karakeep-chrome:154.0.8037.57-r1"
+
+	// The entrypoint already runs Chrome headless with --no-sandbox, and
+	// forwards :9222 to its DevTools port: the flags must not set
+	// --remote-debugging-address or --remote-debugging-port.
 	chromiumArgs := []string{
-		"chromium-browser --headless",
-		"--no-sandbox",
-		"--disable-dev-shm-usage",
 		"--disable-gpu",
-		"--remote-debugging-address=0.0.0.0",
-		"--remote-debugging-port=9222",
+		"--disable-dev-shm-usage",
 		"--hide-scrollbars",
+		"--disable-blink-features=AutomationControlled",
+		"--window-size=1440,900",
 	}
 
 	kubehelpers.NewAppDeployment(
 		chart.Cdk8sChart,
 		namespace,
-		"alpine-chrome",
-		"gcr.io/zenika-hub/alpine-chrome:123",
+		"chrome",
+		chromiumImage,
 		chromiumLabels,
 		[]*k8s.EnvVar{},
-		[]string{
-			strings.Join(chromiumArgs, " "),
-		},
+		[]string{},
 		[]kubehelpers.ConfigMapMount{},
+		kubehelpers.AppDeploymentOption{
+			Args: chromiumArgs,
+			// The image runs as 65534 (nobody).
+			RunAsNonRoot: true,
+		},
 	)
 
 	chromiumSvcName := kubehelpers.NewAppService(
