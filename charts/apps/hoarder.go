@@ -42,11 +42,10 @@ func NewHoarderChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	}
 
 	// https://docs.karakeep.app/administration/chrome-image-migration
-	// Hardcoded rather than in versions.yaml: tags look like 154.0.8037.57-r1,
-	// which is not semver, and check-versions panics on a pinned version it
-	// cannot parse. Bump by hand from
+	// Tags look like 154.0.8037.57-r1, which is not semver: check-versions
+	// skips the image, so bump it by hand from
 	// https://github.com/karakeep-app/karakeep/pkgs/container/karakeep-chrome
-	chromiumImage := "ghcr.io/karakeep-app/karakeep-chrome:154.0.8037.57-r1"
+	chromiumImage := builder.RegisterContainerImage("ghcr.io/karakeep-app/karakeep-chrome")
 
 	// The entrypoint already runs Chrome headless with --no-sandbox, and
 	// forwards :9222 to its DevTools port: the flags must not set

@@ -440,6 +440,17 @@ func GetLastImageTag(debug bool, image, version, pattern string) []string {
 		return retVersions
 	}
 
+	// Same for a pinned tag that is not semver (karakeep-chrome's
+	// 154.0.8037.57-r1): it cannot be ordered against candidates. Say so on
+	// stderr, as stdout carries the name;old;new lines contrib/create-pr.sh
+	// parses, and keep checking the other images.
+	v, err := semver.NewVersion(version)
+	if err != nil {
+		log.Printf("skipping %s: pinned version %q is not semver, bump it by hand", image, version)
+
+		return retVersions
+	}
+
 	imageName := image
 
 	// Create a new registry client
@@ -454,11 +465,6 @@ func GetLastImageTag(debug bool, image, version, pattern string) []string {
 	tags, err := remote.List(ref.Context(), remote.WithContext(ctx))
 	if err != nil {
 		panic(err)
-	}
-
-	v, err := semver.NewVersion(version)
-	if err != nil {
-		panic(fmt.Sprintf("Invalid version %s: %s", version, err))
 	}
 
 	for _, tag := range tags {

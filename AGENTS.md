@@ -94,10 +94,10 @@ Inspect the `dist/` diff before committing — CI does not gate on it.
 
 ### Tests
 
-The suite is a single Go *Example* test in package `kubehelpers_test`:
+The tests live in package `kubehelpers_test`: unit tests in `versions_test.go` and *Example* tests in `example_*_test.go`.
 
 ```sh
-go test ./internal/kubehelpers -run ExampleNewStatefulSet -v
+go test ./internal/kubehelpers -v
 ```
 
 Example tests assert on their `// Output:` comment, and the `testableexamples` linter requires that comment to be present — a new `ExampleXxx` without one fails lint, not just the test.
@@ -143,6 +143,7 @@ Beyond `helmcharts:` and `images:`, there is a `patterns:` section holding a per
 Version resolution in `internal/kubehelpers/versions.go` fetches Helm repo indexes and registry tag lists concurrently, then picks the highest semver. `oci://` Helm repositories are handled the same way, with chart versions listed as registry tags; they carry no `artifacthub.io/prerelease` annotation, so prereleases are excluded by semver instead (tags with a prerelease component are dropped). The remaining blind spots, all deliberate — together with unregistered images above, this is why `check-versions` does not cover everything:
 
 - An image pinned to `latest` (or empty) returns no candidates.
+- An image pinned to a tag that is not semver (karakeep-chrome's `154.0.8037.57-r1`) is skipped with a warning on stderr: there is nothing to order candidates against. Bump it by hand.
 - Chart versions annotated `artifacthub.io/prerelease: "true"` are skipped.
 - For Helm charts a `v` prefix is stripped for comparison and restored in the output. Image tags are emitted **verbatim as found in the registry** — the normalized semver form can point at a tag that does not exist (v-prefixed-only registries), which would break the pull. `linuxserver/*` images pin a `^v.+` pattern to stay on the v-prefixed (immutable `-lsNNN` build) tag family; other registries with unusual tag schemes get their own pattern.
 

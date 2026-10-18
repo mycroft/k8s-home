@@ -36,6 +36,18 @@ func TestLatestMatchingVersion(t *testing.T) {
 	}
 }
 
+func TestGetLastImageTagNonSemverPin(t *testing.T) {
+	t.Parallel()
+
+	// The registry host does not resolve: reaching it would panic, so this
+	// also checks the pin is rejected before any registry round-trip.
+	got := kubehelpers.GetLastImageTag(false, "registry.invalid/karakeep-chrome", "154.0.8037.57-r1", ".+")
+
+	if len(got) != 0 {
+		t.Errorf("GetLastImageTag() = %v, want no candidates", got)
+	}
+}
+
 func TestGetRepoIndexNon200(t *testing.T) {
 	t.Parallel()
 

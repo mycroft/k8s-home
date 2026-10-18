@@ -60,6 +60,7 @@ images:
   ghcr.io/gethomepage/homepage: v2.6
   ghcr.io/gimlet-io/capacitor: v0.4.2
   ghcr.io/hoarder-app/hoarder: 0.34.0
+  ghcr.io/karakeep-app/karakeep-chrome: 154.0.8037.57-r1
   ghcr.io/open-webui/open-webui: 0.12.3
   ghcr.io/thomiceli/opengist: 1.15.2
   jhaals/yopass: 16.0.0
