@@ -6,7 +6,7 @@ metadata:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: aqua
+  name: aquasecurity
   namespace: flux-system
 spec:
   interval: 1m0s
@@ -54,7 +54,7 @@ spec:
       chart: trivy-operator
       sourceRef:
         kind: HelmRepository
-        name: aqua
+        name: aquasecurity
         namespace: flux-system
       version: 0.37.0
   install:
