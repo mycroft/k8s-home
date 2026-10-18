@@ -8,7 +8,9 @@ func NewTrivyChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	appName := "trivy"
 	namespace := "trivy-system"
 
-	repoName := "aqua"
+	// Not "aqua": harbor-scanner-trivy already owns flux-system/aqua, pointing
+	// at helm.aquasec.com, which does not carry trivy-operator.
+	repoName := "aquasecurity"
 	releaseName := "trivy-operator"
 
 	chart := builder.NewChart(appName)
