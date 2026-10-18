@@ -105,17 +105,16 @@ spec:
         app.kubernetes.io/name: hoarder
     spec:
       containers:
-        - command:
-            - chromium-browser
-            - --headless
-            - --no-sandbox
-            - --disable-dev-shm-usage
+        - args:
             - --disable-gpu
-            - --remote-debugging-address=0.0.0.0
-            - --remote-debugging-port=9222
+            - --disable-dev-shm-usage
             - --hide-scrollbars
-          image: gcr.io/zenika-hub/alpine-chrome:123
-          name: alpine-chrome
+            - --disable-blink-features=AutomationControlled
+            - --window-size=1440,900
+          image: ghcr.io/karakeep-app/karakeep-chrome:154.0.8037.57-r1
+          name: chrome
+      securityContext:
+        runAsNonRoot: true
 ---
 apiVersion: v1
 kind: Service
