@@ -252,6 +252,7 @@ See `docs/adding-new-app.md` for worked examples (stateless app, env vars + Vaul
   - `*.iop.cx` — public-facing hostnames (e.g. `todo`, `wiki`, `n8n`, `s3-api`); grep `charts/` for the current set rather than trusting a list here
   - `*.lan.mkz.me` — LAN-only hosts
 - **Multi-host ingress**: a chart may declare several hostnames (`Ingresses: []string{...}` / `NewAppIngresses`). When it does, check whether the app needs the full host list elsewhere in its config — CORS allow-lists in particular. See `charts/apps/vikunja.go`, which derives `VIKUNJA_CORS_ORIGINS` from the ingress list so a new hostname needs only one edit.
+- **Metrics and dashboards**: Prometheus selects ServiceMonitors and PodMonitors from every namespace. Grafana's dashboard sidecar loads any ConfigMap labelled `grafana_dashboard: "1"`, from any namespace — keep the dashboard JSON in `configs/<app>/` (see `charts/security/trivy.go`).
 - **Linting**: `.golangci.yaml` uses `default: none` with an explicit enable list; `imports/` is excluded.
 
 ## See also

@@ -27,6 +27,10 @@ trivyOperator:
   # still scanned.
   skipResourceByLabels: "velero.io/repo-name"
 
+# Prometheus picks up ServiceMonitors from every namespace.
+serviceMonitor:
+  enabled: true
+
 trivy:
   ignoreUnfixed: true
   # The server's DB is a cache: emptyDir rather than a Longhorn volume.
