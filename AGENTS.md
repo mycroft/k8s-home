@@ -94,13 +94,15 @@ Inspect the `dist/` diff before committing — CI does not gate on it.
 
 ### Tests
 
-The tests live in package `kubehelpers_test`: unit tests in `versions_test.go` and *Example* tests in `example_*_test.go`.
+The tests live in package `kubehelpers_test`: unit tests in `*_test.go` and *Example* tests in `example_*_test.go`.
 
 ```sh
 go test ./internal/kubehelpers -v
 ```
 
 Example tests assert on their `// Output:` comment, and the `testableexamples` linter requires that comment to be present — a new `ExampleXxx` without one fails lint, not just the test.
+
+A test that builds cdk8s objects (to inspect them with `ToJson()`, see `helm_test.go`) must not call `t.Parallel()`: concurrent first calls into the jsii runtime race while it starts its kernel process and crash with a nil-pointer panic in `consumeStderr`. Pure-Go tests can stay parallel.
 
 ## Architecture
 
