@@ -79,6 +79,12 @@ jobs:
           echo "Running golangci-lint on Go code..."
           golangci-lint run -v --timeout=5m --config=.golangci.yaml ./...
 
+      - name: Run Go tests
+        run: |
+          # Needs imports/ from the cdk8s import above; tests that build cdk8s
+          # objects drive jsii through the image's node.
+          go test ./...
+
       - name: Report status
         if: ${{ always() }}
         run: |

@@ -228,7 +228,7 @@ See `docs/adding-new-app.md` for worked examples (stateless app, env vars + Vaul
 
 ## CI/CD
 
-- **Lint** (`.gitea/workflows/lint.yaml`): runs on PRs to `main`, skipped for `versions.yaml`-only changes
+- **Lint** (`.gitea/workflows/lint.yaml`): runs on PRs to `main`, skipped for `versions.yaml`-only changes. Synthesizes the charts, then runs conftest, the kustomize build, golangci-lint and `go test ./...`
 - **Deploy** (`.gitea/workflows/deploy.yaml`): on merge to `main`, runs `cdk8s import` + `cdk8s synth`, pushes `dist/` to `generated` branch, then pushes an OCI artifact
 - **Flux reconciles from the `generated` branch, not the OCI artifact.** The one `flux-system`
   Kustomization has `sourceRef: {kind: GitRepository, name: flux-system}` and `path: ./generated`.
