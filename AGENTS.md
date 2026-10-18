@@ -178,6 +178,8 @@ A typical chart Go file produces a `dist/<name>.k8s.yaml` containing:
 4. `HelmRelease` referencing the above, in the chart's namespace
 5. Supporting CRDs as needed (ClusterIssuer, ExternalSecret, SecretStore, PodMonitor, etc.)
 
+CRDs a chart ships in its `crds/` directory follow Flux's default policy, which `CreateHelmRelease` leaves alone: created on install when missing, **never touched on upgrade**. A chart bump therefore does not update its CRDs, and CRDs left on the cluster by an earlier install stay as they were. `kubehelpers.WithReplaceCRDs()` switches install and upgrade to `CreateReplace` (see `charts/security/trivy.go`).
+
 ### Chart categories
 
 `charts/{apps,infra,observability,security,storage}/` — one file per namespace, each exporting a `NewXxxChart(*kubehelpers.Builder) *kubehelpers.Chart` constructor. Registration order in `charts/homelab.go` is grouped by category and roughly reflects bootstrap dependency (security → storage → infra → observability → apps), though Flux, not this ordering, governs actual apply order.

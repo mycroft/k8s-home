@@ -75,6 +75,7 @@ type helmReleaseOption struct {
 	ConfigMaps            []HelmReleaseConfigMap
 	Versions              *Versions
 	Timeout               string
+	ReplaceCRDs           bool
 }
 
 type HelmReleaseOption func(*helmReleaseOption)
@@ -109,6 +110,17 @@ func WithAnnotations(annotations map[string]*string) HelmReleaseOption {
 func WithTimeout(timeout string) HelmReleaseOption {
 	return func(opts *helmReleaseOption) {
 		opts.Timeout = timeout
+	}
+}
+
+// WithReplaceCRDs makes helm-controller replace the chart's CRDs (its crds/
+// directory) on install and on every upgrade. Flux's defaults only create
+// missing CRDs on install and skip them on upgrade, so without this a chart
+// bump never updates its CRDs, and CRDs left over from an earlier install are
+// kept as they are.
+func WithReplaceCRDs() HelmReleaseOption {
+	return func(opts *helmReleaseOption) {
+		opts.ReplaceCRDs = true
 	}
 }
 
@@ -192,6 +204,18 @@ func internalCreateHelmRelease(
 		})
 	}
 
+	install := &helmtoolkitfluxcdio.HelmReleaseSpecInstall{
+		CreateNamespace: jsii.Bool(false),
+		SkipCrDs:        jsii.Bool(false),
+	}
+	var upgrade *helmtoolkitfluxcdio.HelmReleaseSpecUpgrade
+	if helmReleaseOptions.ReplaceCRDs {
+		install.Crds = helmtoolkitfluxcdio.HelmReleaseSpecInstallCrds_CREATE_REPLACE
+		upgrade = &helmtoolkitfluxcdio.HelmReleaseSpecUpgrade{
+			Crds: helmtoolkitfluxcdio.HelmReleaseSpecUpgradeCrds_CREATE_REPLACE,
+		}
+	}
+
 	return helmtoolkitfluxcdio.NewHelmRelease(
 		chart.Cdk8sChart,
 		jsii.String("helm-rel-"+releaseName),
@@ -202,10 +226,8 @@ func internalCreateHelmRelease(
 				Annotations: &annotations,
 			},
 			Spec: &helmtoolkitfluxcdio.HelmReleaseSpec{
-				Install: &helmtoolkitfluxcdio.HelmReleaseSpecInstall{
-					CreateNamespace: jsii.Bool(false),
-					SkipCrDs:        jsii.Bool(false),
-				},
+				Install: install,
+				Upgrade: upgrade,
 				Chart: &helmtoolkitfluxcdio.HelmReleaseSpecChart{
 					Spec: &helmtoolkitfluxcdio.HelmReleaseSpecChartSpec{
 						Chart: jsii.String(chartName),

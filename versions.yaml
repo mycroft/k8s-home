@@ -1,5 +1,5 @@
 helmcharts:
-  aqua/trivy-operator: 0.18.4
+  aqua/trivy-operator: 0.37.0
   aqua/harbor-scanner-trivy: 0.17.0
   authentik/authentik: 2026.8.4
   calibre-web/calibre-web: 23.0.1

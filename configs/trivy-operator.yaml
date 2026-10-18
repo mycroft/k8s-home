@@ -1,0 +1,21 @@
+# https://github.com/aquasecurity/helm-charts/blob/main/charts/trivy-operator/values.yaml
+
+operator:
+  # Reports expire after this long and the workload is rescanned. The chart's
+  # 24h rescanned every image daily, which is what got trivy disabled in 2023.
+  # Image changes still trigger a scan straight away.
+  scannerReportTTL: "168h"
+  scanJobsConcurrentLimit: 1
+  # A single Trivy server holds the vulnerability DB; scan jobs run as thin
+  # clients instead of each downloading and unpacking the DB.
+  builtInTrivyServer: true
+  # Node-collector jobs, a compliance run every 6h, and a secret scan of every
+  # file in every image.
+  infraAssessmentScannerEnabled: false
+  clusterComplianceEnabled: false
+  exposedSecretScannerEnabled: false
+
+trivy:
+  ignoreUnfixed: true
+  # The server's DB is a cache: emptyDir rather than a Longhorn volume.
+  storageClassEnabled: false

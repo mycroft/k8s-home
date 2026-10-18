@@ -2,7 +2,6 @@ package security
 
 import (
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
-	"github.com/aws/jsii-runtime-go"
 )
 
 func NewTrivyChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
@@ -20,17 +19,14 @@ func NewTrivyChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		"https://aquasecurity.github.io/helm-charts/",
 	)
 
-	values := map[string]*string{
-		"trivy.ignoreUnfixed": jsii.String("true"),
-	}
-
 	chart.CreateHelmRelease(
 		namespace,
 		repoName,
 		"trivy-operator",
 		releaseName,
 		kubehelpers.WithDefaultConfigFile(),
-		kubehelpers.WithHelmValues(values),
+		// The cluster still carries CRDs from the 2023 install.
+		kubehelpers.WithReplaceCRDs(),
 	)
 
 	return chart
