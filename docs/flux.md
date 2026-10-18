@@ -109,12 +109,12 @@ flux get all -n flux-system
 
 The lint CI builds the manifests with the kustomize CLI pinned in `.gitea/workflows/lint.yaml`,
 chosen to embed the same `sigs.k8s.io/kustomize/api` as kustomize-controller. After the upgrade,
-look up the new controller's version and its `api` dependency, then pick the kustomize CLI release
-that requires it:
+look up the new controller's image tag (e.g. `v1.8.2`, not the full image reference) and its `api`
+dependency, then pick the kustomize CLI release (e.g. `v5.8.1`) that requires it:
 
 ```sh
 kubectl -n flux-system get deploy kustomize-controller -o jsonpath='{.spec.template.spec.containers[0].image}'
-curl -sL https://raw.githubusercontent.com/fluxcd/kustomize-controller/<version>/go.mod | grep kustomize/api
+curl -sL https://raw.githubusercontent.com/fluxcd/kustomize-controller/<controller-tag>/go.mod | grep kustomize/api
 curl -sL https://raw.githubusercontent.com/kubernetes-sigs/kustomize/kustomize/<cli-version>/kustomize/go.mod | grep kustomize/api
 ```
 

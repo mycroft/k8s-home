@@ -11,10 +11,15 @@
 
 set -eu
 
+# CI pins kustomize in lint.yaml to kustomize-controller's kustomize/api. A
+# local kustomize, or the one embedded in kubectl, may be another version, so
+# the version used is printed with the result.
 if command -v kustomize >/dev/null 2>&1; then
 	build="kustomize build"
+	version=$(kustomize version)
 else
 	build="kubectl kustomize"
+	version=$(kubectl version --client | sed -n 's/^Kustomize Version: //p')
 fi
 
 work=$(mktemp -d)
@@ -39,4 +44,6 @@ git archive origin/generated generated/flux-system | tar -x -C "$work/root" --st
 } >"$work/root/kustomization.yaml"
 
 $build "$work/root" >"$work/out.yaml"
-echo "kustomize build OK: $(grep -c '^kind:' "$work/out.yaml") resources"
+# A plain assignment, so that an empty build (grep -c finds 0) fails set -e.
+count=$(grep -c '^kind:' "$work/out.yaml")
+echo "kustomize build OK ($build $version): $count resources"
