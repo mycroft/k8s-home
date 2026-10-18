@@ -72,7 +72,7 @@ images:
   paulbouwer/hello-kubernetes: 1.10.1
   paperlessngx/paperless-ngx: 3.3.2
   pawelmalak/snippet-box: latest
-  privatebin/nginx-fpm-alpine: 2.0.6
+  privatebin/nginx-fpm-alpine: 2.1.0
   quay.io/containers/kubernetes_mcp_server: v0.0.67
   quay.io/superq/smokeping-prober: v0.12.0
   rabbitmq: 4.3.6
