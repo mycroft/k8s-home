@@ -1,0 +1,32 @@
+# https://github.com/raoulx24/trivy-operator-dashboard/blob/main/deploy/helm/trivy-operator-dashboard/values.yaml
+
+kubernetes:
+  # trivy-operator runs with these scanners off (configs/trivy-operator.yaml.tmpl):
+  # hide their pages rather than show them empty.
+  trivyUseClusterComplianceReport: false
+  trivyUseClusterInfraAssessmentReport: false
+  trivyUseInfraAssessmentReport: false
+  trivyUseExposedSecretReport: false
+
+# Report history needs a valkey sidecar on a PVC whose default storage class
+# (managed-csi-premium) does not exist here. The dashboard works without it.
+history:
+  enabled: false
+
+# Updates come through check-versions, like every other chart.
+gitHub:
+  serverCheckForUpdates: false
+
+# The ingress, with authentik forward auth, is created in
+# charts/security/trivy-operator-dashboard.go.
+ingress:
+  enabled: false
+
+# The chart's advised values.
+resources:
+  requests:
+    cpu: 100m
+    memory: 384Mi
+  limits:
+    cpu: 1000m
+    memory: 384Mi

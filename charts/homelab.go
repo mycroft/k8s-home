@@ -25,6 +25,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_security.NewAuthentikChart,
 		charts_security.NewHarborScannerTrivy,
 		charts_security.NewTrivyChart,
+		charts_security.NewTrivyOperatorDashboardChart,
 		// charts_security.NewKyvernoChart
 
 		// storage charts
