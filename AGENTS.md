@@ -24,7 +24,7 @@ mise run build
 
 Task runner is `mise` (see `.mise.toml`). Tasks that invoke `./k8s-home` depend on `mise run build` (`go build -o . ./...`).
 
-`.mise.toml` manages Go, golangci-lint, node and cdk8s-cli only. `conftest`, `tea` and `just` are **external prerequisites**, installed outside mise.
+`.mise.toml` manages Go, golangci-lint, node and cdk8s-cli only. `conftest`, `kustomize` (or `kubectl`, whose `kubectl kustomize` is the fallback), `tea` and `just` are **external prerequisites**, installed outside mise.
 
 `mise.lock` (plus `.mise/locks/`, which holds cdk8s-cli's full npm dependency graph) pins the
 local toolchain to what the CI image contains. Without it, mise re-resolves cdk8s-cli's
@@ -44,6 +44,7 @@ mise lock --bump --minimum-release-age "$(skopeo inspect docker://registry.mkz.m
 | `mise run synth` | `cdk8s synth` — same output via the cdk8s CLI (what CI runs) |
 | `mise run lint` | `golangci-lint run -c .golangci.yaml` |
 | `mise run conftest` | Generate charts, then run OPA policy checks against `dist/` (enforced in the lint CI) |
+| `mise run kustomize-build` | Generate charts, then build `dist/` plus the `generated` branch's `flux-system/` the way kustomize-controller does (`contrib/kustomize-build.sh`). Catches what Flux would reject, e.g. two charts declaring the same resource — which conftest, checking file by file, cannot see. Enforced in the lint CI |
 | `mise run check-versions` | Build + find outdated Helm charts & images |
 | `mise run import` | `cdk8s import` — regenerates `imports/` from the `imports:` list in `cdk8s.yaml` |
 | `mise run diff` | `git diff remotes/origin/generated:generated dist` — quick in-place diff |
@@ -84,7 +85,7 @@ branch has already been created.
 Before committing Go changes:
 
 ```sh
-mise run lint && mise run generate-charts && mise run conftest && go test ./...
+mise run lint && mise run generate-charts && mise run conftest && mise run kustomize-build && go test ./...
 ```
 
 Inspect the `dist/` diff before committing — CI does not gate on it.

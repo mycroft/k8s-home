@@ -34,6 +34,11 @@ depends = ["generate-charts"]
 sources = ["dist/*.k8s.yaml"]
 run = "conftest test --policy policies --data policies/exemptions.yaml --data policies/policy.yaml ./dist"
 
+[tasks.kustomize-build]
+description = "Build dist/ the way Flux builds the generated branch"
+depends = ["generate-charts"]
+run = "sh contrib/kustomize-build.sh"
+
 [tasks.lint]
 description = "Run lint against golang code"
 run = "golangci-lint run -c .golangci.yaml"

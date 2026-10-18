@@ -61,6 +61,19 @@ jobs:
           export PATH=$PATH:$(go env GOPATH)/bin
           conftest test --policy policies --data policies/exemptions.yaml --data policies/policy.yaml ./dist
 
+      - name: Install kustomize
+        run: |
+          # v5.8.1 embeds kustomize/api v0.21.1, the version Flux's
+          # kustomize-controller v1.8.2 builds with.
+          go install sigs.k8s.io/kustomize/kustomize/v5@v5.8.1
+          export PATH=$PATH:$(go env GOPATH)/bin
+          kustomize version
+
+      - name: Build manifests the way Flux does
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+          sh contrib/kustomize-build.sh
+
       - name: Run golangci-lint
         run: |
           echo "Running golangci-lint on Go code..."
