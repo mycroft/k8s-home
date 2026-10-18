@@ -38,6 +38,18 @@ data:
       clusterComplianceEnabled: false
       exposedSecretScannerEnabled: false
 
+    # The operator reads its trivy-operator ConfigMap (where trivyOperator.*
+    # lands) only at startup, and the chart only rolls the pod when the separate
+    # trivy-operator-config changes. Roll it on any edit to this file.
+    podAnnotations:
+      values-hash: "4828a505368fdcae8ef58b423c200e05cece39172ec5bc86960b47c325d609e2"
+
+    trivyOperator:
+      # Velero creates a maintenance Job per backup repository, ~114 a day, each
+      # scanned as a new workload. The Velero Deployment lacks the label and is
+      # still scanned.
+      skipResourceByLabels: "velero.io/repo-name"
+
     trivy:
       ignoreUnfixed: true
       # The server's DB is a cache: emptyDir rather than a Longhorn volume.
