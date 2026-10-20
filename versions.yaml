@@ -7,6 +7,7 @@ helmcharts:
   controlplaneio-fluxcd/flux-operator-mcp: 0.61.0
   dex/dex: 0.26.0
   external-secrets/external-secrets: 2.13.0
+  falcosecurity/falco: 9.2.1
   garage/garage: 2.4.2
   grafana-community/grafana-mcp: 0.28.1
   grafana/alloy: 1.14.0

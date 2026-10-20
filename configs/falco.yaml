@@ -1,0 +1,65 @@
+# https://github.com/falcosecurity/charts/blob/master/charts/falco/values.yaml
+
+# The nodes' kernels carry BTF, so the modern eBPF probe built into Falco
+# works as is: no kernel module, no driver loader init container.
+driver:
+  kind: modern_ebpf
+
+# The chart mounts the directory of every listed socket as a hostPath with no
+# type, which creates it on the host when missing. Only k3s's containerd
+# socket exists on these nodes.
+collectors:
+  containerEngine:
+    engines:
+      docker:
+        enabled: false
+      podman:
+        enabled: false
+      containerd:
+        enabled: false
+      cri:
+        enabled: true
+        sockets: ["/run/k3s/containerd/containerd.sock"]
+      lxc:
+        enabled: false
+      libvirt_lxc:
+        enabled: false
+      bpm:
+        enabled: false
+
+# falcoctl installs the ruleset when the pod starts. The chart's default
+# follows falco-rules:5 and pulls new releases weekly, which would change the
+# rules, and the exceptions written against them, outside of git. Bump the
+# pin by hand: check-versions does not see it.
+falcoctl:
+  artifact:
+    follow:
+      enabled: false
+  config:
+    artifact:
+      install:
+        refs: [falco-rules:5.2.0]
+
+# Rule match counters, scraped by Prometheus (ServiceMonitors are picked up
+# from every namespace) and graphed by the chart's dashboard, loaded by
+# Grafana's sidecar through its grafana_dashboard label.
+metrics:
+  enabled: true
+serviceMonitor:
+  create: true
+grafana:
+  dashboards:
+    enabled: true
+
+falco:
+  # Alloy collects stdout into Loki, where `| json` exposes rule, priority
+  # and output_fields.
+  json_output: true
+  # There is no syslog daemon in the container.
+  syslog_output:
+    enabled: false
+
+# Exceptions for the cluster's own workloads go here, as rules files appended
+# after the default ruleset. See
+# https://falco.org/docs/concepts/rules/exceptions/
+customRules: {}
