@@ -8,7 +8,7 @@ helmcharts:
   dex/dex: 0.26.0
   external-secrets/external-secrets: 2.13.0
   garage/garage: 2.4.2
-  grafana-community/grafana-mcp: 0.28.0
+  grafana-community/grafana-mcp: 0.28.1
   grafana/alloy: 1.14.0
   grafana/loki: 7.3.0
   grafana/promtail: 6.16.0
