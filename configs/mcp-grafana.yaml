@@ -24,12 +24,13 @@ extraArgs:
   # Requests with another Host header are refused: the URL agent-nexus calls.
   - --allowed-hosts=mcp-grafana.mcp-grafana.svc:8000
 
-# Callers must send it as a bearer token.
-envValueFrom:
-  MCP_GRAFANA_SERVER_TOKEN:
-    secretKeyRef:
-      name: mcp-grafana
-      key: server-token
+# Callers must send it as a bearer token. Naming the secret keeps the chart
+# from generating its own, which fullnameOverride would also call mcp-grafana:
+# it would clash with the ExternalSecret's.
+serverAuth:
+  tokenSecret:
+    name: mcp-grafana
+    key: server-token
 
 # It calls Grafana only, never the Kubernetes API.
 automountServiceAccountToken: false
