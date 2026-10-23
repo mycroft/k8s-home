@@ -74,7 +74,7 @@ images:
   paperlessngx/paperless-ngx: 3.3.4
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: 2.1.0
-  quay.io/containers/kubernetes_mcp_server: v0.0.67
+  quay.io/containers/kubernetes_mcp_server: v0.0.69
   quay.io/superq/smokeping-prober: v0.12.0
   rabbitmq: 4.4.0
   registry.gitlab.com/timvisee/send: v3.4.27
