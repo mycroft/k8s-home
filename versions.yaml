@@ -10,7 +10,7 @@ helmcharts:
   falcosecurity/falco: 9.2.1
   garage/garage: 2.4.2
   grafana-community/grafana-mcp: 0.30.0
-  grafana/alloy: 1.14.2
+  grafana/alloy: 1.14.3
   grafana/loki: 7.5.0
   grafana/promtail: 6.16.0
   grafana/tempo: 1.24.4
