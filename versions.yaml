@@ -53,7 +53,7 @@ images:
   docker.l5d.io/buoyantio/emojivoto-emoji-svc: v12
   docker.l5d.io/buoyantio/emojivoto-web: v12
   docker.l5d.io/buoyantio/emojivoto-voting-svc: v12
-  outlinewiki/outline: 1.11.0
+  outlinewiki/outline: 1.12.0
   excalidraw/excalidraw: latest
   freshrss/freshrss: 1.30.4
   ghcr.io/cloudnative-pg/postgresql: 18.6
