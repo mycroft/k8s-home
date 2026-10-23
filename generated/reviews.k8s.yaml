@@ -1,0 +1,142 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: reviews
+---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: reviews
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: reviews-es-reviews-c827d695
+  namespace: reviews
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/reviews/reviews
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: reviews
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+  name: reviews-helm-val-reviews-c84f1bea
+  namespace: reviews
+data:
+  values.yaml: |
+    # https://git.mkz.me/mycroft/reviews/src/branch/main/charts/reviews/values.yaml
+    # The ingress and the NetworkPolicy are created in charts/apps/reviews.go.
+
+    baseURL: https://reviews.iop.cx
+
+    github:
+      # Client ID of the GitHub OAuth App whose callback URL is
+      # https://reviews.iop.cx/auth/callback. Its client secret is
+      # github-client-secret in the Vault secret.
+      clientID: Ov23liBG8Gtc5dOmnSHQ
+
+    # Synced from Vault secret/namespaces/reviews/reviews by the ExternalSecret
+    # of the same name: github-client-secret, and session-key (32 random bytes,
+    # base64; changing it signs everyone out).
+    existingSecret: reviews
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: reviews
+  namespace: reviews
+spec:
+  chart:
+    spec:
+      chart: reviews
+      sourceRef:
+        kind: HelmRepository
+        name: homelab-oci
+        namespace: flux-system
+      version: 0.1.0
+  install:
+    createNamespace: false
+    skipCRDs: false
+  interval: 10m0s
+  timeout: 5m0s
+  values: {}
+  valuesFrom:
+    - kind: ConfigMap
+      name: reviews-helm-val-reviews-c84f1bea
+      valuesKey: values.yaml
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: reviews
+  namespace: reviews
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: reviews.iop.cx
+      http:
+        paths:
+          - backend:
+              service:
+                name: reviews
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - reviews.iop.cx
+      secretName: secret-tls-www
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: reviews
+  namespace: reviews
+spec:
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+      ports:
+        - port: 8080
+          protocol: TCP
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: reviews
+      app.kubernetes.io/name: reviews
+  policyTypes:
+    - Ingress
