@@ -1,0 +1,15 @@
+# https://git.mkz.me/mycroft/reviews/src/branch/main/charts/reviews/values.yaml
+# The ingress and the NetworkPolicy are created in charts/apps/reviews.go.
+
+baseURL: https://reviews.iop.cx
+
+github:
+  # Client ID of the GitHub OAuth App whose callback URL is
+  # https://reviews.iop.cx/auth/callback. Its client secret is
+  # github-client-secret in the Vault secret.
+  clientID: Ov23liBG8Gtc5dOmnSHQ
+
+# Synced from Vault secret/namespaces/reviews/reviews by the ExternalSecret
+# of the same name: github-client-secret, and session-key (32 random bytes,
+# base64; changing it signs everyone out).
+existingSecret: reviews
