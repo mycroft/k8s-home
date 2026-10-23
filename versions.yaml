@@ -71,7 +71,7 @@ images:
   memcached: 1.6.45
   neosmemo/memos: 0.31.0
   paulbouwer/hello-kubernetes: 1.10.1
-  paperlessngx/paperless-ngx: 3.3.3
+  paperlessngx/paperless-ngx: 3.3.4
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: 2.1.0
   quay.io/containers/kubernetes_mcp_server: v0.0.67
