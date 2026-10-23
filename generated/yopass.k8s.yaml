@@ -85,7 +85,7 @@ spec:
             - "1337"
             - --redis
             - redis://yopass-redis-svc-c8a159bf:6379
-          image: jhaals/yopass:16.0.0
+          image: jhaals/yopass:16.0.1
           name: yopass
 ---
 apiVersion: v1
