@@ -1,6 +1,8 @@
 package apps
 
 import (
+	"slices"
+
 	"git.mkz.me/mycroft/k8s-home/imports/k8s"
 	"git.mkz.me/mycroft/k8s-home/internal/kubehelpers"
 	"github.com/aws/jsii-runtime-go"
@@ -17,6 +19,7 @@ func NewFreshRSS(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart.NewNamespace(namespace)
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql-cnpg")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "openid")
 
 	labels := map[string]*string{
 		"app.kubernetes.io/name": jsii.String(appName),
@@ -53,13 +56,51 @@ func NewFreshRSS(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	}
 
+	// OIDC is done by Apache's mod_auth_openidc, which guards the web UI
+	// (/i/) only: /api/ clients keep using their API password. Kept out of
+	// env, which the updater CronJob shares and has no use for.
+	oidcEnv := []*k8s.EnvVar{
+		{Name: jsii.String("OIDC_ENABLED"), Value: jsii.String("1")},
+		{
+			Name:  jsii.String("OIDC_PROVIDER_METADATA_URL"),
+			Value: jsii.String("https://auth.services.mkz.me/application/o/freshrss/.well-known/openid-configuration"),
+		},
+		{
+			Name: jsii.String("OIDC_CLIENT_ID"),
+			ValueFrom: &k8s.EnvVarSource{SecretKeyRef: &k8s.SecretKeySelector{
+				Name: jsii.String("openid"),
+				Key:  jsii.String("client_id"),
+			}},
+		},
+		{
+			Name: jsii.String("OIDC_CLIENT_SECRET"),
+			ValueFrom: &k8s.EnvVarSource{SecretKeyRef: &k8s.SecretKeySelector{
+				Name: jsii.String("openid"),
+				Key:  jsii.String("client_secret"),
+			}},
+		},
+		{
+			Name: jsii.String("OIDC_CLIENT_CRYPTO_KEY"),
+			ValueFrom: &k8s.EnvVarSource{SecretKeyRef: &k8s.SecretKeySelector{
+				Name: jsii.String("openid"),
+				Key:  jsii.String("crypto_key"),
+			}},
+		},
+		{Name: jsii.String("OIDC_SCOPES"), Value: jsii.String("openid email profile")},
+		// Traefik terminates TLS; without these the return URL is built as http://<pod>.
+		{Name: jsii.String("OIDC_X_FORWARDED_HEADERS"), Value: jsii.String("X-Forwarded-Host X-Forwarded-Port X-Forwarded-Proto")},
+		// The image default (300s) expires an idle tab's session within minutes; the
+		// session stays capped by OIDC_SESSION_MAX_DURATION (image default: 27200s).
+		{Name: jsii.String("OIDC_SESSION_INACTIVITY_TIMEOUT"), Value: jsii.String("28800")},
+	}
+
 	stsName, svcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
 		Namespace: namespace,
 		AppName:   appName,
 		AppImage:  appImage,
 		AppPort:   appPort,
 		Labels:    labels,
-		Env:       env,
+		Env:       slices.Concat(env, oidcEnv),
 		Storages: []kubehelpers.StatefulSetVolume{
 			{
 				Name:        "data",
