@@ -62,6 +62,12 @@ func NewLinkdingChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 			Name:  jsii.String("LD_ENABLE_OIDC"),
 			Value: jsii.Sprintf("True"),
 		},
+		// Only hides the form: password login still works through
+		// POST /login/ and /admin/login/, which stay as a fallback.
+		{
+			Name:  jsii.String("LD_DISABLE_LOGIN_FORM"),
+			Value: jsii.Sprintf("True"),
+		},
 	}
 
 	_, svcName := kubehelpers.NewStatefulSet(chart.Cdk8sChart, kubehelpers.StatefulSetConfig{
