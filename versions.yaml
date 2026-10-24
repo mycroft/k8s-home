@@ -21,7 +21,7 @@ helmcharts:
   homelab-oci/reviews: 0.1.0
   jaegertracing/jaeger: 0.71.2
   jameswynn/homepage: 2.1.0
-  jetstack/cert-manager: v1.21.2
+  jetstack/cert-manager: v1.21.3
   jitsi/jitsi-meet: v1.3.7
   kubernetes-mcp-server/kubernetes-mcp-server: 0.1.0
   kyverno/kyverno: v3.0.5
