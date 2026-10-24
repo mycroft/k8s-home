@@ -93,6 +93,8 @@ spec:
               value: https://auth.services.mkz.me/application/o/linkding/jwks/
             - name: LD_ENABLE_OIDC
               value: "True"
+            - name: LD_DISABLE_LOGIN_FORM
+              value: "True"
           image: sissbruecker/linkding:1.47.0
           name: linkding
           volumeMounts:
