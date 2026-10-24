@@ -52,6 +52,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		// charts_infra.NewLinkerdChart,
 		charts_infra.NewTemporalChart,
 		charts_infra.NewTraefikChart,
+		charts_infra.NewTailscaleChart,
 
 		// observability
 		charts_observability.NewGrafanaHelmRepositoryChart,

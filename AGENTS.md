@@ -255,6 +255,7 @@ See `docs/adding-new-app.md` for worked examples (stateless app, env vars + Vaul
   - `*.services.mkz.me` — the default for internal services
   - `*.iop.cx` — public-facing hostnames (e.g. `todo`, `wiki`, `n8n`, `s3-api`); grep `charts/` for the current set rather than trusting a list here
   - `*.lan.mkz.me` — LAN-only hosts
+- **Tailnet-only services**: `chart.NewTailscaleIngress(host, svc, port)` serves a service at `https://<host>.<tailnet>.ts.net` through the Tailscale operator (`charts/infra/tailscale.go`), bypassing Traefik and cert-manager. `policies/ingress.rego` exempts Ingresses of class `tailscale` from the issuer and domain rules. Setup and caveats: `docs/tailscale.md`.
 - **Multi-host ingress**: a chart may declare several hostnames (`Ingresses: []string{...}` / `NewAppIngresses`). When it does, check whether the app needs the full host list elsewhere in its config — CORS allow-lists in particular. See `charts/apps/vikunja.go`, which derives `VIKUNJA_CORS_ORIGINS` from the ingress list so a new hostname needs only one edit.
 - **Metrics and dashboards**: Prometheus selects ServiceMonitors and PodMonitors from every namespace. Grafana's dashboard sidecar loads any ConfigMap labelled `grafana_dashboard: "1"`, from any namespace — keep the dashboard JSON in `configs/<app>/` (see `charts/security/trivy.go`).
 - **Linting**: `.golangci.yaml` uses `default: none` with an explicit enable list; `imports/` is excluded.
@@ -269,3 +270,4 @@ See `docs/adding-new-app.md` for worked examples (stateless app, env vars + Vaul
 - `docs/garage.md` — Garage S3 storage
 - `docs/authentik.md` — Authentik SSO
 - `docs/temporal.md` — Temporal, including its upgrade procedure
+- `docs/tailscale.md` — Tailscale operator: tailnet setup, tailnet-only services, Vaultwarden migration

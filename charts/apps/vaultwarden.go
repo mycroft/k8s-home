@@ -97,5 +97,9 @@ func NewVaultWardenChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		map[string]string{},
 	)
 
+	// Tailnet-only access, at https://vaultwarden.merino-tiaki.ts.net. The
+	// public ingress above goes once every client has moved (docs/tailscale.md).
+	chart.NewTailscaleIngress(appName, svcName, appPort)
+
 	return chart
 }

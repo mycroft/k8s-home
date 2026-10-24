@@ -17,6 +17,7 @@ deny contains msg if {
 # is ever issued and the TLS block is dead weight.
 deny contains msg if {
 	input.kind == "Ingress"
+	not tailscale_ingress
 	not input.metadata.annotations["cert-manager.io/cluster-issuer"] == "letsencrypt-prod"
 	msg := sprintf("Ingress '%v' in '%v' does not use cluster issuer 'letsencrypt-prod'; no certificate will be issued", [input.metadata.name, input.metadata.namespace])
 }
@@ -28,6 +29,7 @@ deny contains msg if {
 # The match is on a label boundary: not-iop.cx does not satisfy iop.cx.
 deny contains msg if {
 	input.kind == "Ingress"
+	not tailscale_ingress
 	some r in input.spec.rules
 	not allowed_domain(r.host)
 	msg := sprintf("Ingress '%v' in '%v' uses host '%v'; allowed suffixes: %v", [input.metadata.name, input.metadata.namespace, r.host, data.allowed_domain_suffixes])
@@ -37,6 +39,12 @@ allowed_domain(host) if {
 	some s in data.allowed_domain_suffixes
 	host == s
 }
+
+# Ingresses of class tailscale are served by the Tailscale operator, on the
+# tailnet only, as <host>.<tailnet>.ts.net with a certificate it obtains
+# itself (charts/infra/tailscale.go): ingress-issuer and ingress-domain do
+# not apply to them. ingress-tls still does — its TLS host is the name.
+tailscale_ingress if input.spec.ingressClassName == "tailscale"
 
 allowed_domain(host) if {
 	some s in data.allowed_domain_suffixes

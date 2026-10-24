@@ -267,3 +267,46 @@ func (chart *Chart) NewIngress(ingress *Ingress) (string, string) {
 
 	return ingressName, serviceName
 }
+
+// NewTailscaleIngress exposes a service on the tailnet only, through the
+// Tailscale operator (charts/infra/tailscale.go). The operator runs a proxy
+// that joins the tailnet as <hostname>.<tailnet>.ts.net and serves HTTPS
+// there with a certificate it obtains itself: neither Traefik nor
+// cert-manager is involved, and the host is unreachable from the internet.
+//
+// Returns the ingress name.
+func (chart *Chart) NewTailscaleIngress(hostname, serviceName string, port uint) string {
+	if chart.Namespace == "" {
+		panic("namespace was not defined")
+	}
+
+	ingress := k8s.NewKubeIngress(
+		chart.Cdk8sChart,
+		jsii.String("tailscale-ingress-"+hostname),
+		&k8s.KubeIngressProps{
+			Metadata: &k8s.ObjectMeta{
+				Name:      jsii.String(hostname + "-tailscale"),
+				Namespace: jsii.String(chart.Namespace),
+			},
+			Spec: &k8s.IngressSpec{
+				IngressClassName: jsii.String("tailscale"),
+				DefaultBackend: &k8s.IngressBackend{
+					Service: &k8s.IngressServiceBackend{
+						Name: jsii.String(serviceName),
+						Port: &k8s.ServiceBackendPort{
+							Number: jsii.Number(float64(port)),
+						},
+					},
+				},
+				// The TLS host is the proxy's machine name in the tailnet.
+				Tls: &[]*k8s.IngressTls{
+					{
+						Hosts: &[]*string{jsii.String(hostname)},
+					},
+				},
+			},
+		},
+	)
+
+	return *ingress.Name()
+}

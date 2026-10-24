@@ -1,0 +1,14 @@
+# https://github.com/tailscale/tailscale/blob/main/cmd/k8s-operator/deploy/chart/values.yaml
+#
+# oauth.* stays unset: the credentials come from the operator-oauth Secret,
+# synced from Vault (see charts/infra/tailscale.go).
+
+# These tags must match the tagOwners of the tailnet policy file
+# (docs/tailscale.md): the operator's OAuth client owns tag:k8s-operator,
+# which in turn owns tag:k8s, the tag every proxy joins the tailnet with.
+operatorConfig:
+  defaultTags:
+    - "tag:k8s-operator"
+
+proxyConfig:
+  defaultTags: "tag:k8s"

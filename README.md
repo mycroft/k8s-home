@@ -154,6 +154,7 @@ Most important apps installed on the cluster:
 - [authentik](https://goauthentik.io/) — SSO authentication and authorization
 - [traefik-forward-auth](https://doc.traefik.io/traefik/middlewares/http/forwardauth/) — OAuth authn/authz firewall for apps not linked to dex-idp
 - [cert-manager](https://cert-manager.io/) — on-demand TLS certificate generation for ingresses
+- [Tailscale operator](https://tailscale.com/docs/kubernetes-operator) — exposes selected services on the tailnet only (see [docs/tailscale.md](docs/tailscale.md))
 - [CloudNativePG](https://cloudnative-pg.io/) — PostgreSQL operator and shared application database cluster
 - [NATS](https://nats.io/) — message queues
 - [kube-prometheus-stack](https://github.com/prometheus-operator/kube-prometheus) — metrics monitoring with [Grafana](https://grafana.com/grafana/)
@@ -384,3 +385,4 @@ See [traefik values.yaml](https://github.com/traefik/traefik-helm-chart/blob/mas
 - [docs/vault.md](docs/vault.md) — Vault setup, initialization, and unsealing
 - [docs/cnpg.md](docs/cnpg.md) — CloudNativePG databases and their credentials
 - [docs/temporal.md](docs/temporal.md) — Temporal workflow setup and configuration
+- [docs/tailscale.md](docs/tailscale.md) — Tailscale operator setup and tailnet-only services
