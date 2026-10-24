@@ -137,7 +137,7 @@ spec:
                 secretKeyRef:
                   key: AWS_ACCESS_SECRET_KEY
                   name: garage
-          image: registry.gitlab.com/timvisee/send:v3.4.27
+          image: registry.gitlab.com/timvisee/send:v3.5.0
           name: send
 ---
 apiVersion: v1
