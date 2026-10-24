@@ -78,7 +78,7 @@ data:
     image:
       repository: requarks/wiki
       imagePullPolicy: IfNotPresent
-      tag: 2.5.316
+      tag: 2.5.317
 
     ingress:
       enabled: true
