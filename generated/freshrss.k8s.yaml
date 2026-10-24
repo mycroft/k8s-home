@@ -42,6 +42,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: freshrss-es-openid-c8a9736c
+  namespace: freshrss
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/freshrss/openid
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: openid
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -96,6 +119,31 @@ spec:
                   name: postgresql-cnpg
             - name: FRESHRSS_DB_NAME
               value: freshrss
+            - name: OIDC_ENABLED
+              value: "1"
+            - name: OIDC_PROVIDER_METADATA_URL
+              value: https://auth.services.mkz.me/application/o/freshrss/.well-known/openid-configuration
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: client_id
+                  name: openid
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: client_secret
+                  name: openid
+            - name: OIDC_CLIENT_CRYPTO_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: crypto_key
+                  name: openid
+            - name: OIDC_SCOPES
+              value: openid email profile
+            - name: OIDC_X_FORWARDED_HEADERS
+              value: X-Forwarded-Host X-Forwarded-Port X-Forwarded-Proto
+            - name: OIDC_SESSION_INACTIVITY_TIMEOUT
+              value: "28800"
           image: freshrss/freshrss:1.30.4
           name: freshrss
           volumeMounts:
