@@ -18,10 +18,6 @@ exemptions:
     rules: [run-as-root]
     reason: "demo workload (paulbouwer/hello-kubernetes); upstream image runs as root"
 
-  happy-urls:
-    rules: [latest, run-as-root]
-    reason: "self-built image; pipeline publishes :latest; runs as root"
-
   hey:
     rules: [latest, run-as-root]
     reason: "self-built image; pipeline publishes :latest; runs as root"

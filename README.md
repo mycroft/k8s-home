@@ -193,7 +193,6 @@ Most important apps installed on the cluster:
 - [Calibre Web](https://calibre-ebook.com/download) — e-book library manager
 - [CyberChef](https://gchq.github.io/CyberChef/) — cyber toolkit
 - [Homepage](https://github.com/gethomepage/homepage) — dashboard
-- [Happy-Urls](https://github.com/awesome-selfhosted/happy-urls) — URL shortener
 - [Linkding](https://github.com/sissbruecker/linkding) — bookmark manager
 - [n8n](https://n8n.io/) — workflow automation
 

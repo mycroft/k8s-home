@@ -77,7 +77,6 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_apps.NewExcalidrawChart,
 		charts_apps.NewFluxOperatorMCPChart,
 		charts_apps.NewFreshRSS,
-		charts_apps.NewHappyUrlsChart,
 		charts_apps.NewHelloKubernetesChart,
 		charts_apps.NewHeyChart,
 		charts_apps.NewHoarderChart,
