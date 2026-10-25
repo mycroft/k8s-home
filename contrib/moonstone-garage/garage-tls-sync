@@ -15,6 +15,13 @@ set -eu
 : "${KEY_GROUP:=root}"
 : "${RELOAD_COMMAND:=}"
 
+for f in "$TOKEN_FILE" "$CA_FILE"; do
+	if [ ! -r "$f" ]; then
+		echo "$f is missing: install the ServiceAccount token and CA first (docs/garage.md, Setting Up the Sync)" >&2
+		exit 1
+	fi
+done
+
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 umask 077

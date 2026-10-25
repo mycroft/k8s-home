@@ -157,7 +157,7 @@ journalctl -u garage-tls-sync -n 5
 sudo systemctl enable --now garage-tls-sync.timer
 ```
 
-The first run logs `s3-tls: installed certificate, notAfter=...`. Once the proxy exists, set `RELOAD_COMMAND` in `/etc/default/garage-tls-sync` (and `KEY_GROUP` if the proxy does not run as root).
+The first run logs `s3-tls: installed certificate, notAfter=...`. Get to that point before pointing the proxy at the files: `nginx -t` fails while they do not exist. Then set `RELOAD_COMMAND` in `/etc/default/garage-tls-sync` (and `KEY_GROUP` if the proxy does not run as root).
 
 ### Verifying
 
@@ -330,6 +330,7 @@ garage layout apply --version <staged-version>
 
 Start with `journalctl -u garage-tls-sync` on moonstone. A failed run never touches the installed certificate.
 
+- **`/etc/garage-tls/sa/token is missing`**: the token and CA were never installed; see [Setting Up the Sync](#setting-up-the-sync).
 - **`curl: (22) ... 401`**: the token is no longer valid, usually because `moonstone-token` was recreated. Install the new one.
 - **`curl: (22) ... 403`**: the `s3-tls-reader` Role or RoleBinding no longer grants access.
 - **`curl: (7)` or a timeout**: the API server at `star-train.lan.mkz.me:6443` is unreachable.
