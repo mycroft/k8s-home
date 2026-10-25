@@ -65,7 +65,7 @@ images:
   ghcr.io/gimlet-io/capacitor: v0.4.2
   ghcr.io/hoarder-app/hoarder: 0.34.1
   ghcr.io/karakeep-app/karakeep-chrome: 154.0.8037.57-r1
-  ghcr.io/open-webui/open-webui: 0.12.3
+  ghcr.io/open-webui/open-webui: 0.12.4
   ghcr.io/thomiceli/opengist: 1.15.3
   jhaals/yopass: 16.0.1
   linuxserver/bookstack: v25.12.8-ls249
