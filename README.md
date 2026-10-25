@@ -2,290 +2,284 @@
 
 > cdk8s-based GitOps CLI for managing a personal homelab Kubernetes cluster.
 
-This project uses Go code to programmatically define and generate Flux CD `HelmRelease` manifests for a k3s cluster running on multiple Mini PCs with Fedora. Source code in `charts/` is compiled and synthesized into YAML manifests in `dist/`, which are pushed to the `generated` branch on merge. Flux CD polls that branch every 2 minutes and reconciles the cluster state.
+This project uses Go code to programmatically define and generate Flux CD manifests for a k3s cluster of three Mini PCs running Fedora Server. Source code in `charts/` is compiled and synthesized into YAML manifests in `dist/`, which are pushed to the `generated` branch on merge. Flux CD polls that branch every 2 minutes and reconciles the cluster state.
 
 ## Features
 
-- **Chart generation** — Go-based cdk8s code synthesizes Kubernetes manifests for 70+ apps, infrastructure, observability, and security components
-- **Version management** — Single `versions.yaml` file tracks all Helm chart and container image versions with optional regex filters
-- **Automated PR creation** — CLI commands check for outdated versions and create pull requests on Gitea
-- **GitOps deployment** — Gitea Actions pipeline builds charts on merge to `main`, Flux CD applies them to the cluster
+- **Chart generation** — Go-based cdk8s code synthesizes the manifests of nearly 70 apps and infrastructure, observability, security and storage components
+- **Version management** — a single `versions.yaml` file tracks all Helm chart and container image versions, with optional regex filters
+- **Automated version bumps** — CI checks for outdated versions twice a day and opens a pull request on Gitea for each one
+- **GitOps deployment** — a Gitea Actions pipeline builds the charts on merge to `main`; Flux CD applies them to the cluster
+- **Policy checks** — OPA/Rego policies and a Flux-style kustomize build validate every pull request
 - **Managed PostgreSQL** — CloudNativePG provisions application databases, roles, extensions, and Vault credentials
-- **Layered backups** — Velero/Kopia protects persistent volumes and daily logical PostgreSQL dumps
+- **Layered backups** — Longhorn snapshots and backups, Velero/Kopia filesystem backups, and daily logical PostgreSQL dumps
+- **Tailnet-only services** — the Tailscale operator serves selected apps on the tailnet, out of reach from the internet
 
 ## Getting Started
 
 ### Prerequisites
 
-- [mise](https://mise.jdx.dev/) task runner — installs Go 1.27.2, golangci-lint, node and the cdk8s CLI (managed in `.mise.toml`)
-- [conftest](https://www.conftest.dev/) — required for `mise run conftest`, installed outside of mise
-- kubectl configured against the target k3s cluster
-- Environment variables: `GITEA_TOKEN` or `GITHUB_TOKEN`
-- (Optional, only for the legacy `contrib/create-pr.sh`): `tea` and `just`
+- [mise](https://mise.jdx.dev/) — installs Go 1.27.2, golangci-lint, node and the cdk8s CLI (declared in `.mise.toml`, pinned by `mise.lock`)
+- [conftest](https://www.conftest.dev/) and [kustomize](https://kustomize.io/) (or `kubectl`) — required by `mise run conftest` and `mise run kustomize-build`, installed outside of mise
+- `kubectl` configured against the k3s cluster
+- `GITEA_TOKEN` (or `GITHUB_TOKEN`) — only for the pull request subcommands
+- (Optional, only for the legacy `contrib/create-pr.sh`) `tea` and `just`
 
-### Installation
+### First Run
+
+`imports/` (the Go CRD bindings) is gitignored and nothing builds without it, so generate it first:
 
 ```sh
 git clone <repo-url>
 cd k8s-home
-```
-
-```sh
-export GITEA_TOKEN=<your-gitea-token>
+mise run import
+mise run generate-charts
 ```
 
 ## Build & Run
 
-### Generate Charts
+| Command                    | What it does                                                                                                  |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `mise run build`           | Compiles the `k8s-home` binary                                                                                |
+| `mise run generate-charts` | Builds, then synthesizes `dist/<chart>.k8s.yaml`                                                              |
+| `mise run synth`           | Same output through the cdk8s CLI (what CI runs)                                                              |
+| `mise run lint`            | Runs golangci-lint                                                                                            |
+| `mise run conftest`        | Generates the charts, then runs the OPA policies in `policies/` against `dist/`                               |
+| `mise run kustomize-build` | Generates the charts, then builds `dist/` the way Flux's kustomize-controller does                            |
+| `mise run check-versions`  | Lists outdated Helm charts and images                                                                         |
+| `mise run import`          | Regenerates `imports/` from the `imports:` list in `cdk8s.yaml`                                               |
+| `go test ./...`            | Runs the test suite                                                                                           |
+| `sh contrib/diff.sh`       | Diffs `dist/` against the `generated` branch (checks `generated/` out into the working tree, then deletes it) |
+
+Before committing a Go change:
 
 ```sh
-mise run generate-charts
+mise run lint && mise run generate-charts && mise run conftest && mise run kustomize-build && go test ./...
 ```
 
-This builds the binary and runs `./k8s-home` to synthesize `dist/*.k8s.yaml` files.
+Then inspect the `dist/` diff: CI does not gate on it.
 
-### Production Build
+## Version Updates
 
 ```sh
-mise run build
+mise run check-versions                  # name;old;new for each outdated chart or image
+./k8s-home create-prs --dry-run          # the pull requests that would be created
+./k8s-home create-prs --filter <name>    # create them on Gitea
+./k8s-home list-prs
+./k8s-home merge-pr <number>             # rebase-merges: Flux deploys it
 ```
 
-### Lint
+CI runs `check-versions` then `create-prs` twice a day, so most bumps arrive as pull requests on their own. Changes to `versions.yaml` alone skip the lint workflow: a bad bump is only caught by local verification.
 
-```sh
-mise run lint
-```
+Never update to release candidates, alpha, or beta versions. Some images are not covered by `check-versions`:
 
-### Check for Outdated Versions
+- `excalidraw/excalidraw` only publishes `latest`: restart the pod to update it, and check the latest pushed image on [Docker Hub](https://hub.docker.com/r/excalidraw/excalidraw/tags).
+- `ghcr.io/karakeep-app/karakeep-chrome` uses a non-semver tag (`154.0.8037.57-r1`): bump it by hand.
+- Temporal has its own upgrade path: see [docs/temporal.md](docs/temporal.md).
 
-```sh
-mise run check-versions
-```
-
-### Create Update PR
-
-```sh
-sh contrib/create-pr.sh -f <filter>
-```
-
-Or with an explicit version bump:
-
-```sh
-sh contrib/create-pr.sh -m 'chart;old;new'
-```
-
-### Diff Generated Output
-
-```sh
-sh contrib/diff.sh
-```
-
-Diffs `dist/` against the `generated` branch.
-
-### Import CRDs
-
-```sh
-mise run import
-```
-
-Regenerates Go CRD bindings in `imports/`.
-
-### Tests
-
-```sh
-go test ./...
-```
-
-### Policy Checks
-
-```sh
-mise run conftest
-```
-
-Runs OPA/Rego policy validation against the generated charts in `dist/`.
+The older `contrib/create-pr.sh` (`-f <filter>`, `-m 'chart;old;new'`) still works, but discards uncommitted edits to `versions.yaml`, force-pushes, and with `-M` merges straight to `main`.
 
 ## Configuration
 
-| Variable       | Required | Default | Description                                                                       |
-| -------------- | -------- | ------- | --------------------------------------------------------------------------------- |
-| `GITEA_TOKEN`  | Yes      | —       | Authentication token for Gitea API (used by `create-prs`, `list-prs`, `merge-pr`) |
-| `GITHUB_TOKEN` | No       | —       | Fallback authentication token if `GITEA_TOKEN` is not set                         |
+| Variable       | Required           | Default | Description                                                                           |
+| -------------- | ------------------ | ------- | ------------------------------------------------------------------------------------- |
+| `GITEA_TOKEN`  | For PR subcommands | —       | Authentication token for the Gitea API (used by `create-prs`, `list-prs`, `merge-pr`) |
+| `GITHUB_TOKEN` | No                 | —       | Fallback authentication token if `GITEA_TOKEN` is not set                             |
+| `CDK8S_OUTDIR` | No                 | `dist`  | Output directory of the synthesized manifests                                         |
 
 ### CLI Flags
 
-| Flag            | Default            | Description                                                                       |
-| --------------- | ------------------ | --------------------------------------------------------------------------------- |
-| `--versions-file` | `versions.yaml` | Path to the versions file                                                         |
-| `--debug`         | `false`            | Enable debug logging                                                              |
-| `--gitea-url`     | `https://git.mkz.me` | Gitea instance URL                                                              |
-| `--owner`         | `mycroft`          | Repository owner                                                                  |
-| `--repo`          | `k8s-home`         | Repository name                                                                   |
-| `--filter`        | *(empty)*          | Substring matched against chart and image names (`check-versions`, `create-prs`)  |
-| `--dry-run`       | `false`            | `create-prs`: print the PRs that would be created without creating them           |
-| `--branch`        | *(empty)*          | `create-prs`: override the generated branch name (requires exactly one update)    |
-| `--base-branch`   | `main`             | `create-prs`: base branch for the PRs                                             |
+| Flag              | Default              | Description                                                                      |
+| ----------------- | -------------------- | -------------------------------------------------------------------------------- |
+| `--versions-file` | `versions.yaml`      | Path to the versions file                                                        |
+| `--debug`         | `false`              | Enable debug logging                                                             |
+| `--gitea-url`     | `https://git.mkz.me` | Gitea instance URL                                                               |
+| `--owner`         | `mycroft`            | Repository owner                                                                 |
+| `--repo`          | `k8s-home`           | Repository name                                                                  |
+| `--filter`        | *(empty)*            | Substring matched against chart and image names (`check-versions`, `create-prs`) |
+| `--dry-run`       | `false`              | `create-prs`: print the PRs that would be created without creating them          |
+| `--branch`        | *(empty)*            | `create-prs`: override the generated branch name (requires exactly one update)   |
+| `--base-branch`   | `main`               | `create-prs`: base branch for the PRs                                            |
+
+`--versions-file` with `CDK8S_OUTDIR` synthesizes a speculative bump elsewhere without touching `versions.yaml`: diff the two trees.
 
 ## Project Structure
 
-| Path                    | Description                                                        |
-| ----------------------- | ------------------------------------------------------------------ |
-| `charts/apps/`          | User-facing app charts (wallabag, freshrss, vaultwarden, etc.)     |
-| `charts/infra/`         | Infrastructure charts (Flux CD, Traefik, Velero, Temporal, etc.)   |
-| `charts/observability/` | Monitoring charts (Grafana, Prometheus, Loki, Tempo, etc.)         |
-| `charts/security/`      | Security charts (Vault, cert-manager, Dex, Authentik, etc.)        |
-| `charts/storage/`       | Storage charts (Longhorn, CloudNativePG, NATS, Garage, etc.)        |
-| `internal/kubehelpers/` | Shared builder library for HelmRelease, Ingress, StatefulSet, etc. |
-| `internal/gitea/`       | Gitea API client for PR automation                                 |
+| Path                    | Description                                                                                                                       |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `charts/homelab.go`     | The list of deployed charts; commenting an entry out disables an app                                                              |
+| `charts/apps/`          | User-facing app charts (wallabag, freshrss, vaultwarden, etc.)                                                                    |
+| `charts/infra/`         | Infrastructure charts (Flux CD, Traefik, Tailscale, Velero, Temporal, etc.)                                                       |
+| `charts/observability/` | Monitoring charts (Prometheus, Grafana, Loki, Tempo, etc.)                                                                        |
+| `charts/security/`      | Security charts (Vault, cert-manager, Dex, Authentik, Falco, etc.)                                                                |
+| `charts/storage/`       | Storage charts (Longhorn, CloudNativePG, NATS, Garage, etc.)                                                                      |
+| `internal/kubehelpers/` | Shared builder library for HelmRelease, Ingress, StatefulSet, etc.                                                                |
+| `internal/gitea/`       | Gitea API client for PR automation                                                                                                |
 | `configs/`              | Helm values per release (flat `<release>.yaml`), injected as ConfigMaps; `configs/<app>/` holds an app's own native config files |
-| `dist/`                 | Generated output (`.k8s.yaml` files)                               |
-| `imports/`              | Auto-generated Go CRD bindings                                     |
-| `crds/`                 | Custom CRD YAML files for cdk8s imports                            |
-| `policies/`             | OPA/Rego policy rules for `conftest` validation                    |
-| `contrib/`              | Helper scripts                                                     |
-| `versions.yaml`         | Single source of truth for all versions                            |
+| `versions.yaml`         | Single source of truth for all versions                                                                                           |
+| `policies/`             | OPA/Rego policy rules for `conftest`, and their reasoned exemptions                                                               |
+| `docs/`                 | Operational guides (see [References](#references))                                                                                |
+| `contrib/`              | Helper scripts                                                                                                                    |
+| `crds/`                 | Custom CRD YAML files for cdk8s imports                                                                                           |
+| `imports/`              | Generated Go CRD bindings (gitignored)                                                                                            |
+| `dist/`                 | Generated output, `.k8s.yaml` files (gitignored)                                                                                  |
+| `.gitea/workflows/`     | CI: lint, deploy, check-versions, CI image build                                                                                  |
 
-## Installed Apps
+## Installed Components
 
-Most important apps installed on the cluster:
+### Security
 
-- [longhorn](https://longhorn.io/) — distributed block storage across the cluster
-- [vault](https://www.vaultproject.io/) & [External Secrets Operator](https://external-secrets.io/latest/) — secrets management; [sealed-secrets](https://github.com/bitnami-labs/sealed-secrets) for encrypted volume bootstrapping
-- [dex-idp](https://dexidp.io/) — OAuth SSO linked with personal [gitea](https://about.gitea.com/) instance
-- [authentik](https://goauthentik.io/) — SSO authentication and authorization
-- [traefik-forward-auth](https://doc.traefik.io/traefik/middlewares/http/forwardauth/) — OAuth authn/authz firewall for apps not linked to dex-idp
-- [cert-manager](https://cert-manager.io/) — on-demand TLS certificate generation for ingresses
-- [Tailscale operator](https://tailscale.com/docs/kubernetes-operator) — exposes selected services on the tailnet only (see [docs/tailscale.md](docs/tailscale.md))
-- [CloudNativePG](https://cloudnative-pg.io/) — PostgreSQL operator and shared application database cluster
+- [cert-manager](https://cert-manager.io/) — Let's Encrypt certificates for ingresses
+- [Vault](https://www.vaultproject.io/) & [External Secrets Operator](https://external-secrets.io/latest/) — secrets management; [sealed-secrets](https://github.com/bitnami-labs/sealed-secrets) only for secrets needed before Vault is available
+- [dex-idp](https://dexidp.io/) — OIDC provider backed by the personal [Gitea](https://about.gitea.com/) instance
+- [authentik](https://goauthentik.io/) — SSO for apps, and proxy outposts for admin UIs (see [docs/authentik.md](docs/authentik.md))
+- [traefik-forward-auth](https://github.com/thomseddon/traefik-forward-auth) — OIDC forward authentication for admin UIs without their own login
+- [Trivy operator](https://github.com/aquasecurity/trivy-operator) — vulnerability reports, browsed through [trivy-operator-dashboard](https://github.com/raoulx24/trivy-operator-dashboard); [harbor-scanner-trivy](https://github.com/goharbor/harbor-scanner-trivy) is the Trivy scanner of the Harbor image registry
+- [Falco](https://falco.org/) — runtime syscall detection; its rules are still being tuned, nothing alerts on them yet
+
+### Storage
+
+- [Longhorn](https://longhorn.io/) — distributed, encrypted block storage across the nodes
+- [CloudNativePG](https://cloudnative-pg.io/) — PostgreSQL operator and the shared application database cluster (see [docs/cnpg.md](docs/cnpg.md))
+- [Garage](https://garagehq.deuxfleurs.fr/) — S3-compatible object storage (see [docs/garage.md](docs/garage.md))
 - [NATS](https://nats.io/) — message queues
-- [kube-prometheus-stack](https://github.com/prometheus-operator/kube-prometheus) — metrics monitoring with [Grafana](https://grafana.com/grafana/)
-- [blackbox-exporter](https://github.com/prometheus/blackbox_exporter) — blackbox probing
-- Grafana [loki](https://grafana.com/oss/loki/) — log aggregation and storage
-- [tempo](https://grafana.com/oss/tempo/) — trace processing
-- [Grafana Alloy](https://grafana.com/docs/alloy/) — observability agent
-- [Karma](https://github.com/prymitive/karma) — Prometheus alert dashboard
-- [Garage](https://garagehq.deuxfleurs.fr/) — S3-compatible object storage
+
+### Infrastructure
+
+- [Flux CD](https://fluxcd.io/) — GitOps reconciliation (see [docs/flux.md](docs/flux.md)), with [fluxcd-ui](https://git.mkz.me/mycroft/fluxcd-ui) as its web UI
+- [Traefik](https://traefik.io/) — the ingress controller bundled with k3s; this repository manages its dashboard route
+- [Tailscale operator](https://tailscale.com/docs/kubernetes-operator) — exposes selected services on the tailnet only (see [docs/tailscale.md](docs/tailscale.md))
 - [Velero](https://velero.io/) — cluster backup and restore
-- [Capacitor](https://capacitor.l5d.io/) — in-cluster CI/CD (currently disabled)
+- [Temporal](https://temporal.io/) — durable workflow engine (see [docs/temporal.md](docs/temporal.md))
+
+### Observability
+
+- [kube-prometheus-stack](https://github.com/prometheus-operator/kube-prometheus) — Prometheus, Alertmanager and [Grafana](https://grafana.com/grafana/)
+- [Loki](https://grafana.com/oss/loki/) — log aggregation and storage
+- [Tempo](https://grafana.com/oss/tempo/) — trace storage
+- [Grafana Alloy](https://grafana.com/docs/alloy/) — collects pod logs and ships them to Loki
+- [blackbox-exporter](https://github.com/prometheus/blackbox_exporter) and [smokeping-prober](https://github.com/SuperQ/smokeping_prober) — HTTP and ICMP probing
+- [Karma](https://github.com/prymitive/karma) — Alertmanager dashboard
+- Custom monitoring — scrape targets outside the cluster (LAN hosts, Garage, the LLM API)
 
 ### User Apps
 
-- [wallabag](https://www.wallabag.it/) — visual to-read list
-- [freshrss](https://freshrss.org/) — RSS aggregator
-- [privatebin](https://privatebin.info/) — secure pastebin
-- [paperless-ngx](https://docs.paperless-ngx.com/) — document management
-- [yopass](https://yopass.se/) — secure secret sharing
-- [bookstack](https://www.bookstackapp.com/) — information organization platform (currently disabled)
-- [IT-Tools](https://it-tools.tech/) — handy tools for engineers
-- [vaultwarden](https://github.com/dani-garcia/vaultwarden) — Bitwarden-compatible password manager
-- [send](https://gitlab.com/timvisee/send) — simple, private file sharing
-- [snippetbox](https://github.com/pawelmalak/snippet-box) — code snippet portal (currently disabled)
-- [excalidraw](https://excalidraw.com/) — virtual collaborative whiteboard
-- [wikijs](https://js.wiki/) — wiki platform
-- [redmine](https://www.redmine.org/) — project management (currently disabled)
-- [microbin](https://microbin.eu/) — lightweight pastebin
-- [memos](https://www.usememos.com/) — note taking
-- [opengist](https://github.com/thomiceli/opengist) — GitHub Gist clone
-- [Outline](https://www.getoutline.com/) — team knowledge base
-- [Hoarder](https://github.com/hoarder-app/hoarder) — bookmark manager
-- [Vikunja](https://vikunja.io/) — task management
-- [Open WebUI](https://open-webui.com/) — AI chat interface
-- [Zipline](https://github.com/diced/zipline) — file sharing service
-- [Calibre Web](https://calibre-ebook.com/download) — e-book library manager
+- [Calibre-Web](https://github.com/janeczku/calibre-web) — e-book library manager
 - [CyberChef](https://gchq.github.io/CyberChef/) — cyber toolkit
+- [Excalidraw](https://excalidraw.com/) — virtual collaborative whiteboard
+- [FreshRSS](https://freshrss.org/) — RSS aggregator
 - [Homepage](https://github.com/gethomepage/homepage) — dashboard
+- [IT-Tools](https://it-tools.tech/) — handy tools for engineers
+- [Karakeep](https://karakeep.app/) (formerly Hoarder) — bookmark manager with AI tagging
 - [Linkding](https://github.com/sissbruecker/linkding) — bookmark manager
+- [Memos](https://www.usememos.com/) — note taking
+- [MicroBin](https://microbin.eu/) — lightweight pastebin
 - [n8n](https://n8n.io/) — workflow automation
+- [Open WebUI](https://openwebui.com/) — AI chat interface
+- [Opengist](https://github.com/thomiceli/opengist) — GitHub Gist clone
+- [Outline](https://www.getoutline.com/) — team knowledge base
+- [Paperless-ngx](https://docs.paperless-ngx.com/) — document management
+- [PrivateBin](https://privatebin.info/) — secure pastebin
+- [Send](https://gitlab.com/timvisee/send) — simple, private file sharing
+- [Vaultwarden](https://github.com/dani-garcia/vaultwarden) — Bitwarden-compatible password manager, moving to tailnet-only access
+- [Vikunja](https://vikunja.io/) — task management
+- [Wallabag](https://www.wallabag.it/) — read-it-later list
+- [Wiki.js](https://js.wiki/) — wiki platform
+- [Yopass](https://yopass.se/) — secure secret sharing
+- [Zipline](https://github.com/diced/zipline) — file sharing service
 
-### Toys & Redirections
+### Agents
+
+- [agent-nexus](https://git.mkz.me/mycroft/agent-nexus) — LLM agent that reviews pull requests
+- [Zulip](https://zulip.com/) — team chat used to talk to agent-nexus
+- [reviews](https://git.mkz.me/mycroft/reviews) — dashboard of the GitHub pull requests waiting for review
+- Read-only MCP servers agent-nexus inspects the cluster through: [flux-operator-mcp](https://github.com/controlplaneio-fluxcd/flux-operator), [kubernetes-mcp-server](https://github.com/containers/kubernetes-mcp-server) and [mcp-grafana](https://github.com/grafana/mcp-grafana)
+
+### Toys, Demos & Redirections
 
 - Llama — ExternalName ingress redirecting `llm-api.iop.cx` to a self-hosted LLM API
 - Music Assistant — ExternalName ingress redirecting `music-assistant.iop.cx` to a self-hosted server
 - Useless — collection of useless web pages
 - Root Me — toy scoreboard at `root-me.iop.cx`
 - URLs — curated list of useful links
+- Hey — self-built hello page at `hey.iop.cx`
+- app-sample and hello-kubernetes — demo workloads
+
+### Disabled
+
+Defined in `charts/` but commented out in `charts/homelab.go`: Kyverno, MinIO, ScyllaDB, MariaDB, OpenSearch, Capacitor, Linkerd, Promtail, Jaeger, BookStack, Emojivoto, Redmine, Snippet Box and Heimdall.
+
+## Adding an App
+
+See [docs/adding-new-app.md](docs/adding-new-app.md) for worked examples. In short:
+
+1. Create `charts/<category>/<app>.go` with a constructor returning `*kubehelpers.Chart`
+2. Register the constructor in `charts/homelab.go`
+3. Add Helm values to `configs/<app>.yaml` (if using Helm)
+4. Add the version entries to `versions.yaml`
+5. Run `mise run generate-charts` and the checks above
 
 ## Deployment
 
-When a PR is merged into `main`, a Gitea Actions pipeline builds cdk8s dependencies, generates charts, and pushes them to the `generated` branch. Flux CD pulls the branch every 2 minutes. See `.gitea/workflows/deploy.yaml`.
-
-## Maintenance
-
-### Upgrade Services
-
-Check for outdated Helm charts and images:
-
-```sh
-mise run check-versions
-```
-
-Run updates:
-
-```sh
-sh contrib/create-pr.sh -f <filter>
-```
-
-Or with an explicit version bump:
-
-```sh
-sh contrib/create-pr.sh -m 'chart;old;new'
-```
-
-Never update to release candidates, alpha, or beta versions. Note that not all containers are checked by this command.
-
-#### Excalidraw
-
-The `excalidraw/excalidraw` image has no tag. Restart the pod to get updates. Check the latest pushed image on [Docker Hub](https://hub.docker.com/r/excalidraw/excalidraw/tags).
+- **Lint** (`.gitea/workflows/lint.yaml`) — on pull requests to `main`, except `versions.yaml`-only changes: synthesizes the charts, then runs conftest, the kustomize build, golangci-lint and `go test ./...`.
+- **Deploy** (`.gitea/workflows/deploy.yaml`) — on merge to `main`: synthesizes the charts and replaces the content of the `generated` branch with `dist/`. Flux polls that branch every 2 minutes. Its Kustomization prunes, so removing a chart deletes its namespace and everything in it. The workflow also publishes an OCI artifact, which no Kustomization consumes yet (see [docs/flux.md](docs/flux.md)).
+- **Check versions** (`.gitea/workflows/check-versions.yaml`) — twice a day: opens the version-bump pull requests.
+- **Build CI image** (`.gitea/workflows/build-image.yaml`) — on changes to `contrib/build-image/`: rebuilds the CI container image. The other workflows pin it by digest, so a rebuild needs those pins, and `mise.lock`, updated.
 
 ## Security
 
-Secrets are stored either in source code via `sealed-secrets` or in Vault and deployed as Kubernetes `Secret` resources through `external-secrets`.
-
-Ingresses are protected by `traefik-forward-auth`, which performs OAuth using a private and external Gitea instance.
+- **Secrets** live in Vault at `secret/namespaces/<namespace>/<name>` and reach the cluster as Kubernetes `Secret`s through External Secrets. `sealed-secrets` only bootstraps what is needed before Vault is available.
+- **Access**: apps with OIDC support log in through authentik or dex. Admin UIs without their own login sit behind `traefik-forward-auth` or an authentik proxy outpost. Vaultwarden is also served on the tailnet, ahead of dropping its public ingress.
+- **Policies**: `conftest` rejects, among others, unpinned or `latest` images, root or privileged containers, ingresses without TLS from `letsencrypt-prod` or outside the fleet domains, `NodePort` and `LoadBalancer` services, unencrypted storage classes, and inline secrets. Legitimate exceptions are listed, each with a reason, in `policies/exemptions.yaml`.
+- **Runtime**: Falco watches syscalls on every node; the Trivy operator reports vulnerabilities in running images.
 
 ## Services
 
 ### Traefik Configuration
 
-Redirect all HTTP requests to HTTPS. On the master node, edit `/var/lib/rancher/k3s/server/manifests/traefik-config.yaml` and add in the `valuesContent` section:
+Traefik is installed by k3s. Its values are set by hand on the server node, in `/var/lib/rancher/k3s/server/manifests/traefik-config.yaml`; k3s redeploys the chart when the file changes. Do not edit `traefik.yaml` directly — it is overwritten on restart. The current values:
 
 ```yaml
-valuesContent: |-
-  ports:
-    web:
-      redirectTo: websecure
-```
-
-k3s will automatically redeploy the Helm chart.
-
-Allow `IngressRoute` middlewares from other namespaces:
-
-```yaml
-providers:
-  kubernetesCRD:
-    allowCrossNamespace: true
-```
-
-Do not edit `traefik.yaml` directly — it is overwritten on restart.
-
-### Viewing the Traefik Dashboard
-
-The dashboard is available at `https://traefik.services.mkz.me/dashboard/#/`. Add this `IngressRoute` first:
-
-```yaml
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
 metadata:
-  name: traefik-dashboard
+  name: traefik
+  namespace: kube-system
 spec:
-  routes:
-    - match: Host(`traefik.services.mkz.me`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
-      kind: Rule
-      services:
-        - name: api@internal
-          kind: TraefikService
-      middlewares:
-        - name: traefik-forward-auth-traefik-forward-auth@kubernetescrd
+  valuesContent: |-
+    logs:
+      access:
+        enabled: true
+    additionalArguments:
+      - "--serverstransport.insecureskipverify=true"
+    providers:
+      kubernetesCRD:
+        allowCrossNamespace: true       # IngressRoute middlewares from other namespaces
+        allowExternalNameServices: true # ExternalName services (Llama, Music Assistant)
+    ports:
+      opengist-ssh:
+        port: 22222
+        export: true
+        protocol: TCP
+        exposedPort: 22222
+        expose:
+          default: true
+      websecure:
+        http3:
+          enabled: true
+      web:
+        redirections:
+          entryPoint:
+            to: websecure
+            scheme: https
+            permanent: true
 ```
+
+See the [Traefik Helm chart values](https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml) for more options.
+
+### Traefik Dashboard
+
+The dashboard is at `https://traefik.services.mkz.me/dashboard/`, behind `traefik-forward-auth`. Its `IngressRoute` and certificate are defined in `charts/infra/traefik.go`.
 
 ### Vault and External-Secrets
 
@@ -299,7 +293,7 @@ vault auth enable kubernetes
 vault write auth/kubernetes/config \
     kubernetes_host=https://10.43.0.1:443
 
-vault write external-secrets readwrite /path/to/external-secrets.vault.hcl
+vault policy write external-secrets contrib/external-secrets.vault.hcl
 
 vault write auth/kubernetes/role/external-secrets \
     bound_service_account_names=external-secrets \
@@ -308,7 +302,7 @@ vault write auth/kubernetes/role/external-secrets \
     ttl=24h
 ```
 
-This is sufficient to create valid `SecretStore` and `ExternalSecret` objects.
+This is sufficient to create valid `SecretStore` and `ExternalSecret` objects. [docs/vault.md](docs/vault.md) has the full procedure, including initialization, unsealing and OIDC login.
 
 ## Operational Notes
 
@@ -332,13 +326,13 @@ Warning: Do not forget the namespace and secret name. SealedSecret is strict abo
 4. Read the synchronized Secret from the application workload. It provides `host`, `dbname`, `username`, `password`, and `url` keys.
 
 See [docs/cnpg.md](docs/cnpg.md) for field definitions, credential flow,
-backup verification, and restore guidance. The removed Zalando PostgreSQL
-operator is no longer part of the deployment.
+backup verification, and restore guidance.
 
 ### Checking Backups
 
 PostgreSQL logical dumps run at `00:30` and the cluster-wide Velero/Kopia
-filesystem backup runs at `01:30`. Kubernetes CronJobs use UTC unless a
+filesystem backup runs at `01:30`. Longhorn also takes snapshots four times a
+day and a backup to S3 at `03:30`. Kubernetes CronJobs use UTC unless a
 `timeZone` is configured.
 
 ```sh
@@ -351,37 +345,19 @@ logical dump is complete and fresh before copying the PVC. Check both the dump
 Job and Velero backup; see [docs/cnpg.md](docs/cnpg.md#backups) for the manual
 verification and recovery procedure.
 
-### Install whatismyip
-
-Disable the default `externalTrafficPolicy` to get real IP:
-
-```yaml
-apiVersion: helm.cattle.io/v1
-kind: HelmChartConfig
-metadata:
-  name: traefik
-  namespace: kube-system
-spec:
-  valuesContent: |-
-    additionalArguments:
-      - "--serverstransport.insecureskipverify=true"
-    service:
-      spec:
-        externalTrafficPolicy: Local
-```
-
-See [traefik values.yaml](https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml) for more options.
-
 ## References
 
 - [cdk8s Documentation](https://cdk8s.io/) — Cloud Development Kit for Kubernetes
 - [Flux CD Documentation](https://fluxcd.io/) — GitOps Kubernetes automation
-- [docs/flux.md](docs/flux.md) — Flux CD installation, upgrade, and troubleshooting playbook
 - [External-Secrets Vault Provider](https://external-secrets.io/latest/provider/hashicorp-vault/) — Vault integration guide
 - [Vault Kubernetes Auth](https://developer.hashicorp.com/vault/docs/auth/kubernetes) — Kubernetes authentication for Vault
 - [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) — Encrypted Kubernetes secrets
 - [Traefik Helm Chart Values](https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml) — Traefik configuration reference
+- [docs/adding-new-app.md](docs/adding-new-app.md) — adding an app, with worked examples
+- [docs/flux.md](docs/flux.md) — Flux CD installation, upgrade, and troubleshooting playbook
 - [docs/vault.md](docs/vault.md) — Vault setup, initialization, and unsealing
+- [docs/authentik.md](docs/authentik.md) — authentik SSO and proxy outposts
 - [docs/cnpg.md](docs/cnpg.md) — CloudNativePG databases and their credentials
-- [docs/temporal.md](docs/temporal.md) — Temporal workflow setup and configuration
+- [docs/garage.md](docs/garage.md) — Garage S3 storage
+- [docs/temporal.md](docs/temporal.md) — Temporal workflow setup and upgrade
 - [docs/tailscale.md](docs/tailscale.md) — Tailscale operator setup and tailnet-only services
