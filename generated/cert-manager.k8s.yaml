@@ -56,6 +56,45 @@ spec:
       name: cert-manager-helm-val-cert-manager-c8bc2bb8
       valuesKey: values.yaml
 ---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: cert-manager
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: cert-manager-es-rfc2136-tsig-c835e58d
+  namespace: cert-manager
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/cert-manager/rfc2136-tsig
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: rfc2136-tsig
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -67,6 +106,17 @@ spec:
       name: letsencrypt-staging
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     solvers:
+      - dns01:
+          rfc2136:
+            nameserver: maki.mkz.me:53
+            tsigAlgorithm: HMACSHA256
+            tsigKeyName: cert-manager
+            tsigSecretSecretRef:
+              key: secret
+              name: rfc2136-tsig
+        selector:
+          dnsZones:
+            - lan.mkz.me
       - http01:
           ingress:
             class: traefik
@@ -82,6 +132,17 @@ spec:
       name: letsencrypt-prod
     server: https://acme-v02.api.letsencrypt.org/directory
     solvers:
+      - dns01:
+          rfc2136:
+            nameserver: maki.mkz.me:53
+            tsigAlgorithm: HMACSHA256
+            tsigKeyName: cert-manager
+            tsigSecretSecretRef:
+              key: secret
+              name: rfc2136-tsig
+        selector:
+          dnsZones:
+            - lan.mkz.me
       - http01:
           ingress:
             class: traefik
