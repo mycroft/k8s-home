@@ -9,7 +9,7 @@ helmcharts:
   external-secrets/external-secrets: 2.14.0
   falcosecurity/falco: 9.2.1
   garage/garage: 2.4.2
-  grafana-community/grafana-mcp: 0.32.0
+  grafana-community/grafana-mcp: 0.33.0
   grafana/alloy: 1.14.3
   grafana/loki: 7.5.0
   grafana/promtail: 6.16.0
