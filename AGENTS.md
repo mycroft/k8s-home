@@ -47,7 +47,7 @@ mise lock --bump --minimum-release-age "$(skopeo inspect docker://registry.mkz.m
 | `mise run kustomize-build` | Generate charts, then build `dist/` plus the `generated` branch's `flux-system/` the way kustomize-controller does (`contrib/kustomize-build.sh`). Catches what Flux would reject, e.g. two charts declaring the same resource — which conftest, checking file by file, cannot see. Enforced in the lint CI |
 | `mise run check-versions` | Build + find outdated Helm charts & images |
 | `mise run import` | `cdk8s import` — regenerates `imports/` from the `imports:` list in `cdk8s.yaml` |
-| `mise run diff` | `git diff remotes/origin/generated:generated dist` — quick in-place diff |
+| `mise run diff` | Fetches the `generated` branch and `git diff`s its manifests against `dist/`, in a scratch directory. Does not regenerate `dist/` first |
 | `sh contrib/diff.sh` | Recursive `diff -r` of `dist/` vs the `generated` branch. ⚠️ Fetches, checks out `generated/` into the working tree, then `rm -fr generated/` |
 | `go test ./...` | Runs the test suite |
 
@@ -236,7 +236,7 @@ See `docs/adding-new-app.md` for worked examples (stateless app, env vars + Vaul
   `charts/infra/fluxcd.go`) — it stays Ready but no Kustomization consumes it, so it is a prepared
   alternative rather than a live path. `docs/flux.md` holds the migration procedure. The
   Kustomization itself is created by `flux bootstrap` and is not in this repo.
-- **Check versions** (`.gitea/workflows/check-versions.yaml`): daily cron + manual dispatch; runs `check-versions` then `create-prs`
+- **Check versions** (`.gitea/workflows/check-versions.yaml`): cron twice a day + manual dispatch; runs `check-versions` then `create-prs`
 - **Build CI image** (`.gitea/workflows/build-image.yaml`): on changes to `contrib/build-image/**`; rebuilds and pushes the CI container image — no cdk8s involved
 - The three cdk8s workflows above each do `cdk8s import` → `cdk8s synth`
 - CI container image: `registry.mkz.me/mycroft/golang-cdk8s`, pinned by digest in the three

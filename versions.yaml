@@ -81,7 +81,6 @@ images:
   rabbitmq: 4.4.0
   registry.gitlab.com/timvisee/send: v3.5.0
   registry.k8s.io/kubectl: v1.37.1
-  registry.mkz.me/mycroft/whatismyip: 5
   registry.mkz.me/mycroft/useless: 0.0.19
   registry.mkz.me/mycroft/scoreboard-api: 0.0.1
   requarks/wiki: 2.5.317

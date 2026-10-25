@@ -24,9 +24,20 @@ depends = "build"
 run = "./k8s-home"
 outputs = ["dist/*.k8s.yaml"]
 
+# dist/ is gitignored, so a plain git diff never sees it: copy both trees to a
+# scratch directory and compare them there. Only the generated branch's
+# top-level manifests are taken, as dist/ has no flux-system/. git diff exits
+# 1 when the trees differ, which is a result, not a failure.
 [tasks.diff]
-description = "Diff"
-run = "git diff remotes/origin/generated:generated dist"
+description = "Diff dist/ against the generated branch"
+run = '''
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+git fetch -q origin generated
+git archive origin/generated -- ':(glob)generated/*.yaml' | tar -x -C "$work"
+cp -R dist "$work/dist"
+cd "$work" && git diff --no-index -- generated dist || [ $? -eq 1 ]
+'''
 
 [tasks.conftest]
 description = "Run conftest against generated charts"

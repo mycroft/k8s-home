@@ -49,6 +49,7 @@ mise run generate-charts
 | `mise run check-versions`  | Lists outdated Helm charts and images                                                                         |
 | `mise run import`          | Regenerates `imports/` from the `imports:` list in `cdk8s.yaml`                                               |
 | `go test ./...`            | Runs the test suite                                                                                           |
+| `mise run diff`            | Diffs `dist/` against the `generated` branch, in a scratch directory (run `generate-charts` first)            |
 | `sh contrib/diff.sh`       | Diffs `dist/` against the `generated` branch (checks `generated/` out into the working tree, then deletes it) |
 
 Before committing a Go change:
