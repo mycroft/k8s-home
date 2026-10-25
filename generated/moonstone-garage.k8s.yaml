@@ -13,5 +13,49 @@ spec:
     - s3.lan.mkz.me
   issuerRef:
     kind: ClusterIssuer
-    name: letsencrypt-staging
+    name: letsencrypt-prod
   secretName: s3-tls
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: moonstone
+  namespace: moonstone-garage
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: s3-tls-reader
+  namespace: moonstone-garage
+rules:
+  - apiGroups:
+      - ""
+    resourceNames:
+      - s3-tls
+    resources:
+      - secrets
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: s3-tls-reader
+  namespace: moonstone-garage
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: s3-tls-reader
+subjects:
+  - kind: ServiceAccount
+    name: moonstone
+    namespace: moonstone-garage
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    kubernetes.io/service-account.name: moonstone
+  name: moonstone-token
+  namespace: moonstone-garage
+type: kubernetes.io/service-account-token
