@@ -1,0 +1,58 @@
+#!/bin/sh
+# Fetch the s3.lan.mkz.me certificate that cert-manager keeps in the cluster and install it
+# for the TLS proxy in front of Garage. Runs on moonstone from garage-tls-sync.timer; the
+# installed files only change when the Secret does, and RELOAD_COMMAND runs only then.
+#
+# Needs curl, jq and openssl. Setup: docs/garage.md, "TLS certificate".
+set -eu
+
+: "${API_SERVER:=https://star-train.lan.mkz.me:6443}"
+: "${NAMESPACE:=moonstone-garage}"
+: "${SECRET:=s3-tls}"
+: "${TOKEN_FILE:=/etc/garage-tls/sa/token}"
+: "${CA_FILE:=/etc/garage-tls/sa/ca.crt}"
+: "${DEST_DIR:=/etc/garage-tls}"
+: "${KEY_GROUP:=root}"
+: "${RELOAD_COMMAND:=}"
+
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+umask 077
+
+# The header goes through a file so the token never shows up in the process list.
+printf 'Authorization: Bearer %s\n' "$(cat "$TOKEN_FILE")" >"$tmp/auth"
+curl -fsS --max-time 30 --cacert "$CA_FILE" -H @"$tmp/auth" \
+	"$API_SERVER/api/v1/namespaces/$NAMESPACE/secrets/$SECRET" -o "$tmp/secret.json"
+
+if ! crt=$(jq -er '.data["tls.crt"]' "$tmp/secret.json") || ! key=$(jq -er '.data["tls.key"]' "$tmp/secret.json"); then
+	echo "$SECRET: Secret has no tls.crt/tls.key yet, keeping the installed one" >&2
+	exit 1
+fi
+printf '%s' "$crt" | base64 -d >"$tmp/tls.crt"
+printf '%s' "$key" | base64 -d >"$tmp/tls.key"
+
+# Never replace a working pair with a broken one.
+if ! openssl x509 -in "$tmp/tls.crt" -noout -checkend 0 >/dev/null; then
+	echo "$SECRET: certificate is unreadable or expired, keeping the installed one" >&2
+	exit 1
+fi
+if [ "$(openssl x509 -in "$tmp/tls.crt" -noout -pubkey)" != "$(openssl pkey -in "$tmp/tls.key" -pubout)" ]; then
+	echo "$SECRET: private key does not match the certificate, keeping the installed one" >&2
+	exit 1
+fi
+
+if cmp -s "$tmp/tls.crt" "$DEST_DIR/tls.crt" && cmp -s "$tmp/tls.key" "$DEST_DIR/tls.key"; then
+	exit 0
+fi
+
+# Each file is swapped in with a rename, so a reader sees either the old or the new one.
+install -m 0640 -g "$KEY_GROUP" "$tmp/tls.key" "$DEST_DIR/.tls.key.new"
+install -m 0644 "$tmp/tls.crt" "$DEST_DIR/.tls.crt.new"
+mv -f "$DEST_DIR/.tls.key.new" "$DEST_DIR/tls.key"
+mv -f "$DEST_DIR/.tls.crt.new" "$DEST_DIR/tls.crt"
+
+echo "$SECRET: installed certificate, $(openssl x509 -in "$DEST_DIR/tls.crt" -noout -enddate)"
+
+if [ -n "$RELOAD_COMMAND" ]; then
+	sh -c "$RELOAD_COMMAND"
+fi

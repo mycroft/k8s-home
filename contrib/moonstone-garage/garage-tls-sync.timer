@@ -1,0 +1,10 @@
+[Unit]
+Description=Sync the Garage S3 TLS certificate from the k8s-home cluster, hourly
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=10min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

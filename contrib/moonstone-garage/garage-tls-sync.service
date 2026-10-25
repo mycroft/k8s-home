@@ -1,0 +1,15 @@
+[Unit]
+Description=Sync the Garage S3 TLS certificate from the k8s-home cluster
+Documentation=https://git.mkz.me/mycroft/k8s-home/src/branch/main/docs/garage.md
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/default/garage-tls-sync
+ExecStart=/usr/local/bin/garage-tls-sync
+ProtectSystem=strict
+ReadWritePaths=/etc/garage-tls
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes

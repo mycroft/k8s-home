@@ -18,6 +18,7 @@ This playbook records the known setup and the procedures used to verify, maintai
 | Admin/metrics endpoint | `moonstone.lan.mkz.me:3903` |
 | Backup bucket | `backup` |
 | Backup key name | `backup-key` |
+| TLS certificate | `s3.lan.mkz.me`, synced from the cluster to `/etc/garage-tls/` (see [TLS Certificate](#tls-certificate)) |
 
 Garage conventionally uses port `3900` for its S3 API, `3901` for RPC, `3902` for web access, and `3903` for its admin API. Confirm the actual bindings and data paths in the active Garage configuration before rebuilding the service:
 
@@ -113,6 +114,71 @@ The upload, download, and removal must all succeed. Unset credentials afterward:
 ```sh
 unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_ENDPOINT_URL AWS_DEFAULT_REGION
 ```
+
+## TLS Certificate
+
+Garage does not serve TLS on its S3 API, so a proxy on moonstone terminates it. The certificate comes from the cluster:
+
+1. cert-manager issues it from `letsencrypt-prod` into Secret `s3-tls` in namespace `moonstone-garage` (`charts/storage/moonstone-garage.go`). `lan.mkz.me` names resolve to private addresses Let's Encrypt cannot reach, so both issuers validate them with DNS-01: cert-manager writes the `_acme-challenge` TXT record to maki's BIND with TSIG key `cert-manager` (Vault: `secret/namespaces/cert-manager/rfc2136-tsig`, field `secret`), which `update-policy` restricts to those names.
+2. On moonstone, `garage-tls-sync.timer` runs `garage-tls-sync` hourly (`contrib/moonstone-garage/`). It reads the Secret as ServiceAccount `moonstone`, which may `get` that one Secret and nothing else, installs `tls.crt` (full chain) and `tls.key` into `/etc/garage-tls/`, then runs `RELOAD_COMMAND`. Files are only replaced when the Secret changed, and an expired certificate or a mismatched key is refused.
+3. The proxy serves `/etc/garage-tls/tls.crt` and `/etc/garage-tls/tls.key`. Until it is in place, the S3 API stays plain HTTP on port `3900`.
+
+cert-manager renews when a third of the certificate's lifetime remains; `kubectl -n moonstone-garage get certificate s3-tls -o jsonpath='{.status.renewalTime}'` shows when. If the cluster is down, moonstone keeps serving the installed certificate until it expires.
+
+### Setting Up the Sync
+
+Moonstone needs `curl`, `jq`, `openssl`, and access to `star-train.lan.mkz.me:6443`.
+
+From a workstation with cluster access, copy the ServiceAccount token, the cluster CA and the files from `contrib/moonstone-garage/`:
+
+```sh
+kubectl -n moonstone-garage get secret moonstone-token -o jsonpath='{.data.token}' | base64 -d \
+  | ssh moonstone 'umask 077; cat > garage-tls-token'
+kubectl -n moonstone-garage get secret moonstone-token -o jsonpath='{.data.ca\.crt}' | base64 -d \
+  | ssh moonstone 'cat > garage-tls-ca.crt'
+scp contrib/moonstone-garage/garage-tls-sync* moonstone:
+```
+
+Then on moonstone:
+
+```sh
+sudo install -d -m 0755 /etc/garage-tls
+sudo install -d -m 0700 /etc/garage-tls/sa
+sudo install -m 0600 garage-tls-token /etc/garage-tls/sa/token
+sudo install -m 0644 garage-tls-ca.crt /etc/garage-tls/sa/ca.crt
+sudo install -m 0755 garage-tls-sync /usr/local/bin/
+sudo install -m 0644 garage-tls-sync.service garage-tls-sync.timer /etc/systemd/system/
+sudo install -m 0644 garage-tls-sync.env /etc/default/garage-tls-sync
+rm garage-tls-token garage-tls-ca.crt garage-tls-sync*
+
+sudo systemctl daemon-reload
+sudo systemctl start garage-tls-sync.service
+journalctl -u garage-tls-sync -n 5
+sudo systemctl enable --now garage-tls-sync.timer
+```
+
+The first run logs `s3-tls: installed certificate, notAfter=...`. Once the proxy exists, set `RELOAD_COMMAND` in `/etc/default/garage-tls-sync` (and `KEY_GROUP` if the proxy does not run as root).
+
+### Verifying
+
+```sh
+# on moonstone
+sudo openssl x509 -in /etc/garage-tls/tls.crt -noout -subject -issuer -enddate
+systemctl list-timers garage-tls-sync.timer
+
+# from the workstation
+kubectl -n moonstone-garage get certificate s3-tls
+```
+
+To exercise a renewal end to end, run `cmctl renew -n moonstone-garage s3-tls`, wait for the Certificate to be Ready again, then `sudo systemctl start garage-tls-sync.service` on moonstone and check that `notAfter` moved. Forced renewals count against Let's Encrypt's rate limits; do not loop on it.
+
+### Revoking Moonstone's Access
+
+```sh
+kubectl -n moonstone-garage delete secret moonstone-token
+```
+
+The old token stops working immediately. Flux recreates the Secret with a new token on its next reconcile; install that on moonstone as in [Setting Up the Sync](#setting-up-the-sync).
 
 ## Routine Maintenance
 
@@ -259,6 +325,15 @@ garage layout assign -z dc1 -c 300G <node-id>
 garage layout show
 garage layout apply --version <staged-version>
 ```
+
+### Certificate Sync Fails
+
+Start with `journalctl -u garage-tls-sync` on moonstone. A failed run never touches the installed certificate.
+
+- **`curl: (22) ... 401`**: the token is no longer valid, usually because `moonstone-token` was recreated. Install the new one.
+- **`curl: (22) ... 403`**: the `s3-tls-reader` Role or RoleBinding no longer grants access.
+- **`curl: (7)` or a timeout**: the API server at `star-train.lan.mkz.me:6443` is unreachable.
+- **`Secret has no tls.crt/tls.key yet`**: the certificate was never issued. Check `kubectl -n moonstone-garage describe certificate s3-tls`, then its `challenge`. If the challenge reports a DNS update error, named's log on maki shows whether the update was denied (key name, algorithm or `update-policy` grant mismatch).
 
 ### S3 Requests Fail
 
