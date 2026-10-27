@@ -4,7 +4,7 @@ helmcharts:
   authentik/authentik: 2026.8.5
   calibre-web/calibre-web: 23.0.6
   cnpg/cloudnative-pg: 0.29.1
-  controlplaneio-fluxcd/flux-operator-mcp: 0.62.0
+  controlplaneio-fluxcd/flux-operator-mcp: 0.62.1
   dex/dex: 0.26.0
   external-secrets/external-secrets: 2.14.0
   falcosecurity/falco: 9.2.1
