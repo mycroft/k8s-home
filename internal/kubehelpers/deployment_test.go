@@ -47,3 +47,24 @@ func TestNewAppDeploymentSecurityContext(t *testing.T) {
 		})
 	}
 }
+
+// Not parallel, for the same reason as above.
+func TestNewAppDeploymentPodAnnotations(t *testing.T) {
+	chart := cdk8s.NewChart(cdk8s.NewApp(nil), jsii.String("app"), nil)
+	labels := map[string]*string{"app.kubernetes.io/name": jsii.String("app")}
+
+	kubehelpers.NewAppDeployment(chart, "app", "app", "org/app:1.0.0", labels, nil, nil, nil, kubehelpers.AppDeploymentOption{
+		PodAnnotations: map[string]string{"configMapHash": "abc"},
+	})
+
+	deployment, _ := (*chart.ToJson())[0].(map[string]interface{})
+	spec, _ := deployment["spec"].(map[string]interface{})
+	template, _ := spec["template"].(map[string]interface{})
+	metadata, _ := template["metadata"].(map[string]interface{})
+	got, _ := metadata["annotations"].(map[string]interface{})
+
+	want := map[string]interface{}{"configMapHash": "abc"}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("spec.template.metadata.annotations = %v, want %v", got, want)
+	}
+}

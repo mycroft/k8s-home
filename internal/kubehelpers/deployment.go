@@ -28,6 +28,10 @@ type AppDeploymentOption struct {
 	// the image names its user (USER atuin) instead of giving a UID: kubelet
 	// cannot verify that a name is not root, and refuses to start the pod.
 	RunAsUser uint
+	// PodAnnotations are set on the pod template, so changing one rolls the
+	// pods. Set "configMapHash" to ComputeConfigMapHash of a mounted
+	// ConfigMap to restart them when it changes.
+	PodAnnotations map[string]string
 }
 
 func NewAppDeployment(
@@ -43,6 +47,7 @@ func NewAppDeployment(
 	args := []*string{}
 	runAsNonRoot := false
 	runAsUser := uint(0)
+	podAnnotations := map[string]*string{}
 
 	volumes := []*k8s.Volume{}
 	volumeMounts := []*k8s.VolumeMount{}
@@ -84,6 +89,10 @@ func NewAppDeployment(
 
 		if opt.RunAsUser != 0 {
 			runAsUser = opt.RunAsUser
+		}
+
+		for k, v := range opt.PodAnnotations {
+			podAnnotations[k] = jsii.String(v)
 		}
 
 		for _, secret := range opt.SecretMounts {
@@ -147,6 +156,10 @@ func NewAppDeployment(
 				&container,
 			},
 		},
+	}
+
+	if len(podAnnotations) > 0 {
+		podTemplateSpec.Metadata.Annotations = &podAnnotations
 	}
 
 	if len(volumes) > 0 {

@@ -72,6 +72,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_apps.NewAgentNexusChart,
 		charts_apps.NewAppSampleChart,
 		charts_apps.NewAtuinChart,
+		charts_apps.NewAtuinAIChart,
 		// charts_apps.NewBookstackChart,
 		charts_apps.NewCalibreWebChart,
 		charts_apps.NewCyberchefChart,

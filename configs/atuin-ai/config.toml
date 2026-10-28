@@ -1,0 +1,25 @@
+# Atuin AI server, mounted at /etc/atuin-ai/config.toml by charts/apps/atuin-ai.go.
+# Reference: https://github.com/atuinsh/atuin-ai-server#configuration
+#
+# Secrets stay out of this file: the API key is read from the environment, and
+# AUTH_TOKEN, which clients send as their ai.api_token, is set on the pod.
+
+port = 8080
+
+# llama-server on moonstone, through its ingress (charts/apps/llama.go). The
+# server appends /chat/completions.
+endpoint = "https://llm-api.iop.cx/llama.cpp/v1"
+api_key = { env = "LLAMA_API_KEY" }
+
+default_model = "qwen"
+
+[request.body]
+stream_options = { include_usage = true }
+
+# llama-server serves a single model: its name must match /v1/models. The model
+# must support tool calling, which needs llama-server's --jinja.
+[[models]]
+alias = "qwen"
+name = "Swift Qwen3.8 27B"
+description = "Qwen3.8 27B (uncensored fine-tune) on moonstone's llama-server"
+model = "Swift Uncensored Qwen 3.8"

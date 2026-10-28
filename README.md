@@ -166,6 +166,7 @@ The older `contrib/create-pr.sh` (`-f <filter>`, `-m 'chart;old;new'`) still wor
 ### User Apps
 
 - [Atuin](https://atuin.sh/) — shell history sync server
+- [Atuin AI](https://github.com/atuinsh/atuin-ai-server) — backend of `atuin ai`, on llama-server on moonstone
 - [Calibre-Web](https://github.com/janeczku/calibre-web) — e-book library manager
 - [CyberChef](https://gchq.github.io/CyberChef/) — cyber toolkit
 - [Excalidraw](https://excalidraw.com/) — virtual collaborative whiteboard
