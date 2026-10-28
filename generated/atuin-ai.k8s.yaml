@@ -1,0 +1,172 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: atuin-ai
+---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: atuin-ai
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: atuin-ai-es-atuin-ai-server-c8ba06a2
+  namespace: atuin-ai
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/atuin-ai/atuin-ai-server
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: atuin-ai-server
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atuin-ai-config-c80c51f7
+  namespace: atuin-ai
+data:
+  config.toml: |
+    # Atuin AI server, mounted at /etc/atuin-ai/config.toml by charts/apps/atuin-ai.go.
+    # Reference: https://github.com/atuinsh/atuin-ai-server#configuration
+    #
+    # Secrets stay out of this file: the API key is read from the environment, and
+    # AUTH_TOKEN, which clients send as their ai.api_token, is set on the pod.
+
+    port = 8080
+
+    # llama-server on moonstone, through its ingress (charts/apps/llama.go). The
+    # server appends /chat/completions.
+    endpoint = "https://llm-api.iop.cx/llama.cpp/v1"
+    api_key = { env = "LLAMA_API_KEY" }
+
+    default_model = "qwen"
+
+    [request.body]
+    stream_options = { include_usage = true }
+
+    # llama-server serves a single model: its name must match /v1/models. The model
+    # must support tool calling, which needs llama-server's --jinja.
+    [[models]]
+    alias = "qwen"
+    name = "Swift Qwen3.8 27B"
+    description = "Qwen3.8 27B (uncensored fine-tune) on moonstone's llama-server"
+    model = "Swift Uncensored Qwen 3.8"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atuin-ai-deploy-c8e5abc5
+  namespace: atuin-ai
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: atuin-ai
+  template:
+    metadata:
+      annotations:
+        configMapHash: 91778b3c03e7f0394b8da07428c5b6600089b9c03dbd10151d1080e4aa8c6f56
+      labels:
+        app.kubernetes.io/name: atuin-ai
+    spec:
+      containers:
+        - env:
+            - name: AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: auth-token
+                  name: atuin-ai-server
+            - name: LLAMA_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: llama-api-key
+                  name: atuin-ai-server
+          image: ghcr.io/atuinsh/atuin-ai-server:main@sha256:3d11028588ebfddb0685169e35cbc7121d3577b6eee3831e845fbe5c28e48d92
+          name: atuin-ai
+          volumeMounts:
+            - mountPath: /etc/atuin-ai
+              name: config
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+      volumes:
+        - configMap:
+            name: atuin-ai-config-c80c51f7
+          name: config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: atuin-ai
+  name: atuin-ai
+  namespace: atuin-ai
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app.kubernetes.io/name: atuin-ai
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: atuin-ai
+  namespace: atuin-ai
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: atuin-ai.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: atuin-ai
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - atuin-ai.services.mkz.me
+      secretName: secret-tls-www
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: atuin-ai-tailscale
+  namespace: atuin-ai
+spec:
+  defaultBackend:
+    service:
+      name: atuin-ai
+      port:
+        number: 8080
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - atuin-ai
