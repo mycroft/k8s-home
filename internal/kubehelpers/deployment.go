@@ -24,6 +24,10 @@ type AppDeploymentOption struct {
 	// RunAsNonRoot sets the pod-level runAsNonRoot, which the run-as-root
 	// policy requires. The image must run as a numeric non-root user.
 	RunAsNonRoot bool
+	// RunAsUser sets the pod-level runAsUser. Pair it with RunAsNonRoot when
+	// the image names its user (USER atuin) instead of giving a UID: kubelet
+	// cannot verify that a name is not root, and refuses to start the pod.
+	RunAsUser uint
 }
 
 func NewAppDeployment(
@@ -38,6 +42,7 @@ func NewAppDeployment(
 	imagePullPolicy := ""
 	args := []*string{}
 	runAsNonRoot := false
+	runAsUser := uint(0)
 
 	volumes := []*k8s.Volume{}
 	volumeMounts := []*k8s.VolumeMount{}
@@ -75,6 +80,10 @@ func NewAppDeployment(
 
 		if opt.RunAsNonRoot {
 			runAsNonRoot = true
+		}
+
+		if opt.RunAsUser != 0 {
+			runAsUser = opt.RunAsUser
 		}
 
 		for _, secret := range opt.SecretMounts {
@@ -144,10 +153,18 @@ func NewAppDeployment(
 		podTemplateSpec.Spec.Volumes = &volumes
 	}
 
-	if runAsNonRoot {
-		podTemplateSpec.Spec.SecurityContext = &k8s.PodSecurityContext{
-			RunAsNonRoot: jsii.Bool(true),
+	if runAsNonRoot || runAsUser != 0 {
+		securityContext := &k8s.PodSecurityContext{}
+
+		if runAsNonRoot {
+			securityContext.RunAsNonRoot = jsii.Bool(true)
 		}
+
+		if runAsUser != 0 {
+			securityContext.RunAsUser = jsii.Number(float64(runAsUser))
+		}
+
+		podTemplateSpec.Spec.SecurityContext = securityContext
 	}
 
 	k8s.NewKubeDeployment(
