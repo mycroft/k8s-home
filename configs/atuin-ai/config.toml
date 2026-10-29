@@ -6,20 +6,21 @@
 
 port = 8080
 
-# llama-server on moonstone, through its ingress (charts/apps/llama.go). The
-# server appends /chat/completions.
-endpoint = "https://llm-api.iop.cx/llama.cpp/v1"
-api_key = { env = "LLAMA_API_KEY" }
+# LiteLLM (charts/apps/litellm.go), through its in-cluster service. The server
+# appends /chat/completions.
+endpoint = "http://litellm.litellm:4000/v1"
+api_key = { env = "LITELLM_API_KEY" }
 
 default_model = "qwen"
 
 [request.body]
 stream_options = { include_usage = true }
 
-# llama-server serves a single model: its name must match /v1/models. The model
-# must support tool calling, which needs llama-server's --jinja.
+# model is a model_name from configs/litellm/config.yaml, which picks the
+# backend: qwen is moonstone's llama-server. The model must support tool
+# calling, which needs llama-server's --jinja.
 [[models]]
 alias = "qwen"
 name = "Swift Qwen3.8 27B"
-description = "Qwen3.8 27B (uncensored fine-tune) on moonstone's llama-server"
-model = "Swift Uncensored Qwen 3.8"
+description = "Qwen3.8 27B (uncensored fine-tune) on moonstone's llama-server, through LiteLLM"
+model = "qwen"

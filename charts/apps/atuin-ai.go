@@ -11,16 +11,17 @@ import (
 
 // NewAtuinAIChart deploys the Atuin AI server
 // (https://github.com/atuinsh/atuin-ai-server), the backend of atuin ai: it
-// turns a request typed in the shell into a suggested command, asking the
-// model served by llama-server on moonstone. Its configuration, models
-// included, is configs/atuin-ai/config.toml.
+// turns a request typed in the shell into a suggested command, asking a model
+// through LiteLLM (charts/apps/litellm.go), over its in-cluster service. Its
+// configuration, models included, is configs/atuin-ai/config.toml.
 //
 // It serves https://atuin-ai.services.mkz.me, reachable from the internet, and
 // https://atuin-ai.merino-tiaki.ts.net on the tailnet. Every request must carry
 // the AUTH_TOKEN bearer token: without one set, the server answers anyone.
 // Both secrets live in Vault at secret/namespaces/atuin-ai/atuin-ai-server:
 //   - auth-token: what clients set as api_token in their [ai] section
-//   - llama-api-key: llama-server's API key
+//   - litellm-api-key: LiteLLM's master key, a copy of master-key in
+//     secret/namespaces/litellm/litellm
 //
 // The pod reads them at startup, so restart it after changing them.
 func NewAtuinAIChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
@@ -73,11 +74,11 @@ func NewAtuinAIChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 		{
 			// Read by api_key in the configuration.
-			Name: jsii.String("LLAMA_API_KEY"),
+			Name: jsii.String("LITELLM_API_KEY"),
 			ValueFrom: &k8s.EnvVarSource{
 				SecretKeyRef: &k8s.SecretKeySelector{
 					Name: jsii.String("atuin-ai-server"),
-					Key:  jsii.String("llama-api-key"),
+					Key:  jsii.String("litellm-api-key"),
 				},
 			},
 		},
