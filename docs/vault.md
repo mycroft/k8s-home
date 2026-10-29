@@ -211,6 +211,19 @@ cut access sooner.
 > vault token lookup
 ```
 
+On the tailnet, Vault is also served at https://vault.merino-tiaki.ts.net
+(see `tailscale.md`). The CLI works there unchanged, OIDC login included,
+since its callback is on `localhost`:
+
+```sh
+> export VAULT_ADDR=https://vault.merino-tiaki.ts.net
+```
+
+The UI's OIDC login only works there once
+`https://vault.merino-tiaki.ts.net/ui/vault/auth/oidc/oidc/callback` is added
+to the provider's redirect URIs in Authentik and to the role's
+`allowed_redirect_uris` in Vault.
+
 A `Vault Admins` member gets `policies [default]` and
 `identity_policies [external-secrets-ui]`. Anyone else gets only `default`.
 

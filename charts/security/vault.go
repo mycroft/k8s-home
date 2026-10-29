@@ -25,5 +25,10 @@ func NewVaultChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		kubehelpers.WithDefaultConfigFile(),
 	)
 
+	// The chart's own ingress (configs/vault.yaml) serves
+	// vault.services.mkz.me; this serves https://vault.merino-tiaki.ts.net on
+	// the tailnet, in front of the chart's vault Service.
+	chart.NewTailscaleIngress("vault", "vault", 8200)
+
 	return chart
 }
