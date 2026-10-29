@@ -126,7 +126,7 @@ spec:
                 secretKeyRef:
                   key: openai-api-key
                   name: litellm
-          image: ghcr.io/berriai/litellm-non_root:v1.106.2
+          image: ghcr.io/berriai/litellm-non_root:v1.106.6
           name: litellm
           volumeMounts:
             - mountPath: /etc/litellm
