@@ -1,0 +1,194 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: litellm
+---
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: secretstore-vault
+  namespace: litellm
+spec:
+  provider:
+    vault:
+      auth:
+        kubernetes:
+          mountPath: kubernetes
+          role: external-secrets
+      path: secret
+      server: http://vault.vault:8200
+      version: v2
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: litellm-es-litellm-c8dc6120
+  namespace: litellm
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/litellm/litellm
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: litellm
+    template:
+      engineVersion: v2
+      type: Opaque
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: litellm-config-c80291b6
+  namespace: litellm
+data:
+  config.yaml: |
+    # LiteLLM proxy, mounted at /etc/litellm/config.yaml by charts/apps/litellm.go.
+    # Reference: https://docs.litellm.ai/docs/proxy/configs
+    #
+    # Clients talk to it as to OpenAI's API, with the master key as bearer token,
+    # and the model name picks the backend. Secrets stay out of this file:
+    # os.environ/ values are read from the pod's environment, set from Vault.
+
+    model_list:
+      # llama-server on moonstone, behind the nginx at llm-api.iop.cx under
+      # /llama.cpp/ (charts/apps/llama.go). It serves a single model: its name
+      # must match llama-server's /v1/models.
+      - model_name: qwen
+        litellm_params:
+          model: openai/Swift Uncensored Qwen 3.8
+          api_base: https://llm-api.iop.cx/llama.cpp/v1
+          api_key: os.environ/LLAMA_API_KEY
+
+      # Any OpenAI model, asked for as openai/<model>.
+      - model_name: openai/*
+        litellm_params:
+          model: openai/*
+          api_key: os.environ/OPENAI_API_KEY
+
+    litellm_settings:
+      json_logs: true
+
+    general_settings:
+      master_key: os.environ/LITELLM_MASTER_KEY
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: litellm-deploy-c8825fc0
+  namespace: litellm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: litellm
+  template:
+    metadata:
+      annotations:
+        configMapHash: 317957e22ab2448aed1c2a1ae404676f0c6006b2fbfb25e7c535f75f7dfb527f
+      labels:
+        app.kubernetes.io/name: litellm
+    spec:
+      containers:
+        - args:
+            - --config
+            - /etc/litellm/config.yaml
+            - --port
+            - "4000"
+            - --num_workers
+            - "1"
+          env:
+            - name: LITELLM_MODE
+              value: PRODUCTION
+            - name: DISABLE_ADMIN_UI
+              value: "True"
+            - name: NO_DOCS
+              value: "True"
+            - name: NO_REDOC
+              value: "True"
+            - name: LITELLM_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: master-key
+                  name: litellm
+            - name: LLAMA_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: llama-api-key
+                  name: litellm
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: openai-api-key
+                  name: litellm
+          image: ghcr.io/berriai/litellm-non_root:v1.106.2
+          name: litellm
+          volumeMounts:
+            - mountPath: /etc/litellm
+              name: config
+      securityContext:
+        runAsNonRoot: true
+      volumes:
+        - configMap:
+            name: litellm-config-c80291b6
+          name: config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: litellm
+  name: litellm
+  namespace: litellm
+spec:
+  ports:
+    - name: http
+      port: 4000
+  selector:
+    app.kubernetes.io/name: litellm
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: litellm
+  namespace: litellm
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: litellm.services.mkz.me
+      http:
+        paths:
+          - backend:
+              service:
+                name: litellm
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - litellm.services.mkz.me
+      secretName: secret-tls-www
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: litellm-tailscale
+  namespace: litellm
+spec:
+  defaultBackend:
+    service:
+      name: litellm
+      port:
+        number: 4000
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - litellm
