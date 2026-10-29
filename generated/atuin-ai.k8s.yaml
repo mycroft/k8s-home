@@ -68,13 +68,19 @@ data:
     stream_options = { include_usage = true }
 
     # model is a model_name from configs/litellm/config.yaml, which picks the
-    # backend: qwen is moonstone's llama-server. The model must support tool
-    # calling, which needs llama-server's --jinja.
+    # backend: qwen is moonstone's llama-server, openai/<model> is OpenAI. Every
+    # model must support tool calling, which on llama-server needs --jinja.
     [[models]]
     alias = "qwen"
     name = "Swift Qwen3.8 27B"
     description = "Qwen3.8 27B (uncensored fine-tune) on moonstone's llama-server, through LiteLLM"
     model = "qwen"
+
+    [[models]]
+    alias = "gpt-5-mini"
+    name = "GPT-5 mini"
+    description = "OpenAI, through LiteLLM"
+    model = "openai/gpt-5-mini"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -88,7 +94,7 @@ spec:
   template:
     metadata:
       annotations:
-        configMapHash: b1ed13d87c2ef5392cce27019b4bdda9898e25eda1fdbc3ebae10c66dd9c102a
+        configMapHash: c1792f5a1a0c5184bd932dae03222e21fa051d3c481d42498a1b65cbe9ea4c60
       labels:
         app.kubernetes.io/name: atuin-ai
     spec:
