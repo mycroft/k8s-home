@@ -72,7 +72,7 @@ spec:
         kind: HelmRepository
         name: aquasecurity
         namespace: flux-system
-      version: 0.37.0
+      version: 0.38.1
   install:
     crds: CreateReplace
     createNamespace: false
