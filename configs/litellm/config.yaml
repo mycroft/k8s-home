@@ -1,0 +1,28 @@
+# LiteLLM proxy, mounted at /etc/litellm/config.yaml by charts/apps/litellm.go.
+# Reference: https://docs.litellm.ai/docs/proxy/configs
+#
+# Clients talk to it as to OpenAI's API, with the master key as bearer token,
+# and the model name picks the backend. Secrets stay out of this file:
+# os.environ/ values are read from the pod's environment, set from Vault.
+
+model_list:
+  # llama-server on moonstone, behind the nginx at llm-api.iop.cx under
+  # /llama.cpp/ (charts/apps/llama.go). It serves a single model: its name
+  # must match llama-server's /v1/models.
+  - model_name: qwen
+    litellm_params:
+      model: openai/Swift Uncensored Qwen 3.8
+      api_base: https://llm-api.iop.cx/llama.cpp/v1
+      api_key: os.environ/LLAMA_API_KEY
+
+  # Any OpenAI model, asked for as openai/<model>.
+  - model_name: openai/*
+    litellm_params:
+      model: openai/*
+      api_key: os.environ/OPENAI_API_KEY
+
+litellm_settings:
+  json_logs: true
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY

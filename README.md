@@ -175,6 +175,7 @@ The older `contrib/create-pr.sh` (`-f <filter>`, `-m 'chart;old;new'`) still wor
 - [IT-Tools](https://it-tools.tech/) — handy tools for engineers
 - [Karakeep](https://karakeep.app/) (formerly Hoarder) — bookmark manager with AI tagging
 - [Linkding](https://github.com/sissbruecker/linkding) — bookmark manager
+- [LiteLLM](https://docs.litellm.ai/) — OpenAI-compatible proxy in front of llama-server on moonstone and OpenAI
 - [Memos](https://www.usememos.com/) — note taking
 - [MicroBin](https://microbin.eu/) — lightweight pastebin
 - [n8n](https://n8n.io/) — workflow automation
