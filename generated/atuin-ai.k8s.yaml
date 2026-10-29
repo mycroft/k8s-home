@@ -57,23 +57,24 @@ data:
 
     port = 8080
 
-    # llama-server on moonstone, through its ingress (charts/apps/llama.go). The
-    # server appends /chat/completions.
-    endpoint = "https://llm-api.iop.cx/llama.cpp/v1"
-    api_key = { env = "LLAMA_API_KEY" }
+    # LiteLLM (charts/apps/litellm.go), through its in-cluster service. The server
+    # appends /chat/completions.
+    endpoint = "http://litellm.litellm:4000/v1"
+    api_key = { env = "LITELLM_API_KEY" }
 
     default_model = "qwen"
 
     [request.body]
     stream_options = { include_usage = true }
 
-    # llama-server serves a single model: its name must match /v1/models. The model
-    # must support tool calling, which needs llama-server's --jinja.
+    # model is a model_name from configs/litellm/config.yaml, which picks the
+    # backend: qwen is moonstone's llama-server. The model must support tool
+    # calling, which needs llama-server's --jinja.
     [[models]]
     alias = "qwen"
     name = "Swift Qwen3.8 27B"
-    description = "Qwen3.8 27B (uncensored fine-tune) on moonstone's llama-server"
-    model = "Swift Uncensored Qwen 3.8"
+    description = "Qwen3.8 27B (uncensored fine-tune) on moonstone's llama-server, through LiteLLM"
+    model = "qwen"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -87,7 +88,7 @@ spec:
   template:
     metadata:
       annotations:
-        configMapHash: 91778b3c03e7f0394b8da07428c5b6600089b9c03dbd10151d1080e4aa8c6f56
+        configMapHash: b1ed13d87c2ef5392cce27019b4bdda9898e25eda1fdbc3ebae10c66dd9c102a
       labels:
         app.kubernetes.io/name: atuin-ai
     spec:
@@ -98,10 +99,10 @@ spec:
                 secretKeyRef:
                   key: auth-token
                   name: atuin-ai-server
-            - name: LLAMA_API_KEY
+            - name: LITELLM_API_KEY
               valueFrom:
                 secretKeyRef:
-                  key: llama-api-key
+                  key: litellm-api-key
                   name: atuin-ai-server
           image: ghcr.io/atuinsh/atuin-ai-server:main@sha256:3d11028588ebfddb0685169e35cbc7121d3577b6eee3831e845fbe5c28e48d92
           name: atuin-ai
