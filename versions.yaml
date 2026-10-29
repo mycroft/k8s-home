@@ -1,6 +1,6 @@
 helmcharts:
   aqua/harbor-scanner-trivy: 0.17.0
-  aquasecurity/trivy-operator: 0.37.0
+  aquasecurity/trivy-operator: 0.38.1
   authentik/authentik: 2026.8.5
   calibre-web/calibre-web: 23.0.7
   cnpg/cloudnative-pg: 0.29.1
