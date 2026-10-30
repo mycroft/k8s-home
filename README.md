@@ -6,14 +6,14 @@ This project uses Go code to programmatically define and generate Flux CD manife
 
 ## Features
 
-- **Chart generation** — Go-based cdk8s code synthesizes the manifests of nearly 70 apps and infrastructure, observability, security and storage components
+- **Chart generation** — Go-based cdk8s code synthesizes the manifests of more than 70 apps and infrastructure, observability, security and storage components
 - **Version management** — a single `versions.yaml` file tracks all Helm chart and container image versions, with optional regex filters
 - **Automated version bumps** — CI checks for outdated versions twice a day and opens a pull request on Gitea for each one
 - **GitOps deployment** — a Gitea Actions pipeline builds the charts on merge to `main`; Flux CD applies them to the cluster
 - **Policy checks** — OPA/Rego policies and a Flux-style kustomize build validate every pull request
 - **Managed PostgreSQL** — CloudNativePG provisions application databases, roles, extensions, and Vault credentials
 - **Layered backups** — Longhorn snapshots and backups, Velero/Kopia filesystem backups, and daily logical PostgreSQL dumps
-- **Tailnet-only services** — the Tailscale operator serves selected apps on the tailnet, out of reach from the internet
+- **Tailnet access** — the Tailscale operator serves selected services on the tailnet, next to their regular ingress; Vaultwarden is moving to tailnet-only access
 
 ## Getting Started
 
@@ -142,14 +142,14 @@ The older `contrib/create-pr.sh` (`-f <filter>`, `-m 'chart;old;new'`) still wor
 
 - [Longhorn](https://longhorn.io/) — distributed, encrypted block storage across the nodes
 - [CloudNativePG](https://cloudnative-pg.io/) — PostgreSQL operator and the shared application database cluster (see [docs/cnpg.md](docs/cnpg.md))
-- [Garage](https://garagehq.deuxfleurs.fr/) — S3-compatible object storage (see [docs/garage.md](docs/garage.md))
+- [Garage](https://garagehq.deuxfleurs.fr/) — S3-compatible object storage: the backup bucket lives on a single-node Garage on moonstone, outside the cluster, whose `s3.lan.mkz.me` certificate the cluster issues; `charts/storage/garage.go` still deploys the earlier in-cluster release behind `s3-api.iop.cx` (see [docs/garage.md](docs/garage.md))
 - [NATS](https://nats.io/) — message queues
 
 ### Infrastructure
 
 - [Flux CD](https://fluxcd.io/) — GitOps reconciliation (see [docs/flux.md](docs/flux.md)), with [fluxcd-ui](https://git.mkz.me/mycroft/fluxcd-ui) as its web UI
 - [Traefik](https://traefik.io/) — the ingress controller bundled with k3s; this repository manages its dashboard route
-- [Tailscale operator](https://tailscale.com/docs/kubernetes-operator) — exposes selected services on the tailnet only (see [docs/tailscale.md](docs/tailscale.md))
+- [Tailscale operator](https://tailscale.com/docs/kubernetes-operator) — serves Vault, Vaultwarden, Atuin, Atuin AI and LiteLLM at `https://<name>.merino-tiaki.ts.net` on the tailnet (see [docs/tailscale.md](docs/tailscale.md))
 - [Velero](https://velero.io/) — cluster backup and restore
 - [Temporal](https://temporal.io/) — durable workflow engine (see [docs/temporal.md](docs/temporal.md))
 
@@ -233,7 +233,7 @@ See [docs/adding-new-app.md](docs/adding-new-app.md) for worked examples. In sho
 ## Security
 
 - **Secrets** live in Vault at `secret/namespaces/<namespace>/<name>` and reach the cluster as Kubernetes `Secret`s through External Secrets. `sealed-secrets` only bootstraps what is needed before Vault is available.
-- **Access**: apps with OIDC support log in through authentik or dex. Admin UIs without their own login sit behind `traefik-forward-auth` or an authentik proxy outpost. Vaultwarden is also served on the tailnet, ahead of dropping its public ingress.
+- **Access**: apps with OIDC support log in through authentik or dex. Admin UIs without their own login sit behind `traefik-forward-auth` or an authentik proxy outpost. A few services are also served on the tailnet; Vaultwarden's public ingress goes once every client has moved there (see [docs/tailscale.md](docs/tailscale.md#vaultwarden-migration)).
 - **Policies**: `conftest` rejects, among others, unpinned or `latest` images, root or privileged containers, ingresses without TLS from `letsencrypt-prod` or outside the fleet domains, `NodePort` and `LoadBalancer` services, unencrypted storage classes, and inline secrets. Legitimate exceptions are listed, each with a reason, in `policies/exemptions.yaml`.
 - **Runtime**: Falco watches syscalls on every node; the Trivy operator reports vulnerabilities in running images.
 
@@ -308,6 +308,8 @@ vault write auth/kubernetes/role/external-secrets \
 
 This is sufficient to create valid `SecretStore` and `ExternalSecret` objects. [docs/vault.md](docs/vault.md) has the full procedure, including initialization, unsealing and OIDC login.
 
+Vault is served at `https://vault.services.mkz.me` and, on the tailnet, at `https://vault.merino-tiaki.ts.net`. The CLI's OIDC login works at both; the UI's needs an extra redirect URI for the tailnet address (see [docs/vault.md](docs/vault.md)).
+
 ## Operational Notes
 
 ### Creating a Secret with Sealed-Secrets
@@ -335,9 +337,10 @@ backup verification, and restore guidance.
 ### Checking Backups
 
 PostgreSQL logical dumps run at `00:30` and the cluster-wide Velero/Kopia
-filesystem backup runs at `01:30`. Longhorn also takes snapshots four times a
-day and a backup to S3 at `03:30`. Kubernetes CronJobs use UTC unless a
-`timeZone` is configured.
+filesystem backup runs at `01:30`; a second Velero schedule backs up the
+cluster resources at `07:30`. Both Velero backups are kept for 30 days.
+Longhorn also takes snapshots four times a day and a backup to S3 at `03:30`.
+Kubernetes CronJobs use UTC unless a `timeZone` is configured.
 
 ```sh
 kubectl get cronjob,job -n cnpg -l app.kubernetes.io/name=postgres-dump
