@@ -28,7 +28,7 @@ data:
 
     image:
       # The chart defaults to latest.
-      version: v0.0.69
+      version: v0.1.1
 
     # Only agent-nexus calls it, from inside the cluster.
     ingress:
