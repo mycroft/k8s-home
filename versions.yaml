@@ -23,7 +23,7 @@ helmcharts:
   jameswynn/homepage: 2.1.0
   jetstack/cert-manager: v1.21.3
   jitsi/jitsi-meet: v1.3.7
-  kubernetes-mcp-server/kubernetes-mcp-server: 0.1.0
+  kubernetes-mcp-server/kubernetes-mcp-server: 0.1.1
   kyverno/kyverno: v3.0.5
   kyverno/kyverno-policies: v3.0.4
   linkerd/linkerd-crds: 1.8.0
