@@ -64,7 +64,7 @@ func NewMemosChart(builder *kube.Builder) *kube.Chart {
 		Secrets: []kube.SecretMount{
 			{
 				Name:      "memos-config",
-				MountPath: "/etc/secrets",
+				MountPath: "/etc/memos/config",
 			},
 		},
 	})
