@@ -1,0 +1,28 @@
+# Home Assistant's configuration.yaml. charts/apps/home-assistant.go mounts it
+# read-only over /config/configuration.yaml: edit it here, not in the pod.
+# Everything configured from the UI lives in /config/.storage and is untouched.
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Written by the UI editors. The chart's init container creates them on an
+# empty volume, since Home Assistant only does when configuration.yaml is missing.
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+http:
+  # Traefik forwards every request with X-Forwarded-For, and Home Assistant
+  # answers 400 to a forwarded request from a proxy it does not trust.
+  use_x_forwarded_for: true
+  trusted_proxies:
+    # Traefik pod, seen as-is when it runs on Home Assistant's node (k3s pod CIDR).
+    - 10.42.0.0/16
+    # Node IPs: from another node, the Traefik pod's traffic is masqueraded to it.
+    - 10.0.0.2
+    - 10.0.0.3
+    - 10.0.0.4

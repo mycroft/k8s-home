@@ -171,6 +171,7 @@ The older `contrib/create-pr.sh` (`-f <filter>`, `-m 'chart;old;new'`) still wor
 - [CyberChef](https://gchq.github.io/CyberChef/) — cyber toolkit
 - [Excalidraw](https://excalidraw.com/) — virtual collaborative whiteboard
 - [FreshRSS](https://freshrss.org/) — RSS aggregator
+- [Home Assistant](https://www.home-assistant.io/) — home automation, on the host network for device discovery
 - [Homepage](https://github.com/gethomepage/homepage) — dashboard
 - [IT-Tools](https://it-tools.tech/) — handy tools for engineers
 - [Karakeep](https://karakeep.app/) (formerly Hoarder) — bookmark manager with AI tagging
