@@ -33,6 +33,17 @@ prometheus:
 
     storageSpec:
       volumeClaimTemplate:
+        # Keep the daily backup but opt out of the 6-hourly snapshots of the
+        # Longhorn "default" group (charts/storage/longhorn.go). TSDB compaction
+        # rewrites most blocks between snapshots, so each one pins several GiB
+        # of dead data per replica. With the source label, these PVC labels
+        # replace the volume's recurring-job labels, default group included.
+        # The StatefulSet only applies them when it creates the PVC: label an
+        # existing PVC by hand.
+        metadata:
+          labels:
+            recurring-job.longhorn.io/source: enabled
+            recurring-job.longhorn.io/longhorn-daily-backup: enabled
         spec:
           storageClassName: longhorn-crypto-global
           accessModes:
