@@ -18,7 +18,7 @@ helmcharts:
   helm-charts/n8n: 1.24.43
   homelab-oci/agent-nexus: 0.1.11
   homelab-oci/fluxcd-ui: 0.5.0
-  homelab-oci/reviews: 0.1.1
+  homelab-oci/reviews: 0.2.0
   jaegertracing/jaeger: 0.71.2
   jameswynn/homepage: 2.1.0
   jetstack/cert-manager: v1.21.3
