@@ -28,13 +28,14 @@ data:
     scene: !include scenes.yaml
 
     http:
-      # Traefik forwards every request with X-Forwarded-For, and Home Assistant
-      # answers 400 to a forwarded request from a proxy it does not trust.
+      # The Tailscale operator's proxy pod forwards every request with
+      # X-Forwarded-For set to the tailnet client, and Home Assistant answers 400
+      # to a forwarded request from a proxy it does not trust.
       use_x_forwarded_for: true
       trusted_proxies:
-        # Traefik pod, seen as-is when it runs on Home Assistant's node (k3s pod CIDR).
+        # Proxy pod, seen as-is when it runs on Home Assistant's node (k3s pod CIDR).
         - 10.42.0.0/16
-        # Node IPs: from another node, the Traefik pod's traffic is masqueraded to it.
+        # Node IPs: from another node, the proxy pod's traffic is masqueraded to it.
         - 10.0.0.2
         - 10.0.0.3
         - 10.0.0.4
@@ -66,7 +67,7 @@ spec:
   template:
     metadata:
       annotations:
-        configMapHash: c758b073029bc00d8a7fc0730390f4a2d1ac568ab99294c8dba1f6b2bebf499a
+        configMapHash: 55ea3f106bb26927aa0a202e3adbf88b1534e70e4db33fee35dd13150fbd6e4f
       labels:
         app.kubernetes.io/name: home-assistant
     spec:
@@ -114,24 +115,15 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-  name: home-assistant-ingress-c8cd7d26
+  name: home-assistant-tailscale
   namespace: home-assistant
 spec:
-  ingressClassName: traefik
-  rules:
-    - host: home-assistant.iop.cx
-      http:
-        paths:
-          - backend:
-              service:
-                name: home-assistant-svc-c808be4c
-                port:
-                  name: http
-            path: /
-            pathType: Prefix
+  defaultBackend:
+    service:
+      name: home-assistant-svc-c808be4c
+      port:
+        number: 8123
+  ingressClassName: tailscale
   tls:
     - hosts:
-        - home-assistant.iop.cx
-      secretName: secret-tls-www
+        - home-assistant
