@@ -87,8 +87,7 @@ minute while its certificate is issued.
 - **Host resolves but the connection is refused or times out** — a custom ACL is
   blocking `tag:k8s` (step 1), or HTTPS is not enabled for the tailnet (step 2).
 - **Proxy pods run a privileged init container** that enables IP forwarding. The operator
-  creates them at runtime, so they never appear in `dist/` and conftest does not see them;
-  Falco may report them.
+  creates them at runtime, so they never appear in `dist/` and conftest does not see them.
 
 ## Vaultwarden migration
 

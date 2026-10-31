@@ -136,7 +136,6 @@ The older `contrib/create-pr.sh` (`-f <filter>`, `-m 'chart;old;new'`) still wor
 - [authentik](https://goauthentik.io/) — SSO for apps, and proxy outposts for admin UIs (see [docs/authentik.md](docs/authentik.md))
 - [traefik-forward-auth](https://github.com/thomseddon/traefik-forward-auth) — OIDC forward authentication for admin UIs without their own login
 - [Trivy operator](https://github.com/aquasecurity/trivy-operator) — vulnerability reports, browsed through [trivy-operator-dashboard](https://github.com/raoulx24/trivy-operator-dashboard); [harbor-scanner-trivy](https://github.com/goharbor/harbor-scanner-trivy) is the Trivy scanner of the Harbor image registry
-- [Falco](https://falco.org/) — runtime syscall detection; its rules are still being tuned, nothing alerts on them yet
 
 ### Storage
 
@@ -212,7 +211,7 @@ The older `contrib/create-pr.sh` (`-f <filter>`, `-m 'chart;old;new'`) still wor
 
 ### Disabled
 
-Defined in `charts/` but commented out in `charts/homelab.go`: Kyverno, MinIO, ScyllaDB, MariaDB, OpenSearch, Capacitor, Linkerd, Promtail, Jaeger, BookStack, Emojivoto, Redmine, Snippet Box and Heimdall.
+Defined in `charts/` but commented out in `charts/homelab.go`: Falco, Kyverno, MinIO, ScyllaDB, MariaDB, OpenSearch, Capacitor, Linkerd, Promtail, Jaeger, BookStack, Emojivoto, Redmine, Snippet Box and Heimdall.
 
 ## Adding an App
 
@@ -236,7 +235,7 @@ See [docs/adding-new-app.md](docs/adding-new-app.md) for worked examples. In sho
 - **Secrets** live in Vault at `secret/namespaces/<namespace>/<name>` and reach the cluster as Kubernetes `Secret`s through External Secrets. `sealed-secrets` only bootstraps what is needed before Vault is available.
 - **Access**: apps with OIDC support log in through authentik or dex. Admin UIs without their own login sit behind `traefik-forward-auth` or an authentik proxy outpost. Vaultwarden is also served on the tailnet, ahead of dropping its public ingress.
 - **Policies**: `conftest` rejects, among others, unpinned or `latest` images, root or privileged containers, ingresses without TLS from `letsencrypt-prod` or outside the fleet domains, `NodePort` and `LoadBalancer` services, unencrypted storage classes, and inline secrets. Legitimate exceptions are listed, each with a reason, in `policies/exemptions.yaml`.
-- **Runtime**: Falco watches syscalls on every node; the Trivy operator reports vulnerabilities in running images.
+- **Runtime**: the Trivy operator reports vulnerabilities in running images.
 
 ## Services
 
