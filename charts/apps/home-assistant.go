@@ -10,8 +10,9 @@ import (
 
 // NewHomeAssistantChart runs Home Assistant on the host network: device
 // discovery (mDNS, SSDP, DHCP) needs to see the LAN's multicast and broadcast
-// traffic, which the pod network does not carry. It therefore also listens on
-// <node>:8123, besides the ingress.
+// traffic, which the pod network does not carry. It is served on the tailnet
+// only, at https://home-assistant.<tailnet>.ts.net, but the host network also
+// makes it listen on <node>:8123 on the LAN.
 //
 // kubehelpers.NewStatefulSet covers none of hostNetwork, init containers or a
 // file mounted inside the data volume, hence the hand-written StatefulSet.
@@ -19,7 +20,6 @@ func NewHomeAssistantChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	namespace := "home-assistant"
 	appName := namespace
 	appPort := uint(8123)
-	appIngress := "home-assistant.iop.cx"
 	image := builder.RegisterContainerImage("ghcr.io/home-assistant/home-assistant")
 
 	chart := builder.NewChart(namespace)
@@ -152,16 +152,7 @@ func NewHomeAssistantChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 		},
 	)
 
-	kubehelpers.NewAppIngress(
-		builder.Context,
-		chart.Cdk8sChart,
-		labels,
-		appName,
-		appPort,
-		appIngress,
-		*svc.Name(),
-		map[string]string{},
-	)
+	chart.NewTailscaleIngress(appName, *svc.Name(), appPort)
 
 	return chart
 }

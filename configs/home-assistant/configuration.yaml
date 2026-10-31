@@ -16,13 +16,14 @@ script: !include scripts.yaml
 scene: !include scenes.yaml
 
 http:
-  # Traefik forwards every request with X-Forwarded-For, and Home Assistant
-  # answers 400 to a forwarded request from a proxy it does not trust.
+  # The Tailscale operator's proxy pod forwards every request with
+  # X-Forwarded-For set to the tailnet client, and Home Assistant answers 400
+  # to a forwarded request from a proxy it does not trust.
   use_x_forwarded_for: true
   trusted_proxies:
-    # Traefik pod, seen as-is when it runs on Home Assistant's node (k3s pod CIDR).
+    # Proxy pod, seen as-is when it runs on Home Assistant's node (k3s pod CIDR).
     - 10.42.0.0/16
-    # Node IPs: from another node, the Traefik pod's traffic is masqueraded to it.
+    # Node IPs: from another node, the proxy pod's traffic is masqueraded to it.
     - 10.0.0.2
     - 10.0.0.3
     - 10.0.0.4
