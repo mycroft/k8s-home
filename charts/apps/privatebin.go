@@ -114,6 +114,13 @@ func NewPrivatebinChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 				MountPath: "/srv/cfg",
 			},
 		},
+		kubehelpers.AppDeploymentOption{
+			// conf.php is copied to /run/cfg at startup, so a change only
+			// applies once the pod restarts.
+			PodAnnotations: map[string]string{
+				"configMapHash": kubehelpers.ComputeConfigMapHash(configMap),
+			},
+		},
 	)
 
 	kubehelpers.NewAppIngress(
