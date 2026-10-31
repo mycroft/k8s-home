@@ -84,7 +84,7 @@ data:
     burnafterreadingselected = false
     defaultformatter = "plaintext"
     sizelimit = 10485760
-    template = "bootstrap-dark"
+    template = "bootstrap5"
     languageselection = false
 
     [expire]
@@ -144,6 +144,8 @@ spec:
       app.kubernetes.io/name: privatebin
   template:
     metadata:
+      annotations:
+        configMapHash: db6827117a82ac94af32390a6ce963f77e3f8588693aa646675ee0f948bf7591
       labels:
         app.kubernetes.io/name: privatebin
     spec:
