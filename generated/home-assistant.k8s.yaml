@@ -1,0 +1,137 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: home-assistant
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: home-assistant-config-c8adf77a
+  namespace: home-assistant
+data:
+  configuration.yaml: |
+    # Home Assistant's configuration.yaml. charts/apps/home-assistant.go mounts it
+    # read-only over /config/configuration.yaml: edit it here, not in the pod.
+    # Everything configured from the UI lives in /config/.storage and is untouched.
+
+    # Loads default set of integrations. Do not remove.
+    default_config:
+
+    # Load frontend themes from the themes folder
+    frontend:
+      themes: !include_dir_merge_named themes
+
+    # Written by the UI editors. The chart's init container creates them on an
+    # empty volume, since Home Assistant only does when configuration.yaml is missing.
+    automation: !include automations.yaml
+    script: !include scripts.yaml
+    scene: !include scenes.yaml
+
+    http:
+      # Traefik forwards every request with X-Forwarded-For, and Home Assistant
+      # answers 400 to a forwarded request from a proxy it does not trust.
+      use_x_forwarded_for: true
+      trusted_proxies:
+        # Traefik pod, seen as-is when it runs on Home Assistant's node (k3s pod CIDR).
+        - 10.42.0.0/16
+        # Node IPs: from another node, the Traefik pod's traffic is masqueraded to it.
+        - 10.0.0.2
+        - 10.0.0.3
+        - 10.0.0.4
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: home-assistant
+  name: home-assistant-svc-c808be4c
+  namespace: home-assistant
+spec:
+  ports:
+    - name: http
+      port: 8123
+  selector:
+    app.kubernetes.io/name: home-assistant
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: home-assistant-sts-c83ec50a
+  namespace: home-assistant
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: home-assistant
+  serviceName: home-assistant-svc-c808be4c
+  template:
+    metadata:
+      annotations:
+        configMapHash: c758b073029bc00d8a7fc0730390f4a2d1ac568ab99294c8dba1f6b2bebf499a
+      labels:
+        app.kubernetes.io/name: home-assistant
+    spec:
+      containers:
+        - image: ghcr.io/home-assistant/home-assistant:2026.10.4
+          name: home-assistant
+          ports:
+            - containerPort: 8123
+              name: http
+          volumeMounts:
+            - mountPath: /config
+              name: data
+            - mountPath: /config/configuration.yaml
+              name: config
+              subPath: configuration.yaml
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      initContainers:
+        - command:
+            - /bin/sh
+            - -c
+            - cd /config && { [ -e automations.yaml ] || echo '[]' > automations.yaml; } && touch scripts.yaml scenes.yaml
+          image: ghcr.io/home-assistant/home-assistant:2026.10.4
+          name: init-includes
+          volumeMounts:
+            - mountPath: /config
+              name: data
+      volumes:
+        - configMap:
+            name: home-assistant-config-c8adf77a
+          name: config
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/name: home-assistant
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: longhorn-crypto-global
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: home-assistant-ingress-c8cd7d26
+  namespace: home-assistant
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: home-assistant.iop.cx
+      http:
+        paths:
+          - backend:
+              service:
+                name: home-assistant-svc-c808be4c
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - home-assistant.iop.cx
+      secretName: secret-tls-www
