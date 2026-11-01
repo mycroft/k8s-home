@@ -1,0 +1,124 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: searxng
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: secret-key
+  namespace: searxng
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: secret-key
+  namespace: searxng
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: secret-key
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: secret-key
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: searxng-config-c8a7f301
+  namespace: searxng
+data:
+  settings.yml: |
+    # Merged over the upstream defaults (searx/settings.yml), which already leave
+    # the limiter off and Valkey unset: the instance is tailnet-only.
+    # https://docs.searxng.org/admin/settings/index.html
+    #
+    # server.base_url and server.secret_key come from the environment
+    # (SEARXNG_BASE_URL, SEARXNG_SECRET), set in charts/apps/searxng.go.
+    use_default_settings: true
+
+    search:
+      # json serves the API in-cluster clients use (?format=json).
+      formats:
+        - html
+        - json
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: searxng-deploy-c851b77e
+  namespace: searxng
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: searxng
+  template:
+    metadata:
+      annotations:
+        configMapHash: 8eb51f06ebd523850c19f78dd7564844ef7e1521127b00d39c1f58e6b0a352b2
+      labels:
+        app.kubernetes.io/name: searxng
+    spec:
+      containers:
+        - env:
+            - name: SEARXNG_BASE_URL
+              value: https://searxng.merino-tiaki.ts.net/
+            - name: SEARXNG_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: secret-key
+          image: searxng/searxng:2026.11.1-9ded3bec1
+          name: searxng
+          volumeMounts:
+            - mountPath: /etc/searxng
+              name: config
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 977
+      volumes:
+        - configMap:
+            name: searxng-config-c8a7f301
+          name: config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: searxng
+  name: searxng
+  namespace: searxng
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app.kubernetes.io/name: searxng
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: searxng-tailscale
+  namespace: searxng
+spec:
+  defaultBackend:
+    service:
+      name: searxng
+      port:
+        number: 8080
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - searxng
