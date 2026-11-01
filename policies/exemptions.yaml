@@ -14,10 +14,6 @@ exemptions:
     rules: [latest, run-as-root]
     reason: "upstream only publishes :latest (see AGENTS.md); container runs as root"
 
-  hello-kubernetes:
-    rules: [run-as-root]
-    reason: "demo workload (paulbouwer/hello-kubernetes); upstream image runs as root"
-
   hey:
     rules: [latest, run-as-root]
     reason: "self-built image; pipeline publishes :latest; runs as root"
