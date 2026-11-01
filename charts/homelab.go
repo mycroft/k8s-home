@@ -105,7 +105,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_apps.NewVaultWardenChart,
 		charts_apps.NewVikunjaChart,
 		charts_apps.NewWallabagChart,
-		charts_apps.NewWikiJsChart,
+		// charts_apps.NewWikiJsChart,
 		charts_apps.NewYopassChart,
 		// charts_apps.NewHeimdallChart,
 		charts_apps.NewOpenWebuiChart,

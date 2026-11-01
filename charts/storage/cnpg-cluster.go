@@ -15,7 +15,6 @@ var databases = []kubehelpers.CNPGDatabase{
 	{Name: "zipline", VaultEntry: "postgresql-cnpg"},
 	{Name: "memos", VaultEntry: "postgres-cnpg"},
 	{Name: "vikunja", VaultEntry: "postgresql-cnpg"},
-	{Name: "wikijs", VaultEntry: "postgresql-cnpg"},
 	{Name: "wallabag", VaultEntry: "postgresql-cnpg"},
 	{Name: "privatebin", VaultEntry: "postgres-cnpg"},
 	{Name: "n8n", VaultEntry: "postgresql-cnpg", PasswordAliases: []string{"postgres-password"}},

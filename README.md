@@ -188,7 +188,6 @@ The older `contrib/create-pr.sh` (`-f <filter>`, `-m 'chart;old;new'`) still wor
 - [Vaultwarden](https://github.com/dani-garcia/vaultwarden) — Bitwarden-compatible password manager, moving to tailnet-only access
 - [Vikunja](https://vikunja.io/) — task management
 - [Wallabag](https://www.wallabag.it/) — read-it-later list
-- [Wiki.js](https://js.wiki/) — wiki platform
 - [Yopass](https://yopass.se/) — secure secret sharing
 - [Zipline](https://github.com/diced/zipline) — file sharing service
 
@@ -211,7 +210,7 @@ The older `contrib/create-pr.sh` (`-f <filter>`, `-m 'chart;old;new'`) still wor
 
 ### Disabled
 
-Defined in `charts/` but commented out in `charts/homelab.go`: Falco, Kyverno, MinIO, ScyllaDB, MariaDB, OpenSearch, Capacitor, Linkerd, Promtail, Jaeger, BookStack, Emojivoto, Redmine, Snippet Box and Heimdall.
+Defined in `charts/` but commented out in `charts/homelab.go`: Falco, Kyverno, MinIO, ScyllaDB, MariaDB, OpenSearch, Capacitor, Linkerd, Promtail, Jaeger, BookStack, Emojivoto, Redmine, Snippet Box, Wiki.js and Heimdall.
 
 ## Adding an App
 
