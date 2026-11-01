@@ -65,15 +65,6 @@ spec:
         disablePassword: false
         ensure: present
         login: true
-        name: wikijs
-        passwordSecret:
-          name: postgres-wikijs
-        superuser: false
-      - createdb: false
-        createrole: false
-        disablePassword: false
-        ensure: present
-        login: true
         name: wallabag
         passwordSecret:
           name: postgres-wallabag
@@ -467,99 +458,6 @@ spec:
   selector:
     secret:
       name: postgres-vikunja
-  updatePolicy: Replace
----
-apiVersion: generators.external-secrets.io/v1alpha1
-kind: Password
-metadata:
-  name: postgres-wikijs
-  namespace: cnpg
-spec:
-  allowRepeat: true
-  digits: 6
-  length: 32
-  noUpper: false
-  symbols: 0
----
-apiVersion: external-secrets.io/v1
-kind: ExternalSecret
-metadata:
-  name: postgres-wikijs
-  namespace: cnpg
-spec:
-  dataFrom:
-    - sourceRef:
-        generatorRef:
-          apiVersion: generators.external-secrets.io/v1alpha1
-          kind: Password
-          name: postgres-wikijs
-  refreshInterval: "0"
-  target:
-    creationPolicy: Owner
-    deletionPolicy: Retain
-    immutable: false
-    name: postgres-wikijs
-    template:
-      data:
-        dbname: wikijs
-        host: postgres-rw.cnpg
-        password: "{{ .password }}"
-        url: postgres://wikijs:{{ .password }}@postgres-rw.cnpg/wikijs
-        username: wikijs
-      engineVersion: v2
-      type: kubernetes.io/basic-auth
----
-apiVersion: postgresql.cnpg.io/v1
-kind: Database
-metadata:
-  name: postgres-wikijs
-  namespace: cnpg
-spec:
-  cluster:
-    name: postgres
-  name: wikijs
-  owner: wikijs
----
-apiVersion: external-secrets.io/v1alpha1
-kind: PushSecret
-metadata:
-  name: postgres-wikijs
-  namespace: cnpg
-spec:
-  data:
-    - match:
-        remoteRef:
-          property: username
-          remoteKey: namespaces/wikijs/postgresql-cnpg
-        secretKey: username
-    - match:
-        remoteRef:
-          property: password
-          remoteKey: namespaces/wikijs/postgresql-cnpg
-        secretKey: password
-    - match:
-        remoteRef:
-          property: host
-          remoteKey: namespaces/wikijs/postgresql-cnpg
-        secretKey: host
-    - match:
-        remoteRef:
-          property: dbname
-          remoteKey: namespaces/wikijs/postgresql-cnpg
-        secretKey: dbname
-    - match:
-        remoteRef:
-          property: url
-          remoteKey: namespaces/wikijs/postgresql-cnpg
-        secretKey: url
-  deletionPolicy: None
-  refreshInterval: 1h
-  secretStoreRefs:
-    - kind: SecretStore
-      name: secretstore-vault
-  selector:
-    secret:
-      name: postgres-wikijs
   updatePolicy: Replace
 ---
 apiVersion: generators.external-secrets.io/v1alpha1

@@ -36,7 +36,7 @@ data:
         data:
           config.yaml: |
             # This CM is not used at all. It is only be maintained to force deployment restart after configuration change.
-            version: "fc09f889ea5ca4edafc0f9b727f46fc8330ce382e9a450cd37cb6ba144ae8664"
+            version: "51249d0e5e021090d481c13f21b5cd17415870ebc41c1dde686deae3decd41cd"
 
     config:
       settings:
@@ -155,9 +155,6 @@ data:
           - Linkding:
               href: https://links.services.mkz.me/
               description: Bookmarks
-          - WikiJS:
-              href: https://wiki.services.mkz.me/
-              description: Personal Wiki Instance
           - IT-Tools:
               href: https://it-tools.services.mkz.me/
               description: IT-Tools server for managing IT infrastructure
