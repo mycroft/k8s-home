@@ -91,7 +91,7 @@ spec:
                 secretKeyRef:
                   key: url
                   name: postgres-cnpg
-          image: neosmemo/memos:26.10.0
+          image: neosmemo/memos:26.11.0
           name: memos
           volumeMounts:
             - mountPath: /etc/memos/config
