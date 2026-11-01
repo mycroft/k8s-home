@@ -185,6 +185,7 @@ The older `contrib/create-pr.sh` (`-f <filter>`, `-m 'chart;old;new'`) still wor
 - [Paperless-ngx](https://docs.paperless-ngx.com/) — document management
 - [PrivateBin](https://privatebin.info/) — secure pastebin
 - [Send](https://gitlab.com/timvisee/send) — simple, private file sharing
+- [SearXNG](https://docs.searxng.org/) — metasearch engine, tailnet-only
 - [Vaultwarden](https://github.com/dani-garcia/vaultwarden) — Bitwarden-compatible password manager, moving to tailnet-only access
 - [Vikunja](https://vikunja.io/) — task management
 - [Wallabag](https://www.wallabag.it/) — read-it-later list
