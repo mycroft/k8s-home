@@ -206,7 +206,7 @@ The older `contrib/create-pr.sh` (`-f <filter>`, `-m 'chart;old;new'`) still wor
 - Root Me — toy scoreboard at `root-me.iop.cx`
 - URLs — curated list of useful links
 - Hey — self-built hello page at `hey.iop.cx`
-- app-sample and hello-kubernetes — demo workloads
+- hello-kubernetes — demo workload
 
 ### Disabled
 
