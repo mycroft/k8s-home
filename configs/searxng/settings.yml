@@ -1,0 +1,13 @@
+# Merged over the upstream defaults (searx/settings.yml), which already leave
+# the limiter off and Valkey unset: the instance is tailnet-only.
+# https://docs.searxng.org/admin/settings/index.html
+#
+# server.base_url and server.secret_key come from the environment
+# (SEARXNG_BASE_URL, SEARXNG_SECRET), set in charts/apps/searxng.go.
+use_default_settings: true
+
+search:
+  # json serves the API in-cluster clients use (?format=json).
+  formats:
+    - html
+    - json

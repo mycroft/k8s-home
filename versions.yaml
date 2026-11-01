@@ -87,6 +87,7 @@ images:
   registry.mkz.me/mycroft/scoreboard-api: 0.0.1
   requarks/wiki: 2.5.317
   redis: 8.10.3
+  searxng/searxng: 2026.11.1-9ded3bec1
   sissbruecker/linkding: 1.47.0
   thomseddon/traefik-forward-auth: 2.2.0
   vaultwarden/server: 1.37.4
@@ -115,6 +116,8 @@ patterns:
     redis: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     registry.k8s.io/kubectl: "^v[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     requarks/wiki: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+    # daily builds, <date>-<commit>; also publishes latest
+    searxng/searxng: "^[0-9]{4}\\.[0-9]+\\.[0-9]+-[0-9a-f]+$"
     sissbruecker/linkding: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     velero/velero-plugin-for-aws: "^v[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
     vaultwarden/server: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
