@@ -90,7 +90,7 @@ images:
   searxng/searxng: 2026.11.1-9ded3bec1
   sissbruecker/linkding: 1.47.0
   thomseddon/traefik-forward-auth: 2.2.0
-  vaultwarden/server: 1.37.4
+  vaultwarden/server: 1.37.5
   velero/velero-plugin-for-aws: v1.14.4
   vikunja/vikunja: 2.7.1
   wallabag/wallabag: 2.6.15
