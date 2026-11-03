@@ -81,7 +81,7 @@ images:
   quay.io/containers/kubernetes_mcp_server: v0.1.1
   quay.io/superq/smokeping-prober: v0.12.0
   rabbitmq: 4.4.0
-  registry.gitlab.com/timvisee/send: v3.5.0
+  registry.gitlab.com/timvisee/send: v3.5.1
   registry.k8s.io/kubectl: v1.37.2
   registry.mkz.me/mycroft/useless: 0.0.19
   registry.mkz.me/mycroft/scoreboard-api: 0.0.1
