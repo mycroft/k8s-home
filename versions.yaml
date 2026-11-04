@@ -75,7 +75,7 @@ images:
   linuxserver/heimdall: v2.5.7-ls238
   memcached: 1.6.45
   neosmemo/memos: 26.11.0
-  paperlessngx/paperless-ngx: 3.4.1
+  paperlessngx/paperless-ngx: 3.4.2
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: 2.1.0
   quay.io/containers/kubernetes_mcp_server: v0.1.1
