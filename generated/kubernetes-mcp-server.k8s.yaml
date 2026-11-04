@@ -63,7 +63,7 @@ spec:
         kind: HelmRepository
         name: kubernetes-mcp-server
         namespace: flux-system
-      version: 0.1.1
+      version: 0.1.2
   install:
     createNamespace: false
     skipCRDs: false
