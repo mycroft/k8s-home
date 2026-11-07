@@ -70,7 +70,7 @@ images:
   ghcr.io/karakeep-app/karakeep-chrome: 154.0.8037.57-r1
   ghcr.io/open-webui/open-webui: 0.13
   ghcr.io/thomiceli/opengist: 1.15.3
-  jhaals/yopass: 16.0.1
+  jhaals/yopass: 16.1.0
   linuxserver/bookstack: v25.12.8-ls249
   linuxserver/heimdall: v2.5.7-ls238
   memcached: 1.6.45
