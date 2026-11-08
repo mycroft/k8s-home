@@ -76,7 +76,7 @@ spec:
         kind: HelmRepository
         name: calibre-web
         namespace: flux-system
-      version: 23.1.0
+      version: 23.1.2
   install:
     createNamespace: false
     skipCRDs: false
