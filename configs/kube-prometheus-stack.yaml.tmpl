@@ -72,7 +72,11 @@ alertmanager:
   alertmanagerSpec:
     replicas: 2
     useExistingSecret: true
-    configSecret: alertmanager-config
+    # Built from configs/alertmanager/alertmanager.yaml, see charts/observability/kube-prometheus-stack.go
+    configSecret: alertmanager-routing
+    # Receiver credentials from Vault, mounted at /etc/alertmanager/secrets/alertmanager-receivers/
+    secrets:
+      - alertmanager-receivers
 
     podAntiAffinity: ""
 

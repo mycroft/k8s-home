@@ -1,0 +1,59 @@
+# Alertmanager configuration, mounted through alertmanagerSpec.configSecret.
+# Receiver credentials are not in this file: they come from Vault
+# (secret/namespaces/monitoring/alertmanager-receivers) via an ExternalSecret,
+# mounted by alertmanagerSpec.secrets under
+# /etc/alertmanager/secrets/alertmanager-receivers/, and read with *_file.
+#
+# Test routing changes before committing, e.g. inside an Alertmanager pod:
+#   amtool config routes test --config.file=<file> alertname=X severity=warning
+global:
+  resolve_timeout: 5m
+  http_config:
+    follow_redirects: true
+    enable_http2: true
+route:
+  receiver: "telegram"
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+  # The root receiver above is only a fallback for alerts that match no child
+  # route: once any route below matches (continue: true included), the root
+  # receiver is skipped. Every receiver must therefore be reachable through a
+  # route of its own — hence the explicit telegram catch-all at the end.
+  routes:
+    - # First route, with continue: every warning/critical alert goes to Zulip,
+      # then carries on down the routes below. group_by is set here, not
+      # inherited: the receiver's topic needs alertname among the group labels.
+      receiver: zulip
+      group_by: [alertname, namespace]
+      matchers:
+        - severity =~ "warning|critical"
+      continue: true
+    - receiver: "devnull"
+      matchers:
+        - alertname=~"InfoInhibitor|Watchdog"
+      continue: false
+    - # Catch-all: everything not sent to devnull, Zulip'd alerts included.
+      receiver: telegram
+receivers:
+  - name: "devnull"
+  - name: "telegram"
+    telegram_configs:
+      - send_resolved: true
+        message: '{{ template "telegram.default.message" . }}'
+        bot_token_file: /etc/alertmanager/secrets/alertmanager-receivers/telegram-bot-token
+        chat_id_file: /etc/alertmanager/secrets/alertmanager-receivers/telegram-chat-id
+  - # Zulip's Slack-compatible incoming webhook. The Slack "channel" becomes the
+    # Zulip topic: one topic per alertname in the alerts channel. Zulip renders
+    # Slack markup (*bold*, <url|text>) and ignores the attachment color.
+    name: zulip
+    slack_configs:
+      - send_resolved: true
+        channel: '{{ .GroupLabels.alertname }}'
+        title: >-
+          {{ if eq .Status "firing" }}:fire: FIRING{{ if gt (len .Alerts.Firing) 1 }} ×{{ len .Alerts.Firing }}{{ end }}{{ else }}:check: RESOLVED{{ end }} {{ .GroupLabels.alertname }}{{ with .GroupLabels.namespace }} in {{ . }}{{ end }}
+        text: |-
+          {{ range .Alerts -}}
+          - {{ if eq .Status "firing" }}:red_circle:{{ else }}:green_circle:{{ end }} *{{ .Labels.severity }}* {{ or .Annotations.description .Annotations.summary .Labels.alertname }}{{ with .Annotations.runbook_url }} (<{{ . }}|runbook>){{ end }}
+          {{ end }}
+        api_url_file: /etc/alertmanager/secrets/alertmanager-receivers/zulip-webhook-url
