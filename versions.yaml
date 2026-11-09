@@ -45,7 +45,7 @@ helmcharts:
   scylla/scylla-operator: v1.20.0
   sealed-secrets/sealed-secrets: 2.22.0
   tailscale/tailscale-operator: 1.104.4
-  vmware-tanzu/velero: 12.2.3
+  vmware-tanzu/velero: 12.2.4
   wiremind/karma: 2.13.1
   zulip/zulip: 2.4.0
 images:
