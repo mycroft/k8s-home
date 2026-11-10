@@ -71,7 +71,7 @@ spec:
                 secretKeyRef:
                   key: url
                   name: postgresql
-          image: ghcr.io/atuinsh/atuin:18.24.5
+          image: ghcr.io/atuinsh/atuin:18.24.6
           name: atuin
       securityContext:
         runAsNonRoot: true
