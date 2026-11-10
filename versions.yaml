@@ -6,7 +6,7 @@ helmcharts:
   cnpg/cloudnative-pg: 0.29.1
   controlplaneio-fluxcd/flux-operator-mcp: 0.62.1
   dex/dex: 0.26.0
-  external-secrets/external-secrets: 2.14.0
+  external-secrets/external-secrets: 2.15.0
   falcosecurity/falco: 9.2.2
   garage/garage: 2.5.0
   grafana-community/grafana-mcp: 0.34.0
