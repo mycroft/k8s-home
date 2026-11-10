@@ -66,7 +66,7 @@ images:
   ghcr.io/gethomepage/homepage: v2.7
   ghcr.io/gimlet-io/capacitor: v0.4.2
   ghcr.io/hoarder-app/hoarder: 0.34.1
-  ghcr.io/home-assistant/home-assistant: 2026.11.0
+  ghcr.io/home-assistant/home-assistant: 2026.11.1
   ghcr.io/karakeep-app/karakeep-chrome: 154.0.8037.57-r1
   ghcr.io/open-webui/open-webui: 0.13.3
   ghcr.io/thomiceli/opengist: 1.15.3
