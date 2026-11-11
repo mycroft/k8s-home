@@ -11,7 +11,7 @@ helmcharts:
   garage/garage: 2.5.0
   grafana-community/grafana-mcp: 0.34.0
   grafana/alloy: 1.15.0
-  grafana/loki: 7.5.0
+  grafana/loki: 7.6.0
   grafana/promtail: 6.16.0
   grafana/tempo: 1.24.4
   hashicorp/vault: 0.34.1
