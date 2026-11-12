@@ -80,7 +80,7 @@ spec:
                 secretKeyRef:
                   key: password
                   name: secret-key
-          image: searxng/searxng:2026.11.1-9ded3bec1
+          image: searxng/searxng:2026.11.9-57ff753ad
           name: searxng
           volumeMounts:
             - mountPath: /etc/searxng
