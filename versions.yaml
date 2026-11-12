@@ -63,7 +63,7 @@ images:
   ghcr.io/cloudnative-pg/postgresql: 18.6
   ghcr.io/diced/zipline: 4.8.3
   ghcr.io/gchq/cyberchef: 11.5.0
-  ghcr.io/gethomepage/homepage: v2.7
+  ghcr.io/gethomepage/homepage: v2.8
   ghcr.io/gimlet-io/capacitor: v0.4.2
   ghcr.io/hoarder-app/hoarder: 0.34.1
   ghcr.io/home-assistant/home-assistant: 2026.11.1
