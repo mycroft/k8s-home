@@ -93,7 +93,7 @@ images:
   vaultwarden/server: 1.37.5
   velero/velero-plugin-for-aws: v1.14.4
   vikunja/vikunja: 2.8.0
-  wallabag/wallabag: 2.6.15
+  wallabag/wallabag: 2.6.16
 patterns:
   images:
     freshrss/freshrss: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
