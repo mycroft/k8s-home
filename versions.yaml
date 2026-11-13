@@ -47,7 +47,7 @@ helmcharts:
   tailscale/tailscale-operator: 1.104.7
   vmware-tanzu/velero: 12.2.5
   wiremind/karma: 2.13.1
-  zulip/zulip: 2.4.0
+  zulip/zulip: 2.5.0
 images:
   corentinth/it-tools: 2024.10.22-7ca5933
   danielszabo99/microbin: 2.1.4
