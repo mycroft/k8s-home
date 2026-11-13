@@ -704,7 +704,7 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
-      version: 93.2.2
+      version: 93.3.0
   install:
     createNamespace: false
     skipCRDs: false
