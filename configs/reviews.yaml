@@ -13,3 +13,13 @@ github:
 # of the same name: github-client-secret, and session-key (32 random bytes,
 # base64; changing it signs everyone out).
 existingSecret: reviews
+
+# Users' settings (ignore patterns, pages turned off) are kept in a SQLite
+# database at /data/reviews.db on this PVC, so they follow users across
+# browsers, instead of in each browser's cookie. Settings already in a cookie
+# still apply until the user saves, which moves them to the database. With
+# persistence, the chart runs a single replica with the Recreate strategy.
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: longhorn-crypto-global
