@@ -6,10 +6,6 @@ existingSecret: rss-to-bluesky
 
 schedule: "*/5 * * * *"
 
-# Suspended until the database from maki (~/bluesky/database/db) is copied
-# into the PVC: an empty database reposts the whole feed. Remove once done.
-suspend: true
-
 # The bbolt database: the Bluesky session and the GUIDs already posted.
 persistence:
   size: 1Gi
