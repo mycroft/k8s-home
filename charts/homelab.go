@@ -97,6 +97,7 @@ func HomelabBuildApp(ctx context.Context, versionsFile string) *kubehelpers.Buil
 		charts_apps.NewPrivatebinChart,
 		// charts_apps.NewRedmineChart,
 		charts_apps.NewReviewsChart,
+		charts_apps.NewRssToBlueskyChart,
 		charts_apps.NewSearxngChart,
 		charts_apps.NewSendChart,
 		// charts_apps.NewSnippetBoxChart,

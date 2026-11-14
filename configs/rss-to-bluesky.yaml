@@ -1,0 +1,16 @@
+# https://github.com/mycroft/rss-to-bluesky/blob/main/charts/rss-to-bluesky/values.yaml
+
+# Synced from Vault secret/namespaces/rss-to-bluesky/rss-to-bluesky by the
+# ExternalSecret of the same name: bluesky-user and bluesky-password.
+existingSecret: rss-to-bluesky
+
+schedule: "*/5 * * * *"
+
+# Suspended until the database from maki (~/bluesky/database/db) is copied
+# into the PVC: an empty database reposts the whole feed. Remove once done.
+suspend: true
+
+# The bbolt database: the Bluesky session and the GUIDs already posted.
+persistence:
+  size: 1Gi
+  storageClass: longhorn-crypto-global
