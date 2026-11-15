@@ -66,7 +66,7 @@ images:
   ghcr.io/gchq/cyberchef: 11.5.0
   ghcr.io/gethomepage/homepage: v2.8
   ghcr.io/gimlet-io/capacitor: v0.4.2
-  ghcr.io/hoarder-app/hoarder: 0.34.1
+  ghcr.io/hoarder-app/hoarder: 0.35.0
   ghcr.io/home-assistant/home-assistant: 2026.11.1
   ghcr.io/karakeep-app/karakeep-chrome: 154.0.8037.57-r1
   ghcr.io/open-webui/open-webui: 0.13.3
