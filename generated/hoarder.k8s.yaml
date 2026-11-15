@@ -263,7 +263,7 @@ spec:
                   name: sso
             - name: OAUTH_PROVIDER_NAME
               value: Authentik
-          image: ghcr.io/hoarder-app/hoarder:0.34.1
+          image: ghcr.io/hoarder-app/hoarder:0.35.0
           name: hoarder
           volumeMounts:
             - mountPath: /data
