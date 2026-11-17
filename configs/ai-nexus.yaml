@@ -1,0 +1,65 @@
+# https://git.mkz.me/mycroft/ai-nexus/src/branch/main/charts/ai-nexus/values.yaml
+# The ingresses (webhooks, and the dashboard behind authentik) and the
+# NetworkPolicy are created in charts/apps/ai-nexus.go.
+
+# Synced from Vault secret/namespaces/ai-nexus/ai-nexus by the
+# ExternalSecret of the same name. Each key becomes an environment variable,
+# referenced in config below as ${KEY}.
+existingSecret: ai-nexus
+
+server:
+  # Posted reviews link to their job on the dashboard.
+  publicUrl: https://ai-nexus-ui.services.mkz.me
+  # llama-server runs a single slot: one job at a time, the others wait in
+  # the queue, where waiting does not count against the job timeout.
+  workers: 1
+  # The slot is shared with agent-nexus, whose jobs can hold it for up to
+  # 30 minutes.
+  jobTimeoutSecs: 1800
+
+# config.toml without [server]; see config.example.toml in the ai-nexus
+# repository.
+config: |
+  # llama-server, behind the nginx at llm-api.iop.cx under /llama.cpp/.
+  [llm.providers.llama]
+  kind = "openai"
+  base_url = "https://llm-api.iop.cx/llama.cpp/v1"
+  api_key = "${LLAMA_API_KEY}"
+
+  [llm.models.qwen]
+  provider = "llama"
+  # As listed by /llama.cpp/v1/models.
+  model = "Swift Uncensored Qwen 3.8"
+  # Per-slot context (/llama.cpp/props n_ctx). Update it if llama-server's
+  # -c or --parallel change.
+  context_tokens = 196608
+  max_concurrency = 1
+
+  # Webhooks: https://ai-nexus.services.mkz.me/webhooks/home
+  [[forges]]
+  name = "home"
+  kind = "gitea"
+  base_url = "https://git.mkz.me"
+  token = "${GITEA_TOKEN}"
+  webhook_secret = "${GITEA_WEBHOOK_SECRET}"
+
+  [defaults]
+  model = "qwen"
+  # Comments only, until the reviews are trusted.
+  max_verdict = "comment"
+
+  [[repos]]
+  forge = "home"
+  name = "mycroft/testaroo"
+
+  [[repos]]
+  forge = "home"
+  name = "mycroft/ai-nexus"
+
+persistence:
+  storageClass: longhorn-crypto-global
+
+serviceMonitor:
+  enabled: true
+  labels:
+    release: prometheus

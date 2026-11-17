@@ -64,6 +64,8 @@ type AppIngressOption struct {
 	// creates for the ingress; "secret-tls-www" by default. A second ingress
 	// in a namespace needs its own: each one owns its Certificate.
 	CertificateName string
+	// Path is the prefix routed on each host; "/" when empty.
+	Path string
 }
 
 // NewAppIngresses creates one or more Ingress resources for the application.
@@ -88,12 +90,16 @@ func NewAppIngresses(
 
 	portName := "http"
 	certificateName := "secret-tls-www"
+	path := "/"
 	for _, opt := range opts {
 		if opt.PortName != "" {
 			portName = opt.PortName
 		}
 		if opt.CertificateName != "" {
 			certificateName = opt.CertificateName
+		}
+		if opt.Path != "" {
+			path = opt.Path
 		}
 	}
 
@@ -131,7 +137,7 @@ func NewAppIngresses(
 								},
 							},
 						},
-						Path:     jsii.String("/"),
+						Path:     jsii.String(path),
 						PathType: jsii.String("Prefix"),
 					},
 				},
@@ -217,7 +223,9 @@ type Ingress struct {
 	PortName string
 	// CertificateName is the TLS secret; see AppIngressOption.
 	CertificateName string
-	Annotations     map[string]string
+	// Path is the prefix routed on each host; "/" when empty.
+	Path        string
+	Annotations map[string]string
 }
 
 // NewIngress creates an ingress attached to deployment name/port
@@ -262,6 +270,7 @@ func (chart *Chart) NewIngress(ingress *Ingress) (string, string) {
 			Name:            ingress.Name,
 			PortName:        ingress.PortName,
 			CertificateName: ingress.CertificateName,
+			Path:            ingress.Path,
 		},
 	)
 

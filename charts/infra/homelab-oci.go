@@ -5,7 +5,7 @@ import (
 )
 
 // NewHomelabOCIHelmRepositoryChart declares the OCI repository holding the
-// Helm charts of self-built apps (fluxcd-ui, agent-nexus, reviews). Charts
+// Helm charts of self-built apps (fluxcd-ui, agent-nexus, ai-nexus, reviews). Charts
 // using it reference it by name and must not declare it again.
 func NewHomelabOCIHelmRepositoryChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	chart := builder.NewChart("homelab-oci-helm-repository")
