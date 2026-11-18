@@ -245,7 +245,7 @@ spec:
                 secretKeyRef:
                   key: password
                   name: rabbitmq
-          image: rabbitmq:4.4.0
+          image: rabbitmq:4.4.1
           name: rabbitmq
           volumeMounts:
             - mountPath: /var/lib/rabbitmq
