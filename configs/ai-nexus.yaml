@@ -58,9 +58,12 @@ config: |
   # Comments only, until the reviews are trusted.
   max_verdict = "comment"
 
+  # Sandboxes: agentic review (ADR-0013) explores the pull request's head
+  # with read-only tools before answering.
   [[repos]]
   forge = "home"
   name = "mycroft/testaroo"
+  agentic = true
 
   [[repos]]
   forge = "home"
@@ -69,6 +72,7 @@ config: |
   [[repos]]
   forge = "github"
   name = "mycroft/testaroo"
+  agentic = true
 
 persistence:
   storageClass: longhorn-crypto-global
