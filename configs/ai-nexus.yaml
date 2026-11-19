@@ -43,6 +43,16 @@ config: |
   token = "${GITEA_TOKEN}"
   webhook_secret = "${GITEA_WEBHOOK_SECRET}"
 
+  # Webhooks: https://ai-nexus.services.mkz.me/webhooks/github, set in the
+  # GitHub App's settings. Reviews are posted as the app's bot; the app must
+  # be installed on each repository below.
+  [[forges]]
+  name = "github"
+  kind = "github"
+  base_url = "https://api.github.com"
+  app = { id = 5838680, private_key = "${GITHUB_APP_PRIVATE_KEY}" }
+  webhook_secret = "${GITHUB_WEBHOOK_SECRET}"
+
   [defaults]
   model = "qwen"
   # Comments only, until the reviews are trusted.
@@ -55,6 +65,10 @@ config: |
   [[repos]]
   forge = "home"
   name = "mycroft/ai-nexus"
+
+  [[repos]]
+  forge = "github"
+  name = "mycroft/testaroo"
 
 persistence:
   storageClass: longhorn-crypto-global

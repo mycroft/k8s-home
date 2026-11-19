@@ -13,8 +13,9 @@ import (
 //
 // Its credentials live in Vault at secret/namespaces/ai-nexus/ai-nexus. Every
 // key becomes an environment variable that the configuration references as
-// ${KEY}: GITEA_TOKEN (the ai-nexus bot on git.mkz.me), GITEA_WEBHOOK_SECRET
-// and LLAMA_API_KEY.
+// ${KEY}: GITEA_TOKEN (the ai-nexus bot on git.mkz.me), GITEA_WEBHOOK_SECRET,
+// GITHUB_APP_PRIVATE_KEY (the PEM of the GitHub App ai-nexus posts as on
+// github.com), GITHUB_WEBHOOK_SECRET and LLAMA_API_KEY.
 //
 // ai-nexus serves webhooks and its dashboard on the same port, so the split
 // is by host and path: the webhook ingress routes /webhooks only, without
