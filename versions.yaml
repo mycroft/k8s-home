@@ -1,7 +1,7 @@
 helmcharts:
   aqua/harbor-scanner-trivy: 0.17.0
   aquasecurity/trivy-operator: 0.38.1
-  authentik/authentik: 2026.8.5
+  authentik/authentik: 2026.8.6
   calibre-web/calibre-web: 23.1.4
   cnpg/cloudnative-pg: 0.29.2
   controlplaneio-fluxcd/flux-operator-mcp: 0.62.1
