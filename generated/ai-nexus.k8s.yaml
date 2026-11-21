@@ -42,6 +42,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: ai-nexus-es-ai-nexus-runner-c84c90e6
+  namespace: ai-nexus
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/ai-nexus/ai-nexus-runner
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: ai-nexus-runner
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -67,8 +90,19 @@ data:
       # the queue, where waiting does not count against the job timeout.
       workers: 1
       # The slot is shared with agent-nexus, whose jobs can hold it for up to
-      # 30 minutes.
-      jobTimeoutSecs: 1800
+      # 30 minutes. A job on runners waits for all its passes within it: three
+      # skills on two runners take two rounds of up to runners.passTimeoutSecs.
+      jobTimeoutSecs: 3600
+
+    # Runners run the review passes of repositories with engine = "claude-code"
+    # in Claude Code (ADR-0016), with CLAUDE_CODE_OAUTH_TOKEN from Vault's
+    # secret/namespaces/ai-nexus/ai-nexus-runner (see charts/apps/ai-nexus.go).
+    # They share the subscription's usage limits with interactive use.
+    runners:
+      enabled: true
+      replicas: 2
+      existingSecret: ai-nexus-runner
+      passTimeoutSecs: 900
 
     # config.toml without [server]; see config.example.toml in the ai-nexus
     # repository.
@@ -119,9 +153,12 @@ data:
       name = "mycroft/testaroo"
       agentic = true
 
+      # Reviewed in Claude Code on the runners: large pull requests included,
+      # every built-in tool on (Bash and WebFetch too).
       [[repos]]
       forge = "home"
       name = "mycroft/ai-nexus"
+      engine = "claude-code"
 
       [[repos]]
       forge = "github"
@@ -168,7 +205,7 @@ spec:
         kind: HelmRepository
         name: homelab-oci
         namespace: flux-system
-      version: 0.1.12
+      version: 0.1.13
   install:
     createNamespace: false
     skipCRDs: false
@@ -254,9 +291,66 @@ spec:
       ports:
         - port: 8080
           protocol: TCP
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: ai-nexus
+              app.kubernetes.io/name: ai-nexus-runner
+      ports:
+        - port: 8081
+          protocol: TCP
   podSelector:
     matchLabels:
       app.kubernetes.io/instance: ai-nexus
       app.kubernetes.io/name: ai-nexus
   policyTypes:
     - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ai-nexus-runner
+  namespace: ai-nexus
+spec:
+  egress:
+    - ports:
+        - port: 8081
+          protocol: TCP
+      to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: ai-nexus
+              app.kubernetes.io/name: ai-nexus
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+      to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+    - ports:
+        - port: 80
+          protocol: TCP
+        - port: 443
+          protocol: TCP
+      to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+              - 100.64.0.0/10
+              - 169.254.0.0/16
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: ai-nexus
+      app.kubernetes.io/name: ai-nexus-runner
+  policyTypes:
+    - Ingress
+    - Egress
