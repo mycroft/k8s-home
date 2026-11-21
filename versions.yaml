@@ -59,7 +59,7 @@ images:
   outlinewiki/outline: 1.13.0
   excalidraw/excalidraw: latest
   freshrss/freshrss: 1.30.4
-  ghcr.io/atuinsh/atuin: 18.25.0
+  ghcr.io/atuinsh/atuin: 18.25.1
   ghcr.io/atuinsh/atuin-ai-server: main@sha256:3d11028588ebfddb0685169e35cbc7121d3577b6eee3831e845fbe5c28e48d92
   ghcr.io/berriai/litellm-non_root: v1.110.2
   ghcr.io/cloudnative-pg/postgresql: 18.6
