@@ -28,6 +28,7 @@ var databases = []kubehelpers.CNPGDatabase{
 	{Name: "paperlessngx", Namespace: "paperless-ngx", VaultEntry: "postgresql-cnpg"},
 	{Name: "zulip"},
 	{Name: "atuin"},
+	{Name: "ai_nexus", Namespace: "ai-nexus"},
 }
 
 func NewCNPGCluster(builder *kubehelpers.Builder) *kubehelpers.Chart {

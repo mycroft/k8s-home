@@ -54,6 +54,9 @@ func NewAINexusChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "ai-nexus")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "ai-nexus-runner")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "ai-nexus-tools")
+	// The ai_nexus database on the CNPG cluster (charts/storage/cnpg-cluster.go),
+	// pushed to secret/namespaces/ai-nexus/postgresql; the server reads its url.
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "postgresql")
 
 	chart.CreateHelmRelease(
 		namespace,
