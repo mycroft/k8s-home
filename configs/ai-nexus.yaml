@@ -85,6 +85,10 @@ config: |
   forge = "home"
   name = "mycroft/k8s-home"
   agentic = true
+  # Passes read the chart versions, release notes, pages and source
+  # repositories a change moves to, when the base branch references them
+  # (ADR-0015).
+  web_tools = true
   ignore = ["go.sum", "mise.lock", ".mise/**", "crds/**"]
   max_verdict = "approve"
   request_changes_at = "major"

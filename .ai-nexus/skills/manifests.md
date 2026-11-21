@@ -39,4 +39,5 @@ in `policies/` (image tags, root and privileged containers, inline Secret
 data, Ingress TLS, issuer and domain, Service types, storage classes, the
 values-watch label, ExternalSecret paths) and the kustomize build. Only
 report a Helm value as wrong if the file you read shows the chart expects
-something else.
+something else: read the chart version in use with `chart_read` (its
+`values.yaml`, its templates) when a change sets or renames values.
