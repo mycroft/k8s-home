@@ -127,6 +127,15 @@ data:
       name = "mycroft/testaroo"
       agentic = true
 
+      # This repository. Its skills are in .ai-nexus/skills/: `manifests` for
+      # the Go charts and Helm values, `versions` for versions.yaml, which no CI
+      # job checks. Pull requests touching neither are skipped without a comment.
+      [[repos]]
+      forge = "home"
+      name = "mycroft/k8s-home"
+      agentic = true
+      ignore = ["go.sum", "mise.lock", ".mise/**", "crds/**"]
+
     persistence:
       storageClass: longhorn-crypto-global
 
