@@ -55,7 +55,8 @@ config: |
 
   [defaults]
   model = "qwen"
-  # Comments only, until the reviews are trusted.
+  # Comments only by default; a repository whose reviews are trusted raises
+  # its own max_verdict (k8s-home below approves and auto-merges).
   max_verdict = "comment"
 
   # Sandboxes: agentic review (ADR-0013) explores the pull request's head
