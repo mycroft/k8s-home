@@ -139,6 +139,19 @@ data:
       # 30 minutes. A job on runners waits for all its passes within it: three
       # skills on two runners take two rounds of up to runners.passTimeoutSecs.
       jobTimeoutSecs: 3600
+      # The ai_nexus database on the CNPG cluster (ADR-0018 of ai-nexus), its
+      # records copied from SQLite with `ai-nexus copy-database`.
+      databaseUrl: "${DATABASE_URL}"
+
+    # From the postgresql Secret, synced from Vault's
+    # secret/namespaces/ai-nexus/postgresql, where the CNPG cluster's chart pushes
+    # the database's credentials (charts/storage/cnpg-cluster.go).
+    extraEnv:
+      - name: DATABASE_URL
+        valueFrom:
+          secretKeyRef:
+            name: postgresql
+            key: url
 
     # Runners run the review passes of repositories with engine = "claude-code"
     # in Claude Code (ADR-0016), with CLAUDE_CODE_OAUTH_TOKEN from Vault's
@@ -251,6 +264,8 @@ data:
       request_changes_at = "major"
       auto_merge = "rebase"
 
+    # No volume since the move to PostgreSQL: the chart keeps the ai-nexus-data
+    # claim, which holds the last SQLite database, ai-nexus.db.
     persistence:
       storageClass: longhorn-crypto-global
 
