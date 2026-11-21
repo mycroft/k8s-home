@@ -88,6 +88,29 @@ spec:
       engineVersion: v2
       type: Opaque
 ---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: ai-nexus-es-postgresql-c86190b8
+  namespace: ai-nexus
+spec:
+  dataFrom:
+    - extract:
+        conversionStrategy: Default
+        key: secret/namespaces/ai-nexus/postgresql
+  refreshInterval: 15m
+  secretStoreRef:
+    kind: SecretStore
+    name: secretstore-vault
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Delete
+    immutable: false
+    name: postgresql
+    template:
+      engineVersion: v2
+      type: Opaque
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:

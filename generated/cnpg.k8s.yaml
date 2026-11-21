@@ -177,6 +177,15 @@ spec:
         passwordSecret:
           name: postgres-atuin
         superuser: false
+      - createdb: false
+        createrole: false
+        disablePassword: false
+        ensure: present
+        login: true
+        name: ai_nexus
+        passwordSecret:
+          name: postgres-ai-nexus
+        superuser: false
   storage:
     size: 64Gi
     storageClass: longhorn-crypto-global
@@ -1683,6 +1692,99 @@ spec:
   selector:
     secret:
       name: postgres-atuin
+  updatePolicy: Replace
+---
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: postgres-ai-nexus
+  namespace: cnpg
+spec:
+  allowRepeat: true
+  digits: 6
+  length: 32
+  noUpper: false
+  symbols: 0
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: postgres-ai-nexus
+  namespace: cnpg
+spec:
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: postgres-ai-nexus
+  refreshInterval: "0"
+  target:
+    creationPolicy: Owner
+    deletionPolicy: Retain
+    immutable: false
+    name: postgres-ai-nexus
+    template:
+      data:
+        dbname: ai_nexus
+        host: postgres-rw.cnpg
+        password: "{{ .password }}"
+        url: postgres://ai_nexus:{{ .password }}@postgres-rw.cnpg/ai_nexus
+        username: ai_nexus
+      engineVersion: v2
+      type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: postgres-ai-nexus
+  namespace: cnpg
+spec:
+  cluster:
+    name: postgres
+  name: ai_nexus
+  owner: ai_nexus
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: postgres-ai-nexus
+  namespace: cnpg
+spec:
+  data:
+    - match:
+        remoteRef:
+          property: username
+          remoteKey: namespaces/ai-nexus/postgresql
+        secretKey: username
+    - match:
+        remoteRef:
+          property: password
+          remoteKey: namespaces/ai-nexus/postgresql
+        secretKey: password
+    - match:
+        remoteRef:
+          property: host
+          remoteKey: namespaces/ai-nexus/postgresql
+        secretKey: host
+    - match:
+        remoteRef:
+          property: dbname
+          remoteKey: namespaces/ai-nexus/postgresql
+        secretKey: dbname
+    - match:
+        remoteRef:
+          property: url
+          remoteKey: namespaces/ai-nexus/postgresql
+        secretKey: url
+  deletionPolicy: None
+  refreshInterval: 1h
+  secretStoreRefs:
+    - kind: SecretStore
+      name: secretstore-vault
+  selector:
+    secret:
+      name: postgres-ai-nexus
   updatePolicy: Replace
 ---
 apiVersion: v1
