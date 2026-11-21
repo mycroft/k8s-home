@@ -166,9 +166,10 @@ func aiNexusRunnerSelector(releaseName string) *k8s.LabelSelector {
 }
 
 // newAINexusRunnerNetworkPolicy closes the runners to every connection in,
-// and lets them out only to the runner API, the cluster's DNS and public
-// addresses (Anthropic's API, and what a review session fetches): not the
-// cluster's services, the LAN or the tailnet.
+// and lets them out only to the runner API, the tools service, the
+// cluster's DNS and public addresses (Anthropic's API, and what a review
+// session fetches): not the cluster's other services, the LAN or the
+// tailnet.
 func newAINexusRunnerNetworkPolicy(chart *kubehelpers.Chart, namespace, releaseName string) {
 	runnerPort := float64(aiNexusRunnerPort)
 	toolsPort := float64(aiNexusToolsPort)
