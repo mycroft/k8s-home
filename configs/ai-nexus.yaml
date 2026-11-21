@@ -77,11 +77,17 @@ config: |
   # This repository. Its skills are in .ai-nexus/skills/: `manifests` for
   # the Go charts and Helm values, `versions` for versions.yaml, which no CI
   # job checks. Pull requests touching neither are skipped without a comment.
+  # Verdicts: approve without findings, comment on minor ones or when a pass
+  # skipped something, request changes on major and critical ones. Approved
+  # pull requests are rebased onto main once their checks pass (ADR-0014).
   [[repos]]
   forge = "home"
   name = "mycroft/k8s-home"
   agentic = true
   ignore = ["go.sum", "mise.lock", ".mise/**", "crds/**"]
+  max_verdict = "approve"
+  request_changes_at = "major"
+  auto_merge = "rebase"
 
 persistence:
   storageClass: longhorn-crypto-global
