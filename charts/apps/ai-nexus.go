@@ -23,6 +23,13 @@ import (
 // CLAUDE_CODE_OAUTH_TOKEN, made with `claude setup-token`. The server never
 // sees it, and the runners see nothing else.
 //
+// The tools service (ADR-0017) serves the web tools to the runners, for
+// passes holding a grant the server signs with AI_NEXUS_GRANT_KEY (an
+// Ed25519 private key PEM, in the server's Vault entry above); it checks
+// grants with the public key in configs/ai-nexus.yaml. It reads the forge
+// with a token of its own that can only read, in Vault at
+// secret/namespaces/ai-nexus/ai-nexus-tools: GITEA_TOKEN.
+//
 // ai-nexus serves webhooks and its dashboard on the same port, so the split
 // is by host and path: the webhook ingress routes /webhooks only, without
 // auth (deliveries are HMAC-signed); the dashboard ingress routes its own host
@@ -46,6 +53,7 @@ func NewAINexusChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 	kubehelpers.CreateSecretStore(chart.Cdk8sChart, namespace)
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "ai-nexus")
 	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "ai-nexus-runner")
+	kubehelpers.CreateExternalSecret(chart.Cdk8sChart, namespace, "ai-nexus-tools")
 
 	chart.CreateHelmRelease(
 		namespace,
@@ -76,13 +84,18 @@ func NewAINexusChart(builder *kubehelpers.Builder) *kubehelpers.Chart {
 
 	newAINexusNetworkPolicy(chart, namespace, releaseName)
 	newAINexusRunnerNetworkPolicy(chart, namespace, releaseName)
+	newAINexusToolsNetworkPolicy(chart, namespace, releaseName)
 
 	return chart
 }
 
 // aiNexusRunnerPort is the runner API's port on the server pod, set by the
-// chart's runners.port.
-const aiNexusRunnerPort = 8081
+// chart's runners.port; aiNexusToolsPort is the tools service's, set by
+// tools.port.
+const (
+	aiNexusRunnerPort = 8081
+	aiNexusToolsPort  = 8082
+)
 
 // newAINexusNetworkPolicy admits only Traefik, where the ingresses' path and
 // authentik middleware apply, and Prometheus, which scrapes /metrics from the
@@ -158,6 +171,7 @@ func aiNexusRunnerSelector(releaseName string) *k8s.LabelSelector {
 // cluster's services, the LAN or the tailnet.
 func newAINexusRunnerNetworkPolicy(chart *kubehelpers.Chart, namespace, releaseName string) {
 	runnerPort := float64(aiNexusRunnerPort)
+	toolsPort := float64(aiNexusToolsPort)
 	dnsPort := float64(53)
 	httpPort := float64(80)
 	httpsPort := float64(443)
@@ -191,6 +205,90 @@ func newAINexusRunnerNetworkPolicy(chart *kubehelpers.Chart, namespace, releaseN
 						},
 						Ports: &[]*k8s.NetworkPolicyPort{tcp(&runnerPort)},
 					},
+					{
+						To:    &[]*k8s.NetworkPolicyPeer{{PodSelector: aiNexusToolsSelector(releaseName)}},
+						Ports: &[]*k8s.NetworkPolicyPort{tcp(&toolsPort)},
+					},
+					{
+						To: &[]*k8s.NetworkPolicyPeer{
+							{
+								NamespaceSelector: &k8s.LabelSelector{
+									MatchLabels: &map[string]*string{"kubernetes.io/metadata.name": jsii.String("kube-system")},
+								},
+								PodSelector: &k8s.LabelSelector{
+									MatchLabels: &map[string]*string{"k8s-app": jsii.String("kube-dns")},
+								},
+							},
+						},
+						Ports: &[]*k8s.NetworkPolicyPort{
+							{Port: k8s.IntOrString_FromNumber(&dnsPort), Protocol: jsii.String("UDP")},
+							tcp(&dnsPort),
+						},
+					},
+					{
+						To: &[]*k8s.NetworkPolicyPeer{
+							{IpBlock: &k8s.IpBlock{
+								Cidr: jsii.String("0.0.0.0/0"),
+								Except: &[]*string{
+									jsii.String("10.0.0.0/8"),
+									jsii.String("172.16.0.0/12"),
+									jsii.String("192.168.0.0/16"),
+									jsii.String("100.64.0.0/10"),
+									jsii.String("169.254.0.0/16"),
+								},
+							}},
+						},
+						Ports: &[]*k8s.NetworkPolicyPort{tcp(&httpPort), tcp(&httpsPort)},
+					},
+				},
+			},
+		},
+	)
+}
+
+func aiNexusToolsSelector(releaseName string) *k8s.LabelSelector {
+	return &k8s.LabelSelector{
+		MatchLabels: &map[string]*string{
+			"app.kubernetes.io/name":     jsii.String("ai-nexus-tools"),
+			"app.kubernetes.io/instance": jsii.String(releaseName),
+		},
+	}
+}
+
+// newAINexusToolsNetworkPolicy admits only the runners, on the tools port,
+// and lets the tools service out only to the cluster's DNS and public
+// addresses: the forge (git.mkz.me resolves to one) and the chart
+// repositories, registries and pages the web tools read.
+func newAINexusToolsNetworkPolicy(chart *kubehelpers.Chart, namespace, releaseName string) {
+	toolsPort := float64(aiNexusToolsPort)
+	dnsPort := float64(53)
+	httpPort := float64(80)
+	httpsPort := float64(443)
+	tcp := func(port *float64) *k8s.NetworkPolicyPort {
+		return &k8s.NetworkPolicyPort{Port: k8s.IntOrString_FromNumber(port), Protocol: jsii.String("TCP")}
+	}
+
+	k8s.NewKubeNetworkPolicy(
+		chart.Cdk8sChart,
+		jsii.String("ai-nexus-tools"),
+		&k8s.KubeNetworkPolicyProps{
+			Metadata: &k8s.ObjectMeta{
+				Name:      jsii.String("ai-nexus-tools"),
+				Namespace: jsii.String(namespace),
+			},
+			Spec: &k8s.NetworkPolicySpec{
+				PodSelector: aiNexusToolsSelector(releaseName),
+				PolicyTypes: &[]*string{
+					jsii.String("Ingress"),
+					jsii.String("Egress"),
+				},
+				Ingress: &[]*k8s.NetworkPolicyIngressRule{
+					{
+						From:  &[]*k8s.NetworkPolicyPeer{{PodSelector: aiNexusRunnerSelector(releaseName)}},
+						Ports: &[]*k8s.NetworkPolicyPort{tcp(&toolsPort)},
+					},
+				},
+				Egress: &[]*k8s.NetworkPolicyEgressRule{
 					{
 						To: &[]*k8s.NetworkPolicyPeer{
 							{

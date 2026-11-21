@@ -28,6 +28,24 @@ runners:
   existingSecret: ai-nexus-runner
   passTimeoutSecs: 900
 
+# The tools service (ADR-0017): the web tools of k8s-home's passes on the
+# runners. It reads git.mkz.me with GITEA_TOKEN from Vault's
+# secret/namespaces/ai-nexus/ai-nexus-tools, a token that can only read,
+# and checks grants with the public half of AI_NEXUS_GRANT_KEY.
+tools:
+  enabled: true
+  existingSecret: ai-nexus-tools
+  grantPublicKey: |
+    -----BEGIN PUBLIC KEY-----
+    MCowBQYDK2VwAyEA4+0M8GfkeggDvkEKt+W3CbfOlfqYpaiY81ELloBJEZA=
+    -----END PUBLIC KEY-----
+  config: |
+    [[forges]]
+    name = "home"
+    kind = "gitea"
+    base_url = "https://git.mkz.me"
+    token = "${GITEA_TOKEN}"
+
 # config.toml without [server]; see config.example.toml in the ai-nexus
 # repository.
 config: |
@@ -98,6 +116,9 @@ config: |
   [[repos]]
   forge = "home"
   name = "mycroft/k8s-home"
+  # Reviewed in Claude Code on the runners, with the web tools from the
+  # tools service (ADR-0016, ADR-0017).
+  engine = "claude-code"
   agentic = true
   # Passes read the chart versions, release notes, pages and source
   # repositories a change moves to, when the base branch references them
