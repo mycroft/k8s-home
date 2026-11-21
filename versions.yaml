@@ -14,7 +14,7 @@ helmcharts:
   grafana/loki: 7.7.0
   grafana/promtail: 6.16.0
   grafana/tempo: 1.24.4
-  hashicorp/vault: 0.34.1
+  hashicorp/vault: 0.34.0
   helm-charts/n8n: 1.24.43
   homelab-oci/agent-nexus: 0.1.11
   homelab-oci/ai-nexus: 0.1.9
@@ -95,7 +95,7 @@ images:
   vaultwarden/server: 1.37.5
   velero/velero-plugin-for-aws: v1.14.4
   vikunja/vikunja: 2.8.0
-  wallabag/wallabag: 2.6.17
+  wallabag/wallabag: 2.7.0-alpha.1
 patterns:
   images:
     freshrss/freshrss: "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
