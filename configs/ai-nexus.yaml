@@ -14,8 +14,19 @@ server:
   # the queue, where waiting does not count against the job timeout.
   workers: 1
   # The slot is shared with agent-nexus, whose jobs can hold it for up to
-  # 30 minutes.
-  jobTimeoutSecs: 1800
+  # 30 minutes. A job on runners waits for all its passes within it: three
+  # skills on two runners take two rounds of up to runners.passTimeoutSecs.
+  jobTimeoutSecs: 3600
+
+# Runners run the review passes of repositories with engine = "claude-code"
+# in Claude Code (ADR-0016), with CLAUDE_CODE_OAUTH_TOKEN from Vault's
+# secret/namespaces/ai-nexus/ai-nexus-runner (see charts/apps/ai-nexus.go).
+# They share the subscription's usage limits with interactive use.
+runners:
+  enabled: true
+  replicas: 2
+  existingSecret: ai-nexus-runner
+  passTimeoutSecs: 900
 
 # config.toml without [server]; see config.example.toml in the ai-nexus
 # repository.
@@ -66,9 +77,12 @@ config: |
   name = "mycroft/testaroo"
   agentic = true
 
+  # Reviewed in Claude Code on the runners: large pull requests included,
+  # every built-in tool on (Bash and WebFetch too).
   [[repos]]
   forge = "home"
   name = "mycroft/ai-nexus"
+  engine = "claude-code"
 
   [[repos]]
   forge = "github"
