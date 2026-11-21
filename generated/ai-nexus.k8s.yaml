@@ -168,7 +168,7 @@ spec:
         kind: HelmRepository
         name: homelab-oci
         namespace: flux-system
-      version: 0.1.11
+      version: 0.1.12
   install:
     createNamespace: false
     skipCRDs: false
