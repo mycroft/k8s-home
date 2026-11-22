@@ -284,6 +284,10 @@ data:
       claude_max_turns = 30
       agentic = true
       web_tools = true
+      # The first GitHub repository merged on approval (ADR-0014 of
+      # ai-nexus): the app needs Contents write, Checks and Commit statuses.
+      max_verdict = "approve"
+      auto_merge = "rebase"
 
       # OpenAI client, Go.
       [[repos]]
