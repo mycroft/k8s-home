@@ -76,7 +76,7 @@ images:
   linuxserver/bookstack: v25.12.8-ls249
   linuxserver/heimdall: v2.5.7-ls238
   memcached: 1.6.45
-  neosmemo/memos: 26.11.1
+  neosmemo/memos: 26.11.2
   paperlessngx/paperless-ngx: 3.5.1
   pawelmalak/snippet-box: latest
   privatebin/nginx-fpm-alpine: 2.1.1
