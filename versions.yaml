@@ -17,7 +17,7 @@ helmcharts:
   hashicorp/vault: 0.34.1
   helm-charts/n8n: 1.24.43
   homelab-oci/agent-nexus: 0.1.11
-  homelab-oci/ai-nexus: 0.1.17
+  homelab-oci/ai-nexus: 0.1.18
   homelab-oci/fluxcd-ui: 0.5.0
   homelab-oci/reviews: 0.5.0
   jaegertracing/jaeger: 0.71.2

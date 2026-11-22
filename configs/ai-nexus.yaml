@@ -114,6 +114,9 @@ config: |
   forge = "home"
   name = "mycroft/ai-nexus"
   engine = "claude-code"
+  # Passes took 3 to 10 turns (14 passes, PostgreSQL support included);
+  # 30 stops a runaway session well before the default 100.
+  claude_max_turns = 30
 
   [[repos]]
   forge = "github"
@@ -132,6 +135,9 @@ config: |
   # Reviewed in Claude Code on the runners, with the web tools from the
   # tools service (ADR-0016, ADR-0017).
   engine = "claude-code"
+  # Passes took 5 to 6 turns (6 passes, web tools included); 30 stops a
+  # runaway session well before the default 100.
+  claude_max_turns = 30
   agentic = true
   # Passes read the chart versions, release notes, pages and source
   # repositories a change moves to, when the base branch references them
