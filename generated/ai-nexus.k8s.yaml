@@ -163,10 +163,12 @@ data:
       existingSecret: ai-nexus-runner
       passTimeoutSecs: 900
 
-    # The tools service (ADR-0017): the web tools of k8s-home's passes on the
-    # runners. It reads git.mkz.me with GITEA_TOKEN from Vault's
-    # secret/namespaces/ai-nexus/ai-nexus-tools, a token that can only read,
-    # and checks grants with the public half of AI_NEXUS_GRANT_KEY.
+    # The tools service (ADR-0017): the web tools of the passes on the runners.
+    # From Vault's secret/namespaces/ai-nexus/ai-nexus-tools, it reads
+    # git.mkz.me with GITEA_TOKEN, a token that can only read, and GitHub as the
+    # ai-nexus-bot app with GITHUB_APP_PRIVATE_KEY, asking for installation
+    # tokens that only read contents. It checks grants with the public half of
+    # AI_NEXUS_GRANT_KEY.
     tools:
       enabled: true
       existingSecret: ai-nexus-tools
@@ -180,6 +182,12 @@ data:
         kind = "gitea"
         base_url = "https://git.mkz.me"
         token = "${GITEA_TOKEN}"
+
+        [[forges]]
+        name = "github"
+        kind = "github"
+        base_url = "https://api.github.com"
+        app = { id = 5838680, private_key = "${GITHUB_APP_PRIVATE_KEY}" }
 
     # config.toml without [server]; see config.example.toml in the ai-nexus
     # repository.
@@ -244,6 +252,47 @@ data:
       forge = "github"
       name = "mycroft/testaroo"
       agentic = true
+
+      # GitHub repositories, reviewed in Claude Code on the runners with the
+      # web tools from the tools service. Their skills are in each repository's
+      # .ai-nexus/skills/. Comments only (the default max_verdict) until their
+      # reviews are trusted; auto_merge can follow, the app may merge.
+
+      # AI command-line client, Rust.
+      [[repos]]
+      forge = "github"
+      name = "mycroft/aika-rs"
+      engine = "claude-code"
+      claude_max_turns = 30
+      agentic = true
+      web_tools = true
+
+      # TOTP/HOTP secrets store, Rust.
+      [[repos]]
+      forge = "github"
+      name = "mycroft/otp"
+      engine = "claude-code"
+      claude_max_turns = 30
+      agentic = true
+      web_tools = true
+
+      # Bitcoin chainstate parser, Rust.
+      [[repos]]
+      forge = "github"
+      name = "mycroft/rs-chainstate"
+      engine = "claude-code"
+      claude_max_turns = 30
+      agentic = true
+      web_tools = true
+
+      # OpenAI client, Go.
+      [[repos]]
+      forge = "github"
+      name = "mycroft/asoai"
+      engine = "claude-code"
+      claude_max_turns = 30
+      agentic = true
+      web_tools = true
 
       # This repository. Its skills are in .ai-nexus/skills/: `manifests` for
       # the Go charts and Helm values, `versions` for versions.yaml, which no CI
