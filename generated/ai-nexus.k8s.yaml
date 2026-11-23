@@ -162,6 +162,27 @@ data:
       replicas: 2
       existingSecret: ai-nexus-runner
       passTimeoutSecs: 900
+      # Runner pools (ADR-0021 of ai-nexus) run the change jobs of repositories
+      # naming them with `pool`, with the pool's toolchain; the review runners
+      # above never get them. They share the runners' Claude credential.
+      pools:
+        - name: rust
+          replicas: 1
+          # No tag: it follows the chart's appVersion, as the review runners'
+          # image does, so the pool moves with homelab-oci/ai-nexus in
+          # versions.yaml and needs no entry of its own.
+          image:
+            repository: registry.mkz.me/mycroft/ai-nexus-runner-rust
+          # Change jobs run up to 45 minutes; jobTimeoutSecs stays above.
+          passTimeoutSecs: 2700
+          # The pass's repository, CARGO_HOME and target/ live in /tmp.
+          tmpSizeLimit: 20Gi
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              memory: 8Gi
 
     # The tools service (ADR-0017): the web tools of the passes on the runners.
     # From Vault's secret/namespaces/ai-nexus/ai-nexus-tools, it reads
@@ -441,8 +462,8 @@ spec:
     - from:
         - podSelector:
             matchLabels:
+              app.kubernetes.io/component: runner
               app.kubernetes.io/instance: ai-nexus
-              app.kubernetes.io/name: ai-nexus-runner
       ports:
         - port: 8081
           protocol: TCP
@@ -504,8 +525,8 @@ spec:
               - 169.254.0.0/16
   podSelector:
     matchLabels:
+      app.kubernetes.io/component: runner
       app.kubernetes.io/instance: ai-nexus
-      app.kubernetes.io/name: ai-nexus-runner
   policyTypes:
     - Ingress
     - Egress
@@ -547,8 +568,8 @@ spec:
     - from:
         - podSelector:
             matchLabels:
+              app.kubernetes.io/component: runner
               app.kubernetes.io/instance: ai-nexus
-              app.kubernetes.io/name: ai-nexus-runner
       ports:
         - port: 8082
           protocol: TCP
