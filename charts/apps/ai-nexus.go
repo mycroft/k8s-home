@@ -159,20 +159,24 @@ func newAINexusNetworkPolicy(chart *kubehelpers.Chart, namespace, releaseName st
 	)
 }
 
+// aiNexusRunnerSelector selects every runner pod: the review runners and
+// each runner pool's (ADR-0021 in ai-nexus), which the chart labels
+// app.kubernetes.io/component: runner.
 func aiNexusRunnerSelector(releaseName string) *k8s.LabelSelector {
 	return &k8s.LabelSelector{
 		MatchLabels: &map[string]*string{
-			"app.kubernetes.io/name":     jsii.String("ai-nexus-runner"),
-			"app.kubernetes.io/instance": jsii.String(releaseName),
+			"app.kubernetes.io/component": jsii.String("runner"),
+			"app.kubernetes.io/instance":  jsii.String(releaseName),
 		},
 	}
 }
 
-// newAINexusRunnerNetworkPolicy closes the runners to every connection in,
-// and lets them out only to the runner API, the tools service, the
-// cluster's DNS and public addresses (Anthropic's API, and what a review
-// session fetches): not the cluster's other services, the LAN or the
-// tailnet.
+// newAINexusRunnerNetworkPolicy closes the runners, runner pools included,
+// to every connection in, and lets them out only to the runner API, the
+// tools service, the cluster's DNS and public addresses (Anthropic's API,
+// package registries, and what a session fetches): not the cluster's other
+// services, the LAN or the tailnet. NetworkPolicies cannot filter by host
+// name, so a pool's sessions reach any public address (ADR-0021).
 func newAINexusRunnerNetworkPolicy(chart *kubehelpers.Chart, namespace, releaseName string) {
 	runnerPort := float64(aiNexusRunnerPort)
 	toolsPort := float64(aiNexusToolsPort)
