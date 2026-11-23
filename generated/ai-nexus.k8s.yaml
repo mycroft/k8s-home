@@ -213,6 +213,9 @@ data:
       kind = "gitea"
       base_url = "https://git.mkz.me"
       token = "${GITEA_TOKEN}"
+      # The coder bot (ADR-0020 of ai-nexus): the ai-nexus-coder account, a
+      # collaborator with write access on the repositories with change jobs.
+      coder = { token = "${GITEA_CODER_TOKEN}" }
       webhook_secret = "${GITEA_WEBHOOK_SECRET}"
 
       # Webhooks: https://ai-nexus.services.mkz.me/webhooks/github, set in the
@@ -223,6 +226,9 @@ data:
       kind = "github"
       base_url = "https://api.github.com"
       app = { id = 5838680, private_key = "${GITHUB_APP_PRIVATE_KEY}" }
+      # The coder bot: the ai-nexus-coder-bot app, without webhook or Workflows
+      # permission, installed on the repositories with change jobs.
+      coder = { app = { id = 5883964, private_key = "${GITHUB_CODER_APP_PRIVATE_KEY}" } }
       webhook_secret = "${GITHUB_WEBHOOK_SECRET}"
 
       [defaults]
