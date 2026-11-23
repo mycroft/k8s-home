@@ -46,6 +46,9 @@ runners:
   pools:
     - name: rust
       replicas: 1
+      # No tag: it follows the chart's appVersion, as the review runners'
+      # image does, so the pool moves with homelab-oci/ai-nexus in
+      # versions.yaml and needs no entry of its own.
       image:
         repository: registry.mkz.me/mycroft/ai-nexus-runner-rust
       # Change jobs run up to 45 minutes; jobTimeoutSecs stays above.
