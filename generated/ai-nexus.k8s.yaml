@@ -264,6 +264,11 @@ data:
       forge = "home"
       name = "mycroft/testaroo"
       agentic = true
+      # `/nexus fix` on an issue, by someone with write access, has the rust
+      # pool make the change and ai-nexus-coder open the pull request (ADR-0019
+      # of ai-nexus); ai-nexus-coder is a collaborator with write access.
+      changes = true
+      pool = "rust"
 
       # Reviewed in Claude Code on the runners: large pull requests included,
       # every built-in tool on (Bash and WebFetch too).
@@ -274,11 +279,17 @@ data:
       # Passes took 3 to 10 turns (14 passes, PostgreSQL support included);
       # 30 stops a runaway session well before the default 100.
       claude_max_turns = 30
+      # Change jobs, as on testaroo; they keep the default 100 turns.
+      changes = true
+      pool = "rust"
 
       [[repos]]
       forge = "github"
       name = "mycroft/testaroo"
       agentic = true
+      # Change jobs, published by the ai-nexus-coder-bot app, installed here.
+      changes = true
+      pool = "rust"
 
       # GitHub repositories, reviewed in Claude Code on the runners with the
       # web tools from the tools service. Their skills are in each repository's
